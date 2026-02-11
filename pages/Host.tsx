@@ -82,10 +82,10 @@ const Host: React.FC = () => {
                 <div className="h-px w-8 bg-gold"></div>
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">Programme Partenaires 2026</span>
               </div>
-              <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-normal mb-8 inline-block w-max max-w-full">
-                <span className="font-sans not-italic">Partagez votre savoir-faire </span><span className="font-display italic text-lg sm:text-3xl md:text-4xl lg:text-5xl">et votre passion.</span>
+              <h1 className="text-4xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-none sm:leading-normal mb-8 inline-block w-max sm:w-max max-w-full whitespace-normal sm:whitespace-nowrap">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Partagez votre savoir-faire </span><span className="font-display italic">et votre passion.</span>
               </h1>
-              <p className="text-xl text-gray-500 font-light leading-relaxed max-w-3xl italic">
+              <p className="text-sm sm:text-xl text-gray-500 font-light leading-relaxed max-w-3xl italic">
                 Rejoignez le réseau Terrago, dédié au tourisme du terroir français. Accueillez du public, transmettez votre passion et votre savoir-faire, en toute liberté.
               </p>
             </div>

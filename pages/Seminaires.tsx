@@ -51,6 +51,7 @@ const Seminaires: React.FC = () => {
   const examplesCarouselRef = useRef<HTMLDivElement>(null);
   const examplesScrollRef = useRef<HTMLDivElement>(null);
   const [examplesCardWidthPx, setExamplesCardWidthPx] = useState(0);
+  const [selectedUniverse, setSelectedUniverse] = useState<string | null>(null);
   
   const CAROUSEL_GAP_PX = 32;
   const CAROUSEL_VISIBLE = 3.5;
@@ -514,9 +515,18 @@ Email envoyé depuis le formulaire de séminaire Terrago
             {['le vin', 'la truffe', 'les olives', 'la lavande', 'le fromage de chèvre', 'les noix', 'le cognac'].map((product) => (
               <div
                 key={product}
-                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white rounded-full border border-black/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 cursor-pointer group"
+                onClick={() => setSelectedUniverse(selectedUniverse === product ? null : product)}
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group ${
+                  selectedUniverse === product
+                    ? 'bg-orange border-orange text-white'
+                    : 'bg-white border-black/10 hover:border-primary/30'
+                }`}
               >
-                <span className="text-[9px] sm:text-[10px] font-sans font-medium text-primary uppercase tracking-wider group-hover:text-primary/80">
+                <span className={`text-[9px] sm:text-[10px] font-sans font-medium uppercase tracking-wider ${
+                  selectedUniverse === product
+                    ? 'text-white'
+                    : 'text-primary group-hover:text-primary/80'
+                }`}>
                   {product}
                 </span>
               </div>
@@ -554,13 +564,18 @@ Email envoyé depuis le formulaire de séminaire Terrago
           {/* Carousel exemples : scroll natif fluide, scroll-snap */}
           {(() => {
             const exampleCards = [
-              { image: "/images/card/cognac-autour.png", title: "Cognac", desc: "Cognac • 40min d'Angoulême TGV", tags: ["Participation aux vendanges", "Fabrication de son propre pineau", "Golf entre les vignes"], producerImage: "/images/producteurs/cognacJF.png" },
-              { image: "/images/card/olive-autour.png", title: "Olives et lavande", desc: "Valensole • 45min d'Aix en Provence TGV", tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"], producerImage: "/images/producteurs/olivepaolo.png" },
-              { image: "/images/card/noix-autour.png", title: "Noix et compagnie", desc: "Orléans | Valence", tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Session Trail dans un cadre magnifique"], producerImage: "/images/producteurs/noixsabinemarie.jpeg" },
-              { image: "/images/card/truffe-autour.png", title: "Truffe et terroir", desc: "Chinon • 1h de Tours TGV", tags: ["Cavage et découverte de la truffe", "Atelier cuisine", "Ferme florale et potager"], producerImage: "/images/producteurs/truffeprod.png" },
-              { image: "/images/card/fromage-autour.png", title: "Fromage de chèvre", desc: "1h d'Aix-en-Provence TGV", tags: ["Soins aux chèvres", "Fabrication du fromage", "Dégustation à la ferme"], producerImage: "/images/producteurs/chevre-bebe.jpg" },
-              { image: "/images/card/vigne-ventoux.png", title: "Vin AOC Ventoux", desc: "1h d'Avignon TGV", tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"], producerImage: "/images/producteurs/vincombeaumas.png" },
+              { image: "/images/card/cognac-autour.png", title: "Cognac", desc: "Cognac • 40min d'Angoulême TGV", tags: ["Participation aux vendanges", "Fabrication de son propre pineau", "Golf entre les vignes"], producerImage: "/images/producteurs/cognacJF.png", universes: ["le cognac"] },
+              { image: "/images/card/olive-autour.png", title: "Olives et lavande", desc: "Valensole • 45min d'Aix en Provence TGV", tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"], producerImage: "/images/producteurs/olivepaolo.png", universes: ["les olives", "la lavande"] },
+              { image: "/images/card/noix-autour.png", title: "Noix et compagnie", desc: "Orléans | Valence", tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Session Trail dans un cadre magnifique"], producerImage: "/images/producteurs/noixsabinemarie.jpeg", universes: ["les noix"] },
+              { image: "/images/card/truffe-autour.png", title: "Truffe et terroir", desc: "Chinon • 1h de Tours TGV", tags: ["Cavage et découverte de la truffe", "Atelier cuisine", "Ferme florale et potager"], producerImage: "/images/producteurs/truffeprod.png", universes: ["la truffe"] },
+              { image: "/images/card/fromage-autour.png", title: "Fromage de chèvre", desc: "1h d'Aix-en-Provence TGV", tags: ["Soins aux chèvres", "Fabrication du fromage", "Dégustation à la ferme"], producerImage: "/images/producteurs/chevre-bebe.jpg", universes: ["le fromage de chèvre"] },
+              { image: "/images/card/vigne-ventoux.png", title: "Vin AOC Ventoux", desc: "1h d'Avignon TGV", tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"], producerImage: "/images/producteurs/vincombeaumas.png", universes: ["le vin"] },
             ];
+            
+            // Filtrer les cartes selon l'univers sélectionné
+            const filteredCards = selectedUniverse 
+              ? exampleCards.filter(card => card.universes.includes(selectedUniverse))
+              : exampleCards;
             const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
             // Sur mobile, calculer la largeur pour afficher exactement 2 cartes
             const cardWidthPx = isMobile && examplesCardWidthPx > 0 
@@ -609,15 +624,21 @@ Email envoyé depuis le formulaire de séminaire Terrago
                       document.addEventListener('mouseleave', handleMouseUp);
                     }}
                   >
-                    {exampleCards.map((card) => (
-                      <div
-                        key={`${card.title}-${card.desc}`}
-                        className="flex-shrink-0 snap-start"
-                        style={{ width: cardWidthPx }}
-                      >
-                        <UniverseCard {...card} />
+                    {filteredCards.length > 0 ? (
+                      filteredCards.map((card) => (
+                        <div
+                          key={`${card.title}-${card.desc}`}
+                          className="flex-shrink-0 snap-start"
+                          style={{ width: cardWidthPx }}
+                        >
+                          <UniverseCard {...card} />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="flex-shrink-0 w-full text-center py-8">
+                        <p className="text-gray-500 text-sm">Aucune carte disponible pour cet univers.</p>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
               </div>
