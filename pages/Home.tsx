@@ -80,19 +80,20 @@ const Home: React.FC = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-black/20 to-orange/15 opacity-70 sm:opacity-60"></div>
           <div className="relative z-10 w-full text-center max-w-6xl mx-auto px-0 sm:px-0">
-            <h1 className="text-white text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-4 sm:mb-6 flex flex-col items-center justify-center gap-y-2 sm:gap-y-1 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 drop-shadow-2xl [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
-              <span className="font-display italic text-center">Au coeur des terroirs,</span>
-              {/* Mobile : 2 lignes - ligne 1: "Plongez...", ligne 2: "et partez..." + badge. Desktop : une seule ligne */}
-              <span className="font-sans text-[0.75em] sm:text-[0.72em] md:text-[0.78em] font-semibold tracking-tight not-italic text-center block">
-                <span className="sm:hidden inline-block">
-                  partez à la rencontre de nos{" "}
-                  <span className="bg-orange px-2 py-1 rounded-lg transform -rotate-2 translate-x-0.5 -translate-y-0.5 inline-block">
-                    {displayedText}
-                    {isTyping && <span className="animate-pulse">|</span>}
-                  </span>
+            <h1 className="text-white text-5xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-4 sm:mb-6 flex flex-col items-center justify-center gap-y-0.5 sm:gap-y-1 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 drop-shadow-2xl [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
+              {/* Mobile : uniquement "Partez à la rencontre de" */}
+              <span className="sm:hidden font-sans text-[0.85em] font-semibold tracking-tight not-italic text-center block">
+                Partez à la rencontre de nos{" "}
+                <span className="bg-orange px-2 py-1 rounded-lg transform -rotate-2 translate-x-0.5 -translate-y-0.5 inline-block">
+                  {displayedText}
+                  {isTyping && <span className="animate-pulse">|</span>}
                 </span>
-                <span className="hidden sm:inline">
-                  partez à la rencontre de{" "}
+              </span>
+              {/* Desktop : "Plongez au coeur des terroirs, et partez à la rencontre de" */}
+              <span className="hidden sm:flex flex-row items-baseline justify-center gap-x-2 flex-wrap">
+                <span className="font-display italic">Plongez au coeur des terroirs,</span>
+                <span className="font-sans text-[0.72em] md:text-[0.78em] font-semibold tracking-tight not-italic whitespace-nowrap">
+                  et partez à la rencontre de{" "}
                   <span className="whitespace-nowrap">
                     nos{" "}
                     <span className="bg-orange px-2 py-1 rounded-lg transform -rotate-2 translate-x-0.5 -translate-y-0.5 inline-block align-baseline">
