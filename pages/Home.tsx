@@ -3,11 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { IMAGES } from '../constants';
 const SECTION_IMAGES = {
-  vision: '/images/terroir-travail-terrain.png',
-  formats: '/images/olive-autour.png',
-  engagement: '/images/vigne-ventoux.png',
+  vision: '/images/producteurs/terroir-travail-terrain.png',
+  formats: '/images/card/olive-autour.png',
+  engagement: '/images/card/vigne-ventoux.png',
 };
-const PORTRAIT_IMAGES = ['/images/vigneron-portrait.png', '/images/terroir-travail-terrain.png', '/images/equipe-nature.png', '/images/vigneron-portrait.png'];
+const PORTRAIT_IMAGES = ['/images/producteurs/vigneron-portrait.png', '/images/producteurs/terroir-travail-terrain.png', '/images/producteurs/equipe-nature.png', '/images/producteurs/vigneron-portrait.png'];
 
 const Home: React.FC = () => {
   // Texte animé pour le titre
@@ -62,7 +62,7 @@ const Home: React.FC = () => {
     <div className="pt-24 lg:pt-18 overflow-x-hidden bg-beige-bg">
       {/* Hero Section */}
       <section className="relative px-2 sm:px-4 lg:px-8 py-4 max-w-[1600px] mx-auto">
-        <div className="relative min-h-[75vh] sm:min-h-[78vh] h-[82vh] md:h-[78vh] w-full overflow-hidden rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] flex items-center justify-center text-center px-3 sm:px-4 py-8 sm:py-4 shadow-premium group">
+        <div className="relative min-h-[85vh] sm:min-h-[78vh] h-[90vh] md:h-[78vh] w-full overflow-hidden rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] flex items-center justify-center text-center px-3 sm:px-4 py-8 sm:py-4 shadow-premium group">
           {/* Image de fond mobile */}
           <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] group-hover:scale-110 sm:hidden" 
@@ -78,11 +78,11 @@ const Home: React.FC = () => {
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-black/20 to-orange/15 opacity-70 sm:opacity-60"></div>
-          <div className="relative z-10 w-full text-center max-w-6xl mx-auto px-0">
-            <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-4 sm:mb-6 flex flex-col items-center justify-center gap-y-2 sm:gap-y-1 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 drop-shadow-2xl [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
+          <div className="relative z-10 w-full text-center max-w-6xl mx-auto px-0 sm:px-0">
+            <h1 className="text-white text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-4 sm:mb-6 flex flex-col items-center justify-center gap-y-2 sm:gap-y-1 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 drop-shadow-2xl [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
               <span className="font-display italic text-center">Plongez au coeur des terroirs,</span>
               {/* Mobile : 2 lignes de texte puis badge seul. Desktop : une seule ligne de texte (pas de flex), "nos" + badge en nowrap pour ne jamais couper */}
-              <span className="font-sans text-[0.7em] sm:text-[0.72em] md:text-[0.78em] font-semibold tracking-tight not-italic text-center block">
+              <span className="font-sans text-[0.75em] sm:text-[0.72em] md:text-[0.78em] font-semibold tracking-tight not-italic text-center block">
                 <span className="sm:hidden flex flex-col items-center gap-y-1.5">
                   <span>et partez à la rencontre de nos</span>
                   <span className="bg-orange px-2 py-1 rounded-lg transform -rotate-2 translate-x-0.5 -translate-y-0.5 inline-block">
@@ -102,20 +102,21 @@ const Home: React.FC = () => {
                 </span>
               </span>
             </h1>
-            <div className="overflow-x-auto no-scrollbar text-center mb-6 sm:mb-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
-            <p className="text-white text-xs sm:text-[11px] font-medium leading-relaxed mx-auto inline-block whitespace-nowrap w-max max-w-full drop-shadow-lg [text-shadow:0_1px_12px_rgba(0,0,0,0.6)]">
-              Vivez des moments suspendus auprès de nos producteurs, éleveurs et artisans d'exception sélectionnés pour leur authenticité, leur engagement et leur savoir-faire.
-            </p>
+            {/* Version desktop : texte descriptif au-dessus des boutons */}
+            <div className="hidden sm:block text-center mb-6 sm:mb-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
+              <p className="text-white text-xs sm:text-[11px] font-medium leading-relaxed mx-auto inline-block whitespace-nowrap w-max max-w-full drop-shadow-lg [text-shadow:0_1px_12px_rgba(0,0,0,0.6)]">
+                Vivez des moments suspendus auprès de nos producteurs, éleveurs et artisans d'exception sélectionnés pour leur authenticité, leur engagement et leur savoir-faire.
+              </p>
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-700">
-              <div className="relative w-full sm:w-auto">
+              <div className="relative w-full max-w-[280px] sm:max-w-none sm:w-auto mt-10 sm:mt-0">
                 <Link
                   to="/experiences"
-                  className="w-full sm:w-auto bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-2xl text-[10px] uppercase tracking-[0.2em] font-bold shadow-premium transition-all duration-500 flex items-center gap-2 justify-center hover:shadow-premium-hover hover:scale-105 active:scale-95 relative overflow-hidden group border border-white/20"
+                  className="w-full sm:w-auto bg-white/10 backdrop-blur-md text-white px-4 sm:px-8 py-3 sm:py-4 rounded-2xl text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-premium transition-all duration-500 flex items-center gap-1.5 sm:gap-2 justify-center hover:shadow-premium-hover hover:scale-105 active:scale-95 relative overflow-hidden group border border-white/20"
                 >
-                  <span className="relative z-10 flex items-center gap-2">
+                  <span className="relative z-10 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
                     Découvrir les expériences
-                    <span className="px-2 py-0.5 bg-orange text-white text-[7px] font-bold uppercase tracking-wider rounded-md shadow-md">
+                    <span className="px-1.5 sm:px-2 py-0.5 bg-orange text-white text-[6px] sm:text-[7px] font-bold uppercase tracking-wider rounded-md shadow-md">
                       soon
                     </span>
                   </span>
@@ -124,11 +125,17 @@ const Home: React.FC = () => {
               </div>
               <Link 
                 to="/seminaires" 
-                className="w-full sm:w-auto text-white border-b-2 border-white/50 hover:border-white px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-bold transition-all text-center hover:scale-105"
+                className="w-full max-w-[280px] sm:max-w-none sm:w-auto text-white border-b-2 border-white/50 hover:border-white px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-bold transition-all text-center hover:scale-105"
               >
                 Événements pro
               </Link>
             </div>
+          {/* Version mobile : texte descriptif en dessous des boutons - MASQUÉ */}
+          <div className="hidden">
+            <p className="text-white text-[10px] font-medium leading-relaxed mx-auto block max-w-full drop-shadow-lg [text-shadow:0_1px_12px_rgba(0,0,0,0.6)]">
+              Vivez des moments suspendus auprès de nos producteurs, éleveurs et artisans d'exception sélectionnés pour leur authenticité, leur engagement et leur savoir-faire.
+            </p>
+          </div>
           </div>
         </div>
       </section>
@@ -156,7 +163,7 @@ const Home: React.FC = () => {
               </p>
             </div>
             <div className="lg:col-span-5">
-              <div className="rounded-2xl overflow-hidden shadow-md border border-black/5 aspect-[4/3] max-h-[320px] sm:max-h-[380px]">
+              <div className="rounded-3xl overflow-hidden shadow-md border border-black/5 aspect-[4/3] max-h-[320px] sm:max-h-[380px]">
                 <img src="https://images.unsplash.com/photo-1504224357642-c87eacea1da4?q=80&w=1750&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Terroir et savoir-faire" className="w-full h-full object-cover" />
               </div>
             </div>
@@ -266,17 +273,17 @@ const Home: React.FC = () => {
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
             {[
-              { name: 'Jean-François', job: 'Cognac et pineau des charentes', image: PORTRAIT_IMAGES[0] },
-              { name: 'Paolo', job: 'Olives et produits de Provence', image: PORTRAIT_IMAGES[1] },
-              { name: 'Sabine & Marie-Lise', job: 'Noix, Lavandes et co', image: PORTRAIT_IMAGES[2] },
-              { name: 'Florence & Richard', job: 'Truffe & potager', image: null, placeholderIcon: '🍄' },
+              { name: 'Jean-François', job: 'Cognac et pineau des charentes', image: "/images/producteurs/cognacJF.png" },
+              { name: 'Paolo', job: 'Olives et produits de Provence', image: "/images/producteurs/olivepaolo.png" },
+              { name: 'Sabine & Marie-Lise', job: 'Noix, Lavandes et co', image: "/images/producteurs/noixsabinemarie.jpeg" },
+              { name: 'Florence & Richard', job: 'Vins du Ventoux, en amphore', image: "/images/producteurs/vincombeaumas.png" },
             ].map((person) => (
               <div key={person.name} className="bg-beige-bg/50 rounded-2xl border border-black/5 shadow-sm p-4 sm:p-5 flex flex-col items-center text-center hover:shadow-md hover:border-primary/10 transition-all duration-300">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden flex-shrink-0 border-2 border-white shadow-md ring-2 ring-black/5 bg-primary/10 flex items-center justify-center">
                   {person.image ? (
                     <img src={person.image} alt={person.name} className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-3xl sm:text-4xl" aria-hidden>{person.placeholderIcon ?? '👤'}</span>
+                    <span className="text-3xl sm:text-4xl" aria-hidden>👤</span>
                   )}
                 </div>
                 <p className="mt-3 font-sans font-bold text-primary text-sm sm:text-base">{person.name}</p>
@@ -298,23 +305,23 @@ const Home: React.FC = () => {
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-sm md:max-w-none mx-auto md:mx-0">
-            <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-shadow duration-300">
-              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic">1</div>
-              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2">Producteurs engagés</h3>
+            <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-all duration-300 group cursor-pointer">
+              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic transition-all duration-300 group-hover:bg-orange group-hover:text-white">1</div>
+              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2 transition-colors duration-300 group-hover:text-orange">Producteurs engagés</h3>
               <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                 Des producteurs de différents univers, mais tous engagés pour produire bien et bon.
               </p>
             </div>
-            <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-shadow duration-300">
-              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic">2</div>
-              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2">Rémunération juste</h3>
+            <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-all duration-300 group cursor-pointer">
+              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic transition-all duration-300 group-hover:bg-orange group-hover:text-white">2</div>
+              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2 transition-colors duration-300 group-hover:text-orange">Rémunération juste</h3>
               <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                 Rémunération juste des producteurs.
               </p>
             </div>
-            <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-shadow duration-300">
-              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic">3</div>
-              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2">Expériences en groupe</h3>
+            <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-all duration-300 group cursor-pointer">
+              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic transition-all duration-300 group-hover:bg-orange group-hover:text-white">3</div>
+              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2 transition-colors duration-300 group-hover:text-orange">Expériences en groupe</h3>
               <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                 Expériences pensées pour se vivre en groupe, où vous découvrez l'univers des producteurs et leurs magnifiques produits.
               </p>

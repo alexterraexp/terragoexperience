@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const RECOMMEND_EMAIL = 'alexso.terrago@gmail.com';
-const FORMSPREE_RECOMMEND_ID = import.meta.env.VITE_FORMSPREE_RECOMMEND_ID as string | undefined;
+const FORMSPREE_RECOMMEND_ID = (import.meta.env?.VITE_FORMSPREE_RECOMMEND_ID as string | undefined) || undefined;
 
 const RecommendProducer: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -83,8 +83,8 @@ const RecommendProducer: React.FC = () => {
       <div className="max-w-[900px] mx-auto px-6 lg:px-12">
         <div className="mb-12">
           <div className="flex items-center gap-4 mb-6">
-            <div className="h-px w-8 bg-gold"></div>
-            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">Partagez votre réseau</span>
+            <div className="h-px w-8 bg-orange"></div>
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-orange">Partagez votre réseau</span>
           </div>
           <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-normal mb-8 inline-block w-max max-w-full">
             <span className="font-sans not-italic">Recommander </span>

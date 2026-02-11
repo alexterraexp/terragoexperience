@@ -13,8 +13,8 @@ const Engagement: React.FC = () => {
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">
               Notre mission
             </span>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-tight px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des expériences qui soutiennent </span>
+            <h1 className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap">
+              <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des expériences qui soutiennent </span>
               <span className="font-display italic">nos terroirs.</span>
             </h1>
             <p className="text-gray-600 text-base sm:text-lg font-light max-w-3xl mx-auto mt-6 leading-relaxed">
@@ -31,11 +31,11 @@ const Engagement: React.FC = () => {
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">
               Notre engagement
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-tight px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Chez Terrago, nous avons une </span>
+            <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap">
+              <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Chez Terrago, nous avons une </span>
               <span className="font-display italic">boussole.</span>
             </h2>
-            <p className="text-gray-500 text-sm sm:text-base font-light mt-4 leading-relaxed max-w-xl mx-auto">
+            <p className="text-gray-500 text-sm sm:text-base font-light mt-4 leading-relaxed max-w-ml mx-auto">
               Pas pour trouver le nord, mais pour garder le cap sur ce qui compte :
             </p>
           </div>
@@ -81,8 +81,8 @@ const Engagement: React.FC = () => {
             <img src={IMAGES.natureLandscape} className="w-full h-full object-cover" alt="Background" />
           </div>
           <div className="relative z-10">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4 flex flex-col sm:flex-row items-center justify-center gap-x-2 gap-y-1 sm:gap-y-0">
-              <span className="font-sans not-italic text-white/95 text-[0.7em] md:text-[0.75em]">Partagez </span>
+            <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-none sm:leading-tight mb-4 flex flex-col sm:flex-row items-center justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap">
+              <span className="font-sans not-italic text-white/95 text-[0.7em] md:text-[0.7em]">Partagez </span>
               <span className="font-display italic">l'essentiel.</span>
             </h2>
             <p className="text-white/70 text-sm sm:text-base font-light mb-8 sm:mb-10 max-w-lg mx-auto leading-relaxed">
@@ -112,7 +112,7 @@ const ValueCard = ({ icon, title, badge, desc }: any) => (
     <span className="inline-block px-2 py-0.5 bg-orange text-white text-[10px] font-bold uppercase tracking-wider rounded-md mb-4">
       {badge}
     </span>
-    <p className="text-gray-600 text-sm sm:text-base leading-relaxed">{desc}</p>
+    <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{desc}</p>
     <div className="absolute bottom-0 left-0 right-0 h-1 bg-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-b-2xl" />
   </div>
 );

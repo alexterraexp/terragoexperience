@@ -8,16 +8,18 @@ const Footer: React.FC = () => {
       <div className="max-w-[1440px] mx-auto px-6 lg:px-20">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-12 mb-20">
           <div className="col-span-2">
-            <div className="mb-4">
-              <img 
-                src="/logo.png" 
-                alt="Terrago" 
-                className="h-40 lg:h-40 w-auto"
-              />
+            <div className="flex flex-row items-center gap-4 mb-4 md:mb-0 md:flex-col md:items-start">
+              <div className="flex-shrink-0">
+                <img 
+                  src="/logo.png" 
+                  alt="Terrago" 
+                  className="h-20 md:h-40 lg:h-40 w-auto"
+                />
+              </div>
+              <p className="text-gray-600 text-xs max-w-xs leading-relaxed font-medium flex-1">
+                La future plateforme de référence pour les séjours de groupe et les séminaires, au cœur du terroir français.
+              </p>
             </div>
-            <p className="text-gray-600 text-xs max-w-xs leading-relaxed font-medium">
-              La plateforme de référence pour les séjours de groupe et les séminaires, au cœur du terroir français.
-            </p>
           </div>
           <div>
             <h6 className="font-bold text-sm mb-6 uppercase tracking-widest">Plateforme</h6>

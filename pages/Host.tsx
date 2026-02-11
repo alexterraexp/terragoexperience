@@ -112,7 +112,7 @@ const Host: React.FC = () => {
                   title="Diversification des revenus"
                   points={[
                     "Développez une nouvelle source de revenus liée aux expériences",
-                    "Ventes additionnelles en direct (boutique physique & en ligne)",
+                    "Ventes additionnelles (boutique physique & e-com)",
                     "Canal de distribution premium sans intermédiaire lourd"
                   ]}
                 />
@@ -121,7 +121,7 @@ const Host: React.FC = () => {
                   title="Gestion Risque & Assurance"
                   points={[
                     "Couverture pour l'accueil de public",
-                    "Filtrage rigoureux de la clientèle CSP++",
+                    "Filtrage rigoureux en amont",
                     "Gestion des litiges par nos conseillers dédiés"
                   ]}
                 />
@@ -130,8 +130,8 @@ const Host: React.FC = () => {
                   title="Image de Marque"
                   points={[
                     "Reportage photo & vidéo professionnel sur demande",
-                    "Visibilité dans la presse locale et nationale",
-                    "Accompagnement et visibilité sur les réseaux sociaux"
+                    "Accompagnement et visibilité sur les réseaux sociaux",
+                    "Aide à la création de contenu"
                   ]}
                 />
                 <BenefitItem 

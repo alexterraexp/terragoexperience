@@ -53,18 +53,38 @@ const Seminaires: React.FC = () => {
   
   const CAROUSEL_GAP_PX = 32;
   const CAROUSEL_VISIBLE = 3.5;
+  const CAROUSEL_VISIBLE_MOBILE = 1; // Afficher 1 carte sur mobile
   
   useEffect(() => {
     const el = examplesCarouselRef.current;
     if (!el) return;
     const updateWidth = () => {
       const w = el.offsetWidth;
-      if (w > 0) setExamplesCardWidthPx((w - (CAROUSEL_VISIBLE - 1) * CAROUSEL_GAP_PX) / CAROUSEL_VISIBLE);
+      if (w > 0) {
+        // Sur mobile (écran < 640px), afficher 1 carte
+        const isMobile = window.innerWidth < 640;
+        const visibleCards = isMobile ? CAROUSEL_VISIBLE_MOBILE : CAROUSEL_VISIBLE;
+        if (isMobile) {
+          // Sur mobile, utiliser la largeur du conteneur moins le padding existant (px-4 = 16px de chaque côté)
+          // Le conteneur a déjà px-4, donc on soustrait 32px au total (16px de chaque côté)
+          const containerPadding = 32; // 16px de chaque côté (px-4)
+          const cardWidth = w - containerPadding;
+          setExamplesCardWidthPx(cardWidth);
+        } else {
+          // Sur desktop, calcul normal
+          setExamplesCardWidthPx((w - (visibleCards - 1) * CAROUSEL_GAP_PX) / visibleCards);
+        }
+      }
     };
     updateWidth();
     const ro = new ResizeObserver(updateWidth);
+    const resizeHandler = () => updateWidth();
+    window.addEventListener('resize', resizeHandler);
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', resizeHandler);
+    };
   }, []);
   
   const scrollExamples = (direction: 'left' | 'right') => {
@@ -240,11 +260,6 @@ const Seminaires: React.FC = () => {
     setTimeout(() => {
       setCurrentStep(prev => {
         const next = Math.min(prev + 1, 3);
-        // Scroll vers le haut lors du changement d'étape
-        const modalContent = modalRef.current?.querySelector('.overflow-y-auto') as HTMLElement;
-        if (modalContent) {
-          modalContent.scrollTo({ top: 0, behavior: 'smooth' });
-        }
         setIsTransitioning(false);
         return next;
       });
@@ -256,16 +271,24 @@ const Seminaires: React.FC = () => {
     setTimeout(() => {
       setCurrentStep(prev => {
         const prevStep = Math.max(prev - 1, 1);
-        // Scroll vers le haut lors du changement d'étape
-        const modalContent = modalRef.current?.querySelector('.overflow-y-auto') as HTMLElement;
-        if (modalContent) {
-          modalContent.scrollTo({ top: 0, behavior: 'smooth' });
-        }
         setIsTransitioning(false);
         return prevStep;
       });
     }, 200);
   };
+
+  // Scroll vers le haut lors du changement d'étape
+  useEffect(() => {
+    if (isModalOpen && !isTransitioning) {
+      const modalContent = modalRef.current?.querySelector('.overflow-y-auto') as HTMLElement;
+      if (modalContent) {
+        // Petit délai pour s'assurer que le contenu est rendu
+        setTimeout(() => {
+          modalContent.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  }, [currentStep, isModalOpen, isTransitioning]);
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -414,16 +437,18 @@ Email envoyé depuis le formulaire de séminaire Terrago
         {/* Overlay sombre pour la lisibilité */}
         <div className="absolute inset-0 bg-black/40" />
         {/* Contenu */}
-        <div className="relative z-10 max-w-3xl mx-auto text-white px-4">
+        <div className="relative z-10 max-w-3xl mx-auto text-white px-0">
           <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 bg-white/10 backdrop-blur-md text-white text-[8px] sm:text-[9px] uppercase tracking-[0.3em] font-bold font-sans mb-4 sm:mb-6 rounded-full shadow-md border border-white/20">
             Immersion & Cohésion
           </span>
-          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 sm:whitespace-nowrap sm:flex-nowrap drop-shadow-lg">
+          <h1 className="text-white text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold leading-tight mb-4 sm:mb-6 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap sm:flex-nowrap drop-shadow-lg px-0">
             <span className="font-display italic">Optez pour des séminaires</span>
-            <span className="font-sans text-[0.72em] md:text-[0.78em] font-semibold tracking-tight not-italic">plus</span>
-            <span className="font-sans text-[0.72em] md:text-[0.78em] font-semibold tracking-tight not-italic">
-              {displayedText}
-              {isTyping && <span className="animate-pulse">|</span>}
+            <span className="font-sans text-[0.7em] md:text-[0.78em] font-semibold tracking-tight not-italic whitespace-nowrap flex items-center gap-1">
+              <span>plus</span>
+              <span>
+                {displayedText}
+                {isTyping && <span className="animate-pulse">|</span>}
+              </span>
             </span>
           </h1>
           <p className="text-white/90 text-xs sm:text-sm md:text-base font-light mb-6 sm:mb-10 max-w-2xl mx-auto leading-relaxed italic text-balance drop-shadow-md px-2">
@@ -447,20 +472,20 @@ Email envoyé depuis le formulaire de séminaire Terrago
       </section>
 
       {/* Pillars Section */}
-      <section className="py-12 sm:py-16 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
+      <section className="py-12 sm:py-16 max-w-[1400px] mx-auto px-0 sm:px-0 lg:px-0">
         <div className="text-center mb-6 sm:mb-16">
           <p className="mt-2 mb-2 sm:mb-4 text-primary/90 text-xs tracking-[0.4em]">⭐⭐⭐⭐⭐</p>
           <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-2 sm:mb-4 rounded-full shadow-md">5 étoiles</span>
           <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4 pb-2 min-h-[1.4em]">
-            <h2 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-normal inline-block w-max whitespace-nowrap">
-              <span className="font-sans not-italic">Des séminaires </span><span className="font-display italic text-lg sm:text-3xl md:text-4xl lg:text-5xl">5 étoiles</span>
+            <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-primary leading-normal inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap px-0">
+              <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des séminaires </span><span className="font-display italic">5 étoiles</span>
             </h2>
           </div>
           <p className="text-gray-600 text-xs sm:text-sm md:text-base font-light leading-relaxed max-w-4xl mx-auto mb-4 text-center px-4">
             Nos "5 étoiles" ne se mesurent pas au luxe, mais aux liens humains, au contact de la terre et à l'engagement des producteurs. Des expériences sincères qui renforcent la cohésion et laissent une trace durable.
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-start max-w-[320px] sm:max-w-none mx-auto sm:mx-0">
           <PillarCard icon="diversity_3" title="HUMAIN" text="Découvrir celles et ceux qui nous nourissent, dans la simplicité, l’authenticité et l'écoute." />
           <PillarCard icon="handyman" title="IMMERSIF" text="Participer aux activités manuelles pour s'ancrer réellement dans la réalité des terroirs." />
           <PillarCard icon="restaurant" title="AUTHENTIQUE" text="Des hommmes et femmes authentiques qui produisent des produits de qualité." />
@@ -470,13 +495,13 @@ Email envoyé depuis le formulaire de séminaire Terrago
       </section>
 
       {/* NEW SECTION 1: NOS UNIVERS DE TRAVAIL */}
-      <section id="nos-univers" className="py-16 sm:py-20 lg:py-24 px-2 sm:px-4 lg:px-6 bg-gradient-to-b from-white to-beige-bg border-y border-black/10 scroll-mt-20">
+      <section id="nos-univers" className="py-16 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-gradient-to-b from-white to-beige-bg border-y border-black/10 scroll-mt-20">
         <div className="max-w-[1400px] mx-auto">
           <div className="text-center mb-4 sm:mb-6">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-2 sm:mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Univers</span>
             <div className="overflow-x-auto no-scrollbar text-center">
-              <h2 className="text-lg sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-tight px-2 sm:px-4 inline-block w-max whitespace-nowrap">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Nos premiers </span><span className="font-display italic">univers</span>
+              <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-tight px-0 inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Nos premiers </span><span className="font-display italic">univers</span>
               </h2>
             </div>
           </div>
@@ -496,33 +521,89 @@ Email envoyé depuis le formulaire de séminaire Terrago
           </div>
           
           {/* Badge exemples */}
-          <div className="text-center mb-4 sm:mb-8">
-            <span className="inline-block px-3 py-1 bg-primary/10 text-primary font-bold font-sans tracking-[0.2em] uppercase text-[8px] sm:text-[9px] rounded-full border border-primary/20">
-              Quelques-uns de nos exemples
-            </span>
+          <div className="mb-4 sm:mb-8 max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6">
+            <div className="flex items-center justify-center gap-4 sm:gap-6 relative">
+              <span className="inline-block px-3 py-1 bg-primary/10 text-primary font-bold font-sans tracking-[0.2em] uppercase text-[8px] sm:text-[9px] rounded-full border border-primary/20">
+                Quelques-uns de nos exemples
+              </span>
+              {/* Boutons de navigation alignés à droite du badge */}
+              <div className="hidden sm:flex gap-3 items-center">
+                <button
+                  type="button"
+                  onClick={() => scrollExamples('left')}
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border border-black/10 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95"
+                  aria-label="Exemples précédents"
+                >
+                  <span className="material-symbols-outlined text-2xl">chevron_left</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollExamples('right')}
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border border-black/10 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95"
+                  aria-label="Exemples suivants"
+                >
+                  <span className="material-symbols-outlined text-2xl">chevron_right</span>
+                </button>
+              </div>
+            </div>
           </div>
           
           {/* Carousel exemples : scroll natif fluide, scroll-snap */}
           {(() => {
             const exampleCards = [
-              { image: "/images/cognac-autour.png", title: "Cognac", desc: "Cognac • 40min d'Angoulême TGV", tags: ["Participation aux vendanges", "Fabrication de son propre pineau", "Golf entre les vignes"], producerImage: "/images/vigneron-portrait.png" },
-              { image: "/images/olive-autour.png", title: "Olives et lavande", desc: "Valensole • 45min d'Aix en Provence TGV", tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"], producerImage: "/images/terroir-travail-terrain.png" },
-              { image: "/images/noix-autour.png", title: "Noix et compagnie", desc: "Romans-sur-Isère • 15min de Valence TGV", tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Session Trail dans un cadre magnifique"], producerImage: "/images/equipe-nature.png" },
-              { image: "/images/truffe-autour.png", title: "Truffe et terroir", desc: "Chinon • 1h de Tours TGV", tags: ["Cavage et découverte de la truffe", "Atelier cuisine", "Ferme florale et potager"], producerImage: "/images/vigneron-portrait.png" },
-              { image: "/images/fromage-autour.png", title: "Fromage de chèvre", desc: "1h d'Aix-en-Provence TGV", tags: ["Soins aux chèvres", "Fabrication du fromage", "Dégustation à la ferme"], producerImage: "/images/terroir-travail-terrain.png" },
-              { image: "/images/vigne-ventoux.png", title: "Vin AOC Ventoux", desc: "1h d'Avignon TGV", tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"], producerImage: "/images/equipe-nature.png" },
+              { image: "/images/card/cognac-autour.png", title: "Cognac", desc: "Cognac • 40min d'Angoulême TGV", tags: ["Participation aux vendanges", "Fabrication de son propre pineau", "Golf entre les vignes"], producerImage: "/images/producteurs/cognacJF.png" },
+              { image: "/images/card/olive-autour.png", title: "Olives et lavande", desc: "Valensole • 45min d'Aix en Provence TGV", tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"], producerImage: "/images/producteurs/olivepaolo.png" },
+              { image: "/images/card/noix-autour.png", title: "Noix et compagnie", desc: "Orléans | Valence", tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Session Trail dans un cadre magnifique"], producerImage: "/images/producteurs/noixsabinemarie.jpeg" },
+              { image: "/images/card/truffe-autour.png", title: "Truffe et terroir", desc: "Chinon • 1h de Tours TGV", tags: ["Cavage et découverte de la truffe", "Atelier cuisine", "Ferme florale et potager"], producerImage: "/images/producteurs/truffeprod.png" },
+              { image: "/images/card/fromage-autour.png", title: "Fromage de chèvre", desc: "1h d'Aix-en-Provence TGV", tags: ["Soins aux chèvres", "Fabrication du fromage", "Dégustation à la ferme"], producerImage: "/images/producteurs/chevre-bebe.jpg" },
+              { image: "/images/card/vigne-ventoux.png", title: "Vin AOC Ventoux", desc: "1h d'Avignon TGV", tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"], producerImage: "/images/producteurs/vincombeaumas.png" },
             ];
-            const cardWidthPx = examplesCardWidthPx > 0 ? examplesCardWidthPx : 280;
+            const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+            // Sur mobile, calculer la largeur pour afficher exactement 2 cartes
+            const cardWidthPx = isMobile && examplesCardWidthPx > 0 
+              ? examplesCardWidthPx 
+              : (examplesCardWidthPx > 0 ? examplesCardWidthPx : 280);
             return (
-              <div className="relative max-w-[1600px] mx-auto pl-10 sm:pl-14 md:pl-20 lg:pl-24">
-                <div ref={examplesCarouselRef} className="w-full mb-8 py-4">
+              <div className="relative w-screen pb-6 sm:pb-8 -ml-2 sm:-ml-4 lg:-ml-6 mr-0">
+                <div ref={examplesCarouselRef} className="w-full mb-4 sm:mb-6 py-4 pb-4 sm:pb-6 px-4 sm:pl-14 md:pl-20 lg:pl-24 sm:pr-4 md:pr-6 lg:pr-8">
                   <div
                     ref={examplesScrollRef}
-                    className="no-scrollbar flex overflow-x-auto overflow-y-hidden py-2 -my-2 scroll-smooth snap-x snap-mandatory"
+                    className="no-scrollbar flex overflow-x-scroll overflow-y-visible py-2 -my-2 pb-4 sm:pb-6 scroll-smooth snap-x snap-mandatory"
                     style={{
-                      gap: CAROUSEL_GAP_PX,
+                      gap: isMobile ? 16 : CAROUSEL_GAP_PX,
                       scrollbarWidth: 'none',
                       msOverflowStyle: 'none',
+                      WebkitOverflowScrolling: 'touch',
+                      touchAction: 'pan-x',
+                      overscrollBehaviorX: 'contain',
+                      WebkitUserSelect: 'none',
+                      userSelect: 'none',
+                      cursor: 'grab',
+                    }}
+                    onMouseDown={(e) => {
+                      const el = examplesScrollRef.current;
+                      if (!el) return;
+                      el.style.cursor = 'grabbing';
+                      const startX = e.pageX - el.offsetLeft;
+                      const scrollLeft = el.scrollLeft;
+                      
+                      const handleMouseMove = (e: MouseEvent) => {
+                        e.preventDefault();
+                        const x = e.pageX - el.offsetLeft;
+                        const walk = (x - startX) * 1.5;
+                        el.scrollLeft = scrollLeft - walk;
+                      };
+                      
+                      const handleMouseUp = () => {
+                        el.style.cursor = 'grab';
+                        document.removeEventListener('mousemove', handleMouseMove);
+                        document.removeEventListener('mouseup', handleMouseUp);
+                        document.removeEventListener('mouseleave', handleMouseUp);
+                      };
+                      
+                      document.addEventListener('mousemove', handleMouseMove);
+                      document.addEventListener('mouseup', handleMouseUp);
+                      document.addEventListener('mouseleave', handleMouseUp);
                     }}
                   >
                     {exampleCards.map((card) => (
@@ -536,24 +617,6 @@ Email envoyé depuis le formulaire de séminaire Terrago
                     ))}
                   </div>
                 </div>
-                <div className="flex justify-center gap-4">
-                  <button
-                    type="button"
-                    onClick={() => scrollExamples('left')}
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border border-black/10 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95"
-                    aria-label="Exemples précédents"
-                  >
-                    <span className="material-symbols-outlined text-2xl">chevron_left</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => scrollExamples('right')}
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border border-black/10 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95"
-                    aria-label="Exemples suivants"
-                  >
-                    <span className="material-symbols-outlined text-2xl">chevron_right</span>
-                  </button>
-                </div>
               </div>
             );
           })()}
@@ -561,18 +624,18 @@ Email envoyé depuis le formulaire de séminaire Terrago
       </section>
 
       {/* SECTION: NOS GARANTIES — grille visible d'un coup */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-white">
+      <section className="py-16 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-white">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-6 sm:mb-14">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold tracking-[0.3em] uppercase text-[8px] sm:text-[9px] font-sans rounded-full shadow-md mb-2 sm:mb-4">Nos garanties</span>
             <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4 pb-2 min-h-[1.4em]">
-              <h2 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-tight inline-block w-max whitespace-nowrap leading-normal">
-                <span className="font-sans not-italic">Tous nos séminaires </span><span className="font-display italic text-lg sm:text-3xl md:text-4xl lg:text-5xl">vous garantissent</span>
+              <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-none sm:leading-tight block sm:inline-block w-full sm:w-max whitespace-normal sm:whitespace-nowrap px-2 sm:px-0">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Tous nos séminaires </span><span className="font-display italic">vous garantissent</span>
               </h2>
             </div>
           </div>
           
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 list-none p-0 m-0">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 list-none p-0 m-0 max-w-[340px] sm:max-w-none mx-auto sm:mx-0">
             {[
               { icon: 'groups', label: 'Rencontres authentiques', text: 'Visites et échanges avec des producteurs engagés.' },
               { icon: 'eco', label: 'Sensibilisation envrionnementale', text: 'Sensibilisation aux valeurs de durabilité, du vivant et du savoir-faire local.' },
@@ -580,7 +643,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
               { icon: 'nature', label: 'Cadre ressourçant', text: 'Se réunir au vert dans un lieu inspirant.' },
               { icon: 'diversity_3', label: 'Cohésion sur mesure', text: 'Activités pensées pour renforcer les liens.' },
             ].map((item) => (
-              <li key={item.icon} className="group flex items-start gap-4 p-4 sm:p-5 rounded-2xl bg-beige-bg/60 border border-black/5 hover:border-primary/20 hover:shadow-premium transition-all duration-300">
+              <li key={item.icon} className="group flex items-start gap-4 p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-beige-bg/60 border border-black/5 hover:border-primary/20 hover:shadow-premium transition-all duration-300">
                 <div className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                   <span className="material-symbols-outlined text-2xl">{item.icon}</span>
                 </div>
@@ -595,7 +658,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
       </section>
 
       {/* SECTION: NOS OFFRES - PLAQUETTE (style pépites du terroir, plus petit, cadre large) */}
-      <section className="py-14 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-beige-bg relative overflow-hidden">
+      <section className="py-14 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-beige-bg relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-primary/5 rounded-full -mr-24 -mt-24 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-48 sm:w-64 h-48 sm:h-64 bg-orange/5 rounded-full -ml-24 -mb-24 blur-3xl" />
 
@@ -604,7 +667,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
             <span className="inline-block px-2.5 py-1 bg-orange text-white font-bold tracking-[0.25em] uppercase text-[7px] sm:text-[8px] font-sans rounded-full mb-3 sm:mb-6">Nos offres</span>
 
             <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4">
-            <h2 className="text-lg sm:text-2xl md:text-3xl font-display font-bold text-primary italic leading-tight inline-block w-max whitespace-nowrap">
+            <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary italic leading-tight inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap px-0">
               Recevez notre plaquette 2026
             </h2>
           </div>
@@ -673,7 +736,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
             onClick={closeModal}
           ></div>
           <div 
-            className={`bg-white w-full max-w-5xl h-[90vh] max-h-[90vh] md:h-[85vh] rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col relative z-10 font-sans transition-all duration-300 ${
+            className={`bg-white w-full max-w-[95%] sm:max-w-5xl h-[85vh] max-h-[85vh] sm:h-[90vh] sm:max-h-[90vh] md:h-[85vh] rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col relative z-10 font-sans transition-all duration-300 ${
               isClosing 
                 ? 'opacity-0 scale-95 translate-y-8' 
                 : 'opacity-100 scale-100 translate-y-0'
@@ -690,7 +753,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
                  <div className="min-w-0 flex-1">
                     <h2 className="text-lg md:text-2xl font-bold text-primary leading-tight truncate">
                       <span className="font-sans not-italic text-sm md:text-base">Votre projet de </span>
-                      <span className="font-display italic">séminaire</span>
+                      <span className="font-display italic font-black">séminaire</span>
                     </h2>
                     <p className="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1 font-sans hidden sm:block">Parlons d'immersion et de sens</p>
                  </div>
@@ -1087,11 +1150,11 @@ const PillarCard = ({ icon, title, text }: any) => (
 );
 
 const UniverseCard = ({ image, title, desc, tags, producerImage }: any) => (
-  <div className="group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-black/5 flex flex-col h-full">
+  <div className="group relative bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-500 border border-black/5 flex flex-col h-full">
     {/* Image avec overlay au survol */}
-    <div className="relative aspect-[16/11] overflow-hidden rounded-t-2xl sm:rounded-t-3xl flex-shrink-0">
+    <div className="relative aspect-[16/11] overflow-hidden rounded-t-xl sm:rounded-t-2xl flex-shrink-0">
       <img src={image} className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-95" alt={title} />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-t-2xl sm:rounded-t-3xl"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-t-xl sm:rounded-t-2xl"></div>
       {/* Badge localisation en haut */}
       <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-white/95 backdrop-blur-sm px-2 sm:px-2.5 py-0.5 rounded-full shadow-lg">
         <p className="text-[7px] sm:text-[8px] font-bold text-primary uppercase tracking-wider font-sans">{desc}</p>
@@ -1099,7 +1162,7 @@ const UniverseCard = ({ image, title, desc, tags, producerImage }: any) => (
     </div>
     
     {/* Contenu — hauteur fixe pour aligner les cartes, liste contenue en bas */}
-    <div className="relative p-4 sm:p-6 flex flex-col h-[190px] sm:h-[212px] rounded-b-2xl sm:rounded-b-3xl">
+    <div className="relative p-4 sm:p-6 flex flex-col h-[190px] sm:h-[212px] rounded-b-xl sm:rounded-b-2xl">
       {/* Tête du producteur (rond) — à cheval image/contenu */}
       {producerImage && (
         <div className="absolute -top-8 right-4 sm:right-6 z-10 w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-4 border-white shadow-xl ring-2 ring-black/5 bg-white">
@@ -1122,7 +1185,7 @@ const UniverseCard = ({ image, title, desc, tags, producerImage }: any) => (
         ))}
       </div>
       {/* Liséré orange en bas, à l'intérieur des bords arrondis */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-orange opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-b-2xl sm:rounded-b-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-orange opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-b-xl sm:rounded-b-2xl pointer-events-none"></div>
     </div>
   </div>
 );
