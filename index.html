@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
     <title>Terrago - L'immersion au cœur du terroir français</title>
     <link rel="icon" type="image/png" href="/logo.png">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -45,6 +46,14 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #f78d00; border-radius: 10px; }
         .text-balance { text-wrap: balance; }
+        /* Désactiver la détection automatique iOS Safari */
+        h1, h2, h3, p, span { 
+          -webkit-tap-highlight-color: transparent;
+          -webkit-touch-callout: none;
+        }
+        a[href^="tel:"], a[href^="mailto:"] { 
+          -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+        }
     </style>
 <script type="importmap">
 {

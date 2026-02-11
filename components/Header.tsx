@@ -27,7 +27,14 @@ const Header: React.FC = () => {
         <div className="max-w-[1600px] mx-auto px-6 lg:px-12 h-full flex items-center justify-between">
           
           {/* LOGO */}
-          <Link to="/" className="flex items-center group shrink-0">
+          <Link 
+            to="/" 
+            className="flex items-center group shrink-0"
+            onClick={() => {
+              // Scroll vers le haut quand on clique sur le logo
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          >
             <img 
               src="/logo.png" 
               alt="Terrago" 

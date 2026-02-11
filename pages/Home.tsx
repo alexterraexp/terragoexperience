@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { IMAGES } from '../constants';
+import ScrollAnimate from '../components/ScrollAnimate';
 const SECTION_IMAGES = {
   vision: '/images/producteurs/terroir-travail-terrain.png',
   formats: '/images/card/olive-autour.png',
@@ -80,18 +81,18 @@ const Home: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-black/20 to-orange/15 opacity-70 sm:opacity-60"></div>
           <div className="relative z-10 w-full text-center max-w-6xl mx-auto px-0 sm:px-0">
             <h1 className="text-white text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-4 sm:mb-6 flex flex-col items-center justify-center gap-y-2 sm:gap-y-1 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 drop-shadow-2xl [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
-              <span className="font-display italic text-center">Plongez au coeur des terroirs,</span>
-              {/* Mobile : 2 lignes de texte puis badge seul. Desktop : une seule ligne de texte (pas de flex), "nos" + badge en nowrap pour ne jamais couper */}
+              <span className="font-display italic text-center">Au coeur des terroirs,</span>
+              {/* Mobile : 2 lignes - ligne 1: "Plongez...", ligne 2: "et partez..." + badge. Desktop : une seule ligne */}
               <span className="font-sans text-[0.75em] sm:text-[0.72em] md:text-[0.78em] font-semibold tracking-tight not-italic text-center block">
-                <span className="sm:hidden flex flex-col items-center gap-y-1.5">
-                  <span>et partez à la rencontre de nos</span>
+                <span className="sm:hidden inline-block">
+                  partez à la rencontre de nos{" "}
                   <span className="bg-orange px-2 py-1 rounded-lg transform -rotate-2 translate-x-0.5 -translate-y-0.5 inline-block">
                     {displayedText}
                     {isTyping && <span className="animate-pulse">|</span>}
                   </span>
                 </span>
                 <span className="hidden sm:inline">
-                  et partez à la rencontre de{" "}
+                  partez à la rencontre de{" "}
                   <span className="whitespace-nowrap">
                     nos{" "}
                     <span className="bg-orange px-2 py-1 rounded-lg transform -rotate-2 translate-x-0.5 -translate-y-0.5 inline-block align-baseline">
@@ -139,16 +140,18 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
-
+ 
       {/* Notre vision — style GreenGo : accroche + bloc texte épuré + image */}
       <section className="py-16 sm:py-20 bg-white scroll-mt-24" id="notre-vision">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="text-left sm:text-center mb-8 sm:mb-10">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Notre vision</span>
-            <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Une envie simple : vivre le terroir </span>
-              <span className="font-display italic">pour de vrai.</span>
-            </h2>
+            <ScrollAnimate delay={100}>
+              <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Une envie simple : vivre le terroir </span>
+                <span className="font-display italic">pour de vrai.</span>
+              </h2>
+            </ScrollAnimate>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-7 space-y-5 text-gray-600 text-sm sm:text-base leading-relaxed text-left sm:text-center lg:text-left">
@@ -180,10 +183,12 @@ const Home: React.FC = () => {
 
           {/* 1. Des formats pour tous les moments de vie */}
           <div className="mb-16 sm:mb-20">
-            <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 text-left sm:text-center mb-4 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des formats pour tous </span>
-              <span className="font-display italic">les moments de vie</span>
-            </h2>
+            <ScrollAnimate delay={150}>
+              <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 text-left sm:text-center mb-4 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des formats pour tous </span>
+                <span className="font-display italic">les moments de vie</span>
+              </h2>
+            </ScrollAnimate>
             <p className="text-gray-600 text-left sm:text-center text-sm sm:text-base mb-10 sm:mb-12 max-w-2xl sm:mx-auto">
               Une même philosophie, plusieurs façons de la vivre.
             </p>
@@ -229,10 +234,12 @@ const Home: React.FC = () => {
 
           {/* 2. Des formats pour tous les produits de nos terroirs */}
           <div className="text-left sm:text-center">
-            <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 mb-6 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des formats pour tous les produits de </span>
-              <span className="font-display italic font-bold">nos terroirs</span>
-            </h2>
+            <ScrollAnimate delay={200}>
+              <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 mb-6 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des formats pour tous les produits de </span>
+                <span className="font-display italic font-bold">nos terroirs</span>
+              </h2>
+            </ScrollAnimate>
             <div className="max-w-3xl sm:mx-auto space-y-4 text-left sm:text-center">
               <p className="text-gray-600 text-sm sm:text-base font-medium leading-relaxed">
                 Notre ambition est de rendre les terroirs accessibles, partout en France.
@@ -263,10 +270,12 @@ const Home: React.FC = () => {
         <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="text-left sm:text-center mb-4">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Rencontres</span>
-            <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des rencontres </span>
-              <span className="font-display italic">avant tout</span>
-            </h2>
+            <ScrollAnimate delay={200}>
+              <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des rencontres </span>
+                <span className="font-display italic">avant tout</span>
+              </h2>
+            </ScrollAnimate>
           </div>
           <p className="text-gray-600 text-sm sm:text-base text-left sm:text-center mb-10 sm:mb-12 max-w-2xl sm:mx-auto">
             Chaque expérience Terrago est portée par un producteur qui ouvre son lieu, partage son métier et transmet un savoir-faire.
@@ -299,10 +308,12 @@ const Home: React.FC = () => {
         <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="text-left sm:text-center mb-10 sm:mb-12">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Engagement</span>
-            <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Un engagement </span>
-              <span className="font-display italic">simple et concret</span>
-            </h2>
+            <ScrollAnimate delay={300}>
+              <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Un engagement </span>
+                <span className="font-display italic">simple et concret</span>
+              </h2>
+            </ScrollAnimate>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-sm md:max-w-none mx-auto md:mx-0">
             <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-all duration-300 group cursor-pointer">

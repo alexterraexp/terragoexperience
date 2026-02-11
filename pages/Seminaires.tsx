@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { IMAGES } from '../constants';
 import CustomSelect from '../components/CustomSelect';
 import ParticipantsSelect from '../components/ParticipantsSelect';
+import ScrollAnimate from '../components/ScrollAnimate';
 
 // Images de fond pour le hero
 const heroImages = [
@@ -500,9 +501,11 @@ Email envoyé depuis le formulaire de séminaire Terrago
           <div className="text-center mb-4 sm:mb-6">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-2 sm:mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Univers</span>
             <div className="overflow-x-auto no-scrollbar text-center">
-              <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-tight px-0 inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Nos premiers </span><span className="font-display italic">univers</span>
-              </h2>
+              <ScrollAnimate delay={150}>
+                <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-tight px-0 inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap">
+                  <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Nos premiers </span><span className="font-display italic">univers</span>
+                </h2>
+              </ScrollAnimate>
             </div>
           </div>
           
@@ -629,9 +632,11 @@ Email envoyé depuis le formulaire de séminaire Terrago
           <div className="text-center mb-6 sm:mb-14">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold tracking-[0.3em] uppercase text-[8px] sm:text-[9px] font-sans rounded-full shadow-md mb-2 sm:mb-4">Nos garanties</span>
             <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4 pb-2 min-h-[1.4em]">
-              <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-none sm:leading-tight block sm:inline-block w-full sm:w-max whitespace-normal sm:whitespace-nowrap px-2 sm:px-0">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Tous nos séminaires </span><span className="font-display italic">vous garantissent</span>
-              </h2>
+              <ScrollAnimate delay={200}>
+                <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-none sm:leading-tight block sm:inline-block w-full sm:w-max whitespace-normal sm:whitespace-nowrap px-2 sm:px-0">
+                  <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Tous nos séminaires </span><span className="font-display italic">vous garantissent</span>
+                </h2>
+              </ScrollAnimate>
             </div>
           </div>
           
@@ -667,10 +672,12 @@ Email envoyé depuis le formulaire de séminaire Terrago
             <span className="inline-block px-2.5 py-1 bg-orange text-white font-bold tracking-[0.25em] uppercase text-[7px] sm:text-[8px] font-sans rounded-full mb-3 sm:mb-6">Nos offres</span>
 
             <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4">
-            <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary italic leading-tight inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap px-0">
-              Recevez notre plaquette 2026
-            </h2>
-          </div>
+              <ScrollAnimate delay={250}>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary italic leading-tight inline-block w-full sm:w-max whitespace-normal sm:whitespace-nowrap px-0 break-words sm:break-normal">
+                  Recevez notre plaquette 2026
+                </h2>
+              </ScrollAnimate>
+            </div>
             <p className="text-xs sm:text-sm text-gray-600 font-sans mb-6 sm:mb-8 max-w-xl mx-auto leading-relaxed">
               Laissez-nous votre email et recevez notre plaquette regroupant toutes nos offres. Et tout ça sous 24h, promis !
             </p>
