@@ -146,8 +146,8 @@ const Home: React.FC = () => {
           <div className="text-left sm:text-center mb-8 sm:mb-10">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Notre vision</span>
             <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Une envie simple : </span>
-              <span className="font-display italic">vivre le terroir pour de vrai.</span>
+              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Une envie simple : vivre le terroir </span>
+              <span className="font-display italic">pour de vrai.</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -159,7 +159,7 @@ const Home: React.FC = () => {
                 Nous croyons que les plus beaux moments se vivent en groupe, dans des lieux vrais, en partageant des savoir-faire, du temps et des histoires.
               </p>
               <p>
-                Qu'il s'agisse d'un séminaire, d'un séjour entre amis ou d'une expérience à la journée, Terrago crée des rencontres qui reconnectent à l'essentiel, à la Terre et à l'humain.
+                Qu'il s'agisse d'un séminaire, d'un séjour entre amis ou d'une expérience à la journée, Terrago crée des rencontres qui reconnectent à l'essentiel, à l'humain et aux terroirs.
               </p>
             </div>
             <div className="lg:col-span-5">
@@ -181,8 +181,8 @@ const Home: React.FC = () => {
           {/* 1. Des formats pour tous les moments de vie */}
           <div className="mb-16 sm:mb-20">
             <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 text-left sm:text-center mb-4 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des formats pour </span>
-              <span className="font-display italic">tous les moments de vie</span>
+              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des formats pour tous </span>
+              <span className="font-display italic">les moments de vie</span>
             </h2>
             <p className="text-gray-600 text-left sm:text-center text-sm sm:text-base mb-10 sm:mb-12 max-w-2xl sm:mx-auto">
               Une même philosophie, plusieurs façons de la vivre.
@@ -230,8 +230,8 @@ const Home: React.FC = () => {
           {/* 2. Des formats pour tous les produits de nos terroirs */}
           <div className="text-left sm:text-center">
             <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 mb-6 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des formats pour </span>
-              <span className="font-display italic">tous les produits de nos terroirs</span>
+              <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des formats pour tous les produits de </span>
+              <span className="font-display italic font-bold">nos terroirs</span>
             </h2>
             <div className="max-w-3xl sm:mx-auto space-y-4 text-left sm:text-center">
               <p className="text-gray-600 text-sm sm:text-base font-medium leading-relaxed">

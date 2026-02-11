@@ -477,7 +477,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
           <p className="mt-2 mb-2 sm:mb-4 text-primary/90 text-xs tracking-[0.4em]">⭐⭐⭐⭐⭐</p>
           <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-2 sm:mb-4 rounded-full shadow-md">5 étoiles</span>
           <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4 pb-2 min-h-[1.4em]">
-            <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-primary leading-normal inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap px-0">
+            <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-normal inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap px-0">
               <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des séminaires </span><span className="font-display italic">5 étoiles</span>
             </h2>
           </div>

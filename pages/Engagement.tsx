@@ -7,15 +7,15 @@ const Engagement: React.FC = () => {
   return (
     <div className="pt-24 font-sans min-h-screen overflow-x-hidden">
       {/* Hero Section - Mission */}
-      <section className="px-4 sm:px-6 lg:px-10 py-16 sm:py-20 bg-beige-bg scroll-mt-24">
+      <section className="px-4 sm:px-6 lg:px-10 py-32 sm:py-40 bg-beige-bg scroll-mt-24">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">
               Notre mission
             </span>
-            <h1 className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des expériences qui soutiennent </span>
-              <span className="font-display italic">nos terroirs.</span>
+            <h1 className="text-4xl sm:text-3xl md:text-4xl lg:text-7xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap">
+              <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des expériences qui </span>
+              <span className="font-display italic">soutiennent nos terroirs.</span>
             </h1>
             <p className="text-gray-600 text-base sm:text-lg font-light max-w-3xl mx-auto mt-6 leading-relaxed">
               Mettre en lumière et soutenir les producteurs passionnés et engagés, transmettre leurs savoir-faire, et reconnecter chacun à la nature à travers des expériences authentiques en mettant les mains dans le terroir.
@@ -25,13 +25,13 @@ const Engagement: React.FC = () => {
       </section>
 
       {/* Les 3 Piliers */}
-      <section className="px-4 sm:px-6 lg:px-10 py-16 sm:py-20 bg-white border-y border-black/5 scroll-mt-24">
+      <section className="px-4 sm:px-6 lg:px-10 py-32 sm:py-40 bg-white border-y border-black/5 scroll-mt-24">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-10 sm:mb-12">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">
               Notre engagement
             </span>
-            <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap">
+            <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-7xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap">
               <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Chez Terrago, nous avons une </span>
               <span className="font-display italic">boussole.</span>
             </h2>
@@ -43,31 +43,31 @@ const Engagement: React.FC = () => {
               <ValueCard 
                 icon="groups" 
                 title="L'humain" 
-                badge="producteurs et artisans"
-                desc="Nous collaborons avec des producteurs qui cultivent bien plus que des produits : ils cultivent un lien fort avec la terre, une exigence de qualité et une envie sincère de transmettre leur savoir."
+                badge="Nos producteurs"
+                desc="Remettre l'humain au centre, valoriser les visages derrière chaque produit, cultiver la rencontre et le partage, pour soutenir des familles, pour faire vivre nos villages, et pour donner du sens à ce que vous achetez."
               />
               <ValueCard 
                 icon="workspace_premium" 
                 title="Le savoir-faire" 
                 badge="français"
-                desc="Chez Terrago, on part à la rencontre de femmes et d'hommes qui font les choses bien : des artisans qui respectent la terre, travaillent de beaux produits et perpétuent un savoir-faire authentique."
+                desc="Partir à la rencontre de femmes et d'hommes qui font les choses bien : des artisans qui respectent la terre, travaillent de beaux produits et perpétuent des savoirs-faire authentiques."
               />
               <ValueCard 
                 icon="nature" 
                 title="La nature" 
                 badge="et votre santé"
-                desc="La nature n'est pas un décor, c'est le point de départ de notre santé. On célèbre la terre, les saisons, les paysages vivants et tout ce qu'ils nous apprennent quand on prend le temps d'y prêter attention."
+                desc="Se reconnecter à la Terre, se reconnecter à la nature, pour prendre conscience des cycles, prendre conscience du temps, consommer bon et local, pour votre santé, et pour nos producteurs."
               />
           </div>
         </div>
       </section>
 
       {/* Stats Minimalistes */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 relative border-y border-black/5 overflow-hidden scroll-mt-24">
+      <section className="py-32 sm:py-40 px-4 sm:px-6 relative border-y border-black/5 overflow-hidden scroll-mt-24">
         <div className="absolute inset-0 bg-primary" />
         <div className="absolute inset-0 bg-black/55" />
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 sm:gap-12 text-center relative z-10">
-          <StatMini value="10+" label="Producteurs engagés" />
+          <StatMini value="10+" label="Producteurs partenaires et engagés" />
           <StatMini value="4" label="Régions activées" />
           <StatMini value="100%" label="authentique" />
           <StatMini value="100%" label="Français" />
@@ -75,14 +75,14 @@ const Engagement: React.FC = () => {
       </section>
 
       {/* CTA Final Compact */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-beige-bg scroll-mt-24">
-        <div className="max-w-4xl mx-auto bg-primary rounded-2xl sm:rounded-[2.5rem] p-8 sm:p-12 md:p-16 text-center text-white relative overflow-hidden shadow-premium">
+      <section className="py-32 sm:py-40 px-4 sm:px-6 bg-beige-bg scroll-mt-24">
+        <div className="max-w-7xl mx-auto bg-primary rounded-2xl sm:rounded-[2.5rem] p-8 sm:p-12 md:p-16 text-center text-white relative overflow-hidden shadow-premium">
           <div className="absolute inset-0 opacity-10 pointer-events-none">
             <img src={IMAGES.natureLandscape} className="w-full h-full object-cover" alt="Background" />
           </div>
           <div className="relative z-10">
-            <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-none sm:leading-tight mb-4 flex flex-col sm:flex-row items-center justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap">
-              <span className="font-sans not-italic text-white/95 text-[0.7em] md:text-[0.7em]">Partagez </span>
+            <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-none sm:leading-tight mb-4 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap">
+              <span className="font-sans not-italic text-white/95 text-[0.7em] md:text-[0.7em]">Se reconnecter à </span>
               <span className="font-display italic">l'essentiel.</span>
             </h2>
             <p className="text-white/70 text-sm sm:text-base font-light mb-8 sm:mb-10 max-w-lg mx-auto leading-relaxed">
