@@ -684,7 +684,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
       </section>
 
       {/* SECTION: NOS OFFRES - PLAQUETTE (style pépites du terroir, plus petit, cadre large) */}
-      <section className="py-14 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-beige-bg relative overflow-hidden">
+      <section className="py-14 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-beige-bg relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-primary/5 rounded-full -mr-24 -mt-24 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-48 sm:w-64 h-48 sm:h-64 bg-orange/5 rounded-full -ml-24 -mb-24 blur-3xl" />
 
@@ -692,9 +692,9 @@ Email envoyé depuis le formulaire de séminaire Terrago
           <div className="glass rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 md:p-12 border border-white/30 shadow-premium text-center hover:shadow-premium-hover transition-all duration-500">
             <span className="inline-block px-2.5 py-1 bg-orange text-white font-bold tracking-[0.25em] uppercase text-[7px] sm:text-[8px] font-sans rounded-full mb-3 sm:mb-6">Nos offres</span>
 
-            <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4">
+            <div className="text-center mb-2 sm:mb-4">
               <ScrollAnimate delay={250}>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary italic leading-tight inline-block w-full sm:w-max whitespace-normal sm:whitespace-nowrap px-0 break-words sm:break-normal">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary italic leading-tight w-full sm:w-max sm:mx-auto whitespace-normal sm:whitespace-nowrap break-words sm:break-normal">
                   Recevez notre plaquette 2026
                 </h2>
               </ScrollAnimate>

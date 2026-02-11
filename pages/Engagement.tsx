@@ -36,8 +36,8 @@ const Engagement: React.FC = () => {
             </span>
             <ScrollAnimate delay={150}>
               <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-7xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Chez Terrago, nous avons une </span>
-                <span className="font-display italic">boussole.</span>
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Chez Terrago, nous avons </span>
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em] whitespace-nowrap">une <span className="font-display italic text-[1.5em] sm:text-[1.2em]">boussole.</span></span>
               </h2>
             </ScrollAnimate>
             <p className="text-gray-500 text-sm sm:text-base font-light mt-4 leading-relaxed max-w-ml mx-auto">
@@ -115,11 +115,11 @@ const ValueCard = ({ icon, title, badge, desc }: any) => (
     <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 transition-colors duration-300 group-hover:bg-orange group-hover:text-white">
       <span className="material-symbols-outlined text-2xl">{icon}</span>
     </div>
-    <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-1">{title}</h3>
+    <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-1 transition-colors duration-300 group-hover:text-orange">{title}</h3>
     <span className="inline-block px-2 py-0.5 bg-orange text-white text-[10px] font-bold uppercase tracking-wider rounded-md mb-4">
       {badge}
     </span>
-    <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{desc}</p>
+    <p className="text-gray-600 text-xs sm:text-sm leading-relaxed opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out">{desc}</p>
     <div className="absolute bottom-0 left-0 right-0 h-1 bg-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-b-2xl" />
   </div>
 );
