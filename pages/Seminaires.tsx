@@ -43,6 +43,9 @@ const Seminaires: React.FC = () => {
   const [selectedAccTypes, setSelectedAccTypes] = useState<string[]>([]);
   const [selectedTransport, setSelectedTransport] = useState<string>('');
   const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
+  const [periodType, setPeriodType] = useState<'months' | 'dates'>('months');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [plaquetteEmail, setPlaquetteEmail] = useState('');
   const [plaquetteSubmitting, setPlaquetteSubmitting] = useState(false);
@@ -182,6 +185,9 @@ const Seminaires: React.FC = () => {
     setSelectedAccTypes([]);
     setSelectedTransport('');
     setSelectedMonths([]);
+    setPeriodType('months');
+    setStartDate('');
+    setEndDate('');
     setHasAccommodation(false);
     setHasTransport(false);
     setFormData({
@@ -195,6 +201,16 @@ const Seminaires: React.FC = () => {
     });
     document.body.style.overflow = 'hidden';
   };
+
+  // Ouvrir le modal automatiquement si le paramètre openModal est présent dans l'URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('openModal') === 'true') {
+      openModal();
+      // Nettoyer l'URL pour ne pas garder le paramètre
+      window.history.replaceState({}, '', '/seminaires');
+    }
+  }, [location.search]);
 
   const closeModal = () => {
     setIsClosing(true);
@@ -250,7 +266,8 @@ const Seminaires: React.FC = () => {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const isEmailMissing = !formData.email.trim();
       const isEmailInvalid = formData.email.trim() && !emailPattern.test(formData.email);
-      const isOtherMissing = !formData.prenom.trim() || !formData.nom.trim() || !formData.entreprise.trim() || !formData.participants || selectedMonths.length === 0;
+      const isPeriodMissing = periodType === 'months' ? selectedMonths.length === 0 : !startDate || !endDate;
+      const isOtherMissing = !formData.prenom.trim() || !formData.nom.trim() || !formData.entreprise.trim() || !formData.participants || isPeriodMissing;
 
       if (isEmailMissing || isEmailInvalid || isOtherMissing) {
         setErrorMessage('Attention, il semblerait que des informations soient manquantes.');
@@ -305,7 +322,9 @@ Nom: ${formData.nom}
 Email: ${formData.email}
 Entreprise: ${formData.entreprise}
 Nombre de participants: ${formData.participants}
-Période souhaitée: ${selectedMonths.length > 0 ? selectedMonths.join(', ') : 'Aucun mois sélectionné'}
+Période souhaitée: ${periodType === 'dates' 
+  ? (startDate && endDate ? `Du ${new Date(startDate).toLocaleDateString('fr-FR')} au ${new Date(endDate).toLocaleDateString('fr-FR')}` : 'Dates non renseignées')
+  : (selectedMonths.length > 0 ? selectedMonths.join(', ') : 'Aucun mois sélectionné')}
 
 === RÉGION(S) SOUHAITÉE(S) ===
 ${selectedRegions.length > 0 ? selectedRegions.join(', ') : 'Aucune sélectionnée'}
@@ -890,34 +909,124 @@ Email envoyé depuis le formulaire de séminaire Terrago
                         onChange={(value) => setFormData({...formData, participants: value})}
                         required={true}
                       />
-                      <div className="space-y-2 md:col-span-2">
+                      <div className="space-y-3 md:col-span-2">
                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
                           <span className="material-symbols-outlined text-sm">calendar_today</span> Période Souhaitée
                           <span className="text-orange">*</span>
                         </label>
-                        <div className="flex flex-wrap gap-2">
-                          {months.map((month) => (
-                            <button
-                              key={month}
-                              type="button"
-                              onClick={() => toggleSelection(selectedMonths, setSelectedMonths, month)}
-                              className={`px-3 py-2 rounded-lg border cursor-pointer transition-all duration-300 flex items-center gap-1.5 ${
-                                selectedMonths.includes(month) 
-                                  ? 'border-primary bg-primary text-white shadow-md shadow-primary/20' 
-                                  : 'border-black/10 bg-white hover:border-primary/40 hover:bg-primary/5 text-gray-600'
-                              }`}
-                            >
-                              <span className={`text-[8px] font-bold uppercase tracking-wider font-sans whitespace-nowrap ${
-                                selectedMonths.includes(month) ? 'text-white' : 'text-gray-600'
-                              }`}>
-                                {month}
-                              </span>
-                              {selectedMonths.includes(month) && (
-                                <span className="material-symbols-outlined text-white text-xs">check</span>
-                              )}
-                            </button>
-                          ))}
+                        
+                        {/* Toggle entre dates précises et mois */}
+                        <div className="flex gap-2 mb-3">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPeriodType('dates');
+                              setSelectedMonths([]);
+                            }}
+                            className={`px-4 py-2 rounded-lg border text-[8px] font-bold uppercase tracking-wider transition-all ${
+                              periodType === 'dates'
+                                ? 'border-primary bg-primary text-white'
+                                : 'border-black/10 bg-white text-gray-600 hover:border-primary/40'
+                            }`}
+                          >
+                            Dates précises
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPeriodType('months');
+                              setStartDate('');
+                              setEndDate('');
+                            }}
+                            className={`px-4 py-2 rounded-lg border text-[8px] font-bold uppercase tracking-wider transition-all ${
+                              periodType === 'months'
+                                ? 'border-primary bg-primary text-white'
+                                : 'border-black/10 bg-white text-gray-600 hover:border-primary/40'
+                            }`}
+                          >
+                            Choix du/des mois
+                          </button>
                         </div>
+
+                        {/* Affichage conditionnel selon le type sélectionné */}
+                        {periodType === 'dates' ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="relative">
+                              <label htmlFor="start-date" className="text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">
+                                Date de début
+                              </label>
+                              <input
+                                id="start-date"
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                onFocus={(e) => {
+                                  // Forcer l'ouverture du calendrier au focus
+                                  if ('showPicker' in e.target && typeof (e.target as any).showPicker === 'function') {
+                                    (e.target as any).showPicker();
+                                  }
+                                }}
+                                onClick={(e) => {
+                                  // Forcer l'ouverture du calendrier au clic
+                                  if ('showPicker' in e.target && typeof (e.target as any).showPicker === 'function') {
+                                    (e.target as any).showPicker();
+                                  }
+                                }}
+                                min={new Date().toISOString().split('T')[0]}
+                                className="w-full bg-beige-bg/40 border border-black/5 rounded-xl px-4 py-3 text-xs font-sans focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all cursor-pointer"
+                              />
+                            </div>
+                            <div className="relative">
+                              <label htmlFor="end-date" className="text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">
+                                Date de fin
+                              </label>
+                              <input
+                                id="end-date"
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                onFocus={(e) => {
+                                  // Forcer l'ouverture du calendrier au focus
+                                  if ('showPicker' in e.target && typeof (e.target as any).showPicker === 'function') {
+                                    (e.target as any).showPicker();
+                                  }
+                                }}
+                                onClick={(e) => {
+                                  // Forcer l'ouverture du calendrier au clic
+                                  if ('showPicker' in e.target && typeof (e.target as any).showPicker === 'function') {
+                                    (e.target as any).showPicker();
+                                  }
+                                }}
+                                min={startDate || new Date().toISOString().split('T')[0]}
+                                className="w-full bg-beige-bg/40 border border-black/5 rounded-xl px-4 py-3 text-xs font-sans focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all cursor-pointer"
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-wrap gap-2">
+                            {months.map((month) => (
+                              <button
+                                key={month}
+                                type="button"
+                                onClick={() => toggleSelection(selectedMonths, setSelectedMonths, month)}
+                                className={`px-3 py-2 rounded-lg border cursor-pointer transition-all duration-300 flex items-center gap-1.5 ${
+                                  selectedMonths.includes(month) 
+                                    ? 'border-primary bg-primary text-white shadow-md shadow-primary/20' 
+                                    : 'border-black/10 bg-white hover:border-primary/40 hover:bg-primary/5 text-gray-600'
+                                }`}
+                              >
+                                <span className={`text-[8px] font-bold uppercase tracking-wider font-sans whitespace-nowrap ${
+                                  selectedMonths.includes(month) ? 'text-white' : 'text-gray-600'
+                                }`}>
+                                  {month}
+                                </span>
+                                {selectedMonths.includes(month) && (
+                                  <span className="material-symbols-outlined text-white text-xs">check</span>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

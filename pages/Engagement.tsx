@@ -35,9 +35,8 @@ const Engagement: React.FC = () => {
               Notre engagement
             </span>
             <ScrollAnimate delay={150}>
-              <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-7xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Chez Terrago, nous avons </span>
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em] whitespace-nowrap">une <span className="font-display italic text-[1.5em] sm:text-[1.2em]">boussole.</span></span>
+              <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-7xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 inline-block w-full sm:w-max whitespace-normal text-center sm:text-center">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Chez Terrago, nous avons </span><span className="font-sans not-italic text-[0.7em] md:text-[0.7em] whitespace-nowrap">une <span className="font-display italic text-[1.7em] sm:text-[1.4em]">boussole.</span></span>
               </h2>
             </ScrollAnimate>
             <p className="text-gray-500 text-sm sm:text-base font-light mt-4 leading-relaxed max-w-ml mx-auto">

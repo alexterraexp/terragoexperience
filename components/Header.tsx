@@ -75,10 +75,10 @@ const Header: React.FC = () => {
             </Link>
             
             <Link
-              to="/nous-rejoindre"
-              className="gradient-primary text-white px-4 lg:px-8 py-2.5 lg:py-3.5 rounded-xl text-[9px] lg:text-[10px] uppercase tracking-[0.2em] font-bold shadow-premium transition-all hover:shadow-orange-glow hover:scale-105 active:scale-95 relative overflow-hidden group"
+              to="/seminaires?openModal=true"
+              className="gradient-primary text-white px-4 lg:px-8 py-2 lg:py-2.5 rounded-xl text-[7px] lg:text-[8px] uppercase tracking-[0.2em] font-bold shadow-premium transition-all hover:shadow-orange-glow hover:scale-105 active:scale-95 relative overflow-hidden group"
             >
-              <span className="relative z-10">Nous rejoindre</span>
+              <span className="relative z-10">Envoyer mon brief</span>
               <span className="absolute inset-0 gradient-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
             </Link>
 
@@ -140,10 +140,10 @@ const Header: React.FC = () => {
 
           <div className={`space-y-4 transition-all duration-700 delay-400 ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}>
             <Link
-              to="/nous-rejoindre"
+              to="/seminaires?openModal=true"
               className="w-full bg-primary text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-[10px] shadow-xl block text-center"
             >
-              Nous rejoindre
+              Envoyer mon brief
             </Link>
             <p className="text-center text-[8px] text-gray-300 uppercase font-bold tracking-[0.3em]">
               L'excellence du terroir • 2026

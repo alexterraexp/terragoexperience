@@ -145,17 +145,16 @@ const Home: React.FC = () => {
       {/* Notre vision — style GreenGo : accroche + bloc texte épuré + image */}
       <section className="py-16 sm:py-20 bg-white scroll-mt-24" id="notre-vision">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="text-left sm:text-center mb-8 sm:mb-10">
+          <div className="text-center mb-8 sm:mb-10">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Notre vision</span>
             <ScrollAnimate delay={100}>
-              <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Une envie simple : vivre le terroir </span>
-                <span className="font-display italic">pour de vrai.</span>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 inline-block w-full sm:w-max whitespace-normal text-center sm:text-center">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Une envie simple : vivre le terroir </span><span className="font-display italic">pour de vrai.</span>
               </h2>
             </ScrollAnimate>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            <div className="lg:col-span-7 space-y-5 text-gray-600 text-sm sm:text-base leading-relaxed text-left sm:text-center lg:text-left">
+            <div className="lg:col-span-7 space-y-5 text-gray-600 text-sm sm:text-base leading-relaxed text-center sm:text-center lg:text-left">
               <p>
                 Terrago est né d'une envie simple : permettre à chacun de vivre des expériences authentiques, humaines et enrichissantes au plus près de celles et ceux qui font le terroir.
               </p>
@@ -178,19 +177,18 @@ const Home: React.FC = () => {
       {/* Des formats — deux blocs : moments de vie + produits des terroirs */}
       <section className="py-16 sm:py-20 bg-beige-bg scroll-mt-24" id="formats">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="text-left sm:text-center mb-4">
+          <div className="text-center mb-4">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Formats</span>
           </div>
 
           {/* 1. Des formats pour tous les moments de vie */}
           <div className="mb-16 sm:mb-20">
             <ScrollAnimate delay={150}>
-              <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 text-left sm:text-center mb-4 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des formats pour tous </span>
-                <span className="font-display italic">les moments de vie</span>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 text-center mb-4 w-full">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des formats pour tous </span><span className="font-display italic">les moments de vie</span>
               </h2>
             </ScrollAnimate>
-            <p className="text-gray-600 text-left sm:text-center text-sm sm:text-base mb-10 sm:mb-12 max-w-2xl sm:mx-auto">
+            <p className="text-gray-600 text-center text-sm sm:text-base mb-10 sm:mb-12 max-w-2xl mx-auto">
               Une même philosophie, plusieurs façons de la vivre.
             </p>
           <div className="flex flex-col gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-5 max-w-[320px] sm:max-w-none mx-auto sm:mx-0">
@@ -210,7 +208,7 @@ const Home: React.FC = () => {
                 <div className="aspect-[3/2] rounded-md sm:rounded-xl overflow-hidden mb-2 sm:mb-4 bg-beige-bg">
                   <img src="https://images.unsplash.com/photo-1683772769298-b77177c029d8?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Entre amis" className="w-full h-full object-cover" />
                 </div>
-                <span className="font-sans font-bold text-primary text-[10px] sm:text-base leading-tight">Expériences entre amis</span>
+                <span className="font-sans font-bold text-primary text-[10px] sm:text-base leading-tight">Séjours immersifs en groupe</span>
                 <span className="mt-0.5 sm:mt-2 text-[9px] sm:text-xs text-gray-500">À venir</span>
               </div>
               <div className="relative bg-white rounded-lg sm:rounded-2xl border border-black/5 shadow-sm p-2 sm:p-6 flex flex-col opacity-90 min-w-0">
@@ -218,7 +216,7 @@ const Home: React.FC = () => {
                 <div className="aspect-[3/2] rounded-md sm:rounded-xl overflow-hidden mb-2 sm:mb-4 bg-beige-bg">
                   <img src="https://images.unsplash.com/photo-1710330336476-d6027e6035cd?q=80&w=1746&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Séjours immersifs" className="w-full h-full object-cover" />
                 </div>
-                <span className="font-sans font-bold text-primary text-[10px] sm:text-base leading-tight">Séjours immersifs</span>
+                <span className="font-sans font-bold text-primary text-[10px] sm:text-base leading-tight">Aventures des terroirs</span>
                 <span className="mt-0.5 sm:mt-2 text-[9px] sm:text-xs text-gray-500">À venir</span>
               </div>
               <div className="relative bg-white rounded-lg sm:rounded-2xl border border-black/5 shadow-sm p-2 sm:p-6 flex flex-col opacity-90 min-w-0">
@@ -234,14 +232,13 @@ const Home: React.FC = () => {
           </div>
 
           {/* 2. Des formats pour tous les produits de nos terroirs */}
-          <div className="text-left sm:text-center">
+          <div className="text-center">
             <ScrollAnimate delay={200}>
-              <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 mb-6 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des formats pour tous les produits de </span>
-                <span className="font-display italic font-bold">nos terroirs</span>
+              <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 mb-6 inline-block w-full sm:w-max whitespace-normal text-center">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des formats pour tous les produits de </span><span className="font-display italic font-bold">nos terroirs</span>
               </h2>
             </ScrollAnimate>
-            <div className="max-w-3xl sm:mx-auto space-y-4 text-left sm:text-center">
+            <div className="max-w-3xl mx-auto space-y-4 text-center">
               <p className="text-gray-600 text-sm sm:text-base font-medium leading-relaxed">
                 Notre ambition est de rendre les terroirs accessibles, partout en France.
               </p>
@@ -269,16 +266,15 @@ const Home: React.FC = () => {
       {/* Des rencontres avant tout — style GreenGo : cartes portrait */}
       <section className="py-16 sm:py-20 bg-white scroll-mt-24" id="rencontres">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="text-left sm:text-center mb-4">
+          <div className="text-center mb-4">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Rencontres</span>
             <ScrollAnimate delay={200}>
-              <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Des rencontres </span>
-                <span className="font-display italic">avant tout</span>
+              <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 inline-block w-full sm:w-max whitespace-normal text-center">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des rencontres </span><span className="font-display italic">avant tout</span>
               </h2>
             </ScrollAnimate>
           </div>
-          <p className="text-gray-600 text-sm sm:text-base text-left sm:text-center mb-10 sm:mb-12 max-w-2xl sm:mx-auto">
+          <p className="text-gray-600 text-sm sm:text-base text-center mb-10 sm:mb-12 max-w-2xl mx-auto">
             Chaque expérience Terrago est portée par un producteur qui ouvre son lieu, partage son métier et transmet un savoir-faire.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
@@ -286,7 +282,7 @@ const Home: React.FC = () => {
               { name: 'Jean-François', job: 'Cognac et pineau des charentes', image: "/images/producteurs/cognacJF.png" },
               { name: 'Paolo', job: 'Olives et produits de Provence', image: "/images/producteurs/olivepaolo.png" },
               { name: 'Sabine & Marie-Lise', job: 'Noix, Lavandes et co', image: "/images/producteurs/noixsabinemarie.jpeg" },
-              { name: 'Florence & Richard', job: 'Vins du Ventoux, en amphore', image: "/images/producteurs/vincombeaumas.png" },
+              { name: 'Marie-Sophie & Thomas', job: 'Vins du Ventoux, en amphore', image: "/images/producteurs/vincombeaumas.png" },
             ].map((person) => (
               <div key={person.name} className="bg-beige-bg/50 rounded-2xl border border-black/5 shadow-sm p-4 sm:p-5 flex flex-col items-center text-center hover:shadow-md hover:border-primary/10 transition-all duration-300">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden flex-shrink-0 border-2 border-white shadow-md ring-2 ring-black/5 bg-primary/10 flex items-center justify-center">
@@ -307,12 +303,11 @@ const Home: React.FC = () => {
       {/* Un engagement simple et concret — style GreenGo : 3 blocs confiance type "réserver les yeux fermés" */}
       <section className="py-16 sm:py-20 bg-beige-bg scroll-mt-24" id="engagement">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="text-left sm:text-center mb-10 sm:mb-12">
+          <div className="text-center mb-10 sm:mb-12">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Engagement</span>
             <ScrollAnimate delay={300}>
-              <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-none sm:leading-tight px-0 sm:px-2 flex flex-row flex-wrap items-baseline justify-start sm:justify-center gap-x-1.5 gap-y-0">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.75em]">Un engagement </span>
-                <span className="font-display italic">simple et concret</span>
+              <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 inline-block w-full sm:w-max whitespace-normal text-center">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Un engagement </span><span className="font-display italic">simple et concret</span>
               </h2>
             </ScrollAnimate>
           </div>
@@ -328,14 +323,14 @@ const Home: React.FC = () => {
               <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic transition-all duration-300 group-hover:bg-orange group-hover:text-white">2</div>
               <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2 transition-colors duration-300 group-hover:text-orange">Rémunération juste</h3>
               <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                Rémunération juste des producteurs.
+              Nos séjours sont un vrai coup de pouce financier pour les producteurs.
               </p>
             </div>
             <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-all duration-300 group cursor-pointer">
               <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic transition-all duration-300 group-hover:bg-orange group-hover:text-white">3</div>
-              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2 transition-colors duration-300 group-hover:text-orange">Expériences en groupe</h3>
+              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2 transition-colors duration-300 group-hover:text-orange">Producteurs first</h3>
               <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                Expériences pensées pour se vivre en groupe, où vous découvrez l'univers des producteurs et leurs magnifiques produits.
+                Chaque producteur gère son calendrier, ses disponibilités et ses tarifs. Nous les accompagnons dans le développement de leurs offres.
               </p>
             </div>
           </div>
@@ -354,11 +349,11 @@ const Home: React.FC = () => {
             </div>
             
             <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-primary italic mb-2 sm:mb-3">
-              Recevez nos pépites du terroir.
+              Vous voulez être tenu au courant de notre évolution ?
             </h2>
             
             <p className="text-gray-600 text-xs sm:text-sm md:text-base font-medium mb-5 sm:mb-6 max-w-xl mx-auto leading-relaxed">
-              Inscrivez-vous pour recevoir chaque mois une sélection d'expériences authentiques et le récit de nos producteurs et artisans.
+              Laissez-nous votre email, et nous vous enverrons les news de Terrago.
             </p>
 
             <form className="max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
@@ -373,7 +368,7 @@ const Home: React.FC = () => {
                   type="submit" 
                   className="gradient-primary text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-[0.2em] text-[10px] shadow-premium hover:shadow-orange-glow transition-all active:scale-95 relative overflow-hidden group"
                 >
-                  <span className="relative z-10">S'abonner</span>
+                  <span className="relative z-10">Envoyer</span>
                   <span className="absolute inset-0 bg-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 </button>
               </div>
