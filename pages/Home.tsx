@@ -328,7 +328,7 @@ const Home: React.FC = () => {
             </div>
             <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-all duration-300 group cursor-pointer">
               <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic transition-all duration-300 group-hover:bg-orange group-hover:text-white">3</div>
-              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2 transition-colors duration-300 group-hover:text-orange">Producteurs first</h3>
+              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2 transition-colors duration-300 group-hover:text-orange">Flexibilité</h3>
               <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                 Chaque producteur gère son calendrier, ses disponibilités et ses tarifs. Nous les accompagnons dans le développement de leurs offres.
               </p>
