@@ -20,7 +20,7 @@ const Engagement: React.FC = () => {
                 <span className="font-display italic">soutiennent nos terroirs.</span>
               </h1>
             </ScrollAnimate>
-            <p className="text-gray-600 text-base sm:text-lg font-light max-w-3xl mx-auto mt-6 leading-relaxed">
+            <p className="text-gray-600 text-base sm:text-lg font-light max-w-5xl mx-auto mt-6 leading-relaxed">
               Mettre en lumière et soutenir les producteurs passionnés et engagés, transmettre leurs savoir-faire, et reconnecter chacun à la nature à travers des expériences authentiques en mettant les mains dans le terroir.
             </p>
           </div>

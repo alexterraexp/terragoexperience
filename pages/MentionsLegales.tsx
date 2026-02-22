@@ -20,8 +20,8 @@ const MentionsLegales: React.FC = () => {
             <section>
               <h2 className="text-xl font-display font-bold text-primary mb-4 italic">1. Éditeur du site</h2>
               <p>
-                Le site <strong>Terrago</strong> est édité par Terrago SAS, société par actions simplifiée au capital de 50 000 euros, 
-                immatriculée au RCS de Paris sous le numéro 123 456 789, dont le siège social est situé au 123 rue de la Terre, 75001 Paris, France.
+                Le site <strong>Terrago</strong> est édité par Terrago SAS, société par actions simplifiée au capital de 1 000 euros, 
+                immatriculée au RCS de Paris sous le numéro 123 456 789, dont le siège social est situé au Rue de la Jonquière, 75017 Paris, France.
               </p>
             </section>
 
@@ -54,7 +54,7 @@ const MentionsLegales: React.FC = () => {
                 vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition aux données personnelles vous concernant.
               </p>
               <p className="mt-2">
-                Pour exercer ces droits, vous pouvez nous contacter à l'adresse : <a href="mailto:contact@terroir-exception.fr" className="text-orange hover:underline">contact@terroir-exception.fr</a>
+                Pour exercer ces droits, vous pouvez nous contacter à l'adresse : <a href="mailto:contact@terroir-exception.fr" className="text-orange hover:underline">terragoexperiences@gmail.com</a>
               </p>
             </section>
 

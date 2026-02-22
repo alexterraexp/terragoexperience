@@ -68,14 +68,14 @@ const Home: React.FC = () => {
           <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] group-hover:scale-110 sm:hidden" 
             style={{ 
-              backgroundImage: `linear-gradient(135deg, rgba(45, 58, 39, 0.55) 0%, rgba(0,0,0,0.6) 45%, rgba(247, 141, 0, 0.25) 100%), url("https://images.unsplash.com/photo-1663136331799-3ada904a57ad?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")` 
+              backgroundImage: `linear-gradient(135deg, rgba(45, 58, 39, 0.55) 0%, rgba(0,0,0,0.6) 45%, rgba(247, 141, 0, 0.25) 100%), url("/images/general/hero.png")`
             }}
           />
           {/* Image de fond desktop */}
           <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] group-hover:scale-110 hidden sm:block" 
             style={{ 
-              backgroundImage: `linear-gradient(135deg, rgba(45, 58, 39, 0.55) 0%, rgba(0,0,0,0.6) 45%, rgba(247, 141, 0, 0.25) 100%), url("${IMAGES.hero}")` 
+              backgroundImage: `linear-gradient(135deg, rgba(45, 58, 39, 0.55) 0%, rgba(0,0,0,0.6) 45%, rgba(247, 141, 0, 0.25) 100%), url("/images/general/hero.png")` 
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-black/20 to-orange/15 opacity-70 sm:opacity-60"></div>
@@ -250,7 +250,7 @@ const Home: React.FC = () => {
             <div className="mt-10 w-full overflow-hidden border-y border-primary/10 py-4" aria-hidden>
               <div className="flex w-max animate-marquee-terroir whitespace-nowrap [transition:none]">
                 {(() => {
-                  const produits = ['Huile d\'olive', 'Fromages', 'Maraîchage', 'Truffe', 'Huîtres', 'Élevages', 'Vins', 'Viandes', 'Miel', 'Céréales', 'Épices', 'Spiritueux', 'Lavande'];
+                  const produits = ['Huile d\'olive', 'Fromages', 'Maraîchage', 'Truffe', 'Huîtres', 'Élevage', 'Vins', 'Miel', 'Céréales', 'Épices', 'Spiritueux', 'Lavande'];
                   return [...produits, ...produits].map((label, i) => (
                     <span key={`${label}-${i}`} className="mx-6 text-base sm:text-lg font-medium uppercase tracking-widest text-primary/70">
                       {label}

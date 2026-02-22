@@ -507,11 +507,11 @@ Email envoyé depuis le formulaire de séminaire Terrago
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-start max-w-[320px] sm:max-w-none mx-auto sm:mx-0">
-          <PillarCard icon="diversity_3" title="HUMAIN" text="Découvrir celles et ceux qui nous nourissent, dans la simplicité, l’authenticité et l'écoute." />
-          <PillarCard icon="handyman" title="IMMERSIF" text="Participer aux activités manuelles pour s'ancrer réellement dans la réalité des terroirs." />
-          <PillarCard icon="restaurant" title="AUTHENTIQUE" text="Des hommmes et femmes authentiques qui produisent des produits de qualité." />
-          <PillarCard icon="eco" title="ENGAGÉ" text="Des producteurs, éleveurs, artisans qui s'engagent pour faire les choses bien et avoir le moins d'impact négatif sur notre Terre." />
-          <PillarCard icon="handshake" title="PASSIONNANT" text="La nature et le terroir comme fondation, la cohésion comme finalité." />
+          <PillarCard icon="diversity_3" title="HUMAIN" text="Décrochez et découvrez la richesse de vos équipes par des échanges vrais en rencontrant ceux qui nous nourrissent." />
+          <PillarCard icon="handyman" title="IMMERSIF" text="Sortez de votre zone de confort et exprimez-vous en mettant les mains dans la Terre (vendanger, récolter, tailler, presser, effeuiller ...). Vous allez vous en souvenir !" />
+          <PillarCard icon="restaurant" title="AUTHENTIQUE" text="Retrouvez le sens de l'essentiel au contact de producteurs qui incarnent la vérité et l'exigence du terrain." />
+          <PillarCard icon="eco" title="ENGAGÉ" text="Transformez votre séminaire en acte managérial fort en soutenant directement ceux qui agissent pour la Terre." />
+          <PillarCard icon="handshake" title="PASSIONNANT" text="Utilisez le terroir comme fondation pour reconstruire une cohésion d'équipe naturelle et durable. Vous allez créer de beaux souvenirs." />
         </div>
       </section>
 

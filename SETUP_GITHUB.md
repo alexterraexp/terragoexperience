@@ -9,7 +9,7 @@ Guide étape par étape pour mettre en place le déploiement automatique en 10 m
 ---
 
 ## 📝 Étapes à suivre
-
+ 
 ### 1️⃣ Créer le dépôt GitHub (2 min)
 
 1. Allez sur [github.com/new](https://github.com/new)
@@ -37,7 +37,7 @@ git commit -m "Initial commit - Terrago website"
 git branch -M main
 
 # Ajouter le dépôt distant (remplacez par votre URL)
-git remote add origin https://github.com/VOTRE_USERNAME/VOTRE_REPO.git
+git remote add origin https://github.com/alexterraexp/terragoexperience.git
 
 # Pousser vers GitHub
 git push -u origin main
