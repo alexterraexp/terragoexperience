@@ -63,22 +63,19 @@ const Home: React.FC = () => {
     <div className="pt-24 lg:pt-18 overflow-x-hidden bg-beige-bg">
       {/* Hero Section */}
       <section className="relative px-2 sm:px-4 lg:px-8 py-4 max-w-[1600px] mx-auto">
-        <div className="relative min-h-[85vh] sm:min-h-[78vh] h-[90vh] md:h-[78vh] w-full overflow-hidden rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] flex items-center justify-center text-center px-3 sm:px-4 py-8 sm:py-4 shadow-premium group">
+        <div className="relative min-h-[85vh] sm:min-h-[78vh] h-[90vh] md:h-[78vh] w-full overflow-hidden rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] flex items-center justify-center text-center px-3 sm:px-4 py-8 sm:py-4 group">
           {/* Image de fond mobile */}
           <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] group-hover:scale-110 sm:hidden" 
-            style={{ 
-              backgroundImage: `linear-gradient(135deg, rgba(45, 58, 39, 0.55) 0%, rgba(0,0,0,0.6) 45%, rgba(247, 141, 0, 0.25) 100%), url("/images/general/hero.png")`
-            }}
+            style={{ backgroundImage: 'url("/images/general/hero.png")' }}
           />
           {/* Image de fond desktop */}
           <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] group-hover:scale-110 hidden sm:block" 
-            style={{ 
-              backgroundImage: `linear-gradient(135deg, rgba(45, 58, 39, 0.55) 0%, rgba(0,0,0,0.6) 45%, rgba(247, 141, 0, 0.25) 100%), url("/images/general/hero.png")` 
-            }}
+            style={{ backgroundImage: 'url("/images/general/herog.png")' }}
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-black/20 to-orange/15 opacity-70 sm:opacity-60"></div>
+          {/* Overlay sombre léger */}
+          <div className="absolute inset-0 bg-black/30" />
           <div className="relative z-10 w-full text-center max-w-6xl mx-auto px-0 sm:px-0">
             <h1 className="text-white text-5xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-4 sm:mb-6 flex flex-col items-center justify-center gap-y-0.5 sm:gap-y-1 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 drop-shadow-2xl [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
               {/* Mobile : uniquement "Partez à la rencontre de" */}
@@ -114,7 +111,7 @@ const Home: React.FC = () => {
               <div className="relative w-full max-w-[280px] sm:max-w-none sm:w-auto mt-10 sm:mt-0">
                 <Link
                   to="/seminaires"
-                  className="w-full sm:w-auto bg-white/10 backdrop-blur-md text-white px-4 sm:px-8 py-3 sm:py-4 rounded-2xl text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-premium transition-all duration-500 flex items-center gap-1.5 sm:gap-2 justify-center hover:shadow-premium-hover hover:scale-105 active:scale-95 relative overflow-hidden group border border-white/20"
+                  className="w-full sm:w-auto bg-white/30 backdrop-blur-md text-white px-4 sm:px-8 py-3 sm:py-4 rounded-2xl text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-premium transition-all duration-500 flex items-center gap-1.5 sm:gap-2 justify-center hover:shadow-premium-hover hover:scale-105 active:scale-95 relative overflow-hidden group border border-white/20"
                 >
                   <span className="relative z-10 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
                     Découvrir nos séminaires
@@ -164,7 +161,7 @@ const Home: React.FC = () => {
             </div>
             <div className="lg:col-span-5">
               <div className="rounded-3xl overflow-hidden shadow-md border border-black/5 aspect-[4/3] max-h-[320px] sm:max-h-[380px]">
-                <img src="https://images.unsplash.com/photo-1504224357642-c87eacea1da4?q=80&w=1750&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Terroir et savoir-faire" className="w-full h-full object-cover" />
+                <img src= "/images/general/vendange.png" alt="Vendange à la main" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
