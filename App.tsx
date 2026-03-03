@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Experiences from './pages/Experiences';
 import ExperienceDetail from './pages/ExperienceDetail';
 import Seminaires from './pages/Seminaires';
+import Particuliers from './pages/Particuliers';
 import Engagement from './pages/Engagement';
 import Host from './pages/Host';
 import RecommendProducer from './pages/RecommendProducer';
@@ -27,6 +28,7 @@ const App: React.FC = () => {
           <Route path="/experience/:id" element={<ExperienceDetail />} />
           <Route path="/producteur/:hostId" element={<ProducerSpace />} />
           <Route path="/seminaires" element={<Seminaires />} />
+          <Route path="/particuliers" element={<Particuliers />} />
           <Route path="/notre-engagement" element={<Engagement />} />
           <Route path="/nous-rejoindre" element={<Host />} />
           <Route path="/recommander-un-producteur" element={<RecommendProducer />} />

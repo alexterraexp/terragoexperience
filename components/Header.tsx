@@ -78,7 +78,7 @@ const Header: React.FC = () => {
               to="/seminaires?openModal=true"
               className="gradient-primary text-white px-4 lg:px-8 py-2 lg:py-2.5 rounded-xl text-[7px] lg:text-[8px] uppercase tracking-[0.2em] font-bold shadow-premium transition-all hover:shadow-orange-glow hover:scale-105 active:scale-95 relative overflow-hidden group"
             >
-              <span className="relative z-10">Envoyer mon brief</span>
+              <span className="relative z-10">Organiser votre séminaire</span>
               <span className="absolute inset-0 gradient-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
             </Link>
 

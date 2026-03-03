@@ -480,7 +480,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
               onClick={openModal}
               className="w-full sm:w-auto bg-white text-primary px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] uppercase tracking-[0.2em] font-bold shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center relative overflow-hidden group hover:bg-orange hover:text-white"
             >
-              <span className="relative z-10">Organiser mon séminaire</span>
+              <span className="relative z-10">Organiser votre séminaire</span>
             </button>
             <Link 
               to="/seminaires?scroll=nos-univers"
@@ -1186,7 +1186,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
             </div>
 
             {/* Footer Modal - High Contrast and Clear Actions */}
-            <div className="px-6 md:px-12 py-6 md:py-8 bg-beige-bg/20 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
+            <div className="px-6 md:px-12 py-3 md:py-4 bg-beige-bg/20 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
                <button 
                 disabled={currentStep === 1}
                 onClick={prevStep}

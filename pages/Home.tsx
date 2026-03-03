@@ -113,23 +113,20 @@ const Home: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-700">
               <div className="relative w-full max-w-[280px] sm:max-w-none sm:w-auto mt-10 sm:mt-0">
                 <Link
-                  to="/experiences"
+                  to="/seminaires"
                   className="w-full sm:w-auto bg-white/10 backdrop-blur-md text-white px-4 sm:px-8 py-3 sm:py-4 rounded-2xl text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-premium transition-all duration-500 flex items-center gap-1.5 sm:gap-2 justify-center hover:shadow-premium-hover hover:scale-105 active:scale-95 relative overflow-hidden group border border-white/20"
                 >
                   <span className="relative z-10 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
-                    Découvrir les expériences
-                    <span className="px-1.5 sm:px-2 py-0.5 bg-orange text-white text-[6px] sm:text-[7px] font-bold uppercase tracking-wider rounded-md shadow-md">
-                      soon
-                    </span>
+                    Découvrir nos séminaires
                   </span>
                   <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 </Link>
               </div>
               <Link 
-                to="/seminaires" 
+                to="/notre-engagement" 
                 className="w-full max-w-[280px] sm:max-w-none sm:w-auto text-white border-b-2 border-white/50 hover:border-white px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-bold transition-all text-center hover:scale-105"
               >
-                Événements pro
+                Notre engagement
               </Link>
             </div>
           {/* Version mobile : texte descriptif en dessous des boutons - MASQUÉ */}
@@ -208,7 +205,7 @@ const Home: React.FC = () => {
                 <div className="aspect-[3/2] rounded-md sm:rounded-xl overflow-hidden mb-2 sm:mb-4 bg-beige-bg">
                   <img src="https://images.unsplash.com/photo-1683772769298-b77177c029d8?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Entre amis" className="w-full h-full object-cover" />
                 </div>
-                <span className="font-sans font-bold text-primary text-[10px] sm:text-base leading-tight">Séjours immersifs en groupe</span>
+                <span className="font-sans font-bold text-primary text-[10px] sm:text-base leading-tight">Séjours en groupe</span>
                 <span className="mt-0.5 sm:mt-2 text-[9px] sm:text-xs text-gray-500">À venir</span>
               </div>
               <div className="relative bg-white rounded-lg sm:rounded-2xl border border-black/5 shadow-sm p-2 sm:p-6 flex flex-col opacity-90 min-w-0">
@@ -224,7 +221,7 @@ const Home: React.FC = () => {
                 <div className="aspect-[3/2] rounded-md sm:rounded-xl overflow-hidden mb-2 sm:mb-4 bg-beige-bg">
                   <img src="https://images.unsplash.com/photo-1752606303023-e5b288710422?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Découvertes à la journée" className="w-full h-full object-cover object-bottom" />
                 </div>
-                <span className="font-sans font-bold text-primary text-[10px] sm:text-base leading-tight">Découvertes à la journée</span>
+                <span className="font-sans font-bold text-primary text-[10px] sm:text-base leading-tight">Immersions à la journée</span>
                 <span className="mt-0.5 sm:mt-2 text-[9px] sm:text-xs text-gray-500">À venir</span>
               </div>
             </div>
@@ -275,7 +272,7 @@ const Home: React.FC = () => {
             </ScrollAnimate>
           </div>
           <p className="text-gray-600 text-sm sm:text-base text-center mb-10 sm:mb-12 max-w-2xl mx-auto">
-            Chaque expérience Terrago est portée par un producteur qui ouvre son lieu, partage son métier et transmet un savoir-faire.
+            Chaque expérience Terrago est portée par un producteur qui ouvre son lieu, partage histoire et transmet des savoirs-faire.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
             {[

@@ -17,25 +17,15 @@ const Footer: React.FC = () => {
                 />
               </div>
               <p className="text-gray-600 text-xs max-w-xs leading-relaxed font-medium flex-1">
-                La future plateforme de référence pour les séjours de groupe et les séminaires, au cœur du terroir français.
+                Des séminaires et séjours de groupe, au cœur du terroir français.
               </p>
             </div>
           </div>
           <div>
             <h6 className="font-bold text-sm mb-6 uppercase tracking-widest">Plateforme</h6>
             <ul className="flex flex-col gap-4 text-sm text-gray-500">
-              <li>
-                <Link
-                  to="/experiences"
-                  className="flex items-center gap-2 hover:text-primary transition-colors"
-                >
-                  Expériences
-                  <span className="px-1.5 py-0.5 gradient-orange text-white text-[8px] font-bold uppercase tracking-wider rounded shadow-sm">
-                    soon
-                  </span>
-                </Link>
-              </li>
               <li><Link to="/seminaires" className="hover:text-primary">Séminaires</Link></li>
+              <li><Link to="/particuliers" className="hover:text-primary">Particuliers</Link></li>
               <li><Link to="/nous-rejoindre" className="hover:text-primary">Nous rejoindre</Link></li>
               <li><Link to="/recommander-un-producteur" className="hover:text-primary">Recommander un producteur</Link></li>
             </ul>

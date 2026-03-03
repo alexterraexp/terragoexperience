@@ -2,8 +2,8 @@
 import { NavItem, Experience, Host } from './types';
 
 export const NAV_LINKS: NavItem[] = [
-  { label: 'Expériences', path: '/experiences', soon: true },
   { label: 'Séminaires', path: '/seminaires' },
+  { label: 'Particuliers', path: '/particuliers' },
   { label: 'Notre engagement', path: '/notre-engagement' },
 ];
 
