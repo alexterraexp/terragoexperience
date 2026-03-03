@@ -143,7 +143,7 @@ const Header: React.FC = () => {
               to="/seminaires?openModal=true"
               className="w-full bg-primary text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-[10px] shadow-xl block text-center"
             >
-              Envoyer mon brief
+              Organiser mon séminaire
             </Link>
             <p className="text-center text-[8px] text-gray-300 uppercase font-bold tracking-[0.3em]">
               L'excellence du terroir • 2026
