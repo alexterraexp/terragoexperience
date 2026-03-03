@@ -12,15 +12,19 @@ const Particuliers: React.FC = () => {
   const [periode, setPeriode] = useState('');
   const [univers, setUnivers] = useState('');
   const [precisions, setPrecisions] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Entre amis - Formulaire expérience - ${prenom} ${nom}`);
-    const body = [
+    setSubmitError('');
+    setIsSubmitting(true);
+
+    const message = [
       'Bonjour,',
       '',
       'Je suis intéressé(e) par une expérience ou un séjour avec Terrago. Voici les détails de ma demande :',
-      '',
       '',
       `Nom : ${nom}`,
       `Prénom : ${prenom}`,
@@ -30,14 +34,45 @@ const Particuliers: React.FC = () => {
       `Produits / univers à découvrir : ${univers || '—'}`,
       precisions ? `Précisions : ${precisions}` : '',
       '',
-      '',
       'Merci pour votre retour.',
-      '',
       '',
       `${prenom} ${nom}`
     ].filter(Boolean).join('\n');
-    const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailto;
+
+    try {
+      const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          name: `${prenom} ${nom}`,
+          email: email,
+          subject: `Entre amis - Demande de ${prenom} ${nom}`,
+          message,
+          _captcha: false,
+          _template: 'table'
+        })
+      });
+
+      if (response.ok) {
+        setSubmitSuccess(true);
+        setNom('');
+        setPrenom('');
+        setEmail('');
+        setPortable('');
+        setPeriode('');
+        setUnivers('');
+        setPrecisions('');
+      } else {
+        throw new Error('Erreur lors de l\'envoi');
+      }
+    } catch {
+      setSubmitError('Une erreur est survenue. Veuillez réessayer ou nous contacter à terragoexperiences@gmail.com');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -64,10 +99,22 @@ const Particuliers: React.FC = () => {
           </div>
 
           <ScrollAnimate delay={200}>
+            {submitSuccess ? (
+              <div className="max-w-xl mx-auto bg-white rounded-2xl sm:rounded-[2rem] p-8 sm:p-10 shadow-premium border border-black/5 text-center">
+                <span className="material-symbols-outlined text-5xl text-orange mb-4 block">check_circle</span>
+                <h2 className="font-bold text-primary text-xl mb-2">Demande envoyée</h2>
+                <p className="text-gray-600 text-sm">
+                  Merci ! Nous avons bien reçu votre demande et vous recontacterons très prochainement à l'adresse indiquée.
+                </p>
+              </div>
+            ) : (
             <form
               onSubmit={handleSubmit}
               className="max-w-xl mx-auto bg-white rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 shadow-premium border border-black/5"
             >
+              {submitError && (
+                <p className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-xs">{submitError}</p>
+              )}
               <div className="grid sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
                 <label className="block">
                   <span className="block text-primary font-semibold text-[11px] uppercase tracking-wider mb-1.5">Nom</span>
@@ -147,12 +194,23 @@ const Particuliers: React.FC = () => {
               </label>
               <button
                 type="submit"
-                className="w-full inline-flex items-center justify-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-bold uppercase tracking-[0.2em] text-[9px] sm:text-[10px] shadow-premium hover:bg-orange hover:shadow-orange-glow transition-all"
+                disabled={isSubmitting}
+                className="w-full inline-flex items-center justify-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-bold uppercase tracking-[0.2em] text-[9px] sm:text-[10px] shadow-premium hover:bg-orange hover:shadow-orange-glow transition-all disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                <span className="material-symbols-outlined text-lg">send</span>
-                Envoyer ma demande !
+                {isSubmitting ? (
+                  <>
+                    <span className="material-symbols-outlined text-lg animate-spin">progress_activity</span>
+                    Envoi en cours…
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-lg">send</span>
+                    Envoyer ma demande !
+                  </>
+                )}
               </button>
             </form>
+            )}
           </ScrollAnimate>
         </div>
       </section>
