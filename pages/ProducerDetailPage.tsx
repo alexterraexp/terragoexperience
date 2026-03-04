@@ -197,7 +197,7 @@ const ProducerDetailPage: React.FC = () => {
             </div>
               <div style={{ padding: '16px 20px' }}>
                 <div style={{ background: '#f5f0ea', borderRadius: 10, padding: '10px 14px', marginBottom: 14 }}>
-                  <div style={{ fontSize: 10, color: '#9ca3af', marginBottom: 2 }}>Capacité</div>
+                  <div style={{ fontSize: 10, color: '#9ca3af', marginBottom: 2 }}>Capacité maximale</div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: '#1e291a' }}>{producer.capacity}</div>
                 </div>
                 <button type="button" onClick={() => setContactOpen(true)} onMouseOver={e => (e.currentTarget.style.background = '#f78d00')} onMouseOut={e => (e.currentTarget.style.background = '#2b3825')}

@@ -114,7 +114,7 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
           ))}
         </div>
 
-        {/* Footer — toujours en bas */}
+        {/* Footer */}
         <div style={{
           marginTop: 'auto',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -191,29 +191,29 @@ const ProducersPage: React.FC = () => {
     <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', minHeight: '100vh' }}>
 
       {/* Hero */}
-      <div style={{ background: '#1e291a', padding: '140px 24px 60px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.04, backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
-        <span style={{ display: 'inline-block', padding: '4px 12px', background: '#f78d00', color: '#fff', fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', fontSize: 9, marginBottom: 16, borderRadius: 9999, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+      <div className="px-4 sm:px-6 lg:px-10 pt-32 sm:pt-40 pb-12 sm:pb-16 bg-beige-bg scroll-mt-24" style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+         <div className="absolute inset-0 opacity-0.06 bg-radial-gradient(circle at 1px 1px, #1e291a 1px, transparent 0) [32px_32px]" style={{ pointerEvents: 'none' }} />        <span style={{ display: 'inline-block', padding: '4px 12px', background: '#f78d00', color: '#fff', fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', fontSize: 9, marginBottom: 16, borderRadius: 9999, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
           Le réseau Terrago
         </span>
-        <h1 style={{ color: '#fff', fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 700, fontStyle: 'italic', margin: '0 0 16px', lineHeight: 1.2 }}>
-          Nos producteurs
+        <h1 className="text-4xl sm:text-3xl md:text-4xl lg:text-7xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap" style={{ marginBottom: '24px' }}>
+          <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Nos producteurs </span>
+          <span className="font-display italic">partenaires.</span>
         </h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, maxWidth: 500, margin: '0 auto 36px', lineHeight: 1.7 }}>
-          Des agriculteurs, éleveurs, vignerons et artisans soigneusement sélectionnés pour leur authenticité et leur savoir-faire.
+        <p style={{ color: '#6b7280', fontSize: 14, maxWidth: 500, margin: '0 auto 36px', lineHeight: 1.7 }}>
+          Des producteurs, éleveurs, vignerons et artisans soigneusement sélectionnés pour leur authenticité et leur savoir-faire.
         </p>
 
         {/* Search */}
-        <div style={{ maxWidth: 420, margin: '0 auto', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)', borderRadius: 16, padding: '4px 4px 4px 20px', display: 'flex', alignItems: 'center', gap: 8, border: '1px solid rgba(255,255,255,0.15)' }}>
-          <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 16 }}>🔍</span>
+        <div style={{ maxWidth: 420, margin: '0 auto', background: '#fff', borderRadius: 16, padding: '4px 4px 4px 20px', display: 'flex', alignItems: 'center', gap: 8, border: '1.5px solid #e5e0d8', boxShadow: '0 4px 16px rgba(10,44,52,0.08)' }}>
+          <span style={{ color: '#9ca3af', fontSize: 16 }}>🔍</span>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher un producteur, une région..."
-            style={{ flex: 1, background: 'none', border: 'none', outline: 'none', color: '#fff', fontSize: 13, fontFamily: 'inherit' }}
+            style={{ flex: 1, background: 'none', border: 'none', outline: 'none', color: '#1e291a', fontSize: 13, fontFamily: 'inherit' }}
           />
           {search && (
-            <button type="button" onClick={() => setSearch('')} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', borderRadius: 10, padding: '6px 12px', cursor: 'pointer', fontSize: 11 }}>
+            <button type="button" onClick={() => setSearch('')} style={{ background: '#f0ebe4', border: 'none', color: '#6b7280', borderRadius: 10, padding: '6px 12px', cursor: 'pointer', fontSize: 11 }}>
               Effacer
             </button>
           )}
