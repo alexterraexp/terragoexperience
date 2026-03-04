@@ -80,7 +80,7 @@ const Host: React.FC = () => {
             <div className="mb-12">
               <div className="flex items-center gap-4 mb-6">
                 <div className="h-px w-8 bg-gold"></div>
-                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">Programme Partenaires 2026</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold">Programme Partenaires - Terrago</span>
               </div>
               <h1 className="text-4xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-none sm:leading-normal mb-8 inline-block w-max sm:w-max max-w-full whitespace-normal sm:whitespace-nowrap">
                 <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Partagez votre savoir-faire </span><span className="font-display italic">et votre passion.</span>
@@ -113,15 +113,13 @@ const Host: React.FC = () => {
                   points={[
                     "Développez une nouvelle source de revenus liée aux expériences",
                     "Ventes additionnelles (boutique physique & e-com)",
-                    "Canal de distribution premium sans intermédiaire lourd"
                   ]}
                 />
                 <BenefitItem 
                   icon="verified_user" 
                   title="Gestion Risque & Assurance"
                   points={[
-                    "Couverture pour l'accueil de public",
-                    "Filtrage rigoureux en amont",
+                    "Accompagnement pour l'accueil de public",
                     "Gestion des litiges par nos conseillers dédiés"
                   ]}
                 />
@@ -138,7 +136,7 @@ const Host: React.FC = () => {
                   icon="hub" 
                   title="Efficacité Opérationnelle"
                   points={[
-                    "Synchronisation automatique de votre calendrier",
+                    "Gestion de votre calendrier",
                     "Facturation et reporting automatisés",
                     "Support technique 7j/7"
                   ]}
@@ -147,8 +145,38 @@ const Host: React.FC = () => {
             )}
 
             {activeTab === 'processus' && (
-              <div className="p-8 bg-beige-bg rounded-3xl animate-in fade-in duration-500 italic text-gray-500">
-                <p>Notre processus de sélection garantit l'excellence du réseau. Nous vous accompagnons de l'audit initial à la mise en ligne de votre première expérience.</p>
+              <div className="p-8 bg-beige-bg rounded-3xl animate-in fade-in duration-500">
+                {/* Intro */}
+                <p className="font-sans text-sm font-light italic text-gray-400 leading-relaxed mb-6 pb-5 border-b border-gray-100">
+                  Notre processus de sélection garantit l'excellence du réseau. Nous vous accompagnons de l'audit initial à la gestion opérationnelle de votre première expérience.
+                </p>
+
+                {/* Étapes */}
+                <div className="flex flex-col gap-1">
+                  {[
+                    "Vous nous contactez pour présenter votre activité et votre projet.",
+                    "Nous venons vous rencontrer sur votre domaine.",
+                    "Nous vous aidons à développer une offre d'accueil d'expériences.",
+                    "Nous amenons des clients sur votre domaine pour découvrir vos produits et vos savoir-faire.",
+                    "Vous faites pleinement partie du réseau et en devenez un ambassadeur."
+                  ].map((text, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-4 py-3 border-b border-gray-100 last:border-none group"
+                    >
+                      <div
+                        className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-semibold mt-0.5"
+                        style={{ background: 'linear-gradient(135deg,rgb(230, 129, 52),rgb(255, 144, 65))', boxShadow: '0 2px 8px rgba(168,133,106,0.3)' }}
+                      >
+                        {i + 1}
+                      </div>
+
+                      <p className="font-sans text-sm text-gray-500 font-light leading-relaxed transition-transform duration-200 group-hover:translate-x-1">
+                        {text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -157,13 +185,13 @@ const Host: React.FC = () => {
           {/* Sidebar Form (Right) */}
           <div className="lg:col-span-4 lg:sticky lg:top-36">
             <div className="bg-[#FAF9F6] rounded-[2.5rem] p-10 shadow-xl border border-black/5">
-              <h2 className="text-3xl font-display font-bold text-primary mb-3">Candidature rapide</h2>
+              <h2 className="text-xl font-sans font-bold text-primary mb-3">Rejoindre l'aventure Terrago</h2>
               <p className="text-sm text-gray-500 font-light mb-10 leading-relaxed">Recevez un retour de nos équipes sous 72h.</p>
               
               {submitSuccess ? (
                 <div className="text-center py-6">
                   <span className="material-symbols-outlined text-5xl text-primary mb-3 block">check_circle</span>
-                  <h3 className="text-xl font-display font-bold text-primary mb-2">Demande envoyée</h3>
+                  <h3 className="text-xl font-sans font-bold text-primary mb-2">Demande envoyée</h3>
                   <p className="text-gray-500 text-sm mb-6">Nous vous recontacterons sous 72h.</p>
                   <button
                     type="button"
@@ -289,7 +317,7 @@ const BenefitItem = ({ icon, title, points }: { icon: string, title: string, poi
       <div className="size-10 rounded-xl bg-beige-bg flex items-center justify-center text-primary shadow-sm">
         <span className="material-symbols-outlined">{icon}</span>
       </div>
-      <h3 className="text-xl font-display font-bold italic leading-tight">{title}</h3>
+      <h3 className="text-l font-sans font-bold italic leading-tight text-primary">{title}</h3>
     </div>
     <ul className="space-y-4">
       {points.map((p, i) => (

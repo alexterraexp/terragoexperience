@@ -43,12 +43,12 @@ const Header: React.FC = () => {
           </Link>
 
           {/* NAV DESKTOP */}
-          <nav className="hidden lg:flex items-center gap-10">
+          <nav className="hidden lg:flex items-center gap-10 ml-auto mr-10">
             {NAV_LINKS.map((link) => (
               <div key={link.path} className="flex items-center gap-2">
                 <Link
                   to={link.path}
-                  className={`text-[12px] uppercase font-bold tracking-[0.2em] transition-all hover:text-clay relative group/nav ${
+                  className={`text-[11px] uppercase font-bold tracking-[0.2em] font-sans transition-all hover:text-clay relative group/nav ${
                     location.pathname === link.path ? 'text-primary' : 'text-gray-400'
                   }`}
                 >
@@ -146,7 +146,7 @@ const Header: React.FC = () => {
               Organiser mon séminaire
             </Link>
             <p className="text-center text-[8px] text-gray-300 uppercase font-bold tracking-[0.3em]">
-              L'excellence du terroir • 2026
+            Fabriqué avec passion pour nos territoires.
             </p>
           </div>
         </div>

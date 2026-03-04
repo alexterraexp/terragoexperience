@@ -94,7 +94,7 @@ const Particuliers: React.FC = () => {
               </h1>
             </ScrollAnimate>
             <p className="text-gray-600 text-base sm:text-mg font-light leading-relaxed max-w-2xl mx-auto">
-              Vous souhaitez vivre des expériences uniques et authentiques au cœur du terroir ? Remplissez le formulaire ci-dessous : nous vous recontactons pour vous proposer des pépites sur mesure.
+              Vous souhaitez vivre des expériences uniques et authentiques au cœur du terroir ? Remplissez le formulaire ci-dessous : nous vous recontacterons pour vous proposer nos premières pépites.
             </p>
           </div>
 
@@ -102,7 +102,7 @@ const Particuliers: React.FC = () => {
             {submitSuccess ? (
               <div className="max-w-xl mx-auto bg-white rounded-2xl sm:rounded-[2rem] p-8 sm:p-10 shadow-premium border border-black/5 text-center">
                 <span className="material-symbols-outlined text-5xl text-orange mb-4 block">check_circle</span>
-                <h2 className="font-bold text-primary text-xl mb-2">Demande envoyée</h2>
+                <h2 className="font-bold text-primary text-xl mb-2 font-sans">Demande envoyée</h2>
                 <p className="text-gray-600 text-sm">
                   Merci ! Nous avons bien reçu votre demande et vous recontacterons très prochainement à l'adresse indiquée.
                 </p>

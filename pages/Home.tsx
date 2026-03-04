@@ -62,12 +62,12 @@ const Home: React.FC = () => {
   return (
     <div className="pt-24 lg:pt-18 overflow-x-hidden bg-beige-bg">
       {/* Hero Section */}
-      <section className="relative px-2 sm:px-4 lg:px-8 py-4 max-w-[1600px] mx-auto">
-        <div className="relative min-h-[85vh] sm:min-h-[78vh] h-[90vh] md:h-[78vh] w-full overflow-hidden rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] flex items-center justify-center text-center px-3 sm:px-4 py-8 sm:py-4 group">
+      <section className="relative px-2 sm:px-4 lg:px-8 py-4 w-full">
+        <div className="relative min-h-[85vh] sm:min-h-[80vh] h-[90vh] md:h-[80vh] w-full overflow-hidden rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] flex items-center justify-center text-center px-3 sm:px-4 py-8 sm:py-4 group">
           {/* Image de fond mobile */}
           <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] group-hover:scale-110 sm:hidden" 
-            style={{ backgroundImage: 'url("/images/general/hero.png")' }}
+            style={{ backgroundImage: 'url("/images/general/herog.png")' }}
           />
           {/* Image de fond desktop */}
           <div 
@@ -103,8 +103,8 @@ const Home: React.FC = () => {
             </h1>
             {/* Version desktop : texte descriptif au-dessus des boutons */}
             <div className="hidden sm:block text-center mb-6 sm:mb-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
-              <p className="text-white text-xs sm:text-[11px] font-medium leading-relaxed mx-auto inline-block whitespace-nowrap w-max max-w-full drop-shadow-lg [text-shadow:0_1px_12px_rgba(0,0,0,0.6)]">
-                Vivez des moments suspendus auprès de nos producteurs, éleveurs et artisans d'exception sélectionnés pour leur authenticité, leur engagement et leur savoir-faire.
+              <p className="text-white text-xs sm:text-[13px] font-medium leading-relaxed mx-auto max-w-2xl xl:max-w-3xl drop-shadow-lg [text-shadow:0_1px_12px_rgba(0,0,0,0.6)]">
+                Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français — des expériences immersives et responsables qui reconnectent chacun à l'essentiel.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-700">
@@ -114,24 +114,18 @@ const Home: React.FC = () => {
                   className="w-full sm:w-auto bg-white/30 backdrop-blur-md text-white px-4 sm:px-8 py-3 sm:py-4 rounded-2xl text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-premium transition-all duration-500 flex items-center gap-1.5 sm:gap-2 justify-center hover:shadow-premium-hover hover:scale-105 active:scale-95 relative overflow-hidden group border border-white/20"
                 >
                   <span className="relative z-10 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
-                    Découvrir nos séminaires
+                    Nos séminaires d'entreprise
                   </span>
                   <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 </Link>
               </div>
               <Link 
-                to="/notre-engagement" 
+                to="/particuliers" 
                 className="w-full max-w-[280px] sm:max-w-none sm:w-auto text-white border-b-2 border-white/50 hover:border-white px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-bold transition-all text-center hover:scale-105"
               >
-                Notre engagement
+                Séjours entre amis
               </Link>
             </div>
-          {/* Version mobile : texte descriptif en dessous des boutons - MASQUÉ */}
-          <div className="hidden">
-            <p className="text-white text-[10px] font-medium leading-relaxed mx-auto block max-w-full drop-shadow-lg [text-shadow:0_1px_12px_rgba(0,0,0,0.6)]">
-              Vivez des moments suspendus auprès de nos producteurs, éleveurs et artisans d'exception sélectionnés pour leur authenticité, leur engagement et leur savoir-faire.
-            </p>
-          </div>
           </div>
         </div>
       </section>
@@ -269,7 +263,7 @@ const Home: React.FC = () => {
             </ScrollAnimate>
           </div>
           <p className="text-gray-600 text-sm sm:text-base text-center mb-10 sm:mb-12 max-w-2xl mx-auto">
-            Chaque expérience Terrago est portée par un producteur qui ouvre son lieu, partage histoire et transmet des savoirs-faire.
+            Chaque expérience Terrago est portée par un producteur qui ouvre son lieu, partage son histoire et transmet ses savoirs-faire.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
             {[

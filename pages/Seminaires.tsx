@@ -797,10 +797,9 @@ Email envoyé depuis le formulaire de séminaire Terrago
                  <div className="size-8 md:size-10 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg shrink-0">
                     <span className="material-symbols-outlined text-xl md:text-2xl">event_available</span>
                  </div>
-                 <div className="min-w-0 flex-1">
+                 <div className="min-w-0">
                     <h2 className="text-lg md:text-2xl font-bold text-primary leading-tight truncate">
-                      <span className="font-sans not-italic text-sm md:text-base">Votre projet de </span>
-                      <span className="font-display italic font-black">séminaire</span>
+                      <span className="font-sans not-italic text-sm md:text-base">Votre projet de séminaire </span>
                     </h2>
                     <p className="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1 font-sans hidden sm:block">Parlons d'immersion et de sens</p>
                  </div>
@@ -1035,7 +1034,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
                 {currentStep === 2 && (
                   <div className={`space-y-10 transition-opacity duration-200 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
                     <div>
-                      <h3 className="text-3xl font-display font-bold text-primary italic mb-2">Choisissez votre terroir</h3>
+                      <h3 className="text-3xl font-display font-bold text-primary italic mb-2">Où partir ?</h3>
                       <p className="text-xs text-gray-400 font-light italic">Où souhaitez-vous vivre l'expérience ? Nos domaines vous accueillent dans les plus belles régions de France.</p>
                     </div>
                     
@@ -1043,7 +1042,6 @@ Email envoyé depuis le formulaire de séminaire Terrago
                       <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 border-b border-black/5 pb-3 flex items-center gap-2">
                         <span className="material-symbols-outlined text-sm">location_on</span>
                         Région(s) souhaitée(s)
-                        <span className="text-[7px] font-bold normal-case text-white bg-primary px-2 py-0.5 rounded">plusieurs choix possibles</span>
                       </h4>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {regionsOptions.map((region) => (
@@ -1154,7 +1152,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
                           </div>
                           {hasTransport && (
                             <div className="grid grid-cols-2 gap-3 animate-fade-in">
-                               {["Depuis le lieu de départ", "Depuis une gare SNCF proche"].map(opt => (
+                               {["De porte à porte", "Depuis gare SNCF proche"].map(opt => (
                                  <button 
                                   key={opt}
                                   onClick={() => setSelectedTransport(opt)}

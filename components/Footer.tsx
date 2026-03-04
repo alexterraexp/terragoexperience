@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
             <ul className="flex flex-col gap-4 text-sm text-gray-500">
               <li><Link to="/seminaires" className="hover:text-primary">Séminaires</Link></li>
               <li><Link to="/particuliers" className="hover:text-primary">Entre amis</Link></li>
-              <li><Link to="/nous-rejoindre" className="hover:text-primary">Nous rejoindre</Link></li>
+              <li><Link to="/nous-rejoindre" className="hover:text-primary">Devenir partenaire</Link></li>
               <li><Link to="/recommander-un-producteur" className="hover:text-primary">Recommander un producteur</Link></li>
             </ul>
           </div>

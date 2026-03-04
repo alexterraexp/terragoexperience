@@ -13,7 +13,8 @@ import Host from './pages/Host';
 import RecommendProducer from './pages/RecommendProducer';
 import Auth from './pages/Auth';
 import Booking from './pages/Booking';
-import ProducerSpace from './pages/ProducerSpace';
+import ProducersPage from './pages/ProducersPage';
+import ProducerDetailPage from './pages/ProducerDetailPage';
 import MentionsLegales from './pages/MentionsLegales';
 import Confidentialite from './pages/Confidentialite';
 
@@ -26,7 +27,8 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/experiences" element={<Experiences />} />
           <Route path="/experience/:id" element={<ExperienceDetail />} />
-          <Route path="/producteur/:hostId" element={<ProducerSpace />} />
+          <Route path="/producteurs" element={<ProducersPage />} />
+          <Route path="/producteurs/:producerId" element={<ProducerDetailPage />} />
           <Route path="/seminaires" element={<Seminaires />} />
           <Route path="/particuliers" element={<Particuliers />} />
           <Route path="/notre-engagement" element={<Engagement />} />

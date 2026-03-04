@@ -381,3 +381,7 @@ select.custom-select::-webkit-select-value {
   -webkit-text-fill-color: #2D3A27 !important;
 }
 
+input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}

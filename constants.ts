@@ -2,9 +2,10 @@
 import { NavItem, Experience, Host } from './types';
 
 export const NAV_LINKS: NavItem[] = [
-  { label: 'Séminaires', path: '/seminaires' },
+  { label: "Séminaires d'entreprise", path: '/seminaires' },
   { label: 'Entre amis', path: '/particuliers' },
   { label: 'Notre engagement', path: '/notre-engagement' },
+  { label: 'Nos producteurs', path: '/producteurs' },
 ];
 
 export const IMAGES = {
