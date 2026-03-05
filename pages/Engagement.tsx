@@ -94,7 +94,7 @@ const Engagement: React.FC = () => {
     <div className="pt-20 lg:pt-24 font-sans bg-beige-bg min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative w-full px-0 sm:px-6 lg:px-12 py-16 sm:py-20 lg:py-24 text-center min-h-[60vh] sm:min-h-[65vh] lg:min-h-[70vh] flex items-center justify-center overflow-hidden mb-12 sm:mb-16">
+      <section className="relative w-full px-0 sm:px-6 lg:px-12 py-16 sm:py-20 lg:py-24 text-center min-h-[60vh] sm:min-h-[65vh] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/paysageterroir.png')" }}
@@ -133,15 +133,15 @@ const Engagement: React.FC = () => {
       {/* ── STATS ────────────────────────────────────────────────────────────── */}
       <section className="py-16 bg-white border-b border-black/5">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {STATS.map((s, i) => (
               <ScrollAnimate key={s.label} delay={i * 100}>
-                <div className="group relative bg-[#faf8f5] rounded-2xl p-8 border border-black/5 hover:border-[#f78d00]/30 hover:shadow-lg transition-all duration-300 text-center overflow-hidden">
-                  <div className="w-12 h-12 rounded-xl bg-[#1e291a]/5 text-[#1e291a] group-hover:bg-[#f78d00] group-hover:text-white flex items-center justify-center mx-auto mb-5 transition-all duration-300">
-                    <span className="material-symbols-outlined text-xl">{s.icon}</span>
+                <div className="group relative bg-[#faf8f5] rounded-xl sm:rounded-2xl p-4 sm:p-8 border border-black/5 hover:border-[#f78d00]/30 hover:shadow-lg transition-all duration-300 text-center overflow-hidden">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#1e291a]/5 text-[#1e291a] group-hover:bg-[#f78d00] group-hover:text-white flex items-center justify-center mx-auto mb-3 sm:mb-5 transition-all duration-300">
+                    <span className="material-symbols-outlined text-lg sm:text-xl">{s.icon}</span>
                   </div>
-                  <div className="font-display italic text-4xl sm:text-5xl font-bold text-[#1e291a] mb-2 leading-none">{s.value}</div>
-                  <div className="text-[10px] font-sans font-semibold text-gray-400 uppercase tracking-[0.12em] leading-tight">{s.label}</div>
+                  <div className="font-display italic text-2xl sm:text-4xl lg:text-5xl font-bold text-[#1e291a] mb-1 sm:mb-2 leading-none">{s.value}</div>
+                  <div className="text-[9px] sm:text-[10px] font-sans font-semibold text-gray-400 uppercase tracking-[0.12em] leading-tight">{s.label}</div>
                   <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#f78d00] group-hover:w-full transition-all duration-500" />
                 </div>
               </ScrollAnimate>

@@ -14,7 +14,6 @@ const heroImages = [
   'https://images.unsplash.com/photo-1633509928027-f1c3b5dc1f92?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 ];
 
-// ─── Données univers pour le modal ───────────────────────────────────────────
 type UniversData = {
   id: string;
   label: string;
@@ -82,7 +81,6 @@ const UNIVERS_DATA: Record<string, UniversData> = {
   },
 };
 
-// ─── Mapping univers → filtre page producteurs ────────────────────────────────
 const UNIVERS_TO_FILTER: Record<string, string> = {
   cognac: 'Spiritueux',
   olive: 'Olives',
@@ -104,11 +102,9 @@ const Seminaires: React.FC = () => {
   const [hasTransport, setHasTransport] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  // Modal univers
   const [selectedUniversModal, setSelectedUniversModal] = useState<UniversData | null>(null);
   const [isUniversModalClosing, setIsUniversModalClosing] = useState(false);
-  
-  // États pour les champs du formulaire
+
   const [formData, setFormData] = useState({
     prenom: '',
     nom: '',
@@ -118,7 +114,7 @@ const Seminaires: React.FC = () => {
     periode: '',
     message: ''
   });
-  
+
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [autreRegion, setAutreRegion] = useState('');
   const [villeLibre, setVilleLibre] = useState('');
@@ -137,20 +133,27 @@ const Seminaires: React.FC = () => {
   const examplesScrollRef = useRef<HTMLDivElement>(null);
   const [examplesCardWidthPx, setExamplesCardWidthPx] = useState(0);
   const [selectedUniverse, setSelectedUniverse] = useState<string | null>(null);
-  
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+
   const CAROUSEL_GAP_PX = 32;
   const CAROUSEL_VISIBLE = 4.5;
   const CAROUSEL_VISIBLE_MOBILE = 1;
-  
+
+  // ── FIX : déclaré ici, AVANT les useEffect qui en dépendent ──────────────
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const cardWidthPx = isMobile && examplesCardWidthPx > 0
+    ? examplesCardWidthPx
+    : (examplesCardWidthPx > 0 ? examplesCardWidthPx : 280);
+
   useEffect(() => {
     const el = examplesCarouselRef.current;
     if (!el) return;
     const updateWidth = () => {
       const w = el.offsetWidth;
       if (w > 0) {
-        const isMobile = window.innerWidth < 640;
-        const visibleCards = isMobile ? CAROUSEL_VISIBLE_MOBILE : CAROUSEL_VISIBLE;
-        if (isMobile) {
+        const isMobileLocal = window.innerWidth < 640;
+        const visibleCards = isMobileLocal ? CAROUSEL_VISIBLE_MOBILE : CAROUSEL_VISIBLE;
+        if (isMobileLocal) {
           const containerPadding = 32;
           const cardWidth = w - containerPadding;
           setExamplesCardWidthPx(cardWidth);
@@ -169,7 +172,22 @@ const Seminaires: React.FC = () => {
       window.removeEventListener('resize', resizeHandler);
     };
   }, []);
-  
+
+  // Dots pill — suivi du scroll
+  useEffect(() => {
+    const el = examplesScrollRef.current;
+    if (!el) return;
+    const handleScroll = () => {
+      const isMobileLocal = window.innerWidth < 640;
+      const cardWidth = cardWidthPx + (isMobileLocal ? 16 : CAROUSEL_GAP_PX);
+      if (cardWidth <= 0) return;
+      const index = Math.round(el.scrollLeft / cardWidth);
+      setActiveCardIndex(index);
+    };
+    el.addEventListener('scroll', handleScroll, { passive: true });
+    return () => el.removeEventListener('scroll', handleScroll);
+  }, [cardWidthPx]);
+
   const scrollExamples = (direction: 'left' | 'right') => {
     const el = examplesScrollRef.current;
     if (!el) return;
@@ -196,7 +214,7 @@ const Seminaires: React.FC = () => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  
+
   useEffect(() => {
     const currentText = rotatingTexts[currentTextIndex];
     setDisplayedText('');
@@ -213,14 +231,14 @@ const Seminaires: React.FC = () => {
     }, 50);
     return () => clearInterval(typingInterval);
   }, [currentTextIndex]);
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTextIndex((prevIndex) => (prevIndex + 1) % rotatingTexts.length);
     }, 3000);
     return () => clearInterval(interval);
   }, [rotatingTexts.length]);
-  
+
   useEffect(() => {
     heroImages.forEach((imageUrl) => {
       const img = new Image();
@@ -234,7 +252,7 @@ const Seminaires: React.FC = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
-  
+
   const modalRef = useRef<HTMLDivElement>(null);
 
   const openModal = () => {
@@ -274,7 +292,6 @@ const Seminaires: React.FC = () => {
     }, 300);
   };
 
-  // Ouvrir modal univers
   const openUniversModal = (universId: string) => {
     const data = UNIVERS_DATA[universId];
     if (!data) return;
@@ -340,7 +357,7 @@ const Seminaires: React.FC = () => {
       setCurrentStep(prev => { const next = Math.min(prev + 1, 3); setIsTransitioning(false); return next; });
     }, 200);
   };
-  
+
   const prevStep = () => {
     setIsTransitioning(true);
     setTimeout(() => {
@@ -368,7 +385,7 @@ Nom: ${formData.nom}
 Email: ${formData.email}
 Entreprise: ${formData.entreprise}
 Nombre de participants: ${formData.participants}
-Période souhaitée: ${periodType === 'dates' 
+Période souhaitée: ${periodType === 'dates'
   ? (startDate && endDate ? `Du ${new Date(startDate).toLocaleDateString('fr-FR')} au ${new Date(endDate).toLocaleDateString('fr-FR')}` : 'Dates non renseignées')
   : (selectedMonths.length > 0 ? selectedMonths.join(', ') : 'Aucun mois sélectionné')}
 
@@ -457,13 +474,12 @@ ${formData.message || 'Aucun message'}
   ];
 
   const accTypes = ["Chambres seules", "Chambres partagées"];
-  
+
   const months = [
     "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
     "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
   ];
 
-  // Données des cartes exemples
   const exampleCards = [
     {
       image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/alambique.png",
@@ -530,11 +546,6 @@ ${formData.message || 'Aucun message'}
   const filteredCards = selectedUniverse
     ? exampleCards.filter(card => card.universes.includes(selectedUniverse))
     : exampleCards;
-
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const cardWidthPx = isMobile && examplesCardWidthPx > 0
-    ? examplesCardWidthPx
-    : (examplesCardWidthPx > 0 ? examplesCardWidthPx : 280);
 
   return (
     <div className="pt-24 font-sans bg-beige-bg min-h-screen">
@@ -612,7 +623,7 @@ ${formData.message || 'Aucun message'}
         </div>
       </section>
 
- {/* ── NOS GARANTIES ─────────────────────────────────────────────────────── */}
+      {/* ── NOS GARANTIES ─────────────────────────────────────────────────────── */}
       <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-6 sm:mb-14">
@@ -647,76 +658,74 @@ ${formData.message || 'Aucun message'}
         </div>
       </section>
 
-            {/* ── NOS FORMATS ───────────────────────────────────────────────────────── */}
-<section className="py-16 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-beige-bg">
-  <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="text-center mb-8 sm:mb-12">
-      <span className="inline-block px-3 py-1 bg-orange text-white font-bold tracking-[0.3em] uppercase text-[8px] sm:text-[9px] font-sans rounded-full shadow-md mb-2 sm:mb-4">
-        Nos formats
-      </span>
-      <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4 pb-2 min-h-[1.4em]">
-        <ScrollAnimate delay={200}>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-primary leading-none sm:leading-tight inline-block w-full sm:w-max whitespace-normal sm:whitespace-nowrap px-2 sm:px-0">
-            <span className="font-sans not-italic text-[0.8em] md:text-[0.8em]">Des formats pensés </span>
-            <span className="font-display italic">pour vos équipes</span>
-          </h2>
-        </ScrollAnimate>
-      </div>
-    </div>
-
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-      {[
-        {
-          icon: 'calendar_today',
-          tag: 'Format court',
-          label: 'À la journée',
-          text: 'Un format concentré pour (re)mettre du sens dans une journée hors du bureau, au contact direct du terroir.',
-          duration: '1 jour',
-          people: 'dès 10 pers.',
-        },
-        {
-          icon: 'event',
-          tag: 'Format immersif',
-          label: 'Sur 2 jours',
-          text: 'Deux jours pour alterner temps de travail, immersion dans les exploitations et moments de respiration en équipe.',
-          duration: '2 jours',
-          people: 'dès 10 pers.',
-        },
-        {
-          icon: 'design_services',
-          tag: 'Format plus',
-          label: 'Sur mesure',
-          text: 'Un séminaire entièrement construit avec vous : rythme, intensité, interventions et producteurs partenaires.',
-          duration: 'Durée libre',
-          people: 'toute taille',
-        },
-      ].map((item) => (
-        <div
-          key={item.label}
-          className="h-full rounded-2xl bg-white/80 border border-black/5 shadow-sm hover:shadow-premium hover:-translate-y-1 transition-all duration-300 p-5 sm:p-6 flex flex-col gap-3"
-        >
-          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-1">
-            <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+      {/* ── NOS FORMATS ───────────────────────────────────────────────────────── */}
+      <section className="py-16 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-beige-bg">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <span className="inline-block px-3 py-1 bg-orange text-white font-bold tracking-[0.3em] uppercase text-[8px] sm:text-[9px] font-sans rounded-full shadow-md mb-2 sm:mb-4">
+              Nos formats
+            </span>
+            <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4 pb-2 min-h-[1.4em]">
+              <ScrollAnimate delay={200}>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-primary leading-none sm:leading-tight inline-block w-full sm:w-max whitespace-normal sm:whitespace-nowrap px-2 sm:px-0">
+                  <span className="font-sans not-italic text-[0.8em] md:text-[0.8em]">Des formats pensés </span>
+                  <span className="font-display italic">pour vos équipes</span>
+                </h2>
+              </ScrollAnimate>
+            </div>
           </div>
-          <div className="text-[8px] font-bold uppercase tracking-[0.2em] text-orange">
-            {item.tag}
-          </div>
-          <h3 className="font-sans font-bold text-primary text-base sm:text-lg">
-            {item.label}
-          </h3>
-          <p className="text-gray-600 text-sm leading-relaxed flex-1">
-            {item.text}
-          </p>
-          <div className="mt-2 pt-4 border-t border-black/6 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400">
-            <span className="material-symbols-outlined text-sm">schedule</span>
-            <span>{item.duration} · {item.people}</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            {[
+              {
+                icon: 'calendar_today',
+                tag: 'Format court',
+                label: 'À la journée',
+                text: 'Un format concentré pour (re)mettre du sens dans une journée hors du bureau, au contact direct du terroir.',
+                duration: '1 jour',
+                people: 'dès 10 pers.',
+              },
+              {
+                icon: 'event',
+                tag: 'Format immersif',
+                label: 'Sur 2 jours',
+                text: 'Deux jours pour alterner temps de travail, immersion dans les exploitations et moments de respiration en équipe.',
+                duration: '2 jours',
+                people: 'dès 10 pers.',
+              },
+              {
+                icon: 'design_services',
+                tag: 'Format plus',
+                label: 'Sur mesure',
+                text: 'Un séminaire entièrement construit avec vous : rythme, intensité, interventions et producteurs partenaires.',
+                duration: 'Durée libre',
+                people: 'toute taille',
+              },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="h-full rounded-2xl bg-white/80 border border-black/5 shadow-sm hover:shadow-premium hover:-translate-y-1 transition-all duration-300 p-5 sm:p-6 flex flex-col gap-3"
+              >
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-1">
+                  <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+                </div>
+                <div className="text-[8px] font-bold uppercase tracking-[0.2em] text-orange">
+                  {item.tag}
+                </div>
+                <h3 className="font-sans font-bold text-primary text-base sm:text-lg">
+                  {item.label}
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed flex-1">
+                  {item.text}
+                </p>
+                <div className="mt-2 pt-4 border-t border-black/6 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400">
+                  <span className="material-symbols-outlined text-sm">schedule</span>
+                  <span>{item.duration} · {item.people}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
-
+      </section>
 
       {/* ── NOS UNIVERS ───────────────────────────────────────────────────────── */}
       <section id="nos-univers" className="py-16 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-gradient-to-b from-white to-beige-bg border-y border-black/10 scroll-mt-20">
@@ -731,7 +740,7 @@ ${formData.message || 'Aucun message'}
               </ScrollAnimate>
             </div>
           </div>
-          
+
           {/* Pills filtres */}
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10 sm:mb-12 px-4">
             {['le vin', 'la truffe', 'les olives', 'la lavande', 'le fromage de chèvre', 'les noix', 'le cognac'].map((product) => (
@@ -752,7 +761,7 @@ ${formData.message || 'Aucun message'}
               </div>
             ))}
           </div>
-          
+
           {/* Badge + flèches navigation */}
           <div className="mb-4 sm:mb-8 max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6">
             <div className="flex items-center justify-center gap-4 sm:gap-6 relative">
@@ -769,7 +778,7 @@ ${formData.message || 'Aucun message'}
               </div>
             </div>
           </div>
-          
+
           {/* Carousel */}
           <div className="relative w-screen left-1/2 -translate-x-1/2 pb-6 sm:pb-8">
             <div ref={examplesCarouselRef} className="w-screen mb-4 sm:mb-6 py-4 pb-4 sm:pb-6">
@@ -829,10 +838,24 @@ ${formData.message || 'Aucun message'}
               </div>
             </div>
           </div>
+
+          {/* Dots pill — mobile uniquement */}
+          <div className="sm:hidden flex justify-center items-center gap-1.5 pt-2 pb-4">
+            {filteredCards.map((_, idx) => (
+              <div
+                key={idx}
+                className="transition-all duration-300 rounded-full"
+                style={{
+                  width: idx === activeCardIndex ? 20 : 6,
+                  height: 6,
+                  background: idx === activeCardIndex ? '#f78d00' : 'rgba(0,0,0,0.12)',
+                }}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
-     
       {/* ── PLAQUETTE ─────────────────────────────────────────────────────────── */}
       <section className="py-14 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-primary/5 rounded-full -mr-24 -mt-24 blur-3xl" />
@@ -923,7 +946,6 @@ ${formData.message || 'Aucun message'}
               overflowY: 'auto',
             }}
           >
-            {/* Image header */}
             {(() => {
               const card = exampleCards.find(c => c.universId === selectedUniversModal.id);
               return (
@@ -934,20 +956,16 @@ ${formData.message || 'Aucun message'}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                   <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${selectedUniversModal.couleur} -10%, transparent 0%)` }} />
-                  {/* Close */}
                   <button
                     onClick={closeUniversModal}
                     style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.95)', border: 'none', borderRadius: '50%', width: 38, height: 38, cursor: 'pointer', fontSize: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#1e291a' }}
                   >×</button>
-                  {/* Badge */}
                   <div style={{ position: 'absolute', top: 16, left: 16, background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(8px)', borderRadius: 20, padding: '5px 12px', fontSize: 9.5, fontWeight: 700, color: '#fff', letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: 'inherit' }}>
                     {selectedUniversModal.badge}
                   </div>
-                  {/* Titre bold */}
                   <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20, fontSize: 'clamp(18px, 3vw, 28px)', fontWeight: 900, color: '#fff', lineHeight: 1.05, textTransform: 'uppercase', letterSpacing: '-0.01em', textShadow: '0 2px 12px rgba(0,0,0,0.4)', fontFamily: 'inherit' }}>
                     {selectedUniversModal.label}
                   </div>
-                  {/* Avatar */}
                   {card?.producerImage && (
                     <img
                       src={card.producerImage}
@@ -958,8 +976,6 @@ ${formData.message || 'Aucun message'}
                 </div>
               );
             })()}
-
-            {/* Body */}
             <div style={{ padding: '32px 28px 28px', fontFamily: 'inherit' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8 }}>
                 <div style={{ fontSize: 22, fontWeight: 800, color: '#1e291a' }}>
@@ -981,8 +997,6 @@ ${formData.message || 'Aucun message'}
                   ))}
                 </ul>
               </div>
-
-              {/* Bouton devis */}
               <button
                 onClick={() => { closeUniversModal(); openModal(); }}
                 style={{ width: '100%', background: '#1e291a', color: '#fff', border: 'none', borderRadius: 14, padding: '15px', fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.2s' }}
@@ -991,8 +1005,6 @@ ${formData.message || 'Aucun message'}
               >
                 Demander un devis pour cet univers →
               </button>
-
-              {/* Bouton producteurs partenaires */}
               {UNIVERS_TO_FILTER[selectedUniversModal.id] && (
                 <button
                   onClick={() => {
@@ -1001,20 +1013,10 @@ ${formData.message || 'Aucun message'}
                     navigate(`/partenaires?filter=${encodeURIComponent(filter)}`);
                   }}
                   style={{
-                    width: '100%',
-                    marginTop: 10,
-                    background: 'rgba(247,141,0,0.08)',
-                    color: '#f78d00',
-                    border: '1.5px solid rgba(247,141,0,0.3)',
-                    borderRadius: 14,
-                    padding: '13px',
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    transition: 'background 0.2s, color 0.2s',
+                    width: '100%', marginTop: 10, background: 'rgba(247,141,0,0.08)', color: '#f78d00',
+                    border: '1.5px solid rgba(247,141,0,0.3)', borderRadius: 14, padding: '13px', fontSize: 12,
+                    fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer',
+                    fontFamily: 'inherit', transition: 'background 0.2s, color 0.2s',
                   }}
                   onMouseOver={e => { e.currentTarget.style.background = '#f78d00'; e.currentTarget.style.color = '#fff'; }}
                   onMouseOut={e => { e.currentTarget.style.background = 'rgba(247,141,0,0.08)'; e.currentTarget.style.color = '#f78d00'; }}
@@ -1044,7 +1046,6 @@ ${formData.message || 'Aucun message'}
             }`}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
             <div className="px-6 md:px-10 py-4 md:py-6 bg-white border-b border-black/5 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
                 <div className="size-8 md:size-10 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg shrink-0">
@@ -1066,7 +1067,6 @@ ${formData.message || 'Aucun message'}
               </button>
             </div>
 
-            {/* Erreur */}
             {errorMessage && (
               <div className="px-6 md:px-12 pt-4 shrink-0 animate-in fade-in">
                 <div className="bg-orange/10 border border-orange/30 rounded-xl px-4 py-3 flex items-center gap-3">
@@ -1079,7 +1079,6 @@ ${formData.message || 'Aucun message'}
               </div>
             )}
 
-            {/* Progression */}
             <div className={`px-6 md:px-12 ${errorMessage ? 'pt-4' : 'pt-6'} md:pt-8 shrink-0`}>
               <div className="flex items-center justify-between mb-3 px-1 gap-2">
                 <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-orange shrink-0">Étape {currentStep} <span className="text-gray-200 mx-1 md:mx-2">/</span> 3</span>
@@ -1092,7 +1091,6 @@ ${formData.message || 'Aucun message'}
               </div>
             </div>
 
-            {/* Succès */}
             {submitSuccess && (
               <div className="absolute inset-0 bg-white/95 backdrop-blur-sm flex items-center justify-center z-20 rounded-[1.5rem] md:rounded-[2.5rem]">
                 <div className="text-center p-8">
@@ -1105,7 +1103,6 @@ ${formData.message || 'Aucun message'}
               </div>
             )}
 
-            {/* Contenu étapes */}
             <div className="flex-1 overflow-y-auto p-6 md:p-12 custom-scrollbar">
               <div className="max-w-4xl mx-auto">
                 {currentStep === 1 && (
@@ -1256,7 +1253,6 @@ ${formData.message || 'Aucun message'}
               </div>
             </div>
 
-            {/* Footer */}
             <div className="px-6 md:px-12 py-3 md:py-4 bg-beige-bg/20 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
               <button disabled={currentStep === 1} onClick={prevStep} className={`text-[9px] md:text-[10px] font-bold flex items-center gap-2 md:gap-3 tracking-[0.2em] uppercase transition-all font-sans group w-full sm:w-auto justify-center sm:justify-start ${currentStep === 1 ? 'opacity-0 pointer-events-none' : 'text-primary hover:text-primary/70'}`}>
                 <span className="material-symbols-outlined text-base md:text-lg transition-transform group-hover:-translate-x-1">west</span> Précédent
@@ -1278,8 +1274,6 @@ ${formData.message || 'Aucun message'}
     </div>
   );
 };
-
-// ── Composants utilitaires ────────────────────────────────────────────────────
 
 const FormInput = ({ label, placeholder, type = "text", icon, value, onChange, required = false }: any) => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -1324,10 +1318,9 @@ const PillarCard = ({ icon, title, text }: any) => (
 const UniverseCard = ({ image, title, desc, tags, producerImage, boldLabel, onOpenModal }: any) => (
   <div
     className="group relative bg-white rounded-xl sm:rounded-2xl transition-all duration-500 border border-black/5 flex flex-col cursor-pointer overflow-hidden"
-    style={{ height: 480 , boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
+    style={{ height: 480, boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
     onClick={onOpenModal}
   >
-    {/* Image */}
     <div className="relative flex-shrink-0 overflow-hidden" style={{ height: 220 }}>
       <img
         src={image}
@@ -1335,13 +1328,9 @@ const UniverseCard = ({ image, title, desc, tags, producerImage, boldLabel, onOp
         alt={title}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
-
-      {/* Badge localisation */}
       <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-md">
         <p className="text-[7px] sm:text-[8px] font-bold text-primary uppercase tracking-wider font-sans">{desc}</p>
       </div>
-
-      {/* Titre BOLD */}
       <div className="absolute bottom-10 left-4 right-4">
         <p
           className="font-sans font-black text-white uppercase leading-none"
@@ -1351,8 +1340,6 @@ const UniverseCard = ({ image, title, desc, tags, producerImage, boldLabel, onOp
         </p>
       </div>
     </div>
-
-    {/* Avatar — hors du div image pour ne pas être coupé */}
     {producerImage && (
       <div
         className="absolute z-20 rounded-full border-4 border-white shadow-md ring-2 ring-black/10 bg-white overflow-hidden"
@@ -1361,14 +1348,11 @@ const UniverseCard = ({ image, title, desc, tags, producerImage, boldLabel, onOp
         <img src={producerImage} alt="" className="w-full h-full object-cover" />
       </div>
     )}
-
-    {/* Infos */}
     <div className="relative flex flex-col px-4 sm:px-5 pt-10 pb-4" style={{ flex: 1 }}>
       <div className="flex items-center gap-2 mb-3">
         <div className="w-1 h-6 bg-primary group-hover:bg-orange rounded-full flex-shrink-0 transition-colors duration-300" />
         <h3 className="text-base font-sans font-bold text-primary not-italic leading-tight group-hover:text-orange transition-colors duration-300">{title}</h3>
       </div>
-
       <div className="flex flex-col gap-2" style={{ minHeight: 120 }}>
         {tags.map((tag: string) => (
           <div key={tag} className="flex items-start gap-2">
@@ -1377,12 +1361,10 @@ const UniverseCard = ({ image, title, desc, tags, producerImage, boldLabel, onOp
           </div>
         ))}
       </div>
-
       <div className="mt-auto pt-3 border-t border-black/5 flex items-center justify-between">
         <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Voir le détail</span>
         <span className="text-[10px] font-bold text-orange">→</span>
       </div>
-
       <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   </div>
