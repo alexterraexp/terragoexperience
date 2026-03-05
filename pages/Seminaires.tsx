@@ -655,9 +655,10 @@ ${formData.message || 'Aucun message'}
             {[
               { icon: 'groups', label: 'Rencontres authentiques', text: 'Visites et échanges avec des producteurs engagés.' },
               { icon: 'eco', label: 'Sensibilisation environnementale', text: 'Sensibilisation aux valeurs de durabilité, du vivant et du savoir-faire local.' },
-              { icon: 'restaurant', label: "Du champ à l'assiette", text: 'Tous vos repas deviennent des expériences gourmandes et locales.' },
+              { icon: 'restaurant', label: "Tissu local", text: 'Savourez le vrai : vos repas soutiennent directement les producteurs et acteurs locaux.' },
               { icon: 'nature', label: 'Cadre ressourçant', text: 'Se réunir au vert dans un lieu inspirant.' },
               { icon: 'diversity_3', label: 'Cohésion sur mesure', text: 'Activités pensées pour renforcer les liens.' },
+              { icon: 'key', label: 'Clé en main', text: 'Une logistique invisible pour des expériences inoubliables.' },
             ].map((item) => (
               <li key={item.icon} className="group flex items-start gap-4 p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-beige-bg/60 border border-black/5 hover:border-primary/20 hover:shadow-premium transition-all duration-300">
                 <div className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-300">
@@ -1383,6 +1384,6 @@ const UniverseCard = ({ image, title, desc, tags, producerImage, boldLabel, onOp
       <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   </div>
-);
+); 
 
 export default Seminaires;
