@@ -136,42 +136,48 @@ const Seminaires: React.FC = () => {
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   const CAROUSEL_GAP_PX = 32;
-  const CAROUSEL_VISIBLE = 4.5;
+  const CAROUSEL_VISIBLE_LG = 4.5;
+  const CAROUSEL_VISIBLE_TABLET = 2;
   const CAROUSEL_VISIBLE_MOBILE = 1;
+  const CARD_MIN_WIDTH_PX = 280;
 
   // ── FIX : déclaré ici, AVANT les useEffect qui en dépendent ──────────────
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const cardWidthPx = isMobile && examplesCardWidthPx > 0
-    ? examplesCardWidthPx
-    : (examplesCardWidthPx > 0 ? examplesCardWidthPx : 280);
-
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < 640 : false
+  );
+  
   useEffect(() => {
-    const el = examplesCarouselRef.current;
-    if (!el) return;
-    const updateWidth = () => {
-      const w = el.offsetWidth;
-      if (w > 0) {
-        const isMobileLocal = window.innerWidth < 640;
-        const visibleCards = isMobileLocal ? CAROUSEL_VISIBLE_MOBILE : CAROUSEL_VISIBLE;
-        if (isMobileLocal) {
-          const containerPadding = 32;
-          const cardWidth = w - containerPadding;
-          setExamplesCardWidthPx(cardWidth);
-        } else {
-          setExamplesCardWidthPx((w - (visibleCards - 1) * CAROUSEL_GAP_PX) / visibleCards);
-        }
-      }
-    };
-    updateWidth();
-    const ro = new ResizeObserver(updateWidth);
-    const resizeHandler = () => updateWidth();
-    window.addEventListener('resize', resizeHandler);
-    ro.observe(el);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener('resize', resizeHandler);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+  
+  const cardWidthPx = examplesCardWidthPx > 0 ? examplesCardWidthPx : CARD_MIN_WIDTH_PX;
+
+    useEffect(() => {
+      const el = examplesCarouselRef.current;
+      if (!el) return;
+      const updateWidth = () => {
+        const w = el.offsetWidth;
+        if (w > 0) {
+          const winW = typeof window !== 'undefined' ? window.innerWidth : 1200;
+          const isMobileLocal = winW < 640;
+          if (isMobileLocal) {
+            const cardWidth = w * 0.70; // 82% de la largeur écran
+            setExamplesCardWidthPx(Math.max(CARD_MIN_WIDTH_PX, cardWidth));
+            }
+        }
+      };
+      updateWidth();
+      const ro = new ResizeObserver(updateWidth);
+      const resizeHandler = () => updateWidth();
+      window.addEventListener('resize', resizeHandler);
+      ro.observe(el);
+      return () => {
+        ro.disconnect();
+        window.removeEventListener('resize', resizeHandler);
+      };
+    }, []);
 
   // Dots pill — suivi du scroll
   useEffect(() => {
@@ -191,7 +197,7 @@ const Seminaires: React.FC = () => {
   const scrollExamples = (direction: 'left' | 'right') => {
     const el = examplesScrollRef.current;
     if (!el) return;
-    const step = (examplesCardWidthPx > 0 ? examplesCardWidthPx : 280) + CAROUSEL_GAP_PX;
+    const step = (examplesCardWidthPx > 0 ? examplesCardWidthPx : CARD_MIN_WIDTH_PX) + CAROUSEL_GAP_PX;
     el.scrollBy({ left: direction === 'left' ? -step : step, behavior: 'smooth' });
   };
 
@@ -787,8 +793,8 @@ ${formData.message || 'Aucun message'}
                 className="no-scrollbar flex overflow-x-scroll overflow-y-visible py-2 -my-2 pb-4 sm:pb-6 scroll-smooth"
                 style={{
                   gap: isMobile ? 16 : CAROUSEL_GAP_PX,
-                  paddingLeft: isMobile ? 16 : 48,
-                  paddingRight: isMobile ? 16 : 48,
+                  paddingLeft: isMobile ? (window.innerWidth - examplesCardWidthPx) / 2 : 48,
+                  paddingRight: isMobile ? (window.innerWidth - examplesCardWidthPx) / 2 : 48, 
                   scrollbarWidth: 'none',
                   msOverflowStyle: 'none',
                   WebkitOverflowScrolling: 'touch',
