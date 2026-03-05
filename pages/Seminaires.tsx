@@ -714,7 +714,7 @@ ${formData.message || 'Aucun message'}
                 label: 'Sur mesure',
                 text: 'Un séminaire entièrement construit avec vous : rythme, intensité, interventions et producteurs partenaires.',
                 duration: 'Durée libre',
-                people: 'toute taille',
+                people: 'tout effectif',
               },
             ].map((item) => (
               <div
