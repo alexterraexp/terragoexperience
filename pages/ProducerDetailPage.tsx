@@ -59,7 +59,7 @@ const ProducerDetailPage: React.FC = () => {
   if (error) return (
     <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', minHeight: '100vh', paddingTop: 120, textAlign: 'center' }}>
       <p style={{ fontSize: 18, color: '#b91c1c', marginBottom: 24 }}>{error}</p>
-      <button type="button" onClick={() => navigate('/producteurs')} style={{ background: '#1e291a', color: '#fff', padding: '12px 24px', borderRadius: 12, fontWeight: 600, border: 'none', cursor: 'pointer' }}>← Retour</button>
+      <button type="button" onClick={() => navigate('/partenaires')} style={{ background: '#1e291a', color: '#fff', padding: '12px 24px', borderRadius: 12, fontWeight: 600, border: 'none', cursor: 'pointer' }}>← Retour</button>
     </div>
   );
 
@@ -75,7 +75,7 @@ const ProducerDetailPage: React.FC = () => {
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(30,41,26,0.9) 0%, rgba(30,41,26,0.3) 60%, transparent 100%)' }} />
 
         {/* Bouton retour — bas gauche */}
-        <button type="button" onClick={() => navigate('/producteurs')} style={{ position: 'absolute', bottom: 24, left: 24, zIndex: 10, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', borderRadius: 12, padding: '8px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'inherit' }}>
+        <button type="button" onClick={() => navigate('/partenaires')} style={{ position: 'absolute', bottom: 24, left: 24, zIndex: 10, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', borderRadius: 12, padding: '8px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'inherit' }}>
           ← Tous les producteurs
         </button>
 

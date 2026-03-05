@@ -24,16 +24,17 @@ const Footer: React.FC = () => {
           <div>
             <h6 className="font-bold text-sm mb-6 uppercase tracking-widest">Plateforme</h6>
             <ul className="flex flex-col gap-4 text-sm text-gray-500">
-              <li><Link to="/seminaires" className="hover:text-primary">Séminaires</Link></li>
+              <li><Link to="/entreprises" className="hover:text-primary">Séminaires</Link></li>
               <li><Link to="/particuliers" className="hover:text-primary">Entre amis</Link></li>
-              <li><Link to="/nous-rejoindre" className="hover:text-primary">Devenir partenaire</Link></li>
-              <li><Link to="/recommander-un-producteur" className="hover:text-primary">Recommander un producteur</Link></li>
+              <li><Link to="/partenaires" className="hover:text-primary">Producteurs partenaires</Link></li>
+              <li><Link to="/notre-engagement" className="hover:text-primary">Notre engagement</Link></li>
             </ul>
           </div>
           <div>
             <h6 className="font-bold text-sm mb-6 uppercase tracking-widest">À propos</h6>
             <ul className="flex flex-col gap-4 text-sm text-gray-500">
-              <li><Link to="/notre-engagement" className="hover:text-primary">Notre Engagement</Link></li>
+              <li><Link to="/nous-rejoindre" className="hover:text-primary">Devenir partenaire</Link></li>
+              <li><Link to="/recommander-un-producteur" className="hover:text-primary">Recommander un producteur</Link></li>
               <li><a href="mailto:terragoexperiences@gmail.com" className="hover:text-primary transition-colors">Nous contacter</a></li>
             </ul>
           </div>

@@ -110,7 +110,7 @@ const Home: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-700">
               <div className="relative w-full max-w-[280px] sm:max-w-none sm:w-auto mt-10 sm:mt-0">
                 <Link
-                  to="/seminaires"
+                  to="/entreprises"
                   className="w-full sm:w-auto bg-white/30 backdrop-blur-md text-white px-4 sm:px-8 py-3 sm:py-4 rounded-2xl text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-premium transition-all duration-500 flex items-center gap-1.5 sm:gap-2 justify-center hover:shadow-premium-hover hover:scale-105 active:scale-95 relative overflow-hidden group border border-white/20"
                 >
                   <span className="relative z-10 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
@@ -181,7 +181,7 @@ const Home: React.FC = () => {
             </p>
           <div className="flex flex-col gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-5 max-w-[320px] sm:max-w-none mx-auto sm:mx-0">
             <Link
-              to="/seminaires"
+              to="/entreprises"
               className="group relative bg-white rounded-xl sm:rounded-2xl border border-black/5 shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300 p-3 sm:p-6 flex flex-col w-full"
             >
               <div className="aspect-[3/2] rounded-lg sm:rounded-xl overflow-hidden mb-3 sm:mb-4 bg-beige-bg">
@@ -220,7 +220,7 @@ const Home: React.FC = () => {
           </div>
 
           {/* 2. Des formats pour tous les produits de nos terroirs */}
-          <div className="text-center">
+          <div className="text-center mb-10 sm:mb-12">
             <ScrollAnimate delay={200}>
               <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 mb-6 inline-block w-full sm:w-max whitespace-normal text-center">
                 <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des formats pour tous les produits de </span><span className="font-display italic font-bold">nos terroirs</span>
@@ -252,7 +252,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Des rencontres avant tout — style GreenGo : cartes portrait */}
-      <section className="py-16 sm:py-20 bg-white scroll-mt-24" id="rencontres">
+      <section className="py-16 sm:py-20 pb-24 sm:pb-32 bg-white scroll-mt-24" id="rencontres">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="text-center mb-4">
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Rencontres</span>
@@ -326,47 +326,51 @@ const Home: React.FC = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-10 sm:py-14 bg-beige-bg relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-primary/5 rounded-full -mr-32 sm:-mr-48 -mt-32 sm:-mt-48 blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-orange/5 rounded-full -ml-32 sm:-ml-48 -mb-32 sm:-mb-48 blur-3xl"></div>
+<section className="py-16 sm:py-24 bg-white relative overflow-hidden">
+  <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-primary/5 rounded-full -mr-32 sm:-mr-48 -mt-32 sm:-mt-48 blur-3xl"></div>
+  <div className="absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-orange/5 rounded-full -ml-32 sm:-ml-48 -mb-32 sm:-mb-48 blur-3xl"></div>
 
-        <div className="max-w-[1100px] mx-auto px-3 sm:px-4 lg:px-6 relative z-10">
-          <div className="glass rounded-[1.75rem] sm:rounded-[2rem] p-5 sm:p-6 md:p-8 border border-white/30 shadow-premium text-center hover:shadow-premium-hover transition-all duration-500">
-            <div className="inline-block p-3 sm:p-3.5 rounded-xl bg-orange text-white mb-3 sm:mb-4 shadow-lg animate-float">
-              <span className="material-symbols-outlined text-xl sm:text-2xl">mail</span>
-            </div>
-            
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-primary italic mb-2 sm:mb-3">
-              Vous voulez être tenu au courant de notre évolution ?
-            </h2>
-            
-            <p className="text-gray-600 text-xs sm:text-sm md:text-base font-medium mb-5 sm:mb-6 max-w-xl mx-auto leading-relaxed">
-              Laissez-nous votre email, et nous vous enverrons les news de Terrago.
-            </p>
+  <div className="max-w-5xl mx-auto px-8 sm:px-12 lg:px-16 relative z-10">
+    <div className="glass group/card rounded-[2rem] sm:rounded-[2.5rem] p-10 sm:p-14 md:p-16 border border-black/5 shadow-lg text-center transition-all duration-500">
 
-            <form className="max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <input 
-                  type="email" 
-                  placeholder="Votre adresse email" 
-                  className="flex-1 bg-white/80 border border-black/10 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-primary/30 focus:bg-white transition-all shadow-sm"
-                  required
-                />
-                <button 
-                  type="submit" 
-                  className="gradient-primary text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-[0.2em] text-[10px] shadow-premium hover:shadow-orange-glow transition-all active:scale-95 relative overflow-hidden group"
-                >
-                  <span className="relative z-10">Envoyer</span>
-                  <span className="absolute inset-0 bg-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                </button>
-              </div>
-              <p className="mt-4 text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-widest font-bold">
-                100% français & authentique • Pas de Spam
-              </p>
-            </form>
-          </div>
+      <div className="inline-block p-3 sm:p-3.5 rounded-xl bg-orange text-white mb-5 sm:mb-6 shadow-lg transition-transform duration-300 group-hover/card:scale-110 group-hover/card:rotate-6">
+        <span className="material-symbols-outlined text-xl sm:text-2xl">mail</span>
+      </div>
+
+      <h2 style={{ margin: '0 0 12px', lineHeight: 1.3 }}>
+        <span style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 26, color: 'inherit' }}>Vous voulez être tenu au courant de </span>
+        <span style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 700, fontSize: 36, color: 'inherit' }}>notre évolution ?</span>
+      </h2>
+
+      <p className="text-gray-600 text-xs sm:text-sm md:text-base font-medium mb-8 sm:mb-10 max-w-xl mx-auto leading-relaxed">
+        Laissez-nous votre email, et nous vous enverrons les news de Terrago.
+      </p>
+
+      <form className="max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <input
+            type="email"
+            placeholder="Votre adresse email"
+            className="flex-1 bg-white border border-black/10 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-primary/30 focus:bg-white transition-all shadow-sm"
+            required
+          />
+          <button
+            type="submit"
+            className="gradient-primary text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-[0.2em] text-[10px] shadow-premium hover:shadow-orange-glow transition-all active:scale-95 relative overflow-hidden group/btn"
+          >
+            <span className="relative z-10">Envoyer</span>
+            <span className="absolute inset-0 bg-orange opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></span>
+          </button>
         </div>
-      </section>
+        <p className="mt-4 text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+          100% français & authentique • Pas de Spam
+        </p>
+      </form>
+
+    </div>
+  </div>
+</section>
+
     </div>
   );
 };

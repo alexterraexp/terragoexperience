@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { IMAGES } from '../constants';
 import CustomSelect from '../components/CustomSelect';
 import ParticipantsSelect from '../components/ParticipantsSelect';
@@ -33,7 +33,7 @@ const UNIVERS_DATA: Record<string, UniversData> = {
     description: "Des vignes aux alambics de cuivre, vivez la magie de la double distillation dans les chais centenaires de la Charente.",
     activites: ['Participation aux vendanges', 'Fabrication de son propre pineau', 'Visite des chais et alambics', 'Golf entre les vignes'],
     saison: "Toute l'année",
-    couleur: '#7a3b10',
+    couleur: '#rgb(92, 42, 9)',
   },
   olive: {
     id: 'olive',
@@ -42,7 +42,7 @@ const UNIVERS_DATA: Record<string, UniversData> = {
     description: "Sous les oliviers centenaires de Provence, découvrez comment naît une huile d'exception, entre lavande et soleil.",
     activites: ['Apprentissage et récolte des olives', 'Fabrication de son huile', 'Récolte de lavandes fines', "Distillation de son parfum d'ambiance"],
     saison: 'Octobre – Décembre',
-    couleur: '#5a7a2e',
+    couleur: 'rgb(72, 107, 9)',
   },
   noix: {
     id: 'noix',
@@ -51,7 +51,7 @@ const UNIVERS_DATA: Record<string, UniversData> = {
     description: "Parmi les noyers centenaires, apprenez la récolte et la fabrication d'une huile de noix artisanale d'une finesse rare.",
     activites: ['Apprentissage et récolte des noix', 'Fabrication de son huile/vin de noix', 'Session Trail dans un cadre magnifique'],
     saison: 'Septembre – Novembre',
-    couleur: '#6b3f1a',
+    couleur: 'rgb(161, 68, 7)',
   },
   truffe: {
     id: 'truffe',
@@ -60,7 +60,7 @@ const UNIVERS_DATA: Record<string, UniversData> = {
     description: "Partez à la découverte du champignon le plus mystérieux de France avec un trufficulteur passionné au cœur du Périgord.",
     activites: ['Cavage et découverte de la truffe', 'Atelier cuisine autour de la truffe', 'Ferme florale et potager', 'Dégustation de produits truffés'],
     saison: 'Décembre – Mars',
-    couleur: '#2d1b0e',
+    couleur: 'rgb(104, 102, 42)',
   },
   fromage: {
     id: 'fromage',
@@ -69,7 +69,7 @@ const UNIVERS_DATA: Record<string, UniversData> = {
     description: "Vivez une journée complète dans une ferme caprine : soins aux bêtes, fabrication du fromage et dégustation en plein air.",
     activites: ['Soins aux chèvres', 'Fabrication du fromage', 'Dégustation à la ferme', 'Visite de cave'],
     saison: "Toute l'année",
-    couleur: '#c8a44a',
+    couleur: 'rgb(177, 146, 7)',
   },
   vin: {
     id: 'vin',
@@ -78,11 +78,22 @@ const UNIVERS_DATA: Record<string, UniversData> = {
     description: "Les mains dans la terre, entre vignes et ciel provençal, vivez l'aventure viticole au pied du Mont Ventoux.",
     activites: ['Les mains dans la terre', 'Activité autour de la vigne', 'Soirée soleil et guinguette', 'Excursion vélo au Mont Ventoux'],
     saison: 'Avril – Octobre',
-    couleur: '#5c2d7e',
+    couleur: 'rgb(106, 13, 13))',
   },
 };
 
+// ─── Mapping univers → filtre page producteurs ────────────────────────────────
+const UNIVERS_TO_FILTER: Record<string, string> = {
+  cognac: 'Spiritueux',
+  olive: 'Olives',
+  noix: 'Noix',
+  truffe: 'Truffes',
+  fromage: 'Élevages',
+  vin: 'Vins',
+};
+
 const Seminaires: React.FC = () => {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -250,7 +261,7 @@ const Seminaires: React.FC = () => {
     const params = new URLSearchParams(location.search);
     if (params.get('openModal') === 'true') {
       openModal();
-      window.history.replaceState({}, '', '/seminaires');
+      window.history.replaceState({}, '', '/entreprises');
     }
   }, [location.search]);
 
@@ -454,12 +465,66 @@ ${formData.message || 'Aucun message'}
 
   // Données des cartes exemples
   const exampleCards = [
-    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/alambique.png", title: "Cognac & Pineau", desc: "Proche de Cognac", tags: ["Participation aux vendanges", "Fabrication de son propre pineau", "Golf entre les vignes"], producerImage: "/images/producteurs/cognacJF.png", universes: ["le cognac"], universId: "cognac", boldLabel: "AUTOUR DU COGNAC" },
-    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO4.png", title: "Olives & lavande", desc: "proche d'Aix-en-Provence", tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"], producerImage: "/images/producteurs/olivepaolo.png", universes: ["les olives", "la lavande"], universId: "olive", boldLabel: "AUTOUR DE L'OLIVE" },
-    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/noix.png", title: "Noix & compagnie", desc: "Proche d'Orléans | Valence", tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Session Trail dans un cadre magnifique"], producerImage: "/images/producteurs/noixsabinemarie.jpeg", universes: ["les noix"], universId: "noix", boldLabel: "AUTOUR DE LA NOIX" },
-    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/truffe.png", title: "Truffe & terroir", desc: "Proche de Tours", tags: ["Cavage et découverte de la truffe", "Atelier cuisine", "Ferme florale et potager"], producerImage: "/images/producteurs/truffeprod.png", universes: ["la truffe"], universId: "truffe", boldLabel: "AUTOUR DE LA TRUFFE" },
-    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/chevres.png", title: "Fromage de chèvre", desc: "Proche d'Aix-en-Provence", tags: ["Soins aux chèvres", "Fabrication du fromage", "Dégustation à la ferme"], producerImage: "/images/producteurs/chevre-bebe.jpg", universes: ["le fromage de chèvre"], universId: "fromage", boldLabel: "AUTOUR DU FROMAGE" },
-    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/cognac.jpg", title: "Vin AOC Ventoux", desc: "Proch de Valence", tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"], producerImage: "/images/producteurs/vincombeaumas.png", universes: ["le vin"], universId: "vin", boldLabel: "AUTOUR DU VIN" },
+    {
+      image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/alambique.png",
+      title: "Cognac & Pineau",
+      desc: "Proche de Cognac",
+      tags: ["Participation aux vendanges", "Fabrication de son propre pineau", "Golf entre les vignes"],
+      producerImage: "/images/producteurs/cognacJF.png",
+      universes: ["le cognac"],
+      universId: "cognac",
+      boldLabel: "AUTOUR DU COGNAC",
+    },
+    {
+      image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO4.png",
+      title: "Olives & lavande",
+      desc: "proche d'Aix-en-Provence",
+      tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"],
+      producerImage: "/images/producteurs/olivepaolo.png",
+      universes: ["les olives", "la lavande"],
+      universId: "olive",
+      boldLabel: "AUTOUR DE L'OLIVE",
+    },
+    {
+      image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/noix.png",
+      title: "Noix & compagnie",
+      desc: "Proche d'Orléans | Valence",
+      tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Session Trail dans un cadre magnifique"],
+      producerImage: "/images/producteurs/noixsabinemarie.jpeg",
+      universes: ["les noix"],
+      universId: "noix",
+      boldLabel: "AUTOUR DE LA NOIX",
+    },
+    {
+      image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/truffe.png",
+      title: "Truffe & terroir",
+      desc: "Proche de Tours",
+      tags: ["Cavage et découverte de la truffe", "Atelier cuisine", "Ferme florale et potager"],
+      producerImage: "/images/producteurs/truffeprod.png",
+      universes: ["la truffe"],
+      universId: "truffe",
+      boldLabel: "AUTOUR DE LA TRUFFE",
+    },
+    {
+      image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/chevres.png",
+      title: "Fromage de chèvre",
+      desc: "Proche d'Aix-en-Provence",
+      tags: ["Soins aux chèvres", "Fabrication du fromage", "Dégustation à la ferme"],
+      producerImage: "/images/producteurs/chevre-bebe.jpg",
+      universes: ["le fromage de chèvre"],
+      universId: "fromage",
+      boldLabel: "AUTOUR DU FROMAGE",
+    },
+    {
+      image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/cognac.jpg",
+      title: "Vin AOC Ventoux",
+      desc: "Proch de Valence",
+      tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"],
+      producerImage: "/images/producteurs/vincombeaumas.png",
+      universes: ["le vin"],
+      universId: "vin",
+      boldLabel: "AUTOUR DU VIN",
+    },
   ];
 
   const filteredCards = selectedUniverse
@@ -513,7 +578,7 @@ ${formData.message || 'Aucun message'}
               <span className="relative z-10">Organiser votre séminaire</span>
             </button>
             <Link
-              to="/seminaires?scroll=nos-univers"
+              to="/entreprises?scroll=nos-univers"
               className="text-white border-b-2 border-white/50 hover:border-white px-3 py-1.5 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] font-bold transition-all flex items-center justify-center"
             >
               Découvrir nos univers
@@ -528,7 +593,7 @@ ${formData.message || 'Aucun message'}
           <p className="mt-2 mb-2 sm:mb-4 text-primary/90 text-xs tracking-[0.4em]">⭐⭐⭐⭐⭐</p>
           <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-2 sm:mb-4 rounded-full shadow-md">5 étoiles</span>
           <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4 pb-2 min-h-[1.4em]">
-            <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-normal inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap px-0">
+            <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-6xl font-bold text-primary leading-normal inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap px-0">
               <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des séminaires </span><span className="font-display italic">5 étoiles</span>
             </h2>
           </div>
@@ -552,7 +617,7 @@ ${formData.message || 'Aucun message'}
             <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-2 sm:mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Univers</span>
             <div className="overflow-x-auto no-scrollbar text-center">
               <ScrollAnimate delay={150}>
-                <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-tight px-0 inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap">
+                <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold text-primary leading-tight px-0 inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap">
                   <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Nos premiers </span><span className="font-display italic">univers</span>
                 </h2>
               </ScrollAnimate>
@@ -784,7 +849,7 @@ ${formData.message || 'Aucun message'}
               overflowY: 'auto',
             }}
           >
-            {/* Image header — on réutilise l'image de la carte via une map */}
+            {/* Image header */}
             {(() => {
               const card = exampleCards.find(c => c.universId === selectedUniversModal.id);
               return (
@@ -794,7 +859,7 @@ ${formData.message || 'Aucun message'}
                     alt={selectedUniversModal.label}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
-                  <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${selectedUniversModal.couleur}f0 0%, rgba(0,0,0,0.2) 100%)` }} />
+                  <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${selectedUniversModal.couleur} -10%, transparent 0%)` }} />
                   {/* Close */}
                   <button
                     onClick={closeUniversModal}
@@ -842,12 +907,47 @@ ${formData.message || 'Aucun message'}
                   ))}
                 </ul>
               </div>
+
+              {/* Bouton devis */}
               <button
                 onClick={() => { closeUniversModal(); openModal(); }}
-                style={{ width: '100%', background: '#1e291a', color: '#fff', border: 'none', borderRadius: 14, padding: '15px', fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit' }}
+                style={{ width: '100%', background: '#1e291a', color: '#fff', border: 'none', borderRadius: 14, padding: '15px', fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.2s' }}
+                onMouseOver={e => (e.currentTarget.style.background = '#2b3825')}
+                onMouseOut={e => (e.currentTarget.style.background = '#1e291a')}
               >
                 Demander un devis pour cet univers →
               </button>
+
+              {/* Bouton producteurs partenaires */}
+              {UNIVERS_TO_FILTER[selectedUniversModal.id] && (
+                <button
+                  onClick={() => {
+                    const filter = UNIVERS_TO_FILTER[selectedUniversModal.id];
+                    closeUniversModal();
+                    navigate(`/partenaires?filter=${encodeURIComponent(filter)}`);
+                  }}
+                  style={{
+                    width: '100%',
+                    marginTop: 10,
+                    background: 'rgba(247,141,0,0.08)',
+                    color: '#f78d00',
+                    border: '1.5px solid rgba(247,141,0,0.3)',
+                    borderRadius: 14,
+                    padding: '13px',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    transition: 'background 0.2s, color 0.2s',
+                  }}
+                  onMouseOver={e => { e.currentTarget.style.background = '#f78d00'; e.currentTarget.style.color = '#fff'; }}
+                  onMouseOut={e => { e.currentTarget.style.background = 'rgba(247,141,0,0.08)'; e.currentTarget.style.color = '#f78d00'; }}
+                >
+                  Voir nos producteurs partenaires →
+                </button>
+              )}
             </div>
           </div>
         </div>

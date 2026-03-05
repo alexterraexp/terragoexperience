@@ -221,7 +221,7 @@ const Particuliers: React.FC = () => {
             En attendant, découvrez notre offre pour les entreprises et les groupes.
           </p>
           <Link
-            to="/seminaires"
+            to="/entreprises"
             className="inline-flex items-center gap-2 text-primary font-bold uppercase tracking-[0.2em] text-[10px] hover:text-orange transition-colors"
           >
             Découvrir nos séminaires

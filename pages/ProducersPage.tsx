@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import {
   type Producer,
@@ -144,6 +144,16 @@ const ProducersPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Présélectionner le filtre depuis l'URL (?filter=Spiritueux)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const filter = params.get('filter');
+    if (filter && FILTERS.includes(filter)) {
+      setActiveFilter(filter);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     let cancelled = false;
@@ -184,7 +194,7 @@ const ProducersPage: React.FC = () => {
   });
 
   const handleSelectProducer = (id: string) => {
-    navigate(`/producteurs/${id}`);
+    navigate(`/partenaires/${id}`);
   };
 
   return (
@@ -192,7 +202,8 @@ const ProducersPage: React.FC = () => {
 
       {/* Hero */}
       <div className="px-4 sm:px-6 lg:px-10 pt-32 sm:pt-40 pb-12 sm:pb-16 bg-beige-bg scroll-mt-24" style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-         <div className="absolute inset-0 opacity-0.06 bg-radial-gradient(circle at 1px 1px, #1e291a 1px, transparent 0) [32px_32px]" style={{ pointerEvents: 'none' }} />        <span style={{ display: 'inline-block', padding: '4px 12px', background: '#f78d00', color: '#fff', fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', fontSize: 9, marginBottom: 16, borderRadius: 9999, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+         <div className="absolute inset-0 opacity-0.06 bg-radial-gradient(circle at 1px 1px, #1e291a 1px, transparent 0) [32px_32px]" style={{ pointerEvents: 'none' }} />
+        <span style={{ display: 'inline-block', padding: '4px 12px', background: '#f78d00', color: '#fff', fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', fontSize: 9, marginBottom: 16, borderRadius: 9999, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
           Le réseau Terrago
         </span>
         <h1 className="text-4xl sm:text-3xl md:text-4xl lg:text-7xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap" style={{ marginBottom: '24px' }}>
@@ -272,6 +283,21 @@ const ProducersPage: React.FC = () => {
             )}
           </>
         )}
+
+        {/* Bandeau partenaire */}
+        <div style={{ background: '#1e291a', borderRadius: 24, padding: '48px 64px', marginTop: 48, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
+          <div>
+            <h3 style={{ color: '#fff', margin: '0 0 10px', lineHeight: 1.3 }}>
+              <span style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 23 }}>Vous êtes un producteur engagé ou </span>
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 700, fontSize: 32 }}>connaissez un talent du terroir ?</span>
+            </h3>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, margin: 0, lineHeight: 1.6 }}>Rejoignez le réseau Terrago ou faites-nous découvrir un producteur exceptionnel.</p>
+          </div>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <a href="/nous-rejoindre" style={{ background: '#f78d00', color: '#fff', padding: '13px 22px', borderRadius: 12, fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', fontFamily: "'Poppins', sans-serif" }}>Devenir partenaire →</a>
+            <a href="/recommander-un-producteur" style={{ background: 'rgba(255,255,255,0.08)', color: '#fff', padding: '13px 22px', borderRadius: 12, fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.2)', fontFamily: "'Poppins', sans-serif" }}>Recommander un producteur →</a>
+          </div>
+        </div>
       </div>
     </div>
   );
