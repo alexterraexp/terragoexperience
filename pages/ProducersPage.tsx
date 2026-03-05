@@ -203,14 +203,14 @@ const ProducersPage: React.FC = () => {
       {/* Hero */}
       <div className="px-4 sm:px-6 lg:px-10 pt-32 sm:pt-40 pb-12 sm:pb-16 bg-beige-bg scroll-mt-24" style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
          <div className="absolute inset-0 opacity-0.06 bg-radial-gradient(circle at 1px 1px, #1e291a 1px, transparent 0) [32px_32px]" style={{ pointerEvents: 'none' }} />
-        <span style={{ display: 'inline-block', padding: '4px 12px', background: '#f78d00', color: '#fff', fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', fontSize: 9, marginBottom: 16, borderRadius: 9999, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+        <span className="inline-block px-3 py-1.5 bg-[#f78d00] text-white font-bold tracking-[0.3em] uppercase text-[9px] mb-4 rounded-full shadow-md animate-in fade-in slide-in-from-bottom-4 duration-1000">
           Le réseau Terrago
         </span>
-        <h1 className="text-4xl sm:text-3xl md:text-4xl lg:text-7xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap" style={{ marginBottom: '24px' }}>
+        <h1 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap mb-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
           <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Nos producteurs </span>
           <span className="font-display italic">partenaires.</span>
         </h1>
-        <p style={{ color: '#6b7280', fontSize: 14, maxWidth: 500, margin: '0 auto 36px', lineHeight: 1.7 }}>
+        <p className="text-gray-500 text-sm max-w-[500px] mx-auto mb-9 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
           Des producteurs, éleveurs, vignerons et artisans soigneusement sélectionnés pour leur authenticité et leur savoir-faire.
         </p>
 

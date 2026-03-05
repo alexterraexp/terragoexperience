@@ -29,7 +29,7 @@ const UNIVERS_DATA: Record<string, UniversData> = {
   cognac: {
     id: 'cognac',
     label: 'AUTOUR DU COGNAC',
-    badge: "COGNAC • 40MIN D'ANGOULÊME TGV",
+    badge: "COGNAC • 40 MIN D'ANGOULÊME TGV",
     description: "Des vignes aux alambics de cuivre, vivez la magie de la double distillation dans les chais centenaires de la Charente.",
     activites: ['Participation aux vendanges', 'Fabrication de son propre pineau', 'Visite des chais et alambics', 'Golf entre les vignes'],
     saison: "Toute l'année",
@@ -38,7 +38,7 @@ const UNIVERS_DATA: Record<string, UniversData> = {
   olive: {
     id: 'olive',
     label: "AUTOUR DE L'OLIVE",
-    badge: "VALENSOLE • 45MIN D'AIX EN PROVENCE TGV",
+    badge: "VALENSOLE • 45 MIN D'AIX EN PROVENCE TGV",
     description: "Sous les oliviers centenaires de Provence, découvrez comment naît une huile d'exception, entre lavande et soleil.",
     activites: ['Apprentissage et récolte des olives', 'Fabrication de son huile', 'Récolte de lavandes fines', "Distillation de son parfum d'ambiance"],
     saison: 'Octobre – Décembre',
@@ -47,7 +47,7 @@ const UNIVERS_DATA: Record<string, UniversData> = {
   noix: {
     id: 'noix',
     label: "AUTOUR DE LA NOIX",
-    badge: "ORLÉANS | VALENCE",
+    badge: "Romans-sur-Isère • 15 MIN De VALENCE TGV",
     description: "Parmi les noyers centenaires, apprenez la récolte et la fabrication d'une huile de noix artisanale d'une finesse rare.",
     activites: ['Apprentissage et récolte des noix', 'Fabrication de son huile/vin de noix', 'Session Trail dans un cadre magnifique'],
     saison: 'Septembre – Novembre',
@@ -74,7 +74,7 @@ const UNIVERS_DATA: Record<string, UniversData> = {
   vin: {
     id: 'vin',
     label: "AUTOUR DU VIN AOC VENTOUX",
-    badge: "1H D'AVIGNON TGV",
+    badge: "Bédoin • 1H D'AVIGNON TGV",
     description: "Les mains dans la terre, entre vignes et ciel provençal, vivez l'aventure viticole au pied du Mont Ventoux.",
     activites: ['Les mains dans la terre', 'Activité autour de la vigne', 'Soirée soleil et guinguette', 'Excursion vélo au Mont Ventoux'],
     saison: 'Avril – Octobre',
@@ -478,7 +478,7 @@ ${formData.message || 'Aucun message'}
     {
       image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO4.png",
       title: "Olives & lavande",
-      desc: "proche d'Aix-en-Provence",
+      desc: "Proche d'Aix-en-Provence",
       tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"],
       producerImage: "/images/producteurs/olivepaolo.png",
       universes: ["les olives", "la lavande"],
@@ -488,7 +488,7 @@ ${formData.message || 'Aucun message'}
     {
       image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/noix.png",
       title: "Noix & compagnie",
-      desc: "Proche d'Orléans | Valence",
+      desc: "Proche de Valence",
       tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Session Trail dans un cadre magnifique"],
       producerImage: "/images/producteurs/noixsabinemarie.jpeg",
       universes: ["les noix"],
@@ -518,7 +518,7 @@ ${formData.message || 'Aucun message'}
     {
       image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/cognac.jpg",
       title: "Vin AOC Ventoux",
-      desc: "Proch de Valence",
+      desc: "Proche de Valence",
       tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"],
       producerImage: "/images/producteurs/vincombeaumas.png",
       universes: ["le vin"],
@@ -557,7 +557,7 @@ ${formData.message || 'Aucun message'}
           <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 bg-white/10 backdrop-blur-md text-white text-[8px] sm:text-[9px] uppercase tracking-[0.3em] font-bold font-sans mb-4 sm:mb-6 rounded-full shadow-md border border-white/20">
             Immersion & Cohésion
           </span>
-          <h1 className="text-white text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold leading-tight mb-4 sm:mb-6 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap sm:flex-nowrap drop-shadow-lg px-0">
+          <h1 className="text-white text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-4 sm:mb-6 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap sm:flex-nowrap drop-shadow-lg px-0">
             <span className="font-display italic">Optez pour des séminaires</span>
             <span className="font-sans text-[0.7em] md:text-[0.78em] font-semibold tracking-tight not-italic whitespace-nowrap flex items-center gap-1">
               <span>plus</span>
@@ -593,9 +593,11 @@ ${formData.message || 'Aucun message'}
           <p className="mt-2 mb-2 sm:mb-4 text-primary/90 text-xs tracking-[0.4em]">⭐⭐⭐⭐⭐</p>
           <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-2 sm:mb-4 rounded-full shadow-md">5 étoiles</span>
           <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4 pb-2 min-h-[1.4em]">
-            <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-6xl font-bold text-primary leading-normal inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap px-0">
-              <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des séminaires </span><span className="font-display italic">5 étoiles</span>
-            </h2>
+            <ScrollAnimate delay={150}>
+              <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-6xl font-bold text-primary leading-normal inline-block w-max sm:w-max whitespace-normal sm:whitespace-nowrap px-0">
+                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des séminaires </span><span className="font-display italic">5 étoiles</span>
+              </h2>
+            </ScrollAnimate>
           </div>
           <p className="text-gray-600 text-xs sm:text-sm md:text-base font-light leading-relaxed max-w-4xl mx-auto mb-4 text-center px-4">
             Nos "5 étoiles" ne se mesurent pas au luxe, mais aux liens humains, au contact de la terre et à l'engagement des producteurs. Des expériences sincères qui renforcent la cohésion et laissent une trace durable.
@@ -609,6 +611,112 @@ ${formData.message || 'Aucun message'}
           <PillarCard icon="handshake" title="PASSIONNANT" text="Utilisez le terroir comme fondation pour reconstruire une cohésion d'équipe naturelle et durable. Vous allez créer de beaux souvenirs." />
         </div>
       </section>
+
+ {/* ── NOS GARANTIES ─────────────────────────────────────────────────────── */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-6 sm:mb-14">
+            <span className="inline-block px-3 py-1 bg-orange text-white font-bold tracking-[0.3em] uppercase text-[8px] sm:text-[9px] font-sans rounded-full shadow-md mb-2 sm:mb-4">Nos garanties</span>
+            <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4 pb-2 min-h-[1.4em]">
+              <ScrollAnimate delay={200}>
+                <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-none sm:leading-tight block sm:inline-block w-full sm:w-max whitespace-normal sm:whitespace-nowrap px-2 sm:px-0">
+                  <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Tous nos séminaires </span><span className="font-display italic">vous garantissent</span>
+                </h2>
+              </ScrollAnimate>
+            </div>
+          </div>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 list-none p-0 m-0 max-w-[340px] sm:max-w-none mx-auto sm:mx-0">
+            {[
+              { icon: 'groups', label: 'Rencontres authentiques', text: 'Visites et échanges avec des producteurs engagés.' },
+              { icon: 'eco', label: 'Sensibilisation environnementale', text: 'Sensibilisation aux valeurs de durabilité, du vivant et du savoir-faire local.' },
+              { icon: 'restaurant', label: "Du champ à l'assiette", text: 'Tous vos repas deviennent des expériences gourmandes et locales.' },
+              { icon: 'nature', label: 'Cadre ressourçant', text: 'Se réunir au vert dans un lieu inspirant.' },
+              { icon: 'diversity_3', label: 'Cohésion sur mesure', text: 'Activités pensées pour renforcer les liens.' },
+            ].map((item) => (
+              <li key={item.icon} className="group flex items-start gap-4 p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-beige-bg/60 border border-black/5 hover:border-primary/20 hover:shadow-premium transition-all duration-300">
+                <div className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                  <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+                </div>
+                <div className="min-w-0 pt-0.5">
+                  <h3 className="font-sans font-bold text-primary text-sm sm:text-base mb-1 group-hover:text-orange transition-colors">{item.label}</h3>
+                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{item.text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+            {/* ── NOS FORMATS ───────────────────────────────────────────────────────── */}
+<section className="py-16 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-beige-bg">
+  <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="text-center mb-8 sm:mb-12">
+      <span className="inline-block px-3 py-1 bg-orange text-white font-bold tracking-[0.3em] uppercase text-[8px] sm:text-[9px] font-sans rounded-full shadow-md mb-2 sm:mb-4">
+        Nos formats
+      </span>
+      <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4 pb-2 min-h-[1.4em]">
+        <ScrollAnimate delay={200}>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-primary leading-none sm:leading-tight inline-block w-full sm:w-max whitespace-normal sm:whitespace-nowrap px-2 sm:px-0">
+            <span className="font-sans not-italic text-[0.8em] md:text-[0.8em]">Des formats pensés </span>
+            <span className="font-display italic">pour vos équipes</span>
+          </h2>
+        </ScrollAnimate>
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+      {[
+        {
+          icon: 'calendar_today',
+          tag: 'Format court',
+          label: 'À la journée',
+          text: 'Un format concentré pour (re)mettre du sens dans une journée hors du bureau, au contact direct du terroir.',
+          duration: '1 jour',
+          people: 'dès 10 pers.',
+        },
+        {
+          icon: 'event',
+          tag: 'Format immersif',
+          label: 'Sur 2 jours',
+          text: 'Deux jours pour alterner temps de travail, immersion dans les exploitations et moments de respiration en équipe.',
+          duration: '2 jours',
+          people: 'dès 10 pers.',
+        },
+        {
+          icon: 'design_services',
+          tag: 'Format plus',
+          label: 'Sur mesure',
+          text: 'Un séminaire entièrement construit avec vous : rythme, intensité, interventions et producteurs partenaires.',
+          duration: 'Durée libre',
+          people: 'toute taille',
+        },
+      ].map((item) => (
+        <div
+          key={item.label}
+          className="h-full rounded-2xl bg-white/80 border border-black/5 shadow-sm hover:shadow-premium hover:-translate-y-1 transition-all duration-300 p-5 sm:p-6 flex flex-col gap-3"
+        >
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-1">
+            <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+          </div>
+          <div className="text-[8px] font-bold uppercase tracking-[0.2em] text-orange">
+            {item.tag}
+          </div>
+          <h3 className="font-sans font-bold text-primary text-base sm:text-lg">
+            {item.label}
+          </h3>
+          <p className="text-gray-600 text-sm leading-relaxed flex-1">
+            {item.text}
+          </p>
+          <div className="mt-2 pt-4 border-t border-black/6 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.15em] text-gray-400">
+            <span className="material-symbols-outlined text-sm">schedule</span>
+            <span>{item.duration} · {item.people}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
 
       {/* ── NOS UNIVERS ───────────────────────────────────────────────────────── */}
       <section id="nos-univers" className="py-16 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-gradient-to-b from-white to-beige-bg border-y border-black/10 scroll-mt-20">
@@ -724,43 +832,9 @@ ${formData.message || 'Aucun message'}
         </div>
       </section>
 
-      {/* ── NOS GARANTIES ─────────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-white">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-6 sm:mb-14">
-            <span className="inline-block px-3 py-1 bg-orange text-white font-bold tracking-[0.3em] uppercase text-[8px] sm:text-[9px] font-sans rounded-full shadow-md mb-2 sm:mb-4">Nos garanties</span>
-            <div className="overflow-x-auto no-scrollbar text-center mb-2 sm:mb-4 pb-2 min-h-[1.4em]">
-              <ScrollAnimate delay={200}>
-                <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-none sm:leading-tight block sm:inline-block w-full sm:w-max whitespace-normal sm:whitespace-nowrap px-2 sm:px-0">
-                  <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Tous nos séminaires </span><span className="font-display italic">vous garantissent</span>
-                </h2>
-              </ScrollAnimate>
-            </div>
-          </div>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 list-none p-0 m-0 max-w-[340px] sm:max-w-none mx-auto sm:mx-0">
-            {[
-              { icon: 'groups', label: 'Rencontres authentiques', text: 'Visites et échanges avec des producteurs engagés.' },
-              { icon: 'eco', label: 'Sensibilisation environnementale', text: 'Sensibilisation aux valeurs de durabilité, du vivant et du savoir-faire local.' },
-              { icon: 'restaurant', label: "Du champ à l'assiette", text: 'Tous vos repas deviennent des expériences gourmandes et locales.' },
-              { icon: 'nature', label: 'Cadre ressourçant', text: 'Se réunir au vert dans un lieu inspirant.' },
-              { icon: 'diversity_3', label: 'Cohésion sur mesure', text: 'Activités pensées pour renforcer les liens.' },
-            ].map((item) => (
-              <li key={item.icon} className="group flex items-start gap-4 p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-beige-bg/60 border border-black/5 hover:border-primary/20 hover:shadow-premium transition-all duration-300">
-                <div className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                  <span className="material-symbols-outlined text-2xl">{item.icon}</span>
-                </div>
-                <div className="min-w-0 pt-0.5">
-                  <h3 className="font-sans font-bold text-primary text-sm sm:text-base mb-1 group-hover:text-orange transition-colors">{item.label}</h3>
-                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{item.text}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
+     
       {/* ── PLAQUETTE ─────────────────────────────────────────────────────────── */}
-      <section className="py-14 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-beige-bg relative overflow-hidden">
+      <section className="py-14 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-primary/5 rounded-full -mr-24 -mt-24 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-48 sm:w-64 h-48 sm:h-64 bg-orange/5 rounded-full -ml-24 -mb-24 blur-3xl" />
         <div className="max-w-4xl mx-auto relative z-10">

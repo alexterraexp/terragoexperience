@@ -63,7 +63,7 @@ const Home: React.FC = () => {
     <div className="pt-24 lg:pt-18 overflow-x-hidden bg-beige-bg">
       {/* Hero Section */}
       <section className="relative px-2 sm:px-4 lg:px-8 py-4 w-full">
-        <div className="relative min-h-[85vh] sm:min-h-[80vh] h-[90vh] md:h-[80vh] w-full overflow-hidden rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] flex items-center justify-center text-center px-3 sm:px-4 py-8 sm:py-4 group">
+          <div className="relative min-h-[85vh] sm:min-h-[80vh] h-[90vh] md:h-[80vh] w-full overflow-hidden rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] flex items-center justify-center text-center px-3 sm:px-4 py-8 sm:py-4 group">
           {/* Image de fond mobile */}
           <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] group-hover:scale-110 sm:hidden" 
@@ -77,7 +77,7 @@ const Home: React.FC = () => {
           {/* Overlay sombre léger */}
           <div className="absolute inset-0 bg-black/30" />
           <div className="relative z-10 w-full text-center max-w-6xl mx-auto px-0 sm:px-0">
-            <h1 className="text-white text-5xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-4 sm:mb-6 flex flex-col items-center justify-center gap-y-0.5 sm:gap-y-1 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 drop-shadow-2xl [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
+            <h1 className="text-white text-4xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-[1.1] mb-4 sm:mb-6 flex flex-col items-center justify-center gap-y-0.5 sm:gap-y-1 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 drop-shadow-2xl [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
               {/* Mobile : uniquement "Partez à la rencontre de" */}
               <span className="sm:hidden font-sans text-[0.85em] font-semibold tracking-tight not-italic text-center block">
                 Partez à la rencontre de nos{" "}
