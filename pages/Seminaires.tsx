@@ -163,9 +163,18 @@ const Seminaires: React.FC = () => {
           const winW = typeof window !== 'undefined' ? window.innerWidth : 1200;
           const isMobileLocal = winW < 640;
           if (isMobileLocal) {
-            const cardWidth = w * 0.70; // 82% de la largeur écran
+            const cardWidth = w * 0.70;
             setExamplesCardWidthPx(Math.max(CARD_MIN_WIDTH_PX, cardWidth));
-            }
+          } else {
+            // Tablette / desktop : nombre de cartes visibles pour éviter compression ; desktop = cartes un peu plus larges
+            let visibleCards: number;
+            if (winW < 768) visibleCards = 2;
+            else if (winW < 1024) visibleCards = 2.5;
+            else if (winW < 1280) visibleCards = 3.5;
+            else visibleCards = 4;
+            const rawWidth = (w - (visibleCards - 1) * CAROUSEL_GAP_PX) / visibleCards;
+            setExamplesCardWidthPx(Math.max(CARD_MIN_WIDTH_PX, rawWidth));
+          }
         }
       };
       updateWidth();
