@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { IMAGES } from '../constants';
@@ -9,11 +8,79 @@ import ScrollAnimate from '../components/ScrollAnimate';
 // Images de fond pour le hero
 const heroImages = [
   'https://images.unsplash.com/photo-1556159991-b4876ad5ef9b?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1761839259494-71caddcdd6b3?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1761839259494-71caddcdd6b3?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   'https://images.unsplash.com/photo-1504224357642-c87eacea1da4?q=80&w=1750&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   'https://images.unsplash.com/photo-1586973831237-7d8dd03a996f?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   'https://images.unsplash.com/photo-1633509928027-f1c3b5dc1f92?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 ];
+
+// ─── Données univers pour le modal ───────────────────────────────────────────
+type UniversData = {
+  id: string;
+  label: string;
+  badge: string;
+  description: string;
+  activites: string[];
+  saison: string;
+  couleur: string;
+};
+
+const UNIVERS_DATA: Record<string, UniversData> = {
+  cognac: {
+    id: 'cognac',
+    label: 'AUTOUR DU COGNAC',
+    badge: "COGNAC • 40MIN D'ANGOULÊME TGV",
+    description: "Des vignes aux alambics de cuivre, vivez la magie de la double distillation dans les chais centenaires de la Charente.",
+    activites: ['Participation aux vendanges', 'Fabrication de son propre pineau', 'Visite des chais et alambics', 'Golf entre les vignes'],
+    saison: "Toute l'année",
+    couleur: '#7a3b10',
+  },
+  olive: {
+    id: 'olive',
+    label: "AUTOUR DE L'OLIVE",
+    badge: "VALENSOLE • 45MIN D'AIX EN PROVENCE TGV",
+    description: "Sous les oliviers centenaires de Provence, découvrez comment naît une huile d'exception, entre lavande et soleil.",
+    activites: ['Apprentissage et récolte des olives', 'Fabrication de son huile', 'Récolte de lavandes fines', "Distillation de son parfum d'ambiance"],
+    saison: 'Octobre – Décembre',
+    couleur: '#5a7a2e',
+  },
+  noix: {
+    id: 'noix',
+    label: "AUTOUR DE LA NOIX",
+    badge: "ORLÉANS | VALENCE",
+    description: "Parmi les noyers centenaires, apprenez la récolte et la fabrication d'une huile de noix artisanale d'une finesse rare.",
+    activites: ['Apprentissage et récolte des noix', 'Fabrication de son huile/vin de noix', 'Session Trail dans un cadre magnifique'],
+    saison: 'Septembre – Novembre',
+    couleur: '#6b3f1a',
+  },
+  truffe: {
+    id: 'truffe',
+    label: "AUTOUR DE LA TRUFFE",
+    badge: "CHINON • 1H DE TOURS TGV",
+    description: "Partez à la découverte du champignon le plus mystérieux de France avec un trufficulteur passionné au cœur du Périgord.",
+    activites: ['Cavage et découverte de la truffe', 'Atelier cuisine autour de la truffe', 'Ferme florale et potager', 'Dégustation de produits truffés'],
+    saison: 'Décembre – Mars',
+    couleur: '#2d1b0e',
+  },
+  fromage: {
+    id: 'fromage',
+    label: "AUTOUR DU FROMAGE DE CHÈVRE",
+    badge: "1H D'AIX-EN-PROVENCE TGV",
+    description: "Vivez une journée complète dans une ferme caprine : soins aux bêtes, fabrication du fromage et dégustation en plein air.",
+    activites: ['Soins aux chèvres', 'Fabrication du fromage', 'Dégustation à la ferme', 'Visite de cave'],
+    saison: "Toute l'année",
+    couleur: '#c8a44a',
+  },
+  vin: {
+    id: 'vin',
+    label: "AUTOUR DU VIN AOC VENTOUX",
+    badge: "1H D'AVIGNON TGV",
+    description: "Les mains dans la terre, entre vignes et ciel provençal, vivez l'aventure viticole au pied du Mont Ventoux.",
+    activites: ['Les mains dans la terre', 'Activité autour de la vigne', 'Soirée soleil et guinguette', 'Excursion vélo au Mont Ventoux'],
+    saison: 'Avril – Octobre',
+    couleur: '#5c2d7e',
+  },
+};
 
 const Seminaires: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,6 +92,10 @@ const Seminaires: React.FC = () => {
   const [hasAccommodation, setHasAccommodation] = useState(false);
   const [hasTransport, setHasTransport] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+
+  // Modal univers
+  const [selectedUniversModal, setSelectedUniversModal] = useState<UniversData | null>(null);
+  const [isUniversModalClosing, setIsUniversModalClosing] = useState(false);
   
   // États pour les champs du formulaire
   const [formData, setFormData] = useState({
@@ -57,8 +128,8 @@ const Seminaires: React.FC = () => {
   const [selectedUniverse, setSelectedUniverse] = useState<string | null>(null);
   
   const CAROUSEL_GAP_PX = 32;
-  const CAROUSEL_VISIBLE = 3.5;
-  const CAROUSEL_VISIBLE_MOBILE = 1; // Afficher 1 carte sur mobile
+  const CAROUSEL_VISIBLE = 4.5;
+  const CAROUSEL_VISIBLE_MOBILE = 1;
   
   useEffect(() => {
     const el = examplesCarouselRef.current;
@@ -66,17 +137,13 @@ const Seminaires: React.FC = () => {
     const updateWidth = () => {
       const w = el.offsetWidth;
       if (w > 0) {
-        // Sur mobile (écran < 640px), afficher 1 carte
         const isMobile = window.innerWidth < 640;
         const visibleCards = isMobile ? CAROUSEL_VISIBLE_MOBILE : CAROUSEL_VISIBLE;
         if (isMobile) {
-          // Sur mobile, utiliser la largeur du conteneur moins le padding existant (px-4 = 16px de chaque côté)
-          // Le conteneur a déjà px-4, donc on soustrait 32px au total (16px de chaque côté)
-          const containerPadding = 32; // 16px de chaque côté (px-4)
+          const containerPadding = 32;
           const cardWidth = w - containerPadding;
           setExamplesCardWidthPx(cardWidth);
         } else {
-          // Sur desktop, calcul normal
           setExamplesCardWidthPx((w - (visibleCards - 1) * CAROUSEL_GAP_PX) / visibleCards);
         }
       }
@@ -111,17 +178,9 @@ const Seminaires: React.FC = () => {
     }
   }, [location.search]);
 
-  // Texte animé pour le titre
   const rotatingTexts = [
-    'humains',
-    'simples',
-    'inspirants',
-    'captivants',
-    'authentiques',
-    'engagés',
-    'gourmands',
-    'durables',
-    'sensoriels'
+    'humains', 'simples', 'inspirants', 'captivants', 'authentiques',
+    'engagés', 'gourmands', 'durables', 'sensoriels'
   ];
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
@@ -131,7 +190,6 @@ const Seminaires: React.FC = () => {
     const currentText = rotatingTexts[currentTextIndex];
     setDisplayedText('');
     setIsTyping(true);
-    
     let charIndex = 0;
     const typingInterval = setInterval(() => {
       if (charIndex < currentText.length) {
@@ -141,20 +199,17 @@ const Seminaires: React.FC = () => {
         setIsTyping(false);
         clearInterval(typingInterval);
       }
-    }, 50); // Vitesse de frappe : 50ms par lettre
-    
+    }, 50);
     return () => clearInterval(typingInterval);
   }, [currentTextIndex]);
   
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTextIndex((prevIndex) => (prevIndex + 1) % rotatingTexts.length);
-    }, 3000); // Changement toutes les 3 secondes pour laisser le temps à l'animation
-    
+    }, 3000);
     return () => clearInterval(interval);
   }, [rotatingTexts.length]);
   
-  // Préchargement des images
   useEffect(() => {
     heroImages.forEach((imageUrl) => {
       const img = new Image();
@@ -162,12 +217,10 @@ const Seminaires: React.FC = () => {
     });
   }, []);
 
-  // Défilement des images de fond
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
-    }, 3000); // Changement toutes les 3 secondes
-    
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
   
@@ -180,7 +233,6 @@ const Seminaires: React.FC = () => {
     setIsSubmitting(false);
     setSubmitSuccess(false);
     setErrorMessage('');
-    // Réinitialiser les sélections
     setSelectedRegions([]);
     setSelectedAccTypes([]);
     setSelectedTransport('');
@@ -190,24 +242,14 @@ const Seminaires: React.FC = () => {
     setEndDate('');
     setHasAccommodation(false);
     setHasTransport(false);
-    setFormData({
-      prenom: '',
-      nom: '',
-      email: '',
-      entreprise: '',
-      participants: '',
-      periode: '',
-      message: ''
-    });
+    setFormData({ prenom: '', nom: '', email: '', entreprise: '', participants: '', periode: '', message: '' });
     document.body.style.overflow = 'hidden';
   };
 
-  // Ouvrir le modal automatiquement si le paramètre openModal est présent dans l'URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('openModal') === 'true') {
       openModal();
-      // Nettoyer l'URL pour ne pas garder le paramètre
       window.history.replaceState({}, '', '/seminaires');
     }
   }, [location.search]);
@@ -221,32 +263,44 @@ const Seminaires: React.FC = () => {
     }, 300);
   };
 
-  // Gestion de la touche Escape
+  // Ouvrir modal univers
+  const openUniversModal = (universId: string) => {
+    const data = UNIVERS_DATA[universId];
+    if (!data) return;
+    setSelectedUniversModal(data);
+    setIsUniversModalClosing(false);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeUniversModal = () => {
+    setIsUniversModalClosing(true);
+    setTimeout(() => {
+      setSelectedUniversModal(null);
+      setIsUniversModalClosing(false);
+      document.body.style.overflow = 'unset';
+    }, 250);
+  };
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isModalOpen) {
-        closeModal();
+      if (e.key === 'Escape') {
+        if (selectedUniversModal) closeUniversModal();
+        else if (isModalOpen) closeModal();
       }
     };
-    
-    if (isModalOpen) {
-      document.addEventListener('keydown', handleEscape);
-      return () => document.removeEventListener('keydown', handleEscape);
-    }
-  }, [isModalOpen]);
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isModalOpen, selectedUniversModal]);
 
-  // Empêcher le scroll du modal de se propager au body
   useEffect(() => {
     const modal = modalRef.current;
     if (modal && isModalOpen) {
       const handleWheel = (e: WheelEvent) => {
-        const target = e.target as HTMLElement;
         const scrollableContent = modal.querySelector('.overflow-y-auto') as HTMLElement;
         if (scrollableContent) {
           const { scrollTop, scrollHeight, clientHeight } = scrollableContent;
           const isAtTop = scrollTop === 0;
           const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
-          
           if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
             e.preventDefault();
           }
@@ -258,61 +312,42 @@ const Seminaires: React.FC = () => {
   }, [isModalOpen]);
 
   const nextStep = () => {
-    // Réinitialiser le message d'erreur
     setErrorMessage('');
-    
-    // Validation pour l'étape 1 uniquement
     if (currentStep === 1) {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const isEmailMissing = !formData.email.trim();
       const isEmailInvalid = formData.email.trim() && !emailPattern.test(formData.email);
       const isPeriodMissing = periodType === 'months' ? selectedMonths.length === 0 : !startDate || !endDate;
       const isOtherMissing = !formData.prenom.trim() || !formData.nom.trim() || !formData.entreprise.trim() || !formData.participants || isPeriodMissing;
-
       if (isEmailMissing || isEmailInvalid || isOtherMissing) {
         setErrorMessage('Attention, il semblerait que des informations soient manquantes.');
         return;
       }
     }
-    
     setIsTransitioning(true);
     setTimeout(() => {
-      setCurrentStep(prev => {
-        const next = Math.min(prev + 1, 3);
-        setIsTransitioning(false);
-        return next;
-      });
+      setCurrentStep(prev => { const next = Math.min(prev + 1, 3); setIsTransitioning(false); return next; });
     }, 200);
   };
   
   const prevStep = () => {
     setIsTransitioning(true);
     setTimeout(() => {
-      setCurrentStep(prev => {
-        const prevStep = Math.max(prev - 1, 1);
-        setIsTransitioning(false);
-        return prevStep;
-      });
+      setCurrentStep(prev => { const p = Math.max(prev - 1, 1); setIsTransitioning(false); return p; });
     }, 200);
   };
 
-  // Scroll vers le haut lors du changement d'étape
   useEffect(() => {
     if (isModalOpen && !isTransitioning) {
       const modalContent = modalRef.current?.querySelector('.overflow-y-auto') as HTMLElement;
       if (modalContent) {
-        // Petit délai pour s'assurer que le contenu est rendu
-        setTimeout(() => {
-          modalContent.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100);
+        setTimeout(() => { modalContent.scrollTo({ top: 0, behavior: 'smooth' }); }, 100);
       }
     }
   }, [currentStep, isModalOpen, isTransitioning]);
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    
-    // Préparer le contenu de l'email
     const emailContent = `
 Nouvelle demande de séminaire - Terrago
 
@@ -334,25 +369,17 @@ ${villeLibre ? `Ville: ${villeLibre}` : ''}
 === LOGISTIQUE ===
 Hébergement: ${hasAccommodation ? 'Oui' : 'Non'}
 ${hasAccommodation && selectedAccTypes.length > 0 ? `Types d'hébergement: ${selectedAccTypes.join(', ')}` : ''}
-
 Transport: ${hasTransport ? 'Oui' : 'Non'}
 ${hasTransport && selectedTransport ? `Option transport: ${selectedTransport}` : ''}
 
 === MESSAGE COMPLÉMENTAIRE ===
 ${formData.message || 'Aucun message'}
-
----
-Email envoyé depuis le formulaire de séminaire Terrago
     `.trim();
 
     try {
-      // Utiliser FormSubmit (service gratuit) pour envoyer l'email
       const response = await fetch('https://formsubmit.co/ajax/alexso.terrago@gmail.com', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
           name: `${formData.prenom} ${formData.nom}`,
           email: formData.email,
@@ -362,18 +389,15 @@ Email envoyé depuis le formulaire de séminaire Terrago
           _template: 'table'
         })
       });
-
       if (response.ok) {
         setSubmitSuccess(true);
-        setTimeout(() => {
-          closeModal();
-        }, 2000);
+        setTimeout(() => { closeModal(); }, 2000);
       } else {
-        throw new Error('Erreur lors de l\'envoi');
+        throw new Error("Erreur lors de l'envoi");
       }
     } catch (error) {
       console.error('Erreur:', error);
-      alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer ou nous contacter directement.');
+      alert("Une erreur est survenue lors de l'envoi. Veuillez réessayer ou nous contacter directement.");
     } finally {
       setIsSubmitting(false);
     }
@@ -382,18 +406,9 @@ Email envoyé depuis le formulaire de séminaire Terrago
   const handlePlaquetteSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setPlaquetteEmailError('');
-    
-    // Validation de l'email
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!plaquetteEmail.trim()) {
-      setPlaquetteEmailError('Veuillez renseigner une adresse mail valide');
-      return;
-    }
-    if (!emailPattern.test(plaquetteEmail.trim())) {
-      setPlaquetteEmailError('Veuillez renseigner une adresse mail valide');
-      return;
-    }
-    
+    if (!plaquetteEmail.trim()) { setPlaquetteEmailError('Veuillez renseigner une adresse mail valide'); return; }
+    if (!emailPattern.test(plaquetteEmail.trim())) { setPlaquetteEmailError('Veuillez renseigner une adresse mail valide'); return; }
     setPlaquetteSubmitting(true);
     try {
       const response = await fetch('https://formsubmit.co/ajax/alexso.terrago@gmail.com', {
@@ -427,7 +442,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
   const regionsOptions = [
     { name: 'Nouvelle-Aquitaine', icon: 'sailing' },
     { name: 'Auvergne-Rhône-Alpes', icon: 'terrain' },
-    { name: 'Provence-Alpes-Côte d\'Azur', icon: 'wb_sunny' }
+    { name: "Provence-Alpes-Côte d'Azur", icon: 'wb_sunny' }
   ];
 
   const accTypes = ["Chambres seules", "Chambres partagées"];
@@ -437,11 +452,30 @@ Email envoyé depuis le formulaire de séminaire Terrago
     "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
   ];
 
+  // Données des cartes exemples
+  const exampleCards = [
+    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/alambique.png", title: "Cognac & Pineau", desc: "Proche de Cognac", tags: ["Participation aux vendanges", "Fabrication de son propre pineau", "Golf entre les vignes"], producerImage: "/images/producteurs/cognacJF.png", universes: ["le cognac"], universId: "cognac", boldLabel: "AUTOUR DU COGNAC" },
+    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO4.png", title: "Olives & lavande", desc: "proche d'Aix-en-Provence", tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"], producerImage: "/images/producteurs/olivepaolo.png", universes: ["les olives", "la lavande"], universId: "olive", boldLabel: "AUTOUR DE L'OLIVE" },
+    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/noix.png", title: "Noix & compagnie", desc: "Proche d'Orléans | Valence", tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Session Trail dans un cadre magnifique"], producerImage: "/images/producteurs/noixsabinemarie.jpeg", universes: ["les noix"], universId: "noix", boldLabel: "AUTOUR DE LA NOIX" },
+    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/truffe.png", title: "Truffe & terroir", desc: "Proche de Tours", tags: ["Cavage et découverte de la truffe", "Atelier cuisine", "Ferme florale et potager"], producerImage: "/images/producteurs/truffeprod.png", universes: ["la truffe"], universId: "truffe", boldLabel: "AUTOUR DE LA TRUFFE" },
+    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/chevres.png", title: "Fromage de chèvre", desc: "Proche d'Aix-en-Provence", tags: ["Soins aux chèvres", "Fabrication du fromage", "Dégustation à la ferme"], producerImage: "/images/producteurs/chevre-bebe.jpg", universes: ["le fromage de chèvre"], universId: "fromage", boldLabel: "AUTOUR DU FROMAGE" },
+    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/cognac.jpg", title: "Vin AOC Ventoux", desc: "Proch de Valence", tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"], producerImage: "/images/producteurs/vincombeaumas.png", universes: ["le vin"], universId: "vin", boldLabel: "AUTOUR DU VIN" },
+  ];
+
+  const filteredCards = selectedUniverse
+    ? exampleCards.filter(card => card.universes.includes(selectedUniverse))
+    : exampleCards;
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const cardWidthPx = isMobile && examplesCardWidthPx > 0
+    ? examplesCardWidthPx
+    : (examplesCardWidthPx > 0 ? examplesCardWidthPx : 280);
+
   return (
     <div className="pt-24 font-sans bg-beige-bg min-h-screen">
-      {/* Hero Section */}
+
+      {/* ── Hero Section ─────────────────────────────────────────────────────── */}
       <section className="relative w-full px-4 sm:px-6 lg:px-12 py-16 sm:py-20 lg:py-24 text-center min-h-[60vh] sm:min-h-[65vh] lg:min-h-[70vh] flex items-center justify-center overflow-hidden mb-12 sm:mb-16">
-        {/* Images de fond avec transition */}
         <div className="absolute inset-0 w-full h-full">
           {heroImages.map((image, index) => (
             <div
@@ -449,15 +483,11 @@ Email envoyé depuis le formulaire de séminaire Terrago
               className={`absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ease-in-out ${
                 index === currentImageIndex ? 'opacity-100 z-0' : 'opacity-0 z-[-1]'
               }`}
-              style={{
-                backgroundImage: `url('${image}')`
-              }}
+              style={{ backgroundImage: `url('${image}')` }}
             />
           ))}
         </div>
-        {/* Overlay sombre pour la lisibilité */}
         <div className="absolute inset-0 bg-black/40" />
-        {/* Contenu */}
         <div className="relative z-10 max-w-3xl mx-auto text-white px-0">
           <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 bg-white/10 backdrop-blur-md text-white text-[8px] sm:text-[9px] uppercase tracking-[0.3em] font-bold font-sans mb-4 sm:mb-6 rounded-full shadow-md border border-white/20">
             Immersion & Cohésion
@@ -476,13 +506,13 @@ Email envoyé depuis le formulaire de séminaire Terrago
             Moins de slides. Plus de sens.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-            <button 
+            <button
               onClick={openModal}
               className="w-full sm:w-auto bg-white text-primary px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] uppercase tracking-[0.2em] font-bold shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center relative overflow-hidden group hover:bg-orange hover:text-white"
             >
               <span className="relative z-10">Organiser votre séminaire</span>
             </button>
-            <Link 
+            <Link
               to="/seminaires?scroll=nos-univers"
               className="text-white border-b-2 border-white/50 hover:border-white px-3 py-1.5 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] font-bold transition-all flex items-center justify-center"
             >
@@ -492,7 +522,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
         </div>
       </section>
 
-      {/* Pillars Section */}
+      {/* ── Pillars Section ───────────────────────────────────────────────────── */}
       <section className="py-12 sm:py-16 max-w-[1400px] mx-auto px-0 sm:px-0 lg:px-0">
         <div className="text-center mb-6 sm:mb-16">
           <p className="mt-2 mb-2 sm:mb-4 text-primary/90 text-xs tracking-[0.4em]">⭐⭐⭐⭐⭐</p>
@@ -515,7 +545,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
         </div>
       </section>
 
-      {/* NEW SECTION 1: NOS UNIVERS DE TRAVAIL */}
+      {/* ── NOS UNIVERS ───────────────────────────────────────────────────────── */}
       <section id="nos-univers" className="py-16 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-gradient-to-b from-white to-beige-bg border-y border-black/10 scroll-mt-20">
         <div className="max-w-[1400px] mx-auto">
           <div className="text-center mb-4 sm:mb-6">
@@ -529,7 +559,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
             </div>
           </div>
           
-          {/* Mini-cartes produits */}
+          {/* Pills filtres */}
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10 sm:mb-12 px-4">
             {['le vin', 'la truffe', 'les olives', 'la lavande', 'le fromage de chèvre', 'les noix', 'le cognac'].map((product) => (
               <div
@@ -542,9 +572,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
                 }`}
               >
                 <span className={`text-[9px] sm:text-[10px] font-sans font-medium uppercase tracking-wider ${
-                  selectedUniverse === product
-                    ? 'text-white'
-                    : 'text-primary group-hover:text-primary/80'
+                  selectedUniverse === product ? 'text-white' : 'text-primary group-hover:text-primary/80'
                 }`}>
                   {product}
                 </span>
@@ -552,121 +580,86 @@ Email envoyé depuis le formulaire de séminaire Terrago
             ))}
           </div>
           
-          {/* Badge exemples */}
+          {/* Badge + flèches navigation */}
           <div className="mb-4 sm:mb-8 max-w-[1400px] mx-auto px-2 sm:px-4 lg:px-6">
             <div className="flex items-center justify-center gap-4 sm:gap-6 relative">
               <span className="inline-block px-3 py-1 bg-primary/10 text-primary font-bold font-sans tracking-[0.2em] uppercase text-[8px] sm:text-[9px] rounded-full border border-primary/20">
                 Quelques-uns de nos exemples
               </span>
-              {/* Boutons de navigation alignés à droite du badge */}
               <div className="hidden sm:flex gap-3 items-center">
-                <button
-                  type="button"
-                  onClick={() => scrollExamples('left')}
-                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border border-black/10 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95"
-                  aria-label="Exemples précédents"
-                >
+                <button type="button" onClick={() => scrollExamples('left')} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border border-black/10 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95" aria-label="Exemples précédents">
                   <span className="material-symbols-outlined text-2xl">chevron_left</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => scrollExamples('right')}
-                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border border-black/10 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95"
-                  aria-label="Exemples suivants"
-                >
+                <button type="button" onClick={() => scrollExamples('right')} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border border-black/10 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95" aria-label="Exemples suivants">
                   <span className="material-symbols-outlined text-2xl">chevron_right</span>
                 </button>
               </div>
             </div>
           </div>
           
-          {/* Carousel exemples : scroll natif fluide, scroll-snap */}
-          {(() => {
-            const exampleCards = [
-              { image: "/images/card/cognac-autour.png", title: "Cognac", desc: "Cognac • 40min d'Angoulême TGV", tags: ["Participation aux vendanges", "Fabrication de son propre pineau", "Golf entre les vignes"], producerImage: "/images/producteurs/cognacJF.png", universes: ["le cognac"] },
-              { image: "/images/card/olive-autour.png", title: "Olives et lavande", desc: "Valensole • 45min d'Aix en Provence TGV", tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"], producerImage: "/images/producteurs/olivepaolo.png", universes: ["les olives", "la lavande"] },
-              { image: "/images/card/noix-autour.png", title: "Noix et compagnie", desc: "Orléans | Valence", tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Session Trail dans un cadre magnifique"], producerImage: "/images/producteurs/noixsabinemarie.jpeg", universes: ["les noix"] },
-              { image: "/images/card/truffe-autour.png", title: "Truffe et terroir", desc: "Chinon • 1h de Tours TGV", tags: ["Cavage et découverte de la truffe", "Atelier cuisine", "Ferme florale et potager"], producerImage: "/images/producteurs/truffeprod.png", universes: ["la truffe"] },
-              { image: "/images/card/fromage-autour.png", title: "Fromage de chèvre", desc: "1h d'Aix-en-Provence TGV", tags: ["Soins aux chèvres", "Fabrication du fromage", "Dégustation à la ferme"], producerImage: "/images/producteurs/chevre-bebe.jpg", universes: ["le fromage de chèvre"] },
-              { image: "/images/card/vigne-ventoux.png", title: "Vin AOC Ventoux", desc: "1h d'Avignon TGV", tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"], producerImage: "/images/producteurs/vincombeaumas.png", universes: ["le vin"] },
-            ];
-            
-            // Filtrer les cartes selon l'univers sélectionné
-            const filteredCards = selectedUniverse 
-              ? exampleCards.filter(card => card.universes.includes(selectedUniverse))
-              : exampleCards;
-            const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-            // Sur mobile, calculer la largeur pour afficher exactement 2 cartes
-            const cardWidthPx = isMobile && examplesCardWidthPx > 0 
-              ? examplesCardWidthPx 
-              : (examplesCardWidthPx > 0 ? examplesCardWidthPx : 280);
-            return (
-              <div className="relative w-screen pb-6 sm:pb-8 -ml-2 sm:-ml-4 lg:-ml-6 mr-0">
-                <div ref={examplesCarouselRef} className="w-full mb-4 sm:mb-6 py-4 pb-4 sm:pb-6 px-4 sm:pl-14 md:pl-20 lg:pl-24 sm:pr-4 md:pr-6 lg:pr-8">
-                  <div
-                    ref={examplesScrollRef}
-                    className="no-scrollbar flex overflow-x-scroll overflow-y-visible py-2 -my-2 pb-4 sm:pb-6 scroll-smooth snap-x snap-mandatory"
-                    style={{
-                      gap: isMobile ? 16 : CAROUSEL_GAP_PX,
-                      scrollbarWidth: 'none',
-                      msOverflowStyle: 'none',
-                      WebkitOverflowScrolling: 'touch',
-                      touchAction: 'pan-x',
-                      overscrollBehaviorX: 'contain',
-                      WebkitUserSelect: 'none',
-                      userSelect: 'none',
-                      cursor: 'grab',
-                    }}
-                    onMouseDown={(e) => {
-                      const el = examplesScrollRef.current;
-                      if (!el) return;
-                      el.style.cursor = 'grabbing';
-                      const startX = e.pageX - el.offsetLeft;
-                      const scrollLeft = el.scrollLeft;
-                      
-                      const handleMouseMove = (e: MouseEvent) => {
-                        e.preventDefault();
-                        const x = e.pageX - el.offsetLeft;
-                        const walk = (x - startX) * 1.5;
-                        el.scrollLeft = scrollLeft - walk;
-                      };
-                      
-                      const handleMouseUp = () => {
-                        el.style.cursor = 'grab';
-                        document.removeEventListener('mousemove', handleMouseMove);
-                        document.removeEventListener('mouseup', handleMouseUp);
-                        document.removeEventListener('mouseleave', handleMouseUp);
-                      };
-                      
-                      document.addEventListener('mousemove', handleMouseMove);
-                      document.addEventListener('mouseup', handleMouseUp);
-                      document.addEventListener('mouseleave', handleMouseUp);
-                    }}
-                  >
-                    {filteredCards.length > 0 ? (
-                      filteredCards.map((card) => (
-                        <div
-                          key={`${card.title}-${card.desc}`}
-                          className="flex-shrink-0 snap-start"
-                          style={{ width: cardWidthPx }}
-                        >
-                          <UniverseCard {...card} />
-                        </div>
-                      ))
-                    ) : (
-                      <div className="flex-shrink-0 w-full text-center py-8">
-                        <p className="text-gray-500 text-sm">Aucune carte disponible pour cet univers.</p>
-                      </div>
-                    )}
+          {/* Carousel */}
+          <div className="relative w-screen left-1/2 -translate-x-1/2 pb-6 sm:pb-8">
+            <div ref={examplesCarouselRef} className="w-screen mb-4 sm:mb-6 py-4 pb-4 sm:pb-6">
+              <div
+                ref={examplesScrollRef}
+                className="no-scrollbar flex overflow-x-scroll overflow-y-visible py-2 -my-2 pb-4 sm:pb-6 scroll-smooth"
+                style={{
+                  gap: isMobile ? 16 : CAROUSEL_GAP_PX,
+                  paddingLeft: isMobile ? 16 : 48,
+                  paddingRight: isMobile ? 16 : 48,
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  WebkitOverflowScrolling: 'touch',
+                  touchAction: 'pan-x',
+                  overscrollBehaviorX: 'contain',
+                  WebkitUserSelect: 'none',
+                  userSelect: 'none',
+                  cursor: 'grab',
+                }}
+                onMouseDown={(e) => {
+                  const el = examplesScrollRef.current;
+                  if (!el) return;
+                  el.style.cursor = 'grabbing';
+                  const startX = e.pageX - el.offsetLeft;
+                  const scrollLeft = el.scrollLeft;
+                  const handleMouseMove = (e: MouseEvent) => {
+                    e.preventDefault();
+                    const x = e.pageX - el.offsetLeft;
+                    const walk = (x - startX) * 1.5;
+                    el.scrollLeft = scrollLeft - walk;
+                  };
+                  const handleMouseUp = () => {
+                    el.style.cursor = 'grab';
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('mouseup', handleMouseUp);
+                    document.removeEventListener('mouseleave', handleMouseUp);
+                  };
+                  document.addEventListener('mousemove', handleMouseMove);
+                  document.addEventListener('mouseup', handleMouseUp);
+                  document.addEventListener('mouseleave', handleMouseUp);
+                }}
+              >
+                {filteredCards.length > 0 ? (
+                  filteredCards.map((card) => (
+                    <div key={`${card.title}-${card.desc}`} className="flex-shrink-0" style={{ width: cardWidthPx }}>
+                      <UniverseCard
+                        {...card}
+                        onOpenModal={() => openUniversModal(card.universId)}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex-shrink-0 w-full text-center py-8">
+                    <p className="text-gray-500 text-sm">Aucune carte disponible pour cet univers.</p>
                   </div>
-                </div>
+                )}
               </div>
-            );
-          })()}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* SECTION: NOS GARANTIES — grille visible d'un coup */}
+      {/* ── NOS GARANTIES ─────────────────────────────────────────────────────── */}
       <section className="py-16 sm:py-20 lg:py-24 px-0 sm:px-0 lg:px-0 bg-white">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-6 sm:mb-14">
@@ -679,12 +672,11 @@ Email envoyé depuis le formulaire de séminaire Terrago
               </ScrollAnimate>
             </div>
           </div>
-          
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 list-none p-0 m-0 max-w-[340px] sm:max-w-none mx-auto sm:mx-0">
             {[
               { icon: 'groups', label: 'Rencontres authentiques', text: 'Visites et échanges avec des producteurs engagés.' },
-              { icon: 'eco', label: 'Sensibilisation envrionnementale', text: 'Sensibilisation aux valeurs de durabilité, du vivant et du savoir-faire local.' },
-              { icon: 'restaurant', label: 'Du champ à l\'assiette', text: 'Tous vos repas deveinnent des expériences gourmandes et locales.' },
+              { icon: 'eco', label: 'Sensibilisation environnementale', text: 'Sensibilisation aux valeurs de durabilité, du vivant et du savoir-faire local.' },
+              { icon: 'restaurant', label: "Du champ à l'assiette", text: 'Tous vos repas deviennent des expériences gourmandes et locales.' },
               { icon: 'nature', label: 'Cadre ressourçant', text: 'Se réunir au vert dans un lieu inspirant.' },
               { icon: 'diversity_3', label: 'Cohésion sur mesure', text: 'Activités pensées pour renforcer les liens.' },
             ].map((item) => (
@@ -702,15 +694,13 @@ Email envoyé depuis le formulaire de séminaire Terrago
         </div>
       </section>
 
-      {/* SECTION: NOS OFFRES - PLAQUETTE (style pépites du terroir, plus petit, cadre large) */}
+      {/* ── PLAQUETTE ─────────────────────────────────────────────────────────── */}
       <section className="py-14 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-beige-bg relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-primary/5 rounded-full -mr-24 -mt-24 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-48 sm:w-64 h-48 sm:h-64 bg-orange/5 rounded-full -ml-24 -mb-24 blur-3xl" />
-
         <div className="max-w-4xl mx-auto relative z-10">
           <div className="glass rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 md:p-12 border border-white/30 shadow-premium text-center hover:shadow-premium-hover transition-all duration-500">
             <span className="inline-block px-2.5 py-1 bg-orange text-white font-bold tracking-[0.25em] uppercase text-[7px] sm:text-[8px] font-sans rounded-full mb-3 sm:mb-6">Nos offres</span>
-
             <div className="text-center mb-2 sm:mb-4">
               <ScrollAnimate delay={250}>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary italic leading-tight w-full sm:w-max sm:mx-auto whitespace-normal sm:whitespace-nowrap break-words sm:break-normal">
@@ -721,7 +711,6 @@ Email envoyé depuis le formulaire de séminaire Terrago
             <p className="text-xs sm:text-sm text-gray-600 font-sans mb-6 sm:mb-8 max-w-xl mx-auto leading-relaxed">
               Laissez-nous votre email et recevez notre plaquette regroupant toutes nos offres. Et tout ça sous 24h, promis !
             </p>
-
             {plaquetteSuccess ? (
               <div className="inline-block bg-primary/10 border border-primary/20 rounded-2xl px-6 py-5 sm:px-8 sm:py-6">
                 <div className="size-10 rounded-full bg-primary text-white flex items-center justify-center mx-auto mb-3">
@@ -739,10 +728,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
                       required
                       placeholder="jeveuxlaplaquette@email.fr"
                       value={plaquetteEmail}
-                      onChange={(e) => {
-                        setPlaquetteEmail(e.target.value);
-                        setPlaquetteEmailError('');
-                      }}
+                      onChange={(e) => { setPlaquetteEmail(e.target.value); setPlaquetteEmailError(''); }}
                       className={`w-full bg-white/90 border rounded-xl sm:rounded-2xl px-4 py-3 text-xs sm:text-sm placeholder:text-gray-400 focus:ring-2 focus:bg-white transition-all shadow-sm ${
                         plaquetteEmailError ? 'border-orange focus:ring-orange/30' : 'border-black/10 focus:ring-primary/30'
                       }`}
@@ -769,42 +755,135 @@ Email envoyé depuis le formulaire de séminaire Terrago
         </div>
       </section>
 
-      {/* MODAL AMÉLIORÉE - FLUIDE ET COHÉRENTE */}
+      {/* ── MODAL UNIVERS ─────────────────────────────────────────────────────── */}
+      {selectedUniversModal && (
+        <div
+          onClick={closeUniversModal}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 200,
+            background: 'rgba(10,20,10,0.75)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '24px',
+            opacity: isUniversModalClosing ? 0 : 1,
+            transition: 'opacity 0.25s ease',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#fff',
+              borderRadius: 28,
+              maxWidth: 620,
+              width: '100%',
+              overflow: 'hidden',
+              boxShadow: '0 40px 100px rgba(0,0,0,0.35)',
+              transform: isUniversModalClosing ? 'translateY(20px) scale(0.97)' : 'translateY(0) scale(1)',
+              transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+            }}
+          >
+            {/* Image header — on réutilise l'image de la carte via une map */}
+            {(() => {
+              const card = exampleCards.find(c => c.universId === selectedUniversModal.id);
+              return (
+                <div style={{ position: 'relative', height: 180, overflow: 'visible', flexShrink: 0 }}>
+                  <img
+                    src={card?.image ?? ''}
+                    alt={selectedUniversModal.label}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                  <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${selectedUniversModal.couleur}f0 0%, rgba(0,0,0,0.2) 100%)` }} />
+                  {/* Close */}
+                  <button
+                    onClick={closeUniversModal}
+                    style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.95)', border: 'none', borderRadius: '50%', width: 38, height: 38, cursor: 'pointer', fontSize: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#1e291a' }}
+                  >×</button>
+                  {/* Badge */}
+                  <div style={{ position: 'absolute', top: 16, left: 16, background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(8px)', borderRadius: 20, padding: '5px 12px', fontSize: 9.5, fontWeight: 700, color: '#fff', letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: 'inherit' }}>
+                    {selectedUniversModal.badge}
+                  </div>
+                  {/* Titre bold */}
+                  <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20, fontSize: 'clamp(18px, 3vw, 28px)', fontWeight: 900, color: '#fff', lineHeight: 1.05, textTransform: 'uppercase', letterSpacing: '-0.01em', textShadow: '0 2px 12px rgba(0,0,0,0.4)', fontFamily: 'inherit' }}>
+                    {selectedUniversModal.label}
+                  </div>
+                  {/* Avatar */}
+                  {card?.producerImage && (
+                    <img
+                      src={card.producerImage}
+                      alt=""
+                      style={{ position: 'absolute', bottom: -36, right: 24, width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', border: '3px solid #fff', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}
+                    />
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* Body */}
+            <div style={{ padding: '32px 28px 28px', fontFamily: 'inherit' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8 }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: '#1e291a' }}>
+                  {exampleCards.find(c => c.universId === selectedUniversModal.id)?.title}
+                </div>
+                <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 5 }}>📅 {selectedUniversModal.saison}</div>
+              </div>
+              <p style={{ fontSize: 13.5, color: '#6b7280', lineHeight: 1.7, marginBottom: 20 }}>
+                {selectedUniversModal.description}
+              </p>
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: '#9ca3af', textTransform: 'uppercase', marginBottom: 10 }}>Au programme</div>
+                <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {selectedUniversModal.activites.map((a) => (
+                    <li key={a} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#374151' }}>
+                      <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#f78d00', flexShrink: 0, display: 'inline-block' }} />
+                      {a}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <button
+                onClick={() => { closeUniversModal(); openModal(); }}
+                style={{ width: '100%', background: '#1e291a', color: '#fff', border: 'none', borderRadius: 14, padding: '15px', fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit' }}
+              >
+                Demander un devis pour cet univers →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── MODAL SÉMINAIRE ───────────────────────────────────────────────────── */}
       {isModalOpen && (
-        <div 
+        <div
           ref={modalRef}
           className="fixed inset-0 z-[100] flex items-center justify-center p-4"
           style={{ pointerEvents: isClosing ? 'none' : 'auto' }}
         >
-          <div 
-            className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
-              isClosing ? 'opacity-0' : 'opacity-100'
-            }`}
+          <div
+            className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`}
             onClick={closeModal}
-          ></div>
-          <div 
+          />
+          <div
             className={`bg-white w-full max-w-[95%] sm:max-w-5xl h-[85vh] max-h-[85vh] sm:h-[90vh] sm:max-h-[90vh] md:h-[85vh] rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col relative z-10 font-sans transition-all duration-300 ${
-              isClosing 
-                ? 'opacity-0 scale-95 translate-y-8' 
-                : 'opacity-100 scale-100 translate-y-0'
+              isClosing ? 'opacity-0 scale-95 translate-y-8' : 'opacity-100 scale-100 translate-y-0'
             }`}
             onClick={(e) => e.stopPropagation()}
           >
-            
-            {/* Header Modal - Plus d'espace et typographie soignée */}
+            {/* Header */}
             <div className="px-6 md:px-10 py-4 md:py-6 bg-white border-b border-black/5 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
-                 <div className="size-8 md:size-10 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg shrink-0">
-                    <span className="material-symbols-outlined text-xl md:text-2xl">event_available</span>
-                 </div>
-                 <div className="min-w-0">
-                    <h2 className="text-lg md:text-2xl font-bold text-primary leading-tight truncate">
-                      <span className="font-sans not-italic text-sm md:text-base">Votre projet de séminaire </span>
-                    </h2>
-                    <p className="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1 font-sans hidden sm:block">Parlons d'immersion et de sens</p>
-                 </div>
+                <div className="size-8 md:size-10 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg shrink-0">
+                  <span className="material-symbols-outlined text-xl md:text-2xl">event_available</span>
+                </div>
+                <div className="min-w-0">
+                  <h2 className="text-lg md:text-2xl font-bold text-primary leading-tight truncate">
+                    <span className="font-sans not-italic text-sm md:text-base">Votre projet de séminaire </span>
+                  </h2>
+                  <p className="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1 font-sans hidden sm:block">Parlons d'immersion et de sens</p>
+                </div>
               </div>
-              <button 
+              <button
                 onClick={closeModal}
                 className="size-11 rounded-full bg-beige-bg flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 shadow-sm active:scale-90 focus:outline-none focus:ring-2 focus:ring-primary/50"
                 aria-label="Fermer la modal"
@@ -813,24 +892,20 @@ Email envoyé depuis le formulaire de séminaire Terrago
               </button>
             </div>
 
-            {/* Message d'erreur */}
+            {/* Erreur */}
             {errorMessage && (
               <div className="px-6 md:px-12 pt-4 shrink-0 animate-in fade-in">
                 <div className="bg-orange/10 border border-orange/30 rounded-xl px-4 py-3 flex items-center gap-3">
                   <span className="material-symbols-outlined text-orange text-lg">error</span>
                   <p className="text-[11px] font-sans font-medium text-orange flex-1">{errorMessage}</p>
-                  <button
-                    onClick={() => setErrorMessage('')}
-                    className="text-orange hover:text-orange/70 transition-colors"
-                    aria-label="Fermer"
-                  >
+                  <button onClick={() => setErrorMessage('')} className="text-orange hover:text-orange/70 transition-colors" aria-label="Fermer">
                     <span className="material-symbols-outlined text-lg">close</span>
                   </button>
                 </div>
               </div>
             )}
 
-            {/* Barre de progression - Thinner and more elegant */}
+            {/* Progression */}
             <div className={`px-6 md:px-12 ${errorMessage ? 'pt-4' : 'pt-6'} md:pt-8 shrink-0`}>
               <div className="flex items-center justify-between mb-3 px-1 gap-2">
                 <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-orange shrink-0">Étape {currentStep} <span className="text-gray-200 mx-1 md:mx-2">/</span> 3</span>
@@ -839,14 +914,11 @@ Email envoyé depuis le formulaire de séminaire Terrago
                 </span>
               </div>
               <div className="h-1.5 w-full bg-beige-bg rounded-full overflow-hidden border border-black/5 relative">
-                <div 
-                  className="absolute top-0 left-0 h-full bg-orange rounded-full transition-all duration-700 ease-in-out shadow-sm" 
-                  style={{ width: `${(currentStep / 3) * 100}%`, minWidth: '4px' }} 
-                />
+                <div className="absolute top-0 left-0 h-full bg-orange rounded-full transition-all duration-700 ease-in-out shadow-sm" style={{ width: `${(currentStep / 3) * 100}%`, minWidth: '4px' }} />
               </div>
             </div>
 
-            {/* Message de succès */}
+            {/* Succès */}
             {submitSuccess && (
               <div className="absolute inset-0 bg-white/95 backdrop-blur-sm flex items-center justify-center z-20 rounded-[1.5rem] md:rounded-[2.5rem]">
                 <div className="text-center p-8">
@@ -859,7 +931,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
               </div>
             )}
 
-            {/* Contenu - Plus aéré avec transitions */}
+            {/* Contenu étapes */}
             <div className="flex-1 overflow-y-auto p-6 md:p-12 custom-scrollbar">
               <div className="max-w-4xl mx-auto">
                 {currentStep === 1 && (
@@ -869,159 +941,37 @@ Email envoyé depuis le formulaire de séminaire Terrago
                       <p className="text-xs text-gray-400 font-light italic">Dites-nous qui vous êtes pour mieux cerner vos besoins.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                      <FormInput 
-                        label="Prénom" 
-                        placeholder="Jean" 
-                        icon="person"
-                        value={formData.prenom}
-                        onChange={(e) => setFormData({...formData, prenom: e.target.value})}
-                        required={true}
-                      />
-                      <FormInput 
-                        label="Nom" 
-                        placeholder="Dupont"
-                        value={formData.nom}
-                        onChange={(e) => setFormData({...formData, nom: e.target.value})}
-                        required={true}
-                      />
-                      <FormInput 
-                        label="Email Professionnel" 
-                        placeholder="contact@entreprise.fr" 
-                        type="email" 
-                        icon="mail"
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        required={true}
-                      />
-                      <FormInput 
-                        label="Nom de l'Entreprise" 
-                        placeholder="Terroir SAS" 
-                        icon="business"
-                        value={formData.entreprise}
-                        onChange={(e) => setFormData({...formData, entreprise: e.target.value})}
-                        required={true}
-                      />
-                      <ParticipantsSelect
-                        label="Nombre de participants"
-                        icon="groups"
-                        value={formData.participants}
-                        onChange={(value) => setFormData({...formData, participants: value})}
-                        required={true}
-                      />
+                      <FormInput label="Prénom" placeholder="Jean" icon="person" value={formData.prenom} onChange={(e: any) => setFormData({...formData, prenom: e.target.value})} required />
+                      <FormInput label="Nom" placeholder="Dupont" value={formData.nom} onChange={(e: any) => setFormData({...formData, nom: e.target.value})} required />
+                      <FormInput label="Email Professionnel" placeholder="contact@entreprise.fr" type="email" icon="mail" value={formData.email} onChange={(e: any) => setFormData({...formData, email: e.target.value})} required />
+                      <FormInput label="Nom de l'Entreprise" placeholder="Terroir SAS" icon="business" value={formData.entreprise} onChange={(e: any) => setFormData({...formData, entreprise: e.target.value})} required />
+                      <ParticipantsSelect label="Nombre de participants" icon="groups" value={formData.participants} onChange={(value: any) => setFormData({...formData, participants: value})} required />
                       <div className="space-y-3 md:col-span-2">
                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
                           <span className="material-symbols-outlined text-sm">calendar_today</span> Période Souhaitée
                           <span className="text-orange">*</span>
                         </label>
-                        
-                        {/* Toggle entre dates précises et mois */}
                         <div className="flex gap-2 mb-3">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setPeriodType('dates');
-                              setSelectedMonths([]);
-                            }}
-                            className={`px-4 py-2 rounded-lg border text-[8px] font-bold uppercase tracking-wider transition-all ${
-                              periodType === 'dates'
-                                ? 'border-primary bg-primary text-white'
-                                : 'border-black/10 bg-white text-gray-600 hover:border-primary/40'
-                            }`}
-                          >
-                            Dates précises
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setPeriodType('months');
-                              setStartDate('');
-                              setEndDate('');
-                            }}
-                            className={`px-4 py-2 rounded-lg border text-[8px] font-bold uppercase tracking-wider transition-all ${
-                              periodType === 'months'
-                                ? 'border-primary bg-primary text-white'
-                                : 'border-black/10 bg-white text-gray-600 hover:border-primary/40'
-                            }`}
-                          >
-                            Choix du/des mois
-                          </button>
+                          <button type="button" onClick={() => { setPeriodType('dates'); setSelectedMonths([]); }} className={`px-4 py-2 rounded-lg border text-[8px] font-bold uppercase tracking-wider transition-all ${periodType === 'dates' ? 'border-primary bg-primary text-white' : 'border-black/10 bg-white text-gray-600 hover:border-primary/40'}`}>Dates précises</button>
+                          <button type="button" onClick={() => { setPeriodType('months'); setStartDate(''); setEndDate(''); }} className={`px-4 py-2 rounded-lg border text-[8px] font-bold uppercase tracking-wider transition-all ${periodType === 'months' ? 'border-primary bg-primary text-white' : 'border-black/10 bg-white text-gray-600 hover:border-primary/40'}`}>Choix du/des mois</button>
                         </div>
-
-                        {/* Affichage conditionnel selon le type sélectionné */}
                         {periodType === 'dates' ? (
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="relative">
-                              <label htmlFor="start-date" className="text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">
-                                Date de début
-                              </label>
-                              <input
-                                id="start-date"
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                onFocus={(e) => {
-                                  // Forcer l'ouverture du calendrier au focus
-                                  if ('showPicker' in e.target && typeof (e.target as any).showPicker === 'function') {
-                                    (e.target as any).showPicker();
-                                  }
-                                }}
-                                onClick={(e) => {
-                                  // Forcer l'ouverture du calendrier au clic
-                                  if ('showPicker' in e.target && typeof (e.target as any).showPicker === 'function') {
-                                    (e.target as any).showPicker();
-                                  }
-                                }}
-                                min={new Date().toISOString().split('T')[0]}
-                                className="w-full bg-beige-bg/40 border border-black/5 rounded-xl px-4 py-3 text-xs font-sans focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all cursor-pointer"
-                              />
+                              <label htmlFor="start-date" className="text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Date de début</label>
+                              <input id="start-date" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} min={new Date().toISOString().split('T')[0]} className="w-full bg-beige-bg/40 border border-black/5 rounded-xl px-4 py-3 text-xs font-sans focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all cursor-pointer" />
                             </div>
                             <div className="relative">
-                              <label htmlFor="end-date" className="text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">
-                                Date de fin
-                              </label>
-                              <input
-                                id="end-date"
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                onFocus={(e) => {
-                                  // Forcer l'ouverture du calendrier au focus
-                                  if ('showPicker' in e.target && typeof (e.target as any).showPicker === 'function') {
-                                    (e.target as any).showPicker();
-                                  }
-                                }}
-                                onClick={(e) => {
-                                  // Forcer l'ouverture du calendrier au clic
-                                  if ('showPicker' in e.target && typeof (e.target as any).showPicker === 'function') {
-                                    (e.target as any).showPicker();
-                                  }
-                                }}
-                                min={startDate || new Date().toISOString().split('T')[0]}
-                                className="w-full bg-beige-bg/40 border border-black/5 rounded-xl px-4 py-3 text-xs font-sans focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all cursor-pointer"
-                              />
+                              <label htmlFor="end-date" className="text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Date de fin</label>
+                              <input id="end-date" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} min={startDate || new Date().toISOString().split('T')[0]} className="w-full bg-beige-bg/40 border border-black/5 rounded-xl px-4 py-3 text-xs font-sans focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all cursor-pointer" />
                             </div>
                           </div>
                         ) : (
                           <div className="flex flex-wrap gap-2">
                             {months.map((month) => (
-                              <button
-                                key={month}
-                                type="button"
-                                onClick={() => toggleSelection(selectedMonths, setSelectedMonths, month)}
-                                className={`px-3 py-2 rounded-lg border cursor-pointer transition-all duration-300 flex items-center gap-1.5 ${
-                                  selectedMonths.includes(month) 
-                                    ? 'border-primary bg-primary text-white shadow-md shadow-primary/20' 
-                                    : 'border-black/10 bg-white hover:border-primary/40 hover:bg-primary/5 text-gray-600'
-                                }`}
-                              >
-                                <span className={`text-[8px] font-bold uppercase tracking-wider font-sans whitespace-nowrap ${
-                                  selectedMonths.includes(month) ? 'text-white' : 'text-gray-600'
-                                }`}>
-                                  {month}
-                                </span>
-                                {selectedMonths.includes(month) && (
-                                  <span className="material-symbols-outlined text-white text-xs">check</span>
-                                )}
+                              <button key={month} type="button" onClick={() => toggleSelection(selectedMonths, setSelectedMonths, month)} className={`px-3 py-2 rounded-lg border cursor-pointer transition-all duration-300 flex items-center gap-1.5 ${selectedMonths.includes(month) ? 'border-primary bg-primary text-white shadow-md shadow-primary/20' : 'border-black/10 bg-white hover:border-primary/40 hover:bg-primary/5 text-gray-600'}`}>
+                                <span className={`text-[8px] font-bold uppercase tracking-wider font-sans whitespace-nowrap ${selectedMonths.includes(month) ? 'text-white' : 'text-gray-600'}`}>{month}</span>
+                                {selectedMonths.includes(month) && <span className="material-symbols-outlined text-white text-xs">check</span>}
                               </button>
                             ))}
                           </div>
@@ -1037,7 +987,6 @@ Email envoyé depuis le formulaire de séminaire Terrago
                       <h3 className="text-3xl font-display font-bold text-primary italic mb-2">Où partir ?</h3>
                       <p className="text-xs text-gray-400 font-light italic">Où souhaitez-vous vivre l'expérience ? Nos domaines vous accueillent dans les plus belles régions de France.</p>
                     </div>
-                    
                     <div className="space-y-4">
                       <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 border-b border-black/5 pb-3 flex items-center gap-2">
                         <span className="material-symbols-outlined text-sm">location_on</span>
@@ -1045,26 +994,11 @@ Email envoyé depuis le formulaire de séminaire Terrago
                       </h4>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {regionsOptions.map((region) => (
-                          <button
-                            key={region.name}
-                            type="button"
-                            onClick={() => toggleSelection(selectedRegions, setSelectedRegions, region.name)}
-                            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all duration-300 flex flex-col items-center text-center gap-2 group relative overflow-hidden ${
-                              selectedRegions.includes(region.name) 
-                                ? 'border-primary bg-primary/10 shadow-xl -translate-y-1' 
-                                : 'border-black/10 bg-white hover:border-primary/20 hover:shadow-lg'
-                            }`}
-                          >
-                            <div className={`size-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
-                              selectedRegions.includes(region.name) ? 'bg-primary text-white shadow-lg' : 'bg-beige-bg text-gray-400 group-hover:text-primary'
-                            }`}>
+                          <button key={region.name} type="button" onClick={() => toggleSelection(selectedRegions, setSelectedRegions, region.name)} className={`p-6 rounded-2xl border-2 cursor-pointer transition-all duration-300 flex flex-col items-center text-center gap-2 group relative overflow-hidden ${selectedRegions.includes(region.name) ? 'border-primary bg-primary/10 shadow-xl -translate-y-1' : 'border-black/10 bg-white hover:border-primary/20 hover:shadow-lg'}`}>
+                            <div className={`size-12 rounded-xl flex items-center justify-center transition-all duration-300 ${selectedRegions.includes(region.name) ? 'bg-primary text-white shadow-lg' : 'bg-beige-bg text-gray-400 group-hover:text-primary'}`}>
                               <span className="material-symbols-outlined text-2xl">{region.icon}</span>
                             </div>
-                            <span className={`text-sm font-bold font-sans leading-tight ${
-                              selectedRegions.includes(region.name) ? 'text-primary' : 'text-primary/90'
-                            }`}>
-                              {region.name}
-                            </span>
+                            <span className={`text-sm font-bold font-sans leading-tight ${selectedRegions.includes(region.name) ? 'text-primary' : 'text-primary/90'}`}>{region.name}</span>
                             {selectedRegions.includes(region.name) && (
                               <span className="absolute top-3 right-3 size-5 bg-primary rounded-full flex items-center justify-center">
                                 <span className="material-symbols-outlined text-white text-xs">check</span>
@@ -1076,23 +1010,11 @@ Email envoyé depuis le formulaire de séminaire Terrago
                       <div className="space-y-4 pt-4 border-t border-black/5">
                         <div>
                           <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">Autre région (précisez)</label>
-                          <input
-                            type="text"
-                            value={autreRegion}
-                            onChange={(e) => setAutreRegion(e.target.value)}
-                            placeholder="Ex : Bretagne, Occitanie…"
-                            className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm placeholder:text-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
-                          />
+                          <input type="text" value={autreRegion} onChange={(e) => setAutreRegion(e.target.value)} placeholder="Ex : Bretagne, Occitanie…" className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm placeholder:text-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all" />
                         </div>
                         <div>
                           <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">Ville (libre)</label>
-                          <input
-                            type="text"
-                            value={villeLibre}
-                            onChange={(e) => setVilleLibre(e.target.value)}
-                            placeholder="Ex : Bordeaux, Lyon…"
-                            className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm placeholder:text-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
-                          />
+                          <input type="text" value={villeLibre} onChange={(e) => setVilleLibre(e.target.value)} placeholder="Ex : Bordeaux, Lyon…" className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm placeholder:text-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all" />
                         </div>
                       </div>
                     </div>
@@ -1105,119 +1027,76 @@ Email envoyé depuis le formulaire de séminaire Terrago
                       <h3 className="text-3xl font-display font-bold text-primary italic mb-2">Logistique & Sur-mesure</h3>
                       <p className="text-xs text-gray-400 font-light italic">Affinez les détails pour une organisation parfaite.</p>
                     </div>
-                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* HÉBERGEMENT */}
-                        <div className={`p-8 rounded-[2rem] border-2 transition-all duration-500 ${hasAccommodation ? 'border-orange bg-orange/5' : 'border-beige-bg bg-white shadow-sm'}`}>
-                          <div className="flex items-center justify-between mb-8">
-                             <div className="flex items-center gap-4">
-                                <div className={`size-10 rounded-xl flex items-center justify-center transition-colors ${hasAccommodation ? 'bg-orange text-white' : 'bg-beige-bg text-gray-400'}`}>
-                                   <span className="material-symbols-outlined">hotel</span>
-                                </div>
-                                <h4 className="text-xs font-bold text-primary font-sans uppercase tracking-widest leading-none">Hébergement</h4>
-                             </div>
-                             <label className="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" className="sr-only peer" checked={hasAccommodation} onChange={(e) => setHasAccommodation(e.target.checked)} />
-                                <div className="w-12 h-6 bg-gray-100 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange shadow-inner"></div>
-                             </label>
-                          </div>
-                          {hasAccommodation && (
-                            <div className="flex flex-wrap gap-2 animate-fade-in">
-                               {accTypes.map(type => (
-                                 <button 
-                                  key={type}
-                                  onClick={() => toggleSelection(selectedAccTypes, setSelectedAccTypes, type)}
-                                  className={`px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest border transition-all ${selectedAccTypes.includes(type) ? 'bg-orange text-white border-orange shadow-md' : 'bg-white text-gray-400 border-black/5 hover:border-primary/20'}`}
-                                 >
-                                   {type}
-                                 </button>
-                               ))}
+                      <div className={`p-8 rounded-[2rem] border-2 transition-all duration-500 ${hasAccommodation ? 'border-orange bg-orange/5' : 'border-beige-bg bg-white shadow-sm'}`}>
+                        <div className="flex items-center justify-between mb-8">
+                          <div className="flex items-center gap-4">
+                            <div className={`size-10 rounded-xl flex items-center justify-center transition-colors ${hasAccommodation ? 'bg-orange text-white' : 'bg-beige-bg text-gray-400'}`}>
+                              <span className="material-symbols-outlined">hotel</span>
                             </div>
-                          )}
-                        </div>
-
-                        {/* TRANSPORT */}
-                        <div className={`p-8 rounded-[2rem] border-2 transition-all duration-500 ${hasTransport ? 'border-orange bg-orange/5' : 'border-beige-bg bg-white shadow-sm'}`}>
-                          <div className="flex items-center justify-between mb-8">
-                             <div className="flex items-center gap-4">
-                                <div className={`size-10 rounded-xl flex items-center justify-center transition-colors ${hasTransport ? 'bg-orange text-white' : 'bg-beige-bg text-gray-400'}`}>
-                                   <span className="material-symbols-outlined">directions_car</span>
-                                </div>
-                                <h4 className="text-xs font-bold text-primary font-sans uppercase tracking-widest leading-none">Transport</h4>
-                             </div>
-                             <label className="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" className="sr-only peer" checked={hasTransport} onChange={(e) => setHasTransport(e.target.checked)} />
-                                <div className="w-12 h-6 bg-gray-100 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange shadow-inner"></div>
-                             </label>
+                            <h4 className="text-xs font-bold text-primary font-sans uppercase tracking-widest leading-none">Hébergement</h4>
                           </div>
-                          {hasTransport && (
-                            <div className="grid grid-cols-2 gap-3 animate-fade-in">
-                               {["De porte à porte", "Depuis gare SNCF proche"].map(opt => (
-                                 <button 
-                                  key={opt}
-                                  onClick={() => setSelectedTransport(opt)}
-                                  className={`px-3 py-3 rounded-xl text-[9px] font-bold uppercase tracking-widest border transition-all ${selectedTransport === opt ? 'bg-orange text-white border-orange shadow-md' : 'bg-white text-gray-400 border-black/5 hover:border-primary/20'}`}
-                                 >
-                                   {opt}
-                                 </button>
-                               ))}
-                            </div>
-                          )}
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" className="sr-only peer" checked={hasAccommodation} onChange={(e) => setHasAccommodation(e.target.checked)} />
+                            <div className="w-12 h-6 bg-gray-100 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange shadow-inner"></div>
+                          </label>
                         </div>
+                        {hasAccommodation && (
+                          <div className="flex flex-wrap gap-2 animate-fade-in">
+                            {accTypes.map(type => (
+                              <button key={type} onClick={() => toggleSelection(selectedAccTypes, setSelectedAccTypes, type)} className={`px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest border transition-all ${selectedAccTypes.includes(type) ? 'bg-orange text-white border-orange shadow-md' : 'bg-white text-gray-400 border-black/5 hover:border-primary/20'}`}>{type}</button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div className={`p-8 rounded-[2rem] border-2 transition-all duration-500 ${hasTransport ? 'border-orange bg-orange/5' : 'border-beige-bg bg-white shadow-sm'}`}>
+                        <div className="flex items-center justify-between mb-8">
+                          <div className="flex items-center gap-4">
+                            <div className={`size-10 rounded-xl flex items-center justify-center transition-colors ${hasTransport ? 'bg-orange text-white' : 'bg-beige-bg text-gray-400'}`}>
+                              <span className="material-symbols-outlined">directions_car</span>
+                            </div>
+                            <h4 className="text-xs font-bold text-primary font-sans uppercase tracking-widest leading-none">Transport</h4>
+                          </div>
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" className="sr-only peer" checked={hasTransport} onChange={(e) => setHasTransport(e.target.checked)} />
+                            <div className="w-12 h-6 bg-gray-100 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange shadow-inner"></div>
+                          </label>
+                        </div>
+                        {hasTransport && (
+                          <div className="grid grid-cols-2 gap-3 animate-fade-in">
+                            {["De porte à porte", "Depuis gare SNCF proche"].map(opt => (
+                              <button key={opt} onClick={() => setSelectedTransport(opt)} className={`px-3 py-3 rounded-xl text-[9px] font-bold uppercase tracking-widest border transition-all ${selectedTransport === opt ? 'bg-orange text-white border-orange shadow-md' : 'bg-white text-gray-400 border-black/5 hover:border-primary/20'}`}>{opt}</button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    
                     <div className="space-y-3 pt-4">
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                           <span className="material-symbols-outlined text-sm">edit_note</span> Un message particulier ?
-                        </label>
-                        <textarea 
-                          rows={3} 
-                          className="w-full bg-beige-bg/40 border border-black/5 rounded-[2rem] px-8 py-6 text-[12px] font-sans font-medium focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all shadow-inner outline-none resize-none placeholder:text-gray-300 italic" 
-                          placeholder="Besoin de salles de réunion spécifiques, de pauses gourmandes, d'activités team building particulières..."
-                          value={formData.message}
-                          onChange={(e) => setFormData({...formData, message: e.target.value})}
-                        ></textarea>
+                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-sm">edit_note</span> Un message particulier ?
+                      </label>
+                      <textarea rows={3} className="w-full bg-beige-bg/40 border border-black/5 rounded-[2rem] px-8 py-6 text-[12px] font-sans font-medium focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all shadow-inner outline-none resize-none placeholder:text-gray-300 italic" placeholder="Besoin de salles de réunion spécifiques, de pauses gourmandes, d'activités team building particulières..." value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})}></textarea>
                     </div>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Footer Modal - High Contrast and Clear Actions */}
+            {/* Footer */}
             <div className="px-6 md:px-12 py-3 md:py-4 bg-beige-bg/20 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
-               <button 
-                disabled={currentStep === 1}
-                onClick={prevStep}
-                className={`text-[9px] md:text-[10px] font-bold flex items-center gap-2 md:gap-3 tracking-[0.2em] uppercase transition-all font-sans group w-full sm:w-auto justify-center sm:justify-start ${currentStep === 1 ? 'opacity-0 pointer-events-none' : 'text-primary hover:text-primary/70'}`}
-               >
-                 <span className="material-symbols-outlined text-base md:text-lg transition-transform group-hover:-translate-x-1">west</span> Précédent
-               </button>
-
-               <div className="flex gap-3 md:gap-4 w-full sm:w-auto">
-                  <button onClick={closeModal} className="flex-1 sm:flex-none px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl border border-black/10 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] font-sans hover:bg-white hover:border-black/20 transition-all active:scale-95 shadow-sm">
-                    Annuler
-                  </button>
-                  <button 
-                    onClick={currentStep < 3 ? nextStep : handleSubmit}
-                    disabled={isSubmitting}
-                    className={`flex-1 sm:flex-none bg-primary text-white px-8 md:px-10 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold uppercase tracking-[0.2em] text-[9px] md:text-[10px] font-sans shadow-xl hover:bg-primary/90 hover:text-white hover:shadow-primary/30 active:bg-primary/90 active:text-white focus:bg-primary/90 focus:text-white focus:outline-none transition-all duration-300 sm:min-w-[180px] active:scale-95 flex items-center justify-center gap-2 ${
-                      isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
-                    }`}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        Envoi en cours...
-                      </>
-                    ) : (
-                      <>
-                        {currentStep === 3 ? 'Finaliser le brief' : 'Continuer'}
-                        {currentStep < 3 && <span className="material-symbols-outlined text-sm md:text-base">east</span>}
-                        {currentStep === 3 && <span className="material-symbols-outlined text-sm md:text-base">task_alt</span>}
-                      </>
-                    )}
-                  </button>
-               </div>
+              <button disabled={currentStep === 1} onClick={prevStep} className={`text-[9px] md:text-[10px] font-bold flex items-center gap-2 md:gap-3 tracking-[0.2em] uppercase transition-all font-sans group w-full sm:w-auto justify-center sm:justify-start ${currentStep === 1 ? 'opacity-0 pointer-events-none' : 'text-primary hover:text-primary/70'}`}>
+                <span className="material-symbols-outlined text-base md:text-lg transition-transform group-hover:-translate-x-1">west</span> Précédent
+              </button>
+              <div className="flex gap-3 md:gap-4 w-full sm:w-auto">
+                <button onClick={closeModal} className="flex-1 sm:flex-none px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl border border-black/10 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] font-sans hover:bg-white hover:border-black/20 transition-all active:scale-95 shadow-sm">Annuler</button>
+                <button onClick={currentStep < 3 ? nextStep : handleSubmit} disabled={isSubmitting} className={`flex-1 sm:flex-none bg-primary text-white px-8 md:px-10 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold uppercase tracking-[0.2em] text-[9px] md:text-[10px] font-sans shadow-xl hover:bg-primary/90 hover:text-white hover:shadow-primary/30 active:bg-primary/90 active:text-white focus:bg-primary/90 focus:text-white focus:outline-none transition-all duration-300 sm:min-w-[180px] active:scale-95 flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}>
+                  {isSubmitting ? (
+                    <><div className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>Envoi en cours...</>
+                  ) : (
+                    <>{currentStep === 3 ? 'Finaliser le brief' : 'Continuer'}{currentStep < 3 && <span className="material-symbols-outlined text-sm md:text-base">east</span>}{currentStep === 3 && <span className="material-symbols-outlined text-sm md:text-base">task_alt</span>}</>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1226,24 +1105,20 @@ Email envoyé depuis le formulaire de séminaire Terrago
   );
 };
 
-// Form Input Component Updated for more polish
+// ── Composants utilitaires ────────────────────────────────────────────────────
+
 const FormInput = ({ label, placeholder, type = "text", icon, value, onChange, required = false }: any) => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isValidEmail = type === "email" ? (value === "" || emailPattern.test(value)) : true;
-  
   return (
     <div className="space-y-2">
       <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
         {icon && <span className="material-symbols-outlined text-sm">{icon}</span>} {label}
         {required && <span className="text-orange">*</span>}
       </label>
-      <input 
-        type={type} 
-        className={`w-full bg-beige-bg/40 border rounded-2xl px-6 py-4 text-[12px] font-sans font-medium focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all shadow-sm outline-none placeholder:text-gray-300 ${
-          type === "email" && value && !isValidEmail 
-            ? 'border-orange/50 focus:ring-orange/20' 
-            : 'border-black/5'
-        }`}
+      <input
+        type={type}
+        className={`w-full bg-beige-bg/40 border rounded-2xl px-6 py-4 text-[12px] font-sans font-medium focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all shadow-sm outline-none placeholder:text-gray-300 ${type === "email" && value && !isValidEmail ? 'border-orange/50 focus:ring-orange/20' : 'border-black/5'}`}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
@@ -1259,68 +1134,82 @@ const FormInput = ({ label, placeholder, type = "text", icon, value, onChange, r
 
 const PillarCard = ({ icon, title, text }: any) => (
   <div className="group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-black/5 cursor-pointer">
-    {/* Contenu : marges égales, carte s'agrandit vers le bas au survol */}
     <div className="p-5 sm:p-6 flex flex-col items-center text-center">
-      {/* Icône */}
       <div className="size-6 sm:size-7 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
         <span className="material-symbols-outlined text-sm sm:text-base">{icon}</span>
       </div>
-      
-      {/* Titre - reste primary au survol */}
-      <h3 className="text-xs sm:text-sm font-sans font-semibold text-primary not-italic leading-tight mt-3 sm:mt-4">
-        {title}
-      </h3>
-      
-      {/* Description - bloc qui s'agrandit au survol */}
+      <h3 className="text-xs sm:text-sm font-sans font-semibold text-primary not-italic leading-tight mt-3 sm:mt-4">{title}</h3>
       <div className="max-h-0 overflow-hidden group-hover:max-h-[160px] transition-all duration-500 ease-out">
-        <p className="text-xs sm:text-sm font-medium text-gray-700 leading-relaxed group-hover:text-primary pt-3 sm:pt-4">
-          {text}
-        </p>
+        <p className="text-xs sm:text-sm font-medium text-gray-700 leading-relaxed group-hover:text-primary pt-3 sm:pt-4">{text}</p>
       </div>
     </div>
-    
-    {/* Accent décoratif en bas */}
     <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
   </div>
 );
 
-const UniverseCard = ({ image, title, desc, tags, producerImage }: any) => (
-  <div className="group relative bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-500 border border-black/5 flex flex-col h-full">
-    {/* Image avec overlay au survol */}
-    <div className="relative aspect-[16/11] overflow-hidden rounded-t-xl sm:rounded-t-2xl flex-shrink-0">
-      <img src={image} className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-95" alt={title} />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-t-xl sm:rounded-t-2xl"></div>
-      {/* Badge localisation en haut */}
-      <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-white/95 backdrop-blur-sm px-2 sm:px-2.5 py-0.5 rounded-full shadow-lg">
+const UniverseCard = ({ image, title, desc, tags, producerImage, boldLabel, onOpenModal }: any) => (
+  <div
+    className="group relative bg-white rounded-xl sm:rounded-2xl transition-all duration-500 border border-black/5 flex flex-col cursor-pointer overflow-hidden"
+    style={{ height: 480 , boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
+    onClick={onOpenModal}
+  >
+    {/* Image */}
+    <div className="relative flex-shrink-0 overflow-hidden" style={{ height: 220 }}>
+      <img
+        src={image}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        alt={title}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
+
+      {/* Badge localisation */}
+      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-md">
         <p className="text-[7px] sm:text-[8px] font-bold text-primary uppercase tracking-wider font-sans">{desc}</p>
       </div>
-    </div>
-    
-    {/* Contenu — hauteur fixe pour aligner les cartes, liste contenue en bas */}
-    <div className="relative p-4 sm:p-6 flex flex-col h-[190px] sm:h-[212px] rounded-b-xl sm:rounded-b-2xl">
-      {/* Tête du producteur (rond) — à cheval image/contenu */}
-      {producerImage && (
-        <div className="absolute -top-8 right-4 sm:right-6 z-10 w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-4 border-white shadow-xl ring-2 ring-black/5 bg-white">
-          <img src={producerImage} alt="" className="w-full h-full object-cover" />
-        </div>
-      )}
-      {/* Titre avec accent coloré */}
-      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-        <div className="w-1 h-6 sm:h-8 bg-primary group-hover:bg-orange rounded-full flex-shrink-0 self-center transition-colors duration-300"></div>
-        <h3 className="text-base sm:text-lg font-sans font-bold text-primary not-italic leading-tight group-hover:text-orange transition-colors duration-300">{title}</h3>
+
+      {/* Titre BOLD */}
+      <div className="absolute bottom-10 left-4 right-4">
+        <p
+          className="font-sans font-black text-white uppercase leading-none"
+          style={{ fontSize: 'clamp(15px, 2vw, 20px)', letterSpacing: '-0.01em', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}
+        >
+          {boldLabel}
+        </p>
       </div>
-      
-      {/* Tags activités — contenu dans la carte, scroll interne si trop de lignes */}
-      <div className="flex flex-col gap-2 sm:gap-2.5 pt-2 min-h-0 overflow-y-auto overflow-x-hidden flex-1 no-scrollbar">
+    </div>
+
+    {/* Avatar — hors du div image pour ne pas être coupé */}
+    {producerImage && (
+      <div
+        className="absolute z-20 rounded-full border-4 border-white shadow-md ring-2 ring-black/10 bg-white overflow-hidden"
+        style={{ width: 60, height: 60, top: 190, right: 16 }}
+      >
+        <img src={producerImage} alt="" className="w-full h-full object-cover" />
+      </div>
+    )}
+
+    {/* Infos */}
+    <div className="relative flex flex-col px-4 sm:px-5 pt-10 pb-4" style={{ flex: 1 }}>
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-1 h-6 bg-primary group-hover:bg-orange rounded-full flex-shrink-0 transition-colors duration-300" />
+        <h3 className="text-base font-sans font-bold text-primary not-italic leading-tight group-hover:text-orange transition-colors duration-300">{title}</h3>
+      </div>
+
+      <div className="flex flex-col gap-2" style={{ minHeight: 120 }}>
         {tags.map((tag: string) => (
-          <div key={tag} className="flex items-start gap-2 sm:gap-3 group/tag flex-shrink-0">
-            <div className="w-1.5 h-1.5 rounded-full bg-orange mt-1.5 flex-shrink-0 group-hover/tag:scale-150 transition-transform duration-300"></div>
-            <span className="text-[9px] sm:text-[10px] font-medium text-gray-700 leading-relaxed group-hover/tag:text-primary transition-colors duration-300">{tag}</span>
+          <div key={tag} className="flex items-start gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-orange mt-1.5 flex-shrink-0" />
+            <span className="text-[9px] sm:text-[10px] font-medium text-gray-600 leading-relaxed">{tag}</span>
           </div>
         ))}
       </div>
-      {/* Liséré orange en bas, à l'intérieur des bords arrondis */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-orange opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-b-xl sm:rounded-b-2xl pointer-events-none"></div>
+
+      <div className="mt-auto pt-3 border-t border-black/5 flex items-center justify-between">
+        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Voir le détail</span>
+        <span className="text-[10px] font-bold text-orange">→</span>
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   </div>
 );
