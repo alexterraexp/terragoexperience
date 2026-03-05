@@ -19,10 +19,10 @@ const ScrollAnimate: React.FC<{ children: React.ReactNode; delay?: number; class
 };
 
 const STATS = [
-  { value: '8+', label: 'Producteurs partenaires', icon: 'groups' },
-  { value: '4', label: 'Régions de France', icon: 'map' },
+  { value: '15+', label: 'Producteurs partenaires', icon: 'groups' },
+  { value: '5', label: 'Régions de France', icon: 'map' },
   { value: '100%', label: 'français & engagés', icon: 'eco' },
-  { value: '5/5', label: 'Satisfaction client', icon: 'star' },
+  { value: '100%', label: 'Mains dans le terroir', icon: 'agriculture' },
 ];
 
 const VALEURS = [
