@@ -23,11 +23,65 @@ const ProducerDetailPage: React.FC = () => {
   const [contactOpen, setContactOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
+  // Formulaire contact producteur
+  const [contactNom, setContactNom] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactParticipants, setContactParticipants] = useState('');
+  const [contactDates, setContactDates] = useState('');
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [contactSuccess, setContactSuccess] = useState(false);
+  const [contactError, setContactError] = useState<string | null>(null);
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!producer) return;
+    setContactError(null);
+
+    if (!contactNom.trim() || !contactEmail.trim()) {
+      setContactError('Merci de renseigner au minimum votre nom et votre email.');
+      return;
+    }
+
+    setContactSubmitting(true);
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/terragoexperiences@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          _subject: `Demande séminaire - ${producer.name}`,
+          _captcha: false,
+          nom: contactNom.trim(),
+          email: contactEmail.trim(),
+          participants: contactParticipants.trim(),
+          dates: contactDates.trim(),
+          message: `Demande envoyée depuis la fiche producteur ${producer.name} (${producer.location}).`,
+        }),
+      });
+
+      if (response.ok) {
+        setContactSuccess(true);
+        setContactNom('');
+        setContactEmail('');
+        setContactParticipants('');
+        setContactDates('');
+      } else {
+        setContactError("Une erreur est survenue lors de l'envoi. Merci de réessayer.");
+      }
+    } catch {
+      setContactError("Une erreur est survenue lors de l'envoi. Merci de réessayer.");
+    } finally {
+      setContactSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     if (!producerId) { setProducer(null); setLoading(false); return; }
@@ -202,7 +256,7 @@ const ProducerDetailPage: React.FC = () => {
                 </div>
                 <button type="button" onClick={() => setContactOpen(true)} onMouseOver={e => (e.currentTarget.style.background = '#f78d00')} onMouseOut={e => (e.currentTarget.style.background = '#2b3825')}
                 style={{ width: '100%', background: '#2b3825', color: '#fff', border: 'none', borderRadius: 12, padding: '13px', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit' }}>
-                  Organisez votre séminaire ici !
+                  Faire une demande !
                 </button>
                 <p style={{ fontSize: 10, color: '#9ca3af', textAlign: 'center', marginTop: 10 }}>Réponse sous 24h · Devis gratuit</p>
               </div>
@@ -250,39 +304,65 @@ const ProducerDetailPage: React.FC = () => {
              Vivez une expérience unique chez {producer.owner} à {producer.location}.
             </h3>
 
-            <form action="https://formsubmit.co/terragoexperiences@gmail.com" method="POST">
-              <input type="hidden" name="_subject" value={`Demande séminaire - ${producer.name}`} />
-              <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_template" value="table" />
+            {contactSuccess ? (
+              <div style={{ textAlign: 'center', padding: '8px 4px 0' }}>
+                <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#1e291a', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px', fontSize: 20 }}>✓</div>
+                <p style={{ fontSize: 13, fontWeight: 600, color: '#1e291a', marginBottom: 4 }}>Merci !</p>
+                <p style={{ fontSize: 11, color: '#6b7280', margin: 0 }}>Votre demande a bien été envoyée. Nous revenons vers vous sous 24h.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleContactSubmit}>
+                {[
+                  { label: 'Votre nom', name: 'nom', type: 'text', placeholder: 'Jean Dupont' },
+                  { label: 'Email', name: 'email', type: 'email', placeholder: 'jean@entreprise.fr' },
+                  { label: 'Nombre de participants', name: 'participants', type: 'number', placeholder: 'ex: 20' },
+                  { label: 'Dates souhaitées', name: 'dates', type: 'text', placeholder: 'ex : 12–13 juin, ou semaine du 7 octobre' },
+                ].map((field) => (
+                  <div key={field.label} style={{ marginBottom: 14 }}>
+                    <label style={{ fontSize: 11, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 6 }}>{field.label}</label>
+                    <input
+                      type={field.type}
+                      name={field.name}
+                      placeholder={field.placeholder}
+                      value={
+                        field.name === 'nom'
+                          ? contactNom
+                          : field.name === 'email'
+                          ? contactEmail
+                          : field.name === 'participants'
+                          ? contactParticipants
+                          : contactDates
+                      }
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (field.name === 'nom') setContactNom(v);
+                        else if (field.name === 'email') setContactEmail(v);
+                        else if (field.name === 'participants') setContactParticipants(v);
+                        else setContactDates(v);
+                      }}
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: '1.5px solid #e5e0d8', fontSize: 13, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }}
+                    />
+                  </div>
+                ))}
 
-              {[
-                { label: 'Votre nom', name: 'nom', type: 'text', placeholder: 'Jean Dupont' },
-                { label: 'Email', name: 'email', type: 'email', placeholder: 'jean@entreprise.fr' },
-                { label: 'Nombre de participants', name: 'participants', type: 'number', placeholder: 'ex: 20' },
-              ].map((field) => (
-                <div key={field.label} style={{ marginBottom: 14 }}>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 6 }}>{field.label}</label>
-                  <input
-                    type={field.type}
-                    name={field.name}
-                    placeholder={field.placeholder}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: '1.5px solid #e5e0d8', fontSize: 13, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }}
-                  />
-                </div>
-              ))}
+                {contactError && (
+                  <p style={{ fontSize: 11, color: '#b91c1c', marginBottom: 8 }}>{contactError}</p>
+                )}
 
-              <button
-                type="submit"
-                onMouseOver={e => (e.currentTarget.style.background = '#f78d00')}
-                onMouseOut={e => (e.currentTarget.style.background = '#1e291a')}
-                style={{ width: '100%', background: '#2b3624', color: '#fff', border: 'none', borderRadius: 12, padding: '13px', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit', marginTop: 8, transition: 'background 0.2s' }}
-              >
-                Envoyer ma demande
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  disabled={contactSubmitting}
+                  onMouseOver={e => (e.currentTarget.style.background = '#f78d00')}
+                  onMouseOut={e => (e.currentTarget.style.background = '#1e291a')}
+                  style={{ width: '100%', background: '#2b3624', color: '#fff', border: 'none', borderRadius: 12, padding: '13px', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: contactSubmitting ? 'default' : 'pointer', fontFamily: 'inherit', marginTop: 8, transition: 'background 0.2s', opacity: contactSubmitting ? 0.8 : 1 }}
+                >
+                  {contactSubmitting ? 'Envoi en cours...' : 'Envoyer ma demande'}
+                </button>
+              </form>
+            )}
 
             <button type="button" onClick={() => setContactOpen(false)} style={{ width: '100%', background: 'none', border: 'none', color: '#9ca3af', fontSize: 12, marginTop: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
-              Annuler
+              Retour
             </button>
           </div>
         </div>

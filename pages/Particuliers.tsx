@@ -86,7 +86,7 @@ const Particuliers: React.FC = () => {
             <ScrollAnimate delay={100}>
               <h1 className="font-bold text-primary leading-tight mb-6">
                 <span className="font-sans not-italic text-3xl sm:text-4xl md:text-4xl">
-                  Des expériences et séjours uniques et 100% personnalisés,{" "}
+                  Des expériences & séjours uniques - 100% personnalisés,{" "}
                 </span>
                 <span className="font-display italic text-4xl sm:text-4xl md:text-5xl">
                   entre amis ou en famille.
