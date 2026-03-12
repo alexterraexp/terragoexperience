@@ -1,42 +1,190 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { IMAGES } from '../constants';
 import ScrollAnimate from '../components/ScrollAnimate';
-const SECTION_IMAGES = {
-  vision: '/images/producteurs/terroir-travail-terrain.png',
-  formats: '/images/card/olive-autour.png',
-  engagement: '/images/card/vigne-ventoux.png',
-};
-const PORTRAIT_IMAGES = ['/images/producteurs/vigneron-portrait.png', '/images/producteurs/terroir-travail-terrain.png', '/images/producteurs/equipe-nature.png', '/images/producteurs/vigneron-portrait.png'];
 
+/* ─────────────────────────────────────────────
+   PRODUCER STACK
+───────────────────────────────────────────── */
+const ProducerStack: React.FC = () => {
+  const producers = [
+    { name: 'Jean-François', job: 'Cognac & Pineau', image: '/images/producteurs/cognacJF.png' },
+    { name: 'Paolo', job: 'Olives de Provence', image: '/images/producteurs/olivepaolo.png' },
+    { name: 'Sabine & Marie-Lise', job: 'Noix & Lavande', image: '/images/producteurs/noixsabinemarie.jpeg' },
+    { name: 'Marie-Sophie & Thomas', job: 'Vins du Ventoux', image: '/images/producteurs/vincombeaumas.png' },
+    { name: 'Nathalie & Benjamin', job: 'Noisettes & fruits à coques', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png' },
+    { name: 'Baptiste', job: 'Piments & Pommes', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png' },
+  ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [hovered, setHovered] = useState(false);
+  const [animating, setAnimating] = useState(false);
+  const [exitingIndex, setExitingIndex] = useState<number | null>(null);
+
+  const goNext = () => {
+    if (animating) return;
+    setAnimating(true);
+    setExitingIndex(activeIndex);
+    setTimeout(() => {
+      setActiveIndex((prev) => (prev + 1) % producers.length);
+      setExitingIndex(null);
+      setAnimating(false);
+    }, 500);
+  };
+
+  const goTo = (i: number) => {
+    if (animating || i === activeIndex) return;
+    setAnimating(true);
+    setExitingIndex(activeIndex);
+    setTimeout(() => {
+      setActiveIndex(i);
+      setExitingIndex(null);
+      setAnimating(false);
+    }, 500);
+  };
+
+  return (
+    <div
+      className="relative flex items-center justify-center"
+      style={{ height: '560px' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <style>{`
+        @keyframes sendToBack {
+          0%   { transform: translateX(0px)  translateY(0px)   rotate(0deg) scale(1);    z-index: 20; transform-origin: bottom center; }
+          100% { transform: translateX(18px) translateY(-8px)  rotate(6deg) scale(0.96); z-index: 8;  transform-origin: bottom center; }
+        }
+        @keyframes comeForward {
+          0%   { transform: translateX(18px) translateY(-8px)  rotate(6deg)   scale(0.96); transform-origin: bottom center; }
+          60%  { transform: translateX(-3px) translateY(2px)   rotate(-1deg)  scale(1.01); transform-origin: bottom center; }
+          100% { transform: translateX(0px)  translateY(0px)   rotate(0deg)   scale(1);    transform-origin: bottom center; }
+        }
+        .card-send-back { animation: sendToBack  0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .card-come-fwd  { animation: comeForward 0.5s cubic-bezier(0.2, 0, 0.2, 1) 0.05s both; }
+        @keyframes scrollPulse {
+          0%, 100% { opacity: 0.2; transform: scaleY(0.8); transform-origin: top; }
+          50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+        }
+      `}</style>
+
+      {producers.map((person, i) => {
+        const offset = (i - activeIndex + producers.length) % producers.length;
+        const isActive    = offset === 0;
+        const isExiting   = i === exitingIndex;
+        const behind      = offset;
+        const isPromoting = animating && !isExiting && offset === 1;
+
+        if (!isActive && !isExiting && behind > 5) return null;
+
+        const staticTransform = isActive && !isExiting
+          ? 'translateX(0px) translateY(0px) rotate(0deg) scale(1)'
+          : `translateX(${behind * 18}px) translateY(${behind * -8}px) rotate(${behind * 6}deg) scale(${1 - behind * 0.04})`;
+
+        return (
+          <div
+            key={person.name}
+            className={isExiting ? 'card-send-back' : isPromoting ? 'card-come-fwd' : ''}
+            style={{
+              position: 'absolute',
+              width: '360px',
+              height: '480px',
+              borderRadius: '20px',
+              overflow: 'hidden',
+              transformOrigin: 'bottom center',
+              cursor: isActive ? 'pointer' : 'default',
+              boxShadow: isActive && !isExiting
+                ? '0 32px 80px rgba(0,0,0,0.18)'
+                : '0 8px 24px rgba(0,0,0,0.10)',
+              zIndex: isExiting ? 20 : isActive ? 20 : 10 - behind,
+              transform: isExiting || isPromoting ? undefined : staticTransform,
+              transition: isExiting || isPromoting ? 'none' : 'transform 0.5s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s ease',
+            }}
+            onClick={isActive ? goNext : undefined}
+          >
+            <img
+              src={person.image}
+              alt={person.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+
+            {isActive && !isExiting && (
+              <div style={{
+                position: 'absolute', bottom: 0, left: 0, right: 0,
+                background: 'linear-gradient(to top, rgba(0,0,0,0.60) 0%, transparent 100%)',
+                padding: '40px 28px 28px',
+              }}>
+                <p style={{ fontWeight: 700, color: '#fff', fontSize: 16, margin: 0, letterSpacing: '0.01em' }}>
+                  {person.name}
+                </p>
+                <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', margin: '6px 0 0', fontWeight: 600 }}>
+                  {person.job}
+                </p>
+              </div>
+            )}
+
+            {isActive && !isExiting && (
+              <div style={{
+                position: 'absolute', inset: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+                paddingRight: 24,
+                opacity: hovered ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+                pointerEvents: 'none',
+              }}>
+                <div style={{
+                  background: 'rgba(255,255,255,0.92)',
+                  backdropFilter: 'blur(8px)',
+                  borderRadius: '50%',
+                  width: 44, height: 44,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+                }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a2e1a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      <div style={{ position: 'absolute', bottom: 0, display: 'flex', gap: 6, zIndex: 30 }}>
+        {producers.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            style={{
+              width: i === activeIndex ? 24 : 6, height: 6,
+              borderRadius: 3,
+              background: i === activeIndex ? '#e67e22' : '#c8c0b4',
+              border: 'none', cursor: 'pointer', padding: 0,
+              transition: 'all 0.3s ease',
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────
+   HOME
+───────────────────────────────────────────── */
 const Home: React.FC = () => {
-  // Texte animé pour le titre
   const rotatingTexts = [
-    'producteurs',
-    'éleveurs',
-    'artisans',
-    'vignerons',
-    'fromagers',
-    'maraîchers',
-    'apiculteurs',
-    'ostréiculteurs',
-    'paysans',
-    'brasseurs',
-    'distillateurs',
-    'arboriculteurs',
-    'oléiculteurs',
-    'saliculteurs'
+    'producteurs.', 'éleveurs.', 'artisans.', 'vignerons.', 'fromagers.',
+    'maraîchers.', 'apiculteurs.', 'ostréiculteurs.', 'paysans.', 'brasseurs.',
+    'distillateurs.', 'arboriculteurs.', 'oléiculteurs.', 'saliculteurs.',
   ];
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  
+
   useEffect(() => {
     const currentText = rotatingTexts[currentTextIndex];
     setDisplayedText('');
     setIsTyping(true);
-    
     let charIndex = 0;
     const typingInterval = setInterval(() => {
       if (charIndex < currentText.length) {
@@ -46,330 +194,374 @@ const Home: React.FC = () => {
         setIsTyping(false);
         clearInterval(typingInterval);
       }
-    }, 100); // Vitesse de frappe : 100ms par lettre (ralenti)
-    
+    }, 160);
     return () => clearInterval(typingInterval);
   }, [currentTextIndex]);
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTextIndex((prevIndex) => (prevIndex + 1) % rotatingTexts.length);
-    }, 3000); // Changement toutes les 3 secondes pour laisser le temps à l'animation
-    
+      setCurrentTextIndex((prev) => (prev + 1) % rotatingTexts.length);
+    }, 4500);
     return () => clearInterval(interval);
   }, [rotatingTexts.length]);
 
   return (
-    <div className="pt-24 lg:pt-18 overflow-x-hidden bg-beige-bg">
-      {/* Hero Section */}
-      <section className="relative px-2 sm:px-4 lg:px-8 py-4 w-full">
-          <div className="relative min-h-[85vh] sm:min-h-[80vh] h-[90vh] md:h-[80vh] w-full overflow-hidden rounded-2xl sm:rounded-[2.5rem] md:rounded-[3rem] flex items-center justify-center text-center px-3 sm:px-4 py-8 sm:py-4 group">
-          {/* Image de fond mobile */}
-          <div 
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] group-hover:scale-110 sm:hidden" 
-            style={{ backgroundImage: 'url("/images/general/herog.png")' }}
+    <div className="overflow-x-hidden bg-beige-bg">
+
+      {/* ── HERO ── */}
+      <section className="relative w-full">
+        <div className="relative min-h-[85vh] sm:min-h-[90vh] lg:min-h-screen w-full overflow-hidden flex items-center justify-center group">
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-[14s] group-hover:scale-[1.03]"
+            style={{ backgroundImage: 'url("https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/olivierspaysage.jpg")' }}
           />
-          {/* Image de fond desktop */}
-          <div 
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] group-hover:scale-110 hidden sm:block" 
-            style={{ backgroundImage: 'url("/images/general/herog.png")' }}
-          />
-          {/* Overlay sombre léger */}
-          <div className="absolute inset-0 bg-black/30" />
-          <div className="relative z-10 w-full text-center max-w-6xl mx-auto px-0 sm:px-0">
-            <h1 className="text-white text-4xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-[1.1] mb-4 sm:mb-6 flex flex-col items-center justify-center gap-y-0.5 sm:gap-y-1 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 drop-shadow-2xl [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
-              {/* Mobile : uniquement "Partez à la rencontre de" */}
-              <span className="sm:hidden font-sans text-[0.85em] font-semibold tracking-tight not-italic text-center block">
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.28) 60%, rgba(0,0,0,0.50) 100%)' }} />
+
+          <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+            <div className="flex items-center justify-center gap-3 mb-8">
+              <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
+              <span style={{ color: 'rgba(255,255,255,0.60)', fontSize: 10, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase' }}>
+                Terroir français
+              </span>
+              <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
+            </div>
+
+            <h1 className="text-white font-bold leading-[1.08] mb-8 drop-shadow-lg">
+              <span className="sm:hidden block text-[2rem] font-sans tracking-tight">
                 Partez à la rencontre de nos{" "}
-                <span className="bg-orange px-2 py-1 rounded-lg transform -rotate-2 translate-x-0.5 -translate-y-0.5 inline-block">
+                <span style={{ borderBottom: '2px solid rgba(230,126,34,0.9)', paddingBottom: '2px' }} className="inline-block">
                   {displayedText}
-                  {isTyping && <span className="animate-pulse">|</span>}
+                  <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s', color: '#e67e22' }}>|</span>
                 </span>
               </span>
-              {/* Desktop : "Plongez au coeur des terroirs, et partez à la rencontre de" */}
-              <span className="hidden sm:flex flex-row items-baseline justify-center gap-x-2 flex-wrap">
-                <span className="font-display italic">Plongez au coeur des terroirs,</span>
-                <span className="font-sans text-[0.72em] md:text-[0.78em] font-semibold tracking-tight not-italic whitespace-nowrap">
-                  et partez à la rencontre de{" "}
-                  <span className="whitespace-nowrap">
-                    nos{" "}
-                    <span className="bg-orange px-2 py-1 rounded-lg transform -rotate-2 translate-x-0.5 -translate-y-0.5 inline-block align-baseline">
-                      {displayedText}
-                      {isTyping && <span className="animate-pulse">|</span>}
-                    </span>
+              <span className="hidden sm:block">
+                <span className="block font-sans font-bold text-4xl md:text-5xl lg:text-5xl mb-2" style={{ letterSpacing: '-0.01em' }}>
+                  Plongez au cœur des terroirs,
+                </span>
+                <span className="block font-display text-4xl md:text-5xl lg:text-7xl font-bold italic" style={{ letterSpacing: '-0.02em' }}>
+                  et rencontrez nos{' '}
+                  <span className="relative inline-block" style={{ verticalAlign: 'baseline', color: 'rgb(255, 223, 202)' }}>
+                    {displayedText}
+                    <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s' }}>|</span>
                   </span>
                 </span>
               </span>
             </h1>
-            {/* Version desktop : texte descriptif au-dessus des boutons */}
-            <div className="hidden sm:block text-center mb-6 sm:mb-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
-              <p className="text-white text-xs sm:text-[13px] font-medium leading-relaxed mx-auto max-w-2xl xl:max-w-3xl drop-shadow-lg [text-shadow:0_1px_12px_rgba(0,0,0,0.6)]">
-                Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français — des expériences immersives et responsables qui reconnectent chacun à l'essentiel.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-700">
-              <div className="relative w-full max-w-[280px] sm:max-w-none sm:w-auto mt-10 sm:mt-0">
-                <Link
-                  to="/entreprises"
-                  className="w-full sm:w-auto bg-white/30 backdrop-blur-md text-white px-4 sm:px-8 py-3 sm:py-4 rounded-2xl text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-premium transition-all duration-500 flex items-center gap-1.5 sm:gap-2 justify-center hover:shadow-premium-hover hover:scale-105 active:scale-95 relative overflow-hidden group border border-white/20"
-                >
-                  <span className="relative z-10 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
-                    Nos séminaires d'entreprise
-                  </span>
-                  <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                </Link>
-              </div>
-              <Link 
-                to="/particuliers" 
-                className="w-full max-w-[280px] sm:max-w-none sm:w-auto text-white border-b-2 border-white/50 hover:border-white px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-bold transition-all text-center hover:scale-105"
+
+            <p className="hidden sm:block text-sm max-w-md mx-auto mb-10 leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
+              Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
+              <Link
+                to="/entreprises"
+                className="text-white border border-white/35 hover:border-white/70 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/10 rounded-full"
               >
-                Séjours entre amis
+                Séminaires d'entreprise
+              </Link>
+              <Link
+                to="/particuliers"
+                className="text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 px-4 py-3"
+                style={{ color: 'rgba(255,255,255,0.45)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.80)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
+              >
+                Séjours entre amis →
+              </Link>
+            </div>
+          </div>
+
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-30">
+            <div style={{ width: 1, height: 44, background: 'white', animation: 'scrollPulse 2.2s ease-in-out infinite' }} />
+          </div>
+        </div>
+      </section>
+
+      {/* ── NOTRE VISION ── */}
+      <section className="bg-white" style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="notre-vision">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+            <div className="relative">
+              <div style={{ borderRadius: '24px', overflow: 'hidden', aspectRatio: '4/5' }} className="shadow-2xl">
+                <img src="/images/general/vendange.png" alt="Vendange à la main" className="w-full h-full object-cover" />
+              </div>
+              <div style={{
+                position: 'absolute', bottom: -20, right: -20,
+                background: '#e67e22', color: 'white',
+                borderRadius: '16px', padding: '16px 20px',
+                boxShadow: '0 12px 40px rgba(230,126,34,0.25)',
+                textAlign: 'center',
+              }}>
+                <p className="font-display italic font-bold leading-none" style={{ fontSize: 26 }}>100%</p>
+                <p style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.22em', fontWeight: 700, marginTop: 6 }}>Terroir français</p>
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center gap-3 mb-7">
+                <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+                <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Notre vision</span>
+              </div>
+              <ScrollAnimate delay={100}>
+                <h2 className="font-bold text-primary leading-[1.06] mb-7" style={{ letterSpacing: '-0.01em' }}>
+                  <span className="block font-sans text-3xl sm:text-4xl">Une envie simple :</span>
+                  <span className="block font-display italic text-3xl sm:text-4xl lg:text-5xl">vivre le terroir pour de vrai.</span>
+                </h2>
+              </ScrollAnimate>
+              <div className="space-y-4" style={{ color: '#7a7060', fontSize: 15, lineHeight: 1.75 }}>
+                <p>Terrago est né d'une envie simple : permettre à chacun de vivre des expériences authentiques, humaines et enrichissantes au plus près de celles et ceux qui font le terroir.</p>
+                <p>Nous croyons que les plus beaux moments se vivent en groupe, dans des lieux vrais, en partageant des savoir-faire, du temps et des histoires.</p>
+                <p>Qu'il s'agisse d'un séminaire, d'un séjour entre amis ou d'une expérience à la journée, Terrago crée des rencontres qui reconnectent à l'essentiel.</p>
+              </div>
+              <Link
+                to="/entreprises"
+                className="inline-block mt-9 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300"
+                style={{ color: '#1a2e1a', borderBottom: '1.5px solid #1a2e1a', paddingBottom: 3 }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#e67e22'; e.currentTarget.style.borderBottomColor = '#e67e22'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = '#1a2e1a'; e.currentTarget.style.borderBottomColor = '#1a2e1a'; }}
+              >
+                Découvrir nos expériences →
               </Link>
             </div>
           </div>
         </div>
       </section>
- 
-      {/* Notre vision — style GreenGo : accroche + bloc texte épuré + image */}
-      <section className="py-16 sm:py-20 bg-white scroll-mt-24" id="notre-vision">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="text-center mb-8 sm:mb-10">
-            <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Notre vision</span>
+
+      {/* ── FORMATS ── */}
+      <section className="bg-beige-bg" style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="formats">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+
+          <div className="mb-14">
+            <div className="flex items-center gap-3 mb-6">
+              <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+              <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Formats</span>
+            </div>
             <ScrollAnimate delay={100}>
-              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 inline-block w-full sm:w-max whitespace-normal text-center sm:text-center">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Une envie simple : vivre le terroir </span><span className="font-display italic">pour de vrai.</span>
+              <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
+                <span className="block font-sans text-3xl sm:text-4xl">Des formats pour tous</span>
+                <span className="block font-display italic text-3xl sm:text-4xl lg:text-5xl">les moments de vie</span>
               </h2>
             </ScrollAnimate>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            <div className="lg:col-span-7 space-y-5 text-gray-600 text-sm sm:text-base leading-relaxed text-center sm:text-center lg:text-left">
-              <p>
-                Terrago est né d'une envie simple : permettre à chacun de vivre des expériences authentiques, humaines et enrichissantes au plus près de celles et ceux qui font le terroir.
-              </p>
-              <p>
-                Nous croyons que les plus beaux moments se vivent en groupe, dans des lieux vrais, en partageant des savoir-faire, du temps et des histoires.
-              </p>
-              <p>
-                Qu'il s'agisse d'un séminaire, d'un séjour entre amis ou d'une expérience à la journée, Terrago crée des rencontres qui reconnectent à l'essentiel, à l'humain et aux terroirs.
-              </p>
-            </div>
-            <div className="lg:col-span-5">
-              <div className="rounded-3xl overflow-hidden shadow-md border border-black/5 aspect-[4/3] max-h-[320px] sm:max-h-[380px]">
-                <img src= "/images/general/vendange.png" alt="Vendange à la main" className="w-full h-full object-cover" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Des formats — deux blocs : moments de vie + produits des terroirs */}
-      <section className="py-16 sm:py-20 bg-beige-bg scroll-mt-24" id="formats">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="text-center mb-4">
-            <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Formats</span>
-          </div>
-
-          {/* 1. Des formats pour tous les moments de vie */}
-          <div className="mb-16 sm:mb-20">
-            <ScrollAnimate delay={150}>
-              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 text-center mb-4 w-full">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des formats pour tous </span><span className="font-display italic">les moments de vie</span>
-              </h2>
-            </ScrollAnimate>
-            <p className="text-gray-600 text-center text-sm sm:text-base mb-10 sm:mb-12 max-w-2xl mx-auto">
+            <p className="mt-4 max-w-md" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
               Une même philosophie, plusieurs façons de la vivre.
             </p>
-          <div className="flex flex-col gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-5 max-w-[320px] sm:max-w-none mx-auto sm:mx-0">
-            <Link
-              to="/entreprises"
-              className="group relative bg-white rounded-xl sm:rounded-2xl border border-black/5 shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300 p-3 sm:p-6 flex flex-col w-full"
-            >
-              <div className="aspect-[3/2] rounded-lg sm:rounded-xl overflow-hidden mb-3 sm:mb-4 bg-beige-bg">
-                <img src="https://images.unsplash.com/photo-1605673349798-5580680c4dea?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Séminaires" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link to="/entreprises" className="group relative bg-white overflow-hidden flex flex-col hover:-translate-y-1 transition-all duration-300" style={{ borderRadius: '20px', boxShadow: '0 2px 16px rgba(0,0,0,0.07)' }}>
+              <div className="overflow-hidden" style={{ borderRadius: '20px 20px 0 0' }}>
+                <div className="aspect-[4/3]">
+                  <img src="https://images.unsplash.com/photo-1605673349798-5580680c4dea?q=80&w=800&auto=format&fit=crop" alt="Séminaires" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                </div>
               </div>
-              <span className="font-sans font-bold text-primary text-sm sm:text-base group-hover:text-orange transition-colors">Séminaires d'entreprise</span>
-              <span className="mt-1 sm:mt-2 text-xs text-gray-500">Immersion dans un terroir</span>
+              <div className="p-5 flex flex-col flex-1">
+                <span className="font-sans font-bold text-primary text-sm mb-1 group-hover:text-orange transition-colors">Séminaires d'entreprise</span>
+                <span style={{ fontSize: 11, color: '#9a9080' }}>Immersion dans un terroir</span>
+                <span className="mt-auto pt-4 text-[9px] uppercase tracking-[0.22em] font-bold" style={{ color: '#e67e22' }}>Disponible →</span>
+              </div>
             </Link>
-            <div className="grid grid-cols-3 gap-2 sm:contents">
-              <div className="relative bg-white rounded-lg sm:rounded-2xl border border-black/5 shadow-sm p-2 sm:p-6 flex flex-col opacity-90 min-w-0">
-                <span className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 z-10 px-1.5 py-0.5 sm:px-2 bg-orange text-white text-[7px] sm:text-[9px] font-bold uppercase tracking-wider rounded-md">soon</span>
-                <div className="aspect-[3/2] rounded-md sm:rounded-xl overflow-hidden mb-2 sm:mb-4 bg-beige-bg">
-                  <img src="https://images.unsplash.com/photo-1683772769298-b77177c029d8?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Entre amis" className="w-full h-full object-cover" />
-                </div>
-                <span className="font-sans font-bold text-primary text-[10px] sm:text-base leading-tight">Séjours en groupe</span>
-                <span className="mt-0.5 sm:mt-2 text-[9px] sm:text-xs text-gray-500">À venir</span>
-              </div>
-              <div className="relative bg-white rounded-lg sm:rounded-2xl border border-black/5 shadow-sm p-2 sm:p-6 flex flex-col opacity-90 min-w-0">
-                <span className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 z-10 px-1.5 py-0.5 sm:px-2 bg-orange text-white text-[7px] sm:text-[9px] font-bold uppercase tracking-wider rounded-md">soon</span>
-                <div className="aspect-[3/2] rounded-md sm:rounded-xl overflow-hidden mb-2 sm:mb-4 bg-beige-bg">
-                  <img src="https://images.unsplash.com/photo-1710330336476-d6027e6035cd?q=80&w=1746&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Séjours immersifs" className="w-full h-full object-cover" />
-                </div>
-                <span className="font-sans font-bold text-primary text-[10px] sm:text-base leading-tight">Aventures des terroirs</span>
-                <span className="mt-0.5 sm:mt-2 text-[9px] sm:text-xs text-gray-500">À venir</span>
-              </div>
-              <div className="relative bg-white rounded-lg sm:rounded-2xl border border-black/5 shadow-sm p-2 sm:p-6 flex flex-col opacity-90 min-w-0">
-                <span className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 z-10 px-1.5 py-0.5 sm:px-2 bg-orange text-white text-[7px] sm:text-[9px] font-bold uppercase tracking-wider rounded-md">soon</span>
-                <div className="aspect-[3/2] rounded-md sm:rounded-xl overflow-hidden mb-2 sm:mb-4 bg-beige-bg">
-                  <img src="https://images.unsplash.com/photo-1752606303023-e5b288710422?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Découvertes à la journée" className="w-full h-full object-cover object-bottom" />
-                </div>
-                <span className="font-sans font-bold text-primary text-[10px] sm:text-base leading-tight">Immersions à la journée</span>
-                <span className="mt-0.5 sm:mt-2 text-[9px] sm:text-xs text-gray-500">À venir</span>
-              </div>
-            </div>
-          </div>
-          </div>
-
-          {/* 2. Des formats pour tous les produits de nos terroirs */}
-          <div className="text-center mb-10 sm:mb-12">
-            <ScrollAnimate delay={200}>
-              <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 mb-6 inline-block w-full sm:w-max whitespace-normal text-center">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des formats pour tous les produits de </span><span className="font-display italic font-bold">nos terroirs</span>
-              </h2>
-            </ScrollAnimate>
-            <div className="max-w-3xl mx-auto space-y-4 text-center">
-              <p className="text-gray-600 text-sm sm:text-base font-medium leading-relaxed">
-                Notre ambition est de rendre les terroirs accessibles, partout en France.
-              </p>
-              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-                Du vin à la truffe, du fromage aux produits de la mer, Terrago développe de réelles expériences humaines et immersives dans tous les univers du terroir.
-              </p>
-            </div>
-            {/* Bannière défilante — produits du terroir */}
-            <div className="mt-10 w-full overflow-hidden border-y border-primary/10 py-4" aria-hidden>
-              <div className="flex w-max animate-marquee-terroir whitespace-nowrap [transition:none]">
-                {(() => {
-                  const produits = ['Huile d\'olive', 'Fromages', 'Maraîchage', 'Truffe', 'Huîtres', 'Élevage', 'Vins', 'Miel', 'Céréales', 'Épices', 'Spiritueux', 'Lavande'];
-                  return [...produits, ...produits].map((label, i) => (
-                    <span key={`${label}-${i}`} className="mx-6 text-base sm:text-lg font-medium uppercase tracking-widest text-primary/70">
-                      {label}
-                    </span>
-                  ));
-                })()}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Des rencontres avant tout — style GreenGo : cartes portrait */}
-      <section className="py-16 sm:py-20 pb-24 sm:pb-32 bg-white scroll-mt-24" id="rencontres">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="text-center mb-4">
-            <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Rencontres</span>
-            <ScrollAnimate delay={200}>
-              <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 inline-block w-full sm:w-max whitespace-normal text-center">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des rencontres </span><span className="font-display italic">avant tout</span>
-              </h2>
-            </ScrollAnimate>
-          </div>
-          <p className="text-gray-600 text-sm sm:text-base text-center mb-10 sm:mb-12 max-w-2xl mx-auto">
-            Chaque expérience Terrago est portée par un producteur qui ouvre son lieu, partage son histoire et transmet ses savoirs-faire.
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
             {[
-              { name: 'Jean-François', job: 'Cognac et pineau des charentes', image: "/images/producteurs/cognacJF.png" },
-              { name: 'Paolo', job: 'Olives et produits de Provence', image: "/images/producteurs/olivepaolo.png" },
-              { name: 'Sabine & Marie-Lise', job: 'Noix, Lavandes et co', image: "/images/producteurs/noixsabinemarie.jpeg" },
-              { name: 'Marie-Sophie & Thomas', job: 'Vins du Ventoux, en amphore', image: "/images/producteurs/vincombeaumas.png" },
-            ].map((person) => (
-              <div key={person.name} className="bg-beige-bg/50 rounded-2xl border border-black/5 shadow-sm p-4 sm:p-5 flex flex-col items-center text-center hover:shadow-md hover:border-primary/10 transition-all duration-300">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden flex-shrink-0 border-2 border-white shadow-md ring-2 ring-black/5 bg-primary/10 flex items-center justify-center">
-                  {person.image ? (
-                    <img src={person.image} alt={person.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-3xl sm:text-4xl" aria-hidden>👤</span>
-                  )}
+              { label: 'Séjours en groupe', sub: 'Entre amis, en famille', img: 'https://images.unsplash.com/photo-1683772769298-b77177c029d8?q=80&w=800&auto=format&fit=crop' },
+              { label: 'Aventures des terroirs', sub: 'Multi-destinations', img: 'https://images.unsplash.com/photo-1710330336476-d6027e6035cd?q=80&w=800&auto=format&fit=crop' },
+              { label: 'Immersions à la journée', sub: 'Découvertes express', img: 'https://images.unsplash.com/photo-1752606303023-e5b288710422?q=80&w=800&auto=format&fit=crop' },
+            ].map((item) => (
+              <div key={item.label} className="relative bg-white overflow-hidden flex flex-col" style={{ borderRadius: '20px', boxShadow: '0 2px 16px rgba(0,0,0,0.06)', opacity: 0.72 }}>
+                <span className="absolute top-3 right-3 z-10 text-white text-[8px] font-bold uppercase tracking-wider px-3 py-1.5" style={{ background: '#e67e22', borderRadius: '9999px' }}>Bientôt</span>
+                <div className="overflow-hidden" style={{ borderRadius: '20px 20px 0 0' }}>
+                  <div className="aspect-[4/3]">
+                    <img src={item.img} alt={item.label} className="w-full h-full object-cover" style={{ filter: 'saturate(0.8)' }} />
+                  </div>
                 </div>
-                <p className="mt-3 font-sans font-bold text-primary text-sm sm:text-base">{person.name}</p>
-                <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider font-medium">{person.job}</p>
+                <div className="p-5">
+                  <span className="font-sans font-bold text-primary text-sm block mb-1">{item.label}</span>
+                  <span style={{ fontSize: 11, color: '#9a9080' }}>{item.sub}</span>
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* Un engagement simple et concret — style GreenGo : 3 blocs confiance type "réserver les yeux fermés" */}
-      <section className="py-16 sm:py-20 bg-beige-bg scroll-mt-24" id="engagement">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="text-center mb-10 sm:mb-12">
-            <span className="inline-block px-3 py-1 bg-orange text-white font-bold font-sans tracking-[0.3em] uppercase text-[8px] sm:text-[9px] mb-4 rounded-full shadow-md transform translate-x-1 -translate-y-0.5">Engagement</span>
-            <ScrollAnimate delay={300}>
-              <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 sm:px-2 inline-block w-full sm:w-max whitespace-normal text-center">
-                <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Un engagement </span><span className="font-display italic">simple et concret</span>
+          <div className="mt-24 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+              <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Univers</span>
+            </div>
+            <ScrollAnimate delay={100}>
+              <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
+                <span className="block font-sans text-3xl sm:text-4xl">Des expériences dans tous</span>
+                <span className="block font-display italic text-3xl sm:text-4xl lg:text-5xl">les univers du terroir</span>
               </h2>
             </ScrollAnimate>
+            <p className="mt-4 max-w-xl" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
+              Du vin à la truffe, du fromage aux produits de la mer — Terrago développe de réelles expériences humaines dans tous les univers du terroir.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-sm md:max-w-none mx-auto md:mx-0">
-            <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-all duration-300 group cursor-pointer">
-              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic transition-all duration-300 group-hover:bg-orange group-hover:text-white">1</div>
-              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2 transition-colors duration-300 group-hover:text-orange">Producteurs engagés</h3>
-              <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                Des producteurs de différents univers, mais tous engagés pour produire bien et bon.
-              </p>
-            </div>
-            <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-all duration-300 group cursor-pointer">
-              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic transition-all duration-300 group-hover:bg-orange group-hover:text-white">2</div>
-              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2 transition-colors duration-300 group-hover:text-orange">Rémunération juste</h3>
-              <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-              Nos séjours sont un vrai coup de pouce financier pour les producteurs.
-              </p>
-            </div>
-            <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-6 sm:p-8 text-center hover:shadow-md transition-all duration-300 group cursor-pointer">
-              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold font-display italic transition-all duration-300 group-hover:bg-orange group-hover:text-white">3</div>
-              <h3 className="font-sans font-bold text-primary text-base sm:text-lg mb-2 transition-colors duration-300 group-hover:text-orange">Flexibilité</h3>
-              <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                Chaque producteur gère son calendrier, ses disponibilités et ses tarifs. Nous les accompagnons dans le développement de leurs offres.
-              </p>
+
+          <div className="w-full overflow-hidden py-5" style={{ borderTop: '1px solid rgba(26,46,26,0.07)', borderBottom: '1px solid rgba(26,46,26,0.07)' }}>
+            <div className="flex w-max animate-marquee-terroir whitespace-nowrap">
+              {(() => {
+                const produits = ["Huile d'olive", 'Fromages', 'Maraîchage', 'Truffe', 'Huîtres', 'Élevage', 'Vins', 'Miel', 'Céréales', 'Épices', 'Spiritueux', 'Lavande'];
+                return [...produits, ...produits].map((label, i) => (
+                  <span key={`${label}-${i}`} className="mx-8 font-semibold uppercase" style={{ fontSize: 12, letterSpacing: '0.28em', color: 'rgba(26,46,26,0.30)' }}>
+                    {label}
+                  </span>
+                ));
+              })()}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Newsletter Section */}
-<section className="py-16 sm:py-24 bg-white relative overflow-hidden">
-  <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-primary/5 rounded-full -mr-32 sm:-mr-48 -mt-32 sm:-mt-48 blur-3xl"></div>
-  <div className="absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-orange/5 rounded-full -ml-32 sm:-ml-48 -mb-32 sm:-mb-48 blur-3xl"></div>
-
-  <div className="max-w-5xl mx-auto px-8 sm:px-12 lg:px-16 relative z-10">
-    <div className="glass group/card rounded-[2rem] sm:rounded-[2.5rem] p-10 sm:p-14 md:p-16 border border-black/5 shadow-lg text-center transition-all duration-500">
-
-      <div className="inline-block p-3 sm:p-3.5 rounded-xl bg-orange text-white mb-5 sm:mb-6 shadow-lg transition-transform duration-300 group-hover/card:scale-110 group-hover/card:rotate-6">
-        <span className="material-symbols-outlined text-xl sm:text-2xl">mail</span>
-      </div>
-
-      <h2 style={{ margin: '0 0 12px', lineHeight: 1.3 }}>
-        <span style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 26, color: 'inherit' }}>Vous voulez être tenu au courant de </span>
-        <span style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 700, fontSize: 36, color: 'inherit' }}>notre évolution ?</span>
-      </h2>
-
-      <p className="text-gray-600 text-xs sm:text-sm md:text-base font-medium mb-8 sm:mb-10 max-w-xl mx-auto leading-relaxed">
-        Laissez-nous votre email, et nous vous enverrons les news de Terrago.
-      </p>
-
-      <form className="max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-          <input
-            type="email"
-            placeholder="Votre adresse email"
-            className="flex-1 bg-white border border-black/10 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-primary/30 focus:bg-white transition-all shadow-sm"
-            required
-          />
-          <button
-            type="submit"
-            className="gradient-primary text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-[0.2em] text-[10px] shadow-premium hover:shadow-orange-glow transition-all active:scale-95 relative overflow-hidden group/btn"
-          >
-            <span className="relative z-10">Envoyer</span>
-            <span className="absolute inset-0 bg-orange opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></span>
-          </button>
+      {/* ── RENCONTRES ── */}
+      <section className="bg-white" style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="rencontres">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-7">
+                <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+                <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Rencontres</span>
+              </div>
+              <ScrollAnimate delay={100}>
+                <h2 className="font-bold text-primary leading-[1.06] mb-10" style={{ letterSpacing: '-0.01em' }}>
+                  <span className="block font-sans text-3xl sm:text-4xl">Chaque expérience est</span>
+                  <span className="block font-display italic text-3xl sm:text-4xl lg:text-5xl">portée par un humain.</span>
+                </h2>
+              </ScrollAnimate>
+              <div className="space-y-8">
+                {[
+                  { num: '01', title: 'Des lieux vrais', desc: "Nous sélectionnons chaque producteur pour son authenticité, son engagement et l'unicité de son lieu." },
+                  { num: '02', title: 'Des histoires partagées', desc: 'Chaque producteur ouvre son lieu, raconte son histoire et transmet ses savoir-faire.' },
+                  { num: '03', title: 'Une connexion durable', desc: "Bien plus qu'une visite — une rencontre qui marque et donne envie de revenir." },
+                ].map(item => (
+                  <div key={item.title} className="flex gap-5">
+                    <span className="font-display italic font-bold flex-shrink-0 mt-0.5" style={{ fontSize: 13, color: '#e67e22', letterSpacing: '0.05em' }}>{item.num}</span>
+                    <div>
+                      <h3 className="font-sans font-bold text-primary mb-1.5" style={{ fontSize: 14 }}>{item.title}</h3>
+                      <p style={{ color: '#7a7060', fontSize: 14, lineHeight: 1.7 }}>{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <ProducerStack />
+          </div>
         </div>
-        <p className="mt-4 text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-widest font-bold">
-          100% français & authentique • Pas de Spam
-        </p>
-      </form>
+      </section>
 
-    </div>
-  </div>
-</section>
+      {/* ── ENGAGEMENT ── */}
+      <section className="relative overflow-hidden" style={{ backgroundColor: '#0d1a0d', paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="engagement">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-7">
+                <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+                <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Engagement</span>
+              </div>
+              <ScrollAnimate delay={100}>
+                <h2 className="font-bold text-white leading-[1.06] mb-6" style={{ letterSpacing: '-0.01em' }}>
+                  <span className="block font-sans text-4xl md:text-5xl">Un engagement</span>
+                  <span className="block font-display italic text-4xl md:text-5xl lg:text-6xl">simple et concret.</span>
+                </h2>
+              </ScrollAnimate>
+              <p className="mb-10 max-w-md" style={{ color: 'rgba(255,255,255,0.40)', fontSize: 14, lineHeight: 1.75 }}>
+                Chez Terrago, chaque décision est prise en pensant à ceux qui font le terroir et à ceux qui viennent le découvrir.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  to="/entreprises"
+                  className="text-white border border-white/25 hover:border-white/60 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/5 rounded-full text-center"
+                >
+                  Nos séminaires
+                </Link>
+                <Link
+                  to="/particuliers"
+                  className="text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 px-4 py-3 text-center"
+                  style={{ color: 'rgba(255,255,255,0.30)' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.65)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.30)')}
+                >
+                  Séjours entre amis →
+                </Link>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              {[
+                { num: '01', title: 'Producteurs engagés', desc: 'Des producteurs de différents univers, tous engagés pour produire bien et bon.' },
+                { num: '02', title: 'Rémunération juste', desc: 'Nos séjours représentent un vrai coup de pouce financier pour les producteurs qui nous accueillent.' },
+                { num: '03', title: 'Flexibilité totale', desc: 'Chaque producteur gère son calendrier, ses disponibilités et ses tarifs. Nous les accompagnons à chaque étape.' },
+              ].map(item => (
+                <div
+                  key={item.num}
+                  className="group flex gap-5 transition-all duration-300 cursor-pointer"
+                  style={{
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: '16px',
+                    padding: '20px 24px',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.06)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.03)'; }}
+                >
+                  <span className="font-display italic font-bold flex-shrink-0 mt-0.5" style={{ fontSize: 13, color: '#e67e22', letterSpacing: '0.05em' }}>{item.num}</span>
+                  <div>
+                    <h3 className="font-sans font-bold text-white mb-1" style={{ fontSize: 14 }}>{item.title}</h3>
+                    <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 13, lineHeight: 1.7 }}>{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── NEWSLETTER ── */}
+      <section className="bg-beige-bg relative overflow-hidden" style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }}>
+        <div className="max-w-xl mx-auto px-6 sm:px-8 relative z-10 text-center">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+            <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Newsletter</span>
+            <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+          </div>
+
+          <h2 className="font-bold text-primary leading-[1.06] mb-4" style={{ letterSpacing: '-0.01em' }}>
+            <span className="block font-sans text-2xl sm:text-3xl">Restez au cœur</span>
+            <span className="block font-display italic text-3xl sm:text-4xl">du terroir.</span>
+          </h2>
+          <p className="mb-10" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
+            Laissez-nous votre email, et nous vous enverrons les nouvelles de Terrago.
+          </p>
+
+          <form className="w-full" onSubmit={(e) => e.preventDefault()}>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="email"
+                placeholder="Votre adresse email"
+                className="flex-1 bg-white px-6 py-4 focus:outline-none transition-all"
+                style={{
+                  border: '1px solid rgba(26,46,26,0.09)',
+                  borderRadius: '9999px',
+                  color: '#1a2e1a',
+                  fontSize: 13,
+                }}
+                required
+              />
+              <button
+                type="submit"
+                className="px-7 py-4 text-white font-bold uppercase transition-all duration-300"
+                style={{ background: '#1a2e1a', borderRadius: '9999px', fontSize: 9, letterSpacing: '0.22em' }}
+                onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.background = '#e67e22')}
+                onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = '#1a2e1a')}
+              >
+                Envoyer
+              </button>
+            </div>
+            <p className="mt-5" style={{ fontSize: 9, color: '#b8ad9e', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 700 }}>
+              100% français & authentique · Pas de spam
+            </p>
+          </form>
+        </div>
+      </section>
 
     </div>
   );

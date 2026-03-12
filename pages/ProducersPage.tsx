@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import {
   type Producer,
@@ -11,6 +11,109 @@ import {
 const FILTERS = ['Tous', 'Olives', 'Huîtres', 'Vins', 'Piments', 'Truffes', 'Agrumes', 'Noix', 'Spiritueux', 'Élevages'];
 const REGIONS = ['Toutes régions', 'Nouvelle-Aquitaine', 'Occitanie', "Provence-Alpes-Côte-d'Azur", 'Grand Est'];
 
+// ── Dropdown région custom (pas de <select> natif) ──────────────────────────
+type RegionDropdownProps = {
+  value: string;
+  onChange: (v: string) => void;
+};
+
+const RegionDropdown: React.FC<RegionDropdownProps> = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const isActive = value !== 'Toutes régions';
+
+  // Fermer si clic extérieur
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div ref={ref} style={{ position: 'relative' }}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        style={{
+          padding: '7px 18px',
+          borderRadius: 20,
+          border: isActive ? '1.5px solid #f78d00' : '1.5px solid #e5e0d8',
+          background: isActive ? '#f78d00' : '#fff',
+          color: isActive ? '#fff' : '#6b7280',
+          fontSize: 12,
+          fontWeight: 600,
+          fontFamily: 'inherit',
+          cursor: 'pointer',
+          whiteSpace: 'nowrap',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          outline: 'none',
+        }}
+      >
+        {value}
+        <span style={{
+          display: 'inline-block',
+          transition: 'transform 0.2s',
+          transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+          fontSize: 10,
+          lineHeight: 1,
+        }}>
+          ▾
+        </span>
+      </button>
+
+      {open && (
+        <div style={{
+          position: 'absolute',
+          top: 'calc(100% + 8px)',
+          left: 0,
+          background: '#fff',
+          border: '1.5px solid #e5e0d8',
+          borderRadius: 16,
+          boxShadow: '0 8px 32px rgba(10,44,52,0.12)',
+          overflow: 'hidden',
+          zIndex: 100,
+          minWidth: 200,
+        }}>
+          {REGIONS.map((r) => {
+            const selected = r === value;
+            return (
+              <button
+                key={r}
+                type="button"
+                onClick={() => { onChange(r); setOpen(false); }}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: '10px 16px',
+                  fontSize: 12,
+                  fontWeight: selected ? 700 : 500,
+                  fontFamily: 'inherit',
+                  background: selected ? 'rgba(247,141,0,0.10)' : 'transparent',
+                  color: selected ? '#f78d00' : '#1e291a',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={(e) => { if (!selected) (e.currentTarget as HTMLButtonElement).style.background = '#f9f6f2'; }}
+                onMouseLeave={(e) => { if (!selected) (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+              >
+                {selected && <span style={{ marginRight: 8 }}>✓</span>}{r}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ── ProducerCard ─────────────────────────────────────────────────────────────
 type ProducerCardProps = {
   producer: Producer;
   onClick: (id: string) => void;
@@ -37,97 +140,40 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
         border: '1px solid rgba(10,44,52,0.06)',
       }}
     >
-      {/* Cover */}
       <div style={{ position: 'relative', height: 200, overflow: 'hidden', flexShrink: 0 }}>
         <img
           src={producer.cover}
           alt={producer.name}
-          style={{
-            width: '100%', height: '100%', objectFit: 'cover',
-            transform: hovered ? 'scale(1.06)' : 'scale(1)',
-            transition: 'transform 0.6s ease',
-          }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.06)' : 'scale(1)', transition: 'transform 0.6s ease' }}
         />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,44,52,0.5) 0%, transparent 60%)' }} />
-
-        {/* Badge type */}
-        <div style={{
-          position: 'absolute', top: 14, left: 14,
-          background: 'rgba(255,255,255,0.75)',
-          backdropFilter: 'blur(8px)',
-          borderRadius: 20, padding: '4px 12px',
-          fontSize: 11, fontWeight: 600, color: '#1e291a',
-          letterSpacing: '0.05em',
-        }}>
+        <div style={{ position: 'absolute', top: 14, left: 14, background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(8px)', borderRadius: 20, padding: '4px 12px', fontSize: 11, fontWeight: 600, color: '#1e291a', letterSpacing: '0.05em' }}>
           {producer.type}
         </div>
-
-        {/* Rating */}
-        <div style={{
-          position: 'absolute', top: 14, right: 14,
-          background: 'rgba(255,255,255,0.75)',
-          backdropFilter: 'blur(8px)',
-          borderRadius: 20, padding: '4px 10px',
-          fontSize: 12, fontWeight: 700, color: '#f78d00',
-          display: 'flex', alignItems: 'center', gap: 4,
-        }}>
+        <div style={{ position: 'absolute', top: 14, right: 14, background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(8px)', borderRadius: 20, padding: '4px 10px', fontSize: 12, fontWeight: 700, color: '#f78d00', display: 'flex', alignItems: 'center', gap: 4 }}>
           ★ {producer.rating}
         </div>
-
-        {/* Location */}
-        <div style={{
-          position: 'absolute', bottom: 12, left: 14,
-          fontSize: 11, color: 'rgba(255,255,255,0.9)',
-          display: 'flex', alignItems: 'center', gap: 4,
-        }}>
+        <div style={{ position: 'absolute', bottom: 12, left: 14, fontSize: 11, color: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', gap: 4 }}>
           <span style={{ fontSize: 13 }}>📍</span> {producer.location}
         </div>
       </div>
 
-      {/* Body */}
       <div style={{ padding: '18px 20px 20px', display: 'flex', flexDirection: 'column', flex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-          <img
-            src={producer.avatar}
-            alt=""
-            style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '2px solid #f0ebe4' }}
-          />
-          <div style={{ fontWeight: 700, fontSize: 15, color: '#1e291a', lineHeight: 1.2 }}>
-            {producer.name}
-          </div>
+          <img src={producer.avatar} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '2px solid #f0ebe4' }} />
+          <div style={{ fontWeight: 700, fontSize: 15, color: '#1e291a', lineHeight: 1.2 }}>{producer.name}</div>
         </div>
-
-        <p style={{ fontSize: 12.5, color: '#6b7280', lineHeight: 1.6, marginBottom: 12, fontStyle: 'italic' }}>
-          {producer.highlight}
-        </p>
-
-        {/* Tags */}
+        <p style={{ fontSize: 12.5, color: '#6b7280', lineHeight: 1.6, marginBottom: 12, fontStyle: 'italic' }}>{producer.highlight}</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
           {producer.tags.map((tag) => (
-            <span key={tag} style={{
-              background: 'rgba(247,141,0,0.12)', color: '#f78d00',
-              fontSize: 10, fontWeight: 600, padding: '3px 10px',
-              borderRadius: 20, letterSpacing: '0.04em',
-            }}>
+            <span key={tag} style={{ background: 'rgba(247,141,0,0.12)', color: '#f78d00', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20, letterSpacing: '0.04em' }}>
               {tag}
             </span>
           ))}
         </div>
-
-        {/* Footer */}
-        <div style={{
-          marginTop: 'auto',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          borderTop: '1px solid #f0ebe4', paddingTop: 12,
-        }}>
-          <div style={{ fontSize: 11, color: '#9ca3af' }}>
-            Jusqu'à {producer.capacity} personnes max.
-          </div>
-          <div style={{
-            background: '#1e291a', color: '#fff',
-            fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
-            padding: '8px 16px', borderRadius: 12, textTransform: 'uppercase',
-          }}>
+        <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #f0ebe4', paddingTop: 12 }}>
+          <div style={{ fontSize: 11, color: '#9ca3af' }}>Jusqu'à {producer.capacity} personnes max.</div>
+          <div style={{ background: '#1e291a', color: '#fff', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', padding: '8px 16px', borderRadius: 12, textTransform: 'uppercase' }}>
             Découvrir →
           </div>
         </div>
@@ -136,6 +182,15 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
   );
 };
 
+// Recherche sur tous les champs texte de la carte
+function getSearchableText(p: Producer): string {
+  return [p.name, p.type, p.location, p.region, p.highlight, ...(p.tags ?? [])]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
 const ProducersPage: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>('Tous');
   const [activeRegion, setActiveRegion] = useState<string>('Toutes régions');
@@ -146,13 +201,10 @@ const ProducersPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Présélectionner le filtre depuis l'URL (?filter=Spiritueux)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const filter = params.get('filter');
-    if (filter && FILTERS.includes(filter)) {
-      setActiveFilter(filter);
-    }
+    if (filter && FILTERS.includes(filter)) setActiveFilter(filter);
   }, [location.search]);
 
   useEffect(() => {
@@ -186,83 +238,118 @@ const ProducersPage: React.FC = () => {
   const filtered = producers.filter((p) => {
     const matchType = activeFilter === 'Tous' || p.type === activeFilter;
     const matchRegion = activeRegion === 'Toutes régions' || p.region === activeRegion;
-    const lowerSearch = search.toLowerCase();
-    const matchSearch =
-      p.name.toLowerCase().includes(lowerSearch) ||
-      p.location.toLowerCase().includes(lowerSearch);
+    const matchSearch = search.trim() === '' || getSearchableText(p).includes(search.trim().toLowerCase());
     return matchType && matchRegion && matchSearch;
   });
 
-  const handleSelectProducer = (id: string) => {
-    navigate(`/partenaires/${id}`);
-  };
+  const handleSelectProducer = (id: string) => navigate(`/partenaires/${id}`);
 
   return (
-    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', minHeight: '100vh' }}>
+    <div className="overflow-x-hidden bg-beige-bg min-h-screen font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
 
-      {/* Hero */}
-      <div className="px-4 sm:px-6 lg:px-10 pt-32 sm:pt-40 pb-12 sm:pb-16 bg-beige-bg scroll-mt-24" style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-         <div className="absolute inset-0 opacity-0.06 bg-radial-gradient(circle at 1px 1px, #1e291a 1px, transparent 0) [32px_32px]" style={{ pointerEvents: 'none' }} />
-        <span className="inline-block px-3 py-1.5 bg-[#f78d00] text-white font-bold tracking-[0.3em] uppercase text-[9px] mb-4 rounded-full shadow-md animate-in fade-in slide-in-from-bottom-4 duration-1000">
-          Le réseau Terrago
-        </span>
-        <h1 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary leading-none sm:leading-tight px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap mb-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
-          <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Nos producteurs </span>
-          <span className="font-display italic">partenaires.</span>
-        </h1>
-        <p className="text-gray-500 text-sm max-w-[500px] mx-auto mb-9 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
-          Des producteurs, éleveurs, vignerons et artisans soigneusement sélectionnés pour leur authenticité et leur savoir-faire.
-        </p>
-
-        {/* Search */}
-        <div style={{ maxWidth: 420, margin: '0 auto', background: '#fff', borderRadius: 16, padding: '4px 4px 4px 20px', display: 'flex', alignItems: 'center', gap: 8, border: '1.5px solid #e5e0d8', boxShadow: '0 4px 16px rgba(10,44,52,0.08)' }}>
-          <span style={{ color: '#9ca3af', fontSize: 16 }}>🔍</span>
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Rechercher un producteur, une région..."
-            style={{ flex: 1, background: 'none', border: 'none', outline: 'none', color: '#1e291a', fontSize: 13, fontFamily: 'inherit' }}
+      {/* ── HERO ── */}
+      <section className="relative w-full">
+        <div className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[75vh] w-full overflow-hidden flex items-center justify-center group">
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-[14s] group-hover:scale-[1.03]"
+            style={{ backgroundImage: 'url("https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/vache2.avif' }}
           />
-          {search && (
-            <button type="button" onClick={() => setSearch('')} style={{ background: '#f0ebe4', border: 'none', color: '#6b7280', borderRadius: 10, padding: '6px 12px', cursor: 'pointer', fontSize: 11 }}>
-              Effacer
-            </button>
-          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 mt-16 sm:mt-24 lg:mt-32 text-center">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
+              <span style={{ color: 'rgba(255,255,255,0.60)', fontSize: 10, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase' }}>
+                Le réseau Terrago
+              </span>
+              <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
+            </div>
+            <h1 className="text-white font-semibold leading-[1.06] mb-6 drop-shadow-lg">
+              <span className="font-sans text-3xl md:text-4xl lg:text-5xl">Nos producteurs </span>
+              <span className="font-display italic text-3xl md:text-5xl lg:text-6xl">partenaires.</span>
+            </h1>
+            <p className="text-white/80 text-ml max-w-xl mx-auto mb-8 leading-relaxed">
+              Des producteurs, éleveurs, vignerons et artisans soigneusement sélectionnés pour leur authenticité et leur savoir-faire.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link to="/entreprises" className="text-white border border-white/35 hover:border-white/70 px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/10 rounded-full">
+                Nos séminaires
+              </Link>
+              <Link to="/recommander-un-producteur" className="text-white/90 hover:text-white text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300">
+                Recommander un producteur →
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Filters */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #f0ebe4', padding: '16px 24px', position: 'sticky', top: 0, zIndex: 10 }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4, flexWrap: 'wrap' }}>
-            {FILTERS.map((f) => (
-              <button key={f} type="button" onClick={() => setActiveFilter(f)} style={{ padding: '7px 18px', borderRadius: 20, border: activeFilter === f ? '1.5px solid #1e291a' : '1.5px solid #e5e0d8', background: activeFilter === f ? '#1e291a' : '#fff', color: activeFilter === f ? '#fff' : '#6b7280', fontSize: 12, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s' }}>
-                {f}
+      {/* ── RECHERCHE + FILTRES ── */}
+      <div style={{ background: '#fff', borderBottom: '1px solid #f0ebe4', position: 'sticky', top: 0, zIndex: 10 }}>
+
+        {/* Barre de recherche centrée */}
+        <div style={{ padding: '16px 24px', display: 'flex', justifyContent: 'center', borderBottom: '1px solid #f0ebe4' }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 10,
+            background: '#f9f6f2', borderRadius: 24,
+            border: '1.5px solid #e5e0d8', padding: '10px 20px',
+            width: '100%', maxWidth: 500,
+          }}>
+            <span style={{ color: '#9ca3af', fontSize: 15, flexShrink: 0 }}>🔍</span>
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Rechercher un producteur, un produit, une région..."
+              style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 13, color: '#1e291a', fontFamily: 'inherit' }}
+            />
+            {search && (
+              <button type="button" onClick={() => setSearch('')} style={{ background: '#e5e0d8', color: '#6b7280', border: 'none', borderRadius: 12, padding: '3px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+                ✕
               </button>
-            ))}
-            <div style={{ width: 1, background: '#e5e0d8', margin: '0 4px' }} />
-            <select value={activeRegion} onChange={(e) => setActiveRegion(e.target.value)} style={{ padding: '7px 18px', borderRadius: 20, border: '1.5px solid #e5e0d8', background: '#fff', color: '#6b7280', fontSize: 12, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer', outline: 'none' }}>
-              {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
-            </select>
+            )}
+          </div>
+        </div>
+
+        {/* Filtres */}
+        <div style={{ padding: '12px 24px' }}>
+          <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+            <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4, flexWrap: 'wrap', alignItems: 'center' }}>
+              {FILTERS.map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setActiveFilter(f)}
+                  style={{
+                    padding: '7px 18px', borderRadius: 20,
+                    border: activeFilter === f ? '1.5px solid #f78d00' : '1.5px solid #e5e0d8',
+                    background: activeFilter === f ? '#f78d00' : '#fff',
+                    color: activeFilter === f ? '#fff' : '#6b7280',
+                    fontSize: 12, fontWeight: 600, fontFamily: 'inherit',
+                    cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s',
+                    outline: 'none',
+                  }}
+                >
+                  {f}
+                </button>
+              ))}
+              <div style={{ width: 1, background: '#e5e0d8', alignSelf: 'stretch', margin: '0 4px' }} />
+              <RegionDropdown value={activeRegion} onChange={setActiveRegion} />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Grid */}
+      {/* ── GRILLE ── */}
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '48px 24px' }}>
         {loading && (
           <div style={{ textAlign: 'center', padding: '80px 0', color: '#6b7280' }}>
             <p style={{ fontSize: 16, fontWeight: 600 }}>Chargement des producteurs...</p>
           </div>
         )}
-
         {error && (
           <div style={{ textAlign: 'center', padding: '80px 0', color: '#b91c1c' }}>
             <p style={{ fontSize: 16, fontWeight: 600 }}>Erreur</p>
             <p style={{ fontSize: 14, marginTop: 8 }}>{error}</p>
           </div>
         )}
-
         {!loading && !error && (
           <>
             <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 28 }}>
@@ -273,7 +360,6 @@ const ProducersPage: React.FC = () => {
                 <ProducerCard key={p.id} producer={p} onClick={handleSelectProducer} />
               ))}
             </div>
-
             {filtered.length === 0 && (
               <div style={{ textAlign: 'center', padding: '80px 0', color: '#9ca3af' }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🌾</div>
@@ -294,8 +380,8 @@ const ProducersPage: React.FC = () => {
             <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, margin: 0, lineHeight: 1.6 }}>Rejoignez le réseau Terrago ou faites-nous découvrir un producteur exceptionnel.</p>
           </div>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <a href="/nous-rejoindre" style={{ background: '#f78d00', color: '#fff', padding: '13px 22px', borderRadius: 12, fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', fontFamily: "'Poppins', sans-serif" }}>Devenir partenaire →</a>
-            <a href="/recommander-un-producteur" style={{ background: 'rgba(255,255,255,0.08)', color: '#fff', padding: '13px 22px', borderRadius: 12, fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.2)', fontFamily: "'Poppins', sans-serif" }}>Recommander un producteur →</a>
+            <Link to="/nous-rejoindre" className="bg-[#f78d00] text-white px-5 py-3 rounded-xl text-[11px] font-bold uppercase tracking-[0.1em] no-underline hover:opacity-90 transition-opacity">Devenir partenaire →</Link>
+            <Link to="/recommander-un-producteur" className="bg-white/10 text-white px-5 py-3 rounded-xl text-[11px] font-bold uppercase tracking-[0.1em] border border-white/20 no-underline hover:bg-white/20 transition-colors">Recommander un producteur →</Link>
           </div>
         </div>
       </div>

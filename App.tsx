@@ -13,6 +13,7 @@ import Host from './pages/Host';
 import RecommendProducer from './pages/RecommendProducer';
 import Auth from './pages/Auth';
 import Booking from './pages/Booking';
+import SeminairesPack from './pages/Seminaires-pack';
 import ProducersPage from './pages/ProducersPage';
 import ProducerDetailPage from './pages/ProducerDetailPage';
 import MentionsLegales from './pages/MentionsLegales';
@@ -30,6 +31,8 @@ const App: React.FC = () => {
           <Route path="/partenaires" element={<ProducersPage />} />
           <Route path="/partenaires/:producerId" element={<ProducerDetailPage />} />
           <Route path="/entreprises" element={<Seminaires />} />
+          <Route path="/entreprises/offres" element={<SeminairesPack />} />
+          <Route path="/entre-amis" element={<Particuliers />} />
           <Route path="/particuliers" element={<Particuliers />} />
           <Route path="/notre-engagement" element={<Engagement />} />
           <Route path="/nous-rejoindre" element={<Host />} />

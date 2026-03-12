@@ -91,41 +91,45 @@ const Engagement: React.FC = () => {
   const [activeValeur, setActiveValeur] = useState<number | null>(null);
 
   return (
-    <div className="pt-20 lg:pt-24 font-sans bg-beige-bg min-h-screen">
+    <div className="font-sans bg-beige-bg min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative w-full px-0 sm:px-6 lg:px-12 py-16 sm:py-20 lg:py-24 text-center min-h-[60vh] sm:min-h-[65vh] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/paysageterroir.png')" }}
-        />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
-
-        <div className="relative z-10 max-w-5xl mx-auto text-white px-4 sm:px-6">
-          <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 bg-white/10 backdrop-blur-md text-white text-[8px] sm:text-[9px] uppercase tracking-[0.3em] font-bold font-sans mb-4 sm:mb-6 rounded-full shadow-md border border-white/20 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            Notre engagement
-          </span>
-          <h1 className="text-white text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-none sm:leading-tight px-2 flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-x-2 gap-y-1 sm:gap-y-0 whitespace-normal sm:whitespace-nowrap mb-6 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
-            <span className="font-sans not-italic text-[0.7em] md:text-[0.7em]">Des expériences qui </span>
-            <span className="font-display italic">soutiennent nos terroirs.</span>
-          </h1>
-          <p className="text-white/90 text-xs sm:text-sm md:text-base font-light mb-6 sm:mb-10 mx-auto leading-relaxed italic text-balance drop-shadow-md animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
-            Nous créons des immersions mains dans la terre pour reconnecter chacun au vivant, tout en permettant un soutien financier direct et juste à nos producteurs partenaires, tous engagés pour produire bien et bon.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-700">
-            <Link
-              to="/partenaires"
-              className="w-auto sm:w-auto bg-white text-[#1e291a] px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] uppercase tracking-[0.2em] font-bold shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 hover:bg-[#f78d00] hover:text-white"
-            >
-              Nos producteurs partenaires →
-            </Link>
-            <Link
-              to="/entreprises"
-              className="text-white border-b-2 border-white/50 hover:border-white px-3 py-1.5 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] font-bold transition-all flex items-center justify-center"
-            >
-              Nos séminaires d'entreprise
-            </Link>
+      <section className="relative w-full">
+        <div className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[75vh] w-full overflow-hidden flex items-center justify-center group">
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-[14s] group-hover:scale-[1.03]"
+            style={{ backgroundImage: "url('https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/paysagebanc.jpg')" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 sm:mt-24 lg:mt-32 text-center">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
+              <span style={{ color: 'rgba(255,255,255,0.60)', fontSize: 10, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase' }}>
+                mission et engagement
+              </span>
+              <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
+            </div>
+            <h1 className="text-white font-semibold leading-[1.06] mb-6 drop-shadow-lg">
+              <span className="font-sans text-3xl md:text-4xl lg:text-5xl">Des expériences qui </span>
+              <span className="font-display italic text-3xl md:text-5xl lg:text-6xl">soutiennent nos terroirs.</span>
+            </h1>
+            <p className="text-white/80 text-sm sm:text-base lg:text-[15px] max-w-3xl lg:max-w-4xl mx-auto mb-8 leading-relaxed italic">
+              Nous créons des immersions mains dans la terre pour reconnecter chacun au vivant, tout en permettant un soutien financier direct et juste à nos producteurs partenaires, tous engagés pour produire bien et bon.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                to="/partenaires"
+                className="text-white border border-white/35 hover:border-white/70 px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/10 rounded-full"
+              >
+                Nos producteurs partenaires
+              </Link>
+              <Link
+                to="/entreprises"
+                className="text-white/90 hover:text-white text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300"
+              >
+                Nos séminaires d'entreprise →
+              </Link>
+            </div>
           </div>
         </div>
       </section>
