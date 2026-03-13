@@ -33,7 +33,7 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Entre amis',
     path: '/entre-amis',
     dropdown: [
-      { label: 'Partagez votre projet', description: 'On vous écoute !',         path: '#projet', targetPath: '/entre-amis', emoji: '💬' },
+      { label: 'Séjours uniques', description: 'On vous écoute !',         path: '#séjours', targetPath: '/entre-amis', emoji: '💬' },
       { label: 'Nos offres partagées',  description: 'Entre amis ou en famille', path: '#', comingSoon: true,               emoji: '🫶' },
     ],
   },
@@ -123,7 +123,7 @@ const AccordionSection: React.FC<{
                     </div>
                   )}
                 </div>
-                <span className="px-4 py-1.5 rounded-full bg-[#D4751A] text-white text-[9px] font-semibold uppercase tracking-wide flex-shrink-0">
+                <span className="px-6 py-1 rounded-full bg-[#D4751A] text-white text-[8px] font-bold uppercase tracking-wide flex-shrink-0">
                   Bientôt
                 </span>
               </div>
@@ -373,7 +373,7 @@ const Header: React.FC = () => {
                       <span className="font-sans text-[13.5px] font-semibold text-[#1C2318]/50 whitespace-nowrap">
                         {item.label}
                       </span>
-                      <span className="px-4 py-1.5 rounded-full bg-[#D4751A] text-white text-[9px] font-semibold uppercase tracking-wide flex-shrink-0">
+                      <span className="px-6 py-1 rounded-full bg-[#D4751A] text-white text-[8px] font-bold uppercase tracking-wide flex-shrink-0">
                         Bientôt
                       </span>
                     </div>

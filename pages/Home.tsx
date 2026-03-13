@@ -8,11 +8,11 @@ import ScrollAnimate from '../components/ScrollAnimate';
 const ProducerStack: React.FC = () => {
   const producers = [
     { name: 'Jean-François', job: 'Cognac & Pineau', image: '/images/producteurs/cognacJF.png' },
-    { name: 'Paolo', job: 'Olives de Provence', image: '/images/producteurs/olivepaolo.png' },
-    { name: 'Sabine & Marie-Lise', job: 'Noix & Lavande', image: '/images/producteurs/noixsabinemarie.jpeg' },
+    { name: 'Paolo', job: 'Olives - Lavande - Fruitiers', image: '/images/producteurs/olivepaolo.png' },
+    { name: 'Sabine & Marie-Lise', job: 'Noix - Lavande - Olives', image: '/images/producteurs/noixsabinemarie.jpeg' },
     { name: 'Marie-Sophie & Thomas', job: 'Vins du Ventoux', image: '/images/producteurs/vincombeaumas.png' },
-    { name: 'Nathalie & Benjamin', job: 'Noisettes & fruits à coques', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png' },
-    { name: 'Baptiste', job: 'Piments & Pommes', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png' },
+    { name: 'Nathalie & Benjamin', job: 'Noisettes - Amandes - Yuzu', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png' },
+    { name: 'Baptiste', job: 'Piments & Pommes ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png' },
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -51,16 +51,16 @@ const ProducerStack: React.FC = () => {
     >
       <style>{`
         @keyframes sendToBack {
-          0%   { transform: translateX(0px)  translateY(0px)   rotate(0deg) scale(1);    z-index: 20; transform-origin: bottom center; }
-          100% { transform: translateX(18px) translateY(-8px)  rotate(6deg) scale(0.96); z-index: 8;  transform-origin: bottom center; }
-        }
-        @keyframes comeForward {
-          0%   { transform: translateX(18px) translateY(-8px)  rotate(6deg)   scale(0.96); transform-origin: bottom center; }
-          60%  { transform: translateX(-3px) translateY(2px)   rotate(-1deg)  scale(1.01); transform-origin: bottom center; }
-          100% { transform: translateX(0px)  translateY(0px)   rotate(0deg)   scale(1);    transform-origin: bottom center; }
-        }
-        .card-send-back { animation: sendToBack  0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        .card-come-fwd  { animation: comeForward 0.5s cubic-bezier(0.2, 0, 0.2, 1) 0.05s both; }
+  0%   { transform: translateX(0px)  translateY(0px)  rotate(0deg)  scale(1);    opacity: 1; z-index: 20; }
+  100% { transform: translateX(60px) translateY(40px) rotate(8deg)  scale(0.7);  opacity: 0; z-index: 16; }
+}
+@keyframes comeForward {
+  0%   { transform: translateX(18px)  translateY(20px) rotate(6deg)   scale(0.96); transform-origin: bottom center; }
+  60%  { transform: translateX(-3px)  translateY(-4px) rotate(-1deg)  scale(1.01); transform-origin: bottom center; }
+  100% { transform: translateX(0px)   translateY(0px)  rotate(0deg)   scale(1);    transform-origin: bottom center; }
+}
+.card-send-back { animation: sendToBack  0.3s cubic-bezier(0.4, 0, 1, 1) forwards; }
+.card-come-fwd  { animation: comeForward 0.4s cubic-bezier(0.2, 0, 0.2, 1) 0.05s both; }
         @keyframes scrollPulse {
           0%, 100% { opacity: 0.2; transform: scaleY(0.8); transform-origin: top; }
           50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
@@ -78,7 +78,7 @@ const ProducerStack: React.FC = () => {
 
         const staticTransform = isActive && !isExiting
           ? 'translateX(0px) translateY(0px) rotate(0deg) scale(1)'
-          : `translateX(${behind * 18}px) translateY(${behind * -8}px) rotate(${behind * 6}deg) scale(${1 - behind * 0.04})`;
+          : `translateX(${behind * 18}px) translateY(${behind * -4}px) rotate(${behind * 6}deg) scale(${1 - behind * 0.04})`;
 
         return (
           <div
@@ -415,7 +415,7 @@ const Home: React.FC = () => {
       {/* ── RENCONTRES ── */}
       <section className="bg-white" style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="rencontres">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center ">
             <div>
               <div className="flex items-center gap-3 mb-7">
                 <div style={{ width: 20, height: 1, background: '#e67e22' }} />

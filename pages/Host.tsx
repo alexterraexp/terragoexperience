@@ -246,6 +246,17 @@ const Host: React.FC = () => {
           min-height: 100vh;
           position: relative;
         }
+        /* Même marge gauche que la page Offres packagées séminaires (conteneur centré 1080px) */
+        .host-left {
+          padding-left: calc(max(0px, (100vw - 1080px) / 2) + clamp(1.5rem, 4vw, 3rem)) !important;
+        }
+        .host-right {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        .host-right::-webkit-scrollbar {
+          display: none;
+        }
         /* Divider line between panels */
         .host-split::after {
           content: '';
@@ -260,7 +271,7 @@ const Host: React.FC = () => {
           .host-split { grid-template-columns: 1fr; }
           .host-split::after { display: none; }
           .host-right { border-top: 1px solid rgba(26,46,26,0.06); }
-          .host-left, .host-right { padding-left: 2rem !important; padding-right: 2rem !important; }
+          .host-left, .host-right { padding-left: clamp(1.5rem, 4vw, 3rem) !important; padding-right: clamp(1.5rem, 4vw, 3rem) !important; }
           .host-medallion { display: none !important; }
         }
       `}</style>
@@ -272,7 +283,7 @@ const Host: React.FC = () => {
           className="host-left"
           style={{
             background: '#faf8f5',
-            padding: 'calc(84px + 4rem) clamp(2.5rem, 5vw, 5rem) 5rem clamp(2rem, 5vw, 5rem)',
+            padding: 'calc(84px + 4rem) clamp(2.5rem, 5vw, 5rem) 5rem 0',
             display: 'flex', flexDirection: 'column', justifyContent: 'center',
           }}
         >
@@ -353,7 +364,7 @@ const Host: React.FC = () => {
           className="host-right"
           style={{
             background: '#fff',
-            padding: 'calc(84px + 4rem) clamp(2rem, 4vw, 4rem) 5rem clamp(2.5rem, 4vw, 4rem)',
+            padding: 'calc(84px + 10rem) clamp(2rem, 4vw, 4rem) 5rem clamp(2.5rem, 4vw, 4rem)',
             display: 'flex', flexDirection: 'column', justifyContent: 'center',
             position: 'sticky', top: 0, height: '100vh', overflowY: 'auto',
           }}
@@ -367,10 +378,10 @@ const Host: React.FC = () => {
               </span>
             </div>
             <h2 className="font-bold text-primary" style={{ letterSpacing: '-0.01em', marginBottom: 0 }}>
-              <span className="font-sans not-italic" style={{ fontSize: 'clamp(1rem, 1.8vw, 1.3rem)', display: 'block', color: '#9a9080', fontWeight: 400 }}>
-                Contactez-nous pour
+              <span className="font-sans not-italic" style={{ fontSize: 'clamp(1rem, 1.8vw, 1.3rem)', color: '#9a9080', fontWeight: 400 }}>
+                Contactez-nous pour{' '}
               </span>
-              <span className="font-display italic" style={{ fontSize: 'clamp(1.6rem, 2.4vw, 2rem)', display: 'block' }}>
+              <span className="font-display italic" style={{ fontSize: 'clamp(1.6rem, 2.4vw, 2rem)' }}>
                 rejoindre l'aventure
               </span>
             </h2>
