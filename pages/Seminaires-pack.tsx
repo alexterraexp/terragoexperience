@@ -1,12 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ReactNode, CSSProperties } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-// ─── Supabase ──────────────────────────────────────────────────────────────────
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY ?? '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { supabase } from '../lib/supabase';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -700,7 +694,6 @@ export default function SeminairesPage() {
 
   useEffect(() => {
     async function fetchData() {
-      if (!supabaseUrl || !supabaseAnonKey) { setFetchError('Configuration Supabase manquante.'); setLoading(false); return; }
       const { data, error } = await supabase
         .from('seminaires')
         .select(`*, seminaire_formats (*, seminaire_programme (heure, action, ordre))`)
