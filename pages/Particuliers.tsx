@@ -244,17 +244,17 @@ const Particuliers: React.FC = () => {
 
       {/* ── SECTION 2 : CE QUE VOUS VIVREZ ── */}
       <section
-  id="ce-que-vous-vivrez"
-  style={{
-    paddingTop: 'calc(84px + clamp(8rem, 13vw, 12rem))',
-    paddingBottom: 'clamp(4rem, 8vw, 7rem)',
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-  }}
-  className="bg-beige-bg w-full"
->
+      id="ce-que-vous-vivrez"
+      style={{
+      paddingTop: 'calc(84px + clamp(3rem, 6vw, 5rem))',
+      paddingBottom: 'clamp(4rem, 8vw, 7rem)',
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      }}
+      className="bg-beige-bg w-full"
+      >
   <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
     <div className="mb-16">
       <div className="flex items-center gap-3 mb-10">
