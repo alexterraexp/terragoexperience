@@ -1,6 +1,6 @@
-
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import ReactGA from 'react-ga4';
 import Layout from './components/Layout';
 import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
@@ -19,9 +19,18 @@ import ProducerDetailPage from './pages/ProducerDetailPage';
 import MentionsLegales from './pages/MentionsLegales';
 import Confidentialite from './pages/Confidentialite';
 
+const PageTracker: React.FC = () => {
+  const location = useLocation();
+  useEffect(() => {
+    ReactGA.send({ hitType: 'pageview', page: location.pathname });
+  }, [location]);
+  return null;
+};
+
 const App: React.FC = () => {
   return (
     <Router>
+      <PageTracker />
       <ScrollToTop />
       <Layout>
         <Routes>
@@ -47,5 +56,5 @@ const App: React.FC = () => {
     </Router>
   );
 };
- 
+
 export default App;

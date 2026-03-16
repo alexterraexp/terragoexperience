@@ -415,14 +415,14 @@ const Header: React.FC = () => {
 
         {/* Panel slide depuis le haut */}
         <div
-          className={`absolute inset-x-0 top-0 transition-transform duration-350 ease-out ${
+          className={`absolute inset-x-0 top-0 bottom-0 transition-transform duration-350 ease-out ${
             isMenuOpen ? 'translate-y-0' : '-translate-y-full'
           }`}
         >
-          <div className="bg-[#faf8f5] min-h-screen flex flex-col">
+          <div className="bg-[#faf8f5] h-full max-h-[100dvh] flex flex-col overflow-hidden">
 
             {/* Header du panel */}
-            <div className="flex items-center justify-between px-6 h-[84px] border-b border-black/[0.07]">
+            <div className="flex-shrink-0 flex items-center justify-between px-6 h-[84px] border-b border-black/[0.07]">
               <span className="font-sans font-semibold text-[13px] uppercase tracking-[0.22em] text-[#1C2318]">
                 Menu
               </span>
@@ -436,8 +436,8 @@ const Header: React.FC = () => {
               </button>
             </div>
 
-            {/* Accordion sections */}
-            <div className="flex-1 overflow-y-auto">
+            {/* Accordion sections — min-h-0 pour que le flex shrink et que le CTA reste visible */}
+            <div className="flex-1 min-h-0 overflow-y-auto">
               {NAV_ITEMS.map((nav, idx) => (
                 <AccordionSection
                   key={nav.path}
@@ -458,8 +458,8 @@ const Header: React.FC = () => {
               ))}
             </div>
 
-            {/* CTA sticky bas */}
-            <div className="px-5 pb-8 pt-4 border-t border-black/[0.07] bg-[#faf8f5]">
+            {/* CTA sticky bas — toujours visible en bas du viewport */}
+            <div className="flex-shrink-0 px-5 pb-8 pt-4 border-t border-black/[0.07] bg-[#faf8f5]">
               <Link
                 to="/entreprises?openModal=true"
                 onClick={() => setIsMenuOpen(false)}

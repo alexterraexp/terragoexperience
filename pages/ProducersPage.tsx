@@ -412,10 +412,14 @@ const ProducersPage: React.FC = () => {
         <div style={{ marginTop: 96, paddingTop: 48, borderTop: '1px solid #e5e0d8' }}>
           <div style={{ background: '#1e291a', borderRadius: 24, padding: '48px 64px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
           <div>
-            <h3 style={{ color: '#fff', margin: '0 0 10px', lineHeight: 1.3 }}>
-              <span style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 23 }}>Vous êtes un producteur engagé ou </span>
-              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 700, fontSize: 32 }}>connaissez un talent du terroir ?</span>
-            </h3>
+          <h3 className="text-white leading-snug font-semibold mb-2">
+  <span style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 700 }} className="text-2xl md:text-3xl">
+    Vous êtes un producteur engagé ou{" "}
+  </span>
+  <span style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 700 }} className="text-3xl md:text-4xl">
+    connaissez un talent du terroir ?
+  </span>
+</h3>
             <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, margin: 0, lineHeight: 1.6 }}>Rejoignez le réseau Terrago ou faites-nous découvrir un producteur exceptionnel.</p>
           </div>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>

@@ -398,11 +398,11 @@ Email envoyé depuis le formulaire de séminaire Terrago
 
       {/* MODAL AMÉLIORÉE - FLUIDE ET COHÉRENTE */}
       {isModalOpen && (
-        <div 
-          ref={modalRef}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-          style={{ pointerEvents: isClosing ? 'none' : 'auto' }}
-        >
+      <div 
+        ref={modalRef}
+        className="fixed inset-0 z-[100] flex items-stretch md:items-center justify-center p-4"
+        style={{ pointerEvents: isClosing ? 'none' : 'auto' }}
+      >
           <div 
             className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
               isClosing ? 'opacity-0' : 'opacity-100'
@@ -410,7 +410,7 @@ Email envoyé depuis le formulaire de séminaire Terrago
             onClick={closeModal}
           ></div>
           <div 
-            className={`bg-white w-full max-w-5xl h-[90vh] max-h-[90vh] md:h-[85vh] rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col relative z-10 font-sans transition-all duration-300 ${
+            className={`bg-white w-full max-w-5xl h-full max-h-[100dvh] md:h-[85vh] md:max-h-[85vh] rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col relative z-10 font-sans transition-all duration-300 ${
               isClosing 
                 ? 'opacity-0 scale-95 translate-y-8' 
                 : 'opacity-100 scale-100 translate-y-0'
