@@ -460,9 +460,12 @@ const Header: React.FC = () => {
 
             {/* CTA sticky bas — toujours visible en bas du viewport */}
             <div className="flex-shrink-0 px-5 pb-7 pt-3 border-t border-black/[0.07] bg-[#faf8f5]">
-              <Link
-                to="/entreprises?openModal=true"
-                onClick={() => setIsMenuOpen(false)}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  navigate('/entreprises', { state: { openSeminaireModal: true } });
+                }}
                 className="flex items-center justify-center gap-1.5 w-full
                   bg-[#1C2318] text-white rounded-lg py-2.5
                   font-sans text-[10px] font-extrabold uppercase tracking-[0.14em]
@@ -471,7 +474,7 @@ const Header: React.FC = () => {
                 <span className="w-[4px] h-[4px] bg-[#D4751A] rounded-full inline-block flex-shrink-0" />
                 Organiser mon séminaire
                 <span className="text-[10px]">→</span>
-              </Link>
+              </button>
               <p className="text-center text-[8px] sm:text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9ca3af] mt-3">
                 Fabriqué avec passion pour nos territoires.
               </p>

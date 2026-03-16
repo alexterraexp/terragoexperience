@@ -249,6 +249,14 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
   const [wt, setWt]       = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 600);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 600);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   useEffect(() => { if (scrollRef.current) scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' }); }, [step]);
 
@@ -407,14 +415,36 @@ Message: ${form.message || 'Aucun'}
         style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'rgba(10,20,10,0.72)', backdropFilter: 'blur(8px)', opacity: closing ? 0 : 1, transition: 'opacity .28s ease' }}
       />
 
-      <div className="sem-wrapper" style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}>
+      <div
+          className="sem-wrapper"
+          style={{
+            position: 'fixed', inset: 0, zIndex: 1000, display: 'flex',
+            alignItems: isMobile ? 'stretch' : 'center',
+            justifyContent: isMobile ? 'stretch' : 'center',
+            padding: isMobile ? 0 : 16,
+            pointerEvents: 'none',
+          }}
+        >
         <div
           className="sem-panel"
           onClick={e => e.stopPropagation()}
           style={{
-            pointerEvents: 'auto', width: '100%', maxWidth: 780, maxHeight: '94vh',
-            background: '#fff', borderRadius: 28, display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0,
-            boxShadow: '0 8px 48px rgba(0,0,0,0.14), 0 0 0 1px rgba(10,44,52,0.05)',
+            pointerEvents: 'auto',
+            ...(isMobile
+              ? {
+                  position: 'fixed' as const,
+                  top: 0, left: 0, right: 0, bottom: 0,
+                  width: '100%', maxWidth: 'none',
+                  height: '100dvh', maxHeight: '100dvh',
+                  minHeight: 0, borderRadius: 0, boxShadow: 'none',
+                }
+              : {
+                  width: '100%', maxWidth: 780, maxHeight: '94vh', minHeight: 0,
+                  borderRadius: 28,
+                  boxShadow: '0 8px 48px rgba(0,0,0,0.14), 0 0 0 1px rgba(10,44,52,0.05)',
+                }),
+            background: '#fff',
+            display: 'flex', flexDirection: 'column', overflow: 'hidden',
             animation: `${closing ? 'semOut' : 'semIn'} .32s cubic-bezier(.22,1,.36,1) both`,
             fontFamily: "'Poppins',sans-serif",
           }}
