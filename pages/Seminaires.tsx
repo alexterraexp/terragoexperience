@@ -49,6 +49,11 @@ const MODAL_TERROIR = [
   { label: 'Agrumes',   emoji: '🍊' }, { label: 'Vins',       emoji: '🍷' },
   { label: 'Spiritueux', emoji: '🥃' }, { label: 'Noisettes',  emoji: '🌰' },
 ];
+// Mapping univers modal → label "Quel produit du terroir découvrir ?" pour présélection au devis
+const UNIVERS_ID_TO_TERROIR_LABEL: Record<string, string> = {
+  cognac: 'Spiritueux', olive: 'Olives', truffe: 'Truffe',
+  fromage: 'Fromages', vin: 'Vins', piment: 'Piments', noisette: 'Noisettes',
+};
 const MODAL_ACC   = ['Chambres seules', 'Chambres partagées'];
 const MODAL_TRANS = ['De porte à porte', 'Depuis gare SNCF proche'];
 const MODAL_PARTS = ['Moins de 10', '10 – 20', '20 – 40', '40 – 80', '80 – 150', '150+'];
@@ -263,7 +268,7 @@ const DateRangePicker: React.FC<{
 
 // ─── SeminaireModal ───────────────────────────────────────────────────────────
 
-const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void; preselectedTerroirLabels?: string[] }> = ({ isOpen, onClose, preselectedTerroirLabels }) => {
   const [step, setStep]       = useState(1);
   const [closing, setClosing] = useState(false);
   const [trans, setTrans]     = useState(false);
@@ -300,6 +305,10 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && preselectedTerroirLabels?.length) setTer(preselectedTerroirLabels);
+  }, [isOpen, preselectedTerroirLabels]);
 
   const handleClose = () => {
     setClosing(true);
@@ -734,8 +743,15 @@ const Seminaires: React.FC = () => {
   useEffect(() => { heroImages.forEach(src => { const img = new Image(); img.src = src; }); }, []);
   useEffect(() => { const id = setInterval(() => setCurrentImageIndex(p => (p + 1) % heroImages.length), 3000); return () => clearInterval(id); }, []);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const [preselectedTerroirForModal, setPreselectedTerroirForModal] = useState<string[]>([]);
+  const openModal = (universId?: string) => {
+    if (universId) {
+      const label = UNIVERS_ID_TO_TERROIR_LABEL[universId];
+      setPreselectedTerroirForModal(label ? [label] : []);
+    } else setPreselectedTerroirForModal([]);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => { setIsModalOpen(false); setPreselectedTerroirForModal([]); };
   const openUniversModal = (id: string) => { const d = UNIVERS_DATA[id]; if (!d) return; setSelectedUniversModal(d); setIsUniversModalClosing(false); document.body.style.overflow = 'hidden'; };
   const closeUniversModal = () => { setIsUniversModalClosing(true); setTimeout(() => { setSelectedUniversModal(null); setIsUniversModalClosing(false); document.body.style.overflow = 'unset'; }, 250); };
   useEffect(() => { const h = (e: KeyboardEvent) => { if (e.key === 'Escape' && selectedUniversModal) closeUniversModal(); }; document.addEventListener('keydown', h); return () => document.removeEventListener('keydown', h); }, [selectedUniversModal]);
@@ -753,7 +769,7 @@ const Seminaires: React.FC = () => {
 
   const exampleCards = [
     { image: "https://images.unsplash.com/photo-1671572953796-4c05a6ac5fa1?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Cognac & Pineau", desc: "Proche de Cognac", tags: ["Participation aux vendanges", "Fabrication de son propre pineau", "Golf entre les vignes"], producerImage: "/images/producteurs/cognacJF.png", universes: ["le cognac"], universId: "cognac", boldLabel: "AUTOUR DU COGNAC" },
-    { image: "https://images.unsplash.com/photo-1663178405985-25074d8e72f4?q=80&w=1026&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Olives & lavande", desc: "Proche d'Aix-en-Provence", tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"], producerImage: "/images/producteurs/olivepaolo.png", universes: ["les olives", "la lavande"], universId: "olive", boldLabel: "AUTOUR DE L'OLIVE" },
+    { image: "https://images.unsplash.com/photo-1663178405985-25074d8e72f4?q=80&w=1026&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Olives & lavande", desc: "Proche d'Aix-en-Provence", tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"], producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO1.jpg", universes: ["les olives", "la lavande"], universId: "olive", boldLabel: "AUTOUR DE L'OLIVE" },
     { image: "https://images.unsplash.com/photo-1728147370558-0b71818d240e?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Noix & compagnie", desc: "Proche de Valence", tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Repas en pleine nature", "Récolte de lavande fine"], producerImage: "/images/producteurs/noixsabinemarie.jpeg", universes: ["les noix"], universId: "noix", boldLabel: "AUTOUR DE LA NOIX" },
     { image: "https://images.unsplash.com/photo-1589208310452-7cf38ba4d109?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Truffe & terroir", desc: "Proche de Tours", tags: ["Cavage et découverte de la truffe", "Atelier cuisine", "Ferme florale et potager"], producerImage: "/images/producteurs/truffeprod.png", universes: ["la truffe"], universId: "truffe", boldLabel: "AUTOUR DE LA TRUFFE" },
     { image: "https://images.unsplash.com/photo-1630440886325-ccbd65b70d29?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Chèvres & fromage", desc: "Proche d'Aix-en-Provence", tags: ["Soins aux chèvres", "Fabrication de son propre fromage", "Dégustation à la ferme", "Visite de cave"], producerImage: "/images/producteurs/chevre-bebe.jpg", universes: ["le fromage de chèvre"], universId: "fromage", boldLabel: "AUTOUR DU FROMAGE" },
@@ -765,7 +781,7 @@ const Seminaires: React.FC = () => {
 
   return (
     <div className="font-sans bg-beige-bg min-h-screen overflow-x-hidden">
-      <SeminaireModal isOpen={isModalOpen} onClose={closeModal} />
+      <SeminaireModal isOpen={isModalOpen} onClose={closeModal} preselectedTerroirLabels={preselectedTerroirForModal} />
 
       {/* ── HERO ── */}
       <section className="relative w-full overflow-hidden min-h-screen flex items-center justify-center">
@@ -836,6 +852,8 @@ const Seminaires: React.FC = () => {
           .scroll-arrow-sem { animation: scrollBounce 2.2s ease-in-out infinite; }
           .seminaires-section-after-hero { padding-top: clamp(5rem, 10vw, 9rem); }
           @media (min-width: 1024px) { .seminaires-section-after-hero { padding-top: calc(9rem + 84px); } }
+          .univers-modal-box { scrollbar-width: none; -ms-overflow-style: none; }
+          .univers-modal-box::-webkit-scrollbar { display: none; }
         `}</style>
       </section>
 
@@ -930,7 +948,7 @@ const Seminaires: React.FC = () => {
               { icon: 'restaurant', label: 'Tissu local',                      text: 'Savourez le vrai : des repas pensés autour des producteurs locaux, de saison et engagés. Chaque assiette raconte une histoire.' },
               { icon: 'nature',     label: 'Cadre ressourçant',                text: 'Nos séminaires se déroulent dans des lieux naturels soigneusement choisis pour leur authenticité — fermes, domaines agricoles, espaces verdoyants.' },
               { icon: 'diversity_3',label: 'Cohésion sur mesure',              text: 'Des activités ludiques et même sportives, pensées sur-mesure pour renforcer les liens, et créer de vrais moments de complicité.' },
-              { icon: 'key',        label: 'Clé en main',                      text: 'Logement, activités, repas, transport... Une logistique invisible pour des expériences inoubliables.' },
+              { icon: 'key',        label: 'Clé en main',                      text: 'Logement, activités, repas, espaces et matériel de réunion, transport... Une logistique invisible pour des expériences inoubliables.' },
             ].map(item => (
               <div
                 key={item.icon}
@@ -1136,7 +1154,7 @@ const Seminaires: React.FC = () => {
         const card = exampleCards.find(c => c.universId === selectedUniversModal.id);
         return (
           <div onClick={closeUniversModal} style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(10,20,10,0.78)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', opacity: isUniversModalClosing ? 0 : 1, transition: 'opacity 0.25s ease' }}>
-            <div onClick={e => e.stopPropagation()} className="bg-white" style={{ borderRadius: 24, maxWidth: 620, width: '100%', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.25)', transform: isUniversModalClosing ? 'translateY(20px) scale(0.97)' : 'translateY(0) scale(1)', transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', maxHeight: '90vh', overflowY: 'auto', border: '1px solid rgba(26,46,26,0.08)' }}>
+            <div onClick={e => e.stopPropagation()} className="bg-white univers-modal-box" style={{ borderRadius: 24, maxWidth: 620, width: '100%', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.25)', transform: isUniversModalClosing ? 'translateY(20px) scale(0.97)' : 'translateY(0) scale(1)', transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', maxHeight: '90vh', overflowY: 'auto', border: '1px solid rgba(26,46,26,0.08)' }}>
               {/* Header avec image univers + producteur — hauteur réduite */}
               <div style={{ position: 'relative', paddingTop: '34%', overflow: 'visible' }}>
                 <img src={card?.image ?? ''} alt={selectedUniversModal.label} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -1149,13 +1167,13 @@ const Seminaires: React.FC = () => {
                   </div>
                 )}
               </div>
-              {/* Contenu — descriptif et programme plus visibles */}
-              <div className="px-6 pb-8" style={{ paddingTop: card?.producerImage ? 76 : 24, background: '#fff' }}>
+              {/* Contenu — remonté pour avoir "Univers" légèrement sous la photo */}
+              <div className="px-6 pb-8" style={{ marginTop: -28, paddingTop: card?.producerImage ? 72 : 14, background: '#fff' }}>
                 <div className="flex items-center gap-2 mb-3">
                   <div style={{ width: 20, height: 1, background: '#e67e22' }} />
                   <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Univers</span>
                 </div>
-                <h3 className="font-display italic font-bold text-primary leading-tight mb-1" style={{ fontSize: 'clamp(22px,4vw,28px)' }}>{exampleCards.find(c => c.universId === selectedUniversModal.id)?.title}</h3>
+                <h3 className="font-sans font-bold not-italic text-primary leading-tight mb-1" style={{ fontSize: 'clamp(22px,4vw,28px)', fontFamily: "'Poppins', sans-serif" }}>{exampleCards.find(c => c.universId === selectedUniversModal.id)?.title}</h3>
                 <p style={{ fontSize: 16, color: '#7a7060', lineHeight: 1.75, marginBottom: 26 }}>{selectedUniversModal.description}</p>
                 <div style={{ marginBottom: 28 }}>
                   <span style={{ display: 'block', fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', color: '#b8ad9e', textTransform: 'uppercase', marginBottom: 12 }}>Exemple d'activités</span>
@@ -1169,7 +1187,7 @@ const Seminaires: React.FC = () => {
                 </div>
                 <div className="flex flex-col gap-3 items-center">
                   <button
-                    onClick={() => { closeUniversModal(); openModal(); }}
+                    onClick={() => { closeUniversModal(); openModal(selectedUniversModal?.id); }}
                     className="py-4 rounded-full font-bold uppercase transition-colors duration-300"
                     style={{ width: '92%', maxWidth: 380, background: '#1a2e1a', color: '#fff', border: 'none', fontSize: 10, letterSpacing: '0.15em', cursor: 'pointer' }}
                     onMouseEnter={e => { e.currentTarget.style.background = '#e67e22'; }}
@@ -1178,7 +1196,7 @@ const Seminaires: React.FC = () => {
                     Demander un devis pour cet univers →
                   </button>
                   <button
-                    onClick={() => { closeUniversModal(); navigate('/entreprises/offres'); }}
+                    onClick={() => { closeUniversModal(); navigate(`/entreprises/offres${selectedUniversModal?.id ? `?univers=${selectedUniversModal.id}` : ''}`); }}
                     className="py-3.5 rounded-full font-bold uppercase transition-all duration-300"
                     style={{ width: '92%', maxWidth: 380, background: 'transparent', color: '#e67e22', border: '1.5px solid rgba(230,126,34,0.4)', cursor: 'pointer', fontSize: 10, letterSpacing: '0.15em' }}
                     onMouseEnter={e => { e.currentTarget.style.background = '#e67e22'; e.currentTarget.style.color = '#fff'; }}

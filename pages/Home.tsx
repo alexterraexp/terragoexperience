@@ -8,7 +8,7 @@ import ScrollAnimate from '../components/ScrollAnimate';
 const ProducerStack: React.FC = () => {
   const producers = [
     { name: 'Jean-François', job: 'Cognac & Pineau', image: '/images/producteurs/cognacJF.png' },
-    { name: 'Paolo', job: 'Olives - Lavande - Fruitiers', image: '/images/producteurs/olivepaolo.png' },
+    { name: 'Paolo', job: 'Olives - Lavande - Fruitiers', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO1.jpg' },
     { name: 'Sabine & Marie-Lise', job: 'Noix - Lavande - Olives', image: '/images/producteurs/noixsabinemarie.jpeg' },
     { name: 'Marie-Sophie & Thomas', job: 'Vins du Ventoux', image: '/images/producteurs/vincombeaumas.png' },
     { name: 'Nathalie & Benjamin', job: 'Noisettes - Amandes - Yuzu', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png' },
@@ -452,7 +452,7 @@ const Home: React.FC = () => {
               </ScrollAnimate>
               <div className="space-y-8">
                 {[
-                  { num: '01', title: 'Des lieux vrais', desc: "Nous sélectionnons chaque producteur pour son authenticité, son engagement et l'unicité de son lieu." },
+                  { num: '01', title: 'Des lieux vrais', desc: "Nous visitons et sélectionnons chaque producteur pour son authenticité, son engagement et l'unicité de son lieu." },
                   { num: '02', title: 'Des histoires partagées', desc: 'Chaque producteur ouvre son lieu, raconte son histoire et transmet ses savoir-faire.' },
                   { num: '03', title: 'Une connexion durable', desc: "Bien plus qu'une visite — une rencontre qui marque et donne envie de revenir." },
                 ].map(item => (

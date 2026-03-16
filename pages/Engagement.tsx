@@ -24,6 +24,7 @@ const VALEURS = [
     title: "L'humain",
     badge: 'NOS PRODUCTEURS',
     color: '#f78d00',
+    image: 'https://images.unsplash.com/photo-1624720114692-037e42acec41?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0',
     text: "Remettre l'humain au centre, valoriser les visages derrière chaque produit, cultiver la rencontre et le partage, pour soutenir des familles, pour faire vivre nos villages, et pour donner du sens à ce que vous vivez.",
   },
   {
@@ -31,6 +32,7 @@ const VALEURS = [
     title: 'Le savoir-faire',
     badge: 'FRANÇAIS',
     color: '#1e291a',
+    image: 'https://images.unsplash.com/photo-1594928357228-3075ba0e4674?q=80&w=1293&auto=format&fit=crop&ixlib=rb-4.1.0',
     text: "Transmettre des gestes ancestraux, préserver des techniques rares, honorer ceux qui consacrent leur vie à l'excellence d'un produit. Le savoir-faire français est un patrimoine vivant — nous le célébrons.",
   },
   {
@@ -38,6 +40,7 @@ const VALEURS = [
     title: 'La nature',
     badge: 'ET VOTRE SANTÉ',
     color: '#5a7a2e',
+    image: 'https://images.unsplash.com/photo-1720420865912-2bbd6bfa1e85?q=80&w=3131&auto=format&fit=crop&ixlib=rb-4.1.0',
     text: "Reconnecter chacun au vivant, aux saisons, aux sols. Comprendre d'où vient ce qu'on mange, respirer autrement, poser les mains sur la terre. La nature n'est pas un décor — c'est notre fondation.",
   },
 ];
@@ -199,23 +202,41 @@ const Engagement: React.FC = () => {
             {VALEURS.map((v, i) => (
               <ScrollAnimate key={v.title} delay={i * 150}>
                 <div
-                  className="group relative rounded-3xl border border-black/8 bg-[#faf8f5] p-8 cursor-pointer transition-all duration-500 hover:shadow-xl hover:-translate-y-1"
+                  className="group relative rounded-3xl border border-black/8 overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-xl hover:-translate-y-1"
                   onClick={() => setActiveValeur(activeValeur === i ? null : i)}
                 >
-                  <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300"
-                    style={{ background: activeValeur === i ? v.color : `${v.color}15`, color: activeValeur === i ? '#fff' : v.color }}
-                  >
-                    <span className="material-symbols-outlined text-2xl">{v.icon}</span>
+                  <div className="absolute inset-0">
+                    <img
+                      src={v.image}
+                      alt={v.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   </div>
-                  <div className="flex items-center gap-3 flex-wrap mb-4">
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#1e291a]">{v.title}</h3>
-                    <span className="flex-shrink-0 px-3 py-1 text-white text-[8px] font-bold tracking-[0.15em] uppercase rounded-full" style={{ background: v.color }}>
-                      {v.badge}
-                    </span>
+                  <div className="relative z-10 h-full flex flex-col justify-end p-8">
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300"
+                      style={{ background: activeValeur === i ? v.color : 'rgba(255,255,255,0.15)', color: activeValeur === i ? '#fff' : '#fff' }}
+                    >
+                      <span className="material-symbols-outlined text-2xl">{v.icon}</span>
+                    </div>
+                    <div className="flex items-center gap-3 flex-wrap mb-2">
+                      <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white drop-shadow-md">{v.title}</h3>
+                      <span
+                        className="flex-shrink-0 px-3 py-1 text-white text-[8px] font-bold tracking-[0.15em] uppercase rounded-full"
+                        style={{ background: v.color }}
+                      >
+                        {v.badge}
+                      </span>
+                    </div>
+                    <p className="text-sm leading-relaxed text-white/0 group-hover:text-white/90 transition-colors duration-300 max-w-xs">
+                      {v.text}
+                    </p>
+                    <div
+                      className="mt-4 h-px w-16 rounded-full opacity-70"
+                      style={{ background: 'rgba(255,255,255,0.7)' }}
+                    />
                   </div>
-                  <p className="text-gray-600 text-sm leading-relaxed">{v.text}</p>
-                  <div className="absolute bottom-0 left-8 right-8 h-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: v.color }} />
                 </div>
               </ScrollAnimate>
             ))}
@@ -351,8 +372,8 @@ const Engagement: React.FC = () => {
               <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
               <div className="relative z-10">
                 <h2 className="text-white text-4xl sm:text-5xl font-bold mb-4">
-                  <span className="font-sans not-italic text-2xl sm:text-3xl">Se reconnecter à </span>
-                  <span className="font-display italic text-3xl sm:text-4xl">l'essentiel.</span>
+                  <span className="font-sans not-italic text-3xl sm:text-4xl">Se reconnecter à </span>
+                  <span className="font-display italic text-4xl sm:text-5xl">l'essentiel.</span>
                 </h2>
                 <p className="text-white/70 text-sm mb-10 max-w-xl mx-auto">
                   Parce que la reconnexion commence par une rencontre. Que vous soyez pro ou passionné, écrivons la suite ensemble.

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ReactNode, CSSProperties } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -30,6 +31,18 @@ const PRODUITS = [
   { id: 'huitres',    label: 'Huîtres',  comingSoon: true },
   { id: 'fromage',    label: 'Fromage',  comingSoon: true },
 ];
+
+// Mapping univers (page Séminaires) → filtre + mots-clés pour mettre en avant la bonne offre packagée
+const UNIVERS_TO_PACK: Record<string, { produitId: string; keywords: string[] }> = {
+  cognac:   { produitId: 'spiritueux', keywords: ['cognac', 'pineau'] },
+  olive:    { produitId: 'olives',      keywords: ['olive', 'lavande'] },
+  noix:     { produitId: 'noix',       keywords: ['noix'] },
+  truffe:   { produitId: 'truffes',    keywords: ['truffe'] },
+  fromage:  { produitId: 'fromage',    keywords: ['fromage', 'chèvre', 'chevre'] },
+  vin:      { produitId: 'vins',       keywords: ['vin', 'vign', 'ventoux'] },
+  piment:   { produitId: 'piments',    keywords: ['piment'] },
+  noisette: { produitId: 'noix',       keywords: ['noisette'] },
+};
 
 const FORMATS = [
   { id: '1jour',  label: '1 journée' },
@@ -681,7 +694,14 @@ function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, initial
 
 // ─── Page principale ───────────────────────────────────────────────────────────
 
+function cardSearchableText(s: Seminaire): string {
+  const parts = [s.label, s.producteur, s.region];
+  Object.values(s.formats || {}).forEach((f: Format) => { parts.push(f.titre, f.sous_titre); });
+  return parts.filter(Boolean).join(' ').toLowerCase();
+}
+
 export default function SeminairesPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [seminaires,    setSeminaires]    = useState<Seminaire[]>([]);
   const [loading,       setLoading]       = useState(true);
   const [fetchError,    setFetchError]    = useState<string | null>(null);
@@ -715,6 +735,24 @@ export default function SeminairesPage() {
     }
     fetchData();
   }, []);
+
+  const appliedUniversRef = useRef(false);
+  useEffect(() => {
+    const univers = searchParams.get('univers');
+    if (!univers || seminaires.length === 0 || appliedUniversRef.current) return;
+    const config = UNIVERS_TO_PACK[univers];
+    if (!config || !PRODUITS.some(p => p.id === config.produitId)) return;
+    appliedUniversRef.current = true;
+    setActiveProduit(config.produitId);
+    const filteredByProduit = config.produitId === 'all' ? seminaires : seminaires.filter(s => s.id === config.produitId);
+    const matchIndex = filteredByProduit.findIndex(s =>
+      config.keywords.some(kw => cardSearchableText(s).includes(kw.toLowerCase()))
+    );
+    if (matchIndex >= 0) {
+      setCurrentIndex(matchIndex);
+      setAnimKey(k => k + 1);
+    }
+  }, [seminaires, searchParams]);
 
   const filtered  = activeProduit === 'all' ? seminaires : (seminaires.filter(s => s.id === activeProduit).length ? seminaires.filter(s => s.id === activeProduit) : seminaires);
   const safeIndex = Math.min(currentIndex, Math.max(filtered.length - 1, 0));

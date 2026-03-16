@@ -32,72 +32,37 @@ const FieldBlock: React.FC<{ label: string; required?: boolean; children: React.
   </div>
 );
 
-// ─── Photo cards ───────────────────────────────────────────────────────────────
+// ─── Photo sources ─────────────────────────────────────────────────────────────
 
 const SRCS = [
-  'https://images.unsplash.com/photo-1626029322254-89214dcfa056?q=80&w=600&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1761839258830-81f87b1c6d62?q=80&w=600&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1598722818387-cbdaa0dc58d2?q=80&w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1638012858969-fac36ad2ea32?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/ostreiculteur.png',
+  'https://images.unsplash.com/photo-1678089694013-5a72a8dddab3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   'https://images.unsplash.com/photo-1731156693854-3a9363878240?q=80&w=600&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1761839257287-3030c9300ece?q=80&w=600&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1519411792752-25c2468cccb3?q=80&w=600&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1749628523017-074d9225c215?q=80&w=600&auto=format&fit=crop',
-  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png',
+  'https://images.unsplash.com/photo-1624806992066-5ffcf7ca186b?q=80&w=988&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1760795959671-1f6a4fcc80ba?q=80&w=2075&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/cueillette.png',
+  'https://images.unsplash.com/photo-1686489356497-a44ba8cf997c?q=80&w=2063&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/paysageterroir.png',
-  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png',
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/vigneron.jpg',
+  'https://images.unsplash.com/photo-1593011951342-8426e949371f?q=80&w=976&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 ];
 
-const ANIM_DURATION = 15;
+// 3 colonnes de photos — chaque colonne est décalée verticalement pour déborder haut/bas
+// col 0 : commence haut (déborde en haut)
+// col 1 : décalée vers le bas (déborde en bas)
+// col 2 : commence haut aussi mais déborde différemment
+const COLUMNS: string[][] = [
+  [SRCS[0], SRCS[3], SRCS[10], SRCS[9]],
+  [SRCS[1], SRCS[4], SRCS[7]],
+  [SRCS[2], SRCS[5], SRCS[8], SRCS[6]],
+];
 
-interface PhotoCard {
-  src: string;
-  // Desktop
-  width: number;
-  height: number;
-  top?: string;
-  bottom?: string;
-  left?: string;
-  right?: string;
-  rotate: string;
-  delay: string;
-  // Tablet overrides
-  tabletWidth?: number;
-  tabletHeight?: number;
-  tabletTop?: string;
-  tabletBottom?: string;
-  tabletLeft?: string;
-  tabletRight?: string;
-}
-
-// Desktop : positions originales
-// Tablet  : 3 cartes seulement, positionnées sans chevauchement
-const PHOTOS: PhotoCard[] = [
-  {
-    src: SRCS[0],
-    width: 310, height: 370, top: '15%', left: '6%', rotate: '-4deg', delay: '0s',
-    tabletWidth: 180, tabletHeight: 220, tabletTop: '10%', tabletLeft: '4%',
-  },
-  {
-    src: SRCS[7],
-    width: 365, height: 405, top: '9%', right: '10%', rotate: '3deg', delay: '1s',
-    tabletWidth: 190, tabletHeight: 230, tabletTop: '8%', tabletRight: '4%',
-  },
-  {
-    src: SRCS[5],
-    width: 225, height: 345, top: '59%', left: '4%', rotate: '5deg', delay: '3s',
-    tabletWidth: 165, tabletHeight: 210, tabletTop: '52%', tabletLeft: '4%',
-  },
-  {
-    src: SRCS[9],
-    width: 285, height: 395, bottom: '3%', left: '36%', rotate: '-2deg', delay: '4s',
-    // Masquée sur tablette (trop centrale, crée de l'overlap)
-    tabletWidth: 0, tabletHeight: 0,
-  },
-  {
-    src: SRCS[4],
-    width: 225, height: 315, bottom: '13%', right: '4%', rotate: '7deg', delay: '2s',
-    tabletWidth: 160, tabletHeight: 200, tabletBottom: '10%', tabletRight: '4%',
-  },
+// Heights des photos par colonne pour varier l'aspect
+const COL_HEIGHTS: number[][] = [
+  [260, 220, 200, 240],
+  [300, 210, 260],
+  [230, 280, 220, 200],
 ];
 
 // ─── Main Component ────────────────────────────────────────────────────────────
@@ -105,7 +70,6 @@ const PHOTOS: PhotoCard[] = [
 const RecommendProducer: React.FC = () => {
   const bp = useBreakpoint();
   const isMobile = bp === 'mobile';
-  const isTablet = bp === 'tablet';
 
   const [formData, setFormData] = useState({
     producerName: '',
@@ -121,6 +85,12 @@ const RecommendProducer: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError('');
+
+    if (!formData.producerName.trim() || !formData.yourName.trim() || !formData.yourEmail.trim()) {
+      setSubmitError('Merci de renseigner au minimum votre nom, votre email, et le nom du producteur ou de son exploitation.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     const emailBody = [
@@ -205,59 +175,75 @@ const RecommendProducer: React.FC = () => {
         .rec-i::placeholder { color: #c4bdb4; }
 
         @keyframes recSpin { to { transform: rotate(360deg); } }
-
         @keyframes recPulse {
           0%, 100% { opacity: 1; transform: scale(1); }
           50%       { opacity: 0.5; transform: scale(1.3); }
         }
 
-        @keyframes photoFloat {
-          0%   { opacity: 0; transform: var(--rot) translateY(28px); }
-          10%  { opacity: 1; transform: var(--rot) translateY(0px); }
-          78%  { opacity: 1; transform: var(--rot) translateY(-10px); }
-          92%  { opacity: 0; transform: var(--rot) translateY(-22px); }
-          100% { opacity: 0; transform: var(--rot) translateY(28px); }
+        /* Layout principal */
+        .rec-split {
+          display: grid;
+          grid-template-columns: 1fr 42%;
+          min-height: 100vh;
         }
 
-        .photo-card-desktop {
-          position: absolute;
-          border-radius: 18px;
-          overflow: hidden;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-          opacity: 0;
-          animation: photoFloat ${ANIM_DURATION}s ease-in-out infinite;
+        .rec-left {
+          padding: calc(84px + 4rem) clamp(2rem, 5vw, 4rem) 5rem calc(max(0px, (100vw - 1180px) / 2) + clamp(1.5rem, 4vw, 3rem));
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
-        .photo-card-desktop img {
+
+        /* Colonne photos — sticky pour rester en vue */
+        .rec-right {
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          overflow: hidden;
+        }
+
+        .photo-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 10px;
+          padding: 0 10px;
+          height: 100%;
+          /* On laisse déborder haut et bas avec un translateY négatif sur le container */
+        }
+
+        /* Chaque colonne scrolle à une vitesse différente via translateY */
+        .photo-col {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .photo-col-0 {
+          /* Décalée vers le haut : déborde en haut */
+          transform: translateY(-60px);
+        }
+        .photo-col-1 {
+          /* Décalée vers le bas : déborde en bas */
+          transform: translateY(60px);
+        }
+        .photo-col-2 {
+          /* Décalée intermédiaire */
+          transform: translateY(-20px);
+        }
+
+        .photo-item {
+          border-radius: 14px;
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+        .photo-item img {
           width: 100%;
           height: 100%;
           object-fit: cover;
           display: block;
         }
 
-        .photo-card-mobile {
-          border-radius: 14px;
-          overflow: hidden;
-          box-shadow: 0 8px 28px rgba(0,0,0,0.13);
-          flex-shrink: 0;
-          width: 72vw;
-          max-width: 280px;
-        }
-        .photo-card-mobile img {
-          width: 100%;
-          height: 220px;
-          object-fit: cover;
-          display: block;
-        }
-
-        .rec-split {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          min-height: 100vh;
-        }
-        .rec-left {
-          padding-left: calc(max(0px, (100vw - 1080px) / 2) + clamp(1.5rem, 4vw, 3rem)) !important;
-        }
-
+        /* Mobile */
         .rec-photos-mobile {
           display: none;
         }
@@ -266,8 +252,8 @@ const RecommendProducer: React.FC = () => {
           .rec-split {
             grid-template-columns: 1fr;
           }
-          .rec-right-desktop {
-            display: none !important;
+          .rec-right {
+            display: none;
           }
           .rec-left {
             padding: calc(84px + 3rem) clamp(1.5rem, 4vw, 3rem) 2rem clamp(1.5rem, 4vw, 3rem) !important;
@@ -275,7 +261,7 @@ const RecommendProducer: React.FC = () => {
           .rec-photos-mobile {
             display: flex;
             flex-direction: row;
-            gap: 14px;
+            gap: 12px;
             overflow-x: auto;
             padding: 0 clamp(1.5rem, 4vw, 3rem) 3rem;
             scrollbar-width: none;
@@ -292,16 +278,7 @@ const RecommendProducer: React.FC = () => {
       <div className="rec-split">
 
         {/* ── GAUCHE : FORMULAIRE ── */}
-        <div
-          className="rec-left"
-          style={{
-            background: '#fff',
-            padding: 'calc(84px + 4rem) clamp(2rem, 5vw, 5rem) 5rem 0',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-          }}
-        >
+        <div className="rec-left">
           <div className="flex items-center gap-3 mb-8">
             <div style={{ width: 20, height: 1, background: '#e67e22' }} />
             <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>
@@ -310,13 +287,13 @@ const RecommendProducer: React.FC = () => {
           </div>
 
           <h1 className="font-bold text-primary leading-tight mb-6" style={{ letterSpacing: '-0.01em' }}>
-            <span className="font-sans not-italic" style={{ fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', display: 'block' }}>
-              Recommander
-            </span>
-            <span className="font-display italic" style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)', display: 'block' }}>
-              un producteur
-            </span>
-          </h1>
+  <span className="font-sans not-italic text-5xl" style={{ display: 'block', lineHeight: 1, marginBottom: -6 }}>
+    Recommander
+  </span>
+  <span className="font-display italic text-6xl" style={{ display: 'block', lineHeight: 1.05 }}>
+    un producteur
+  </span>
+</h1>
 
           <div style={{
             display: 'flex', alignItems: 'center', gap: 12,
@@ -364,7 +341,7 @@ const RecommendProducer: React.FC = () => {
                 </div>
               )}
 
-              <FieldBlock label="Nom du producteur ou de l'exploitation">
+              <FieldBlock label="Nom du producteur ou de l'exploitation" required>
                 <input
                   className="rec-i"
                   placeholder="ex: Domaine des Oliviers"
@@ -374,7 +351,7 @@ const RecommendProducer: React.FC = () => {
               </FieldBlock>
 
               <div className="rec-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                <FieldBlock label="Votre nom">
+                <FieldBlock label="Votre nom" required>
                   <input
                     className="rec-i"
                     placeholder="ex: Marie Dupont"
@@ -382,7 +359,7 @@ const RecommendProducer: React.FC = () => {
                     onChange={e => setFormData(d => ({ ...d, yourName: e.target.value }))}
                   />
                 </FieldBlock>
-                <FieldBlock label="Votre email">
+                <FieldBlock label="Votre email" required>
                   <input
                     className="rec-i"
                     type="email"
@@ -452,71 +429,36 @@ const RecommendProducer: React.FC = () => {
           )}
         </div>
 
-        {/* ── DROITE DESKTOP + TABLET : PHOTOS FLOTTANTES ── */}
-        <div
-          className="rec-right-desktop"
-          style={{
-            position: 'sticky',
-            top: 0,
-            height: '100vh',
-            overflow: 'hidden',
-            background: 'transparent',
-          }}
-        >
-          {PHOTOS.map((photo, i) => {
-            // Sur tablette : utiliser les positions tablet, masquer si tabletWidth = 0
-            if (isTablet) {
-              if (!photo.tabletWidth) return null;
-              return (
-                <div
-                  key={i}
-                  className="photo-card-desktop"
-                  style={{
-                    width: photo.tabletWidth,
-                    height: photo.tabletHeight,
-                    top: photo.tabletTop,
-                    bottom: photo.tabletBottom,
-                    left: photo.tabletLeft,
-                    right: photo.tabletRight,
-                    animationDelay: photo.delay,
-                    ['--rot' as string]: `rotate(${photo.rotate})`,
-                  } as React.CSSProperties}
-                >
-                  <img src={photo.src} alt="" />
-                </div>
-              );
-            }
-
-            // Desktop : positions originales
-            return (
+        {/* ── DROITE : GRILLE 3 COLONNES FIXE ── */}
+        <div className="rec-right">
+          <div className="photo-grid">
+            {COLUMNS.map((col, colIdx) => (
               <div
-                key={i}
-                className="photo-card-desktop"
-                style={{
-                  width: photo.width,
-                  height: photo.height,
-                  top: photo.top,
-                  bottom: photo.bottom,
-                  left: photo.left,
-                  right: photo.right,
-                  animationDelay: photo.delay,
-                  ['--rot' as string]: `rotate(${photo.rotate})`,
-                } as React.CSSProperties}
+                key={colIdx}
+                className={`photo-col photo-col-${colIdx}`}
               >
-                <img src={photo.src} alt="" />
+                {col.map((src, imgIdx) => (
+                  <div
+                    key={imgIdx}
+                    className="photo-item"
+                    style={{ height: COL_HEIGHTS[colIdx][imgIdx] }}
+                  >
+                    <img src={src} alt="" loading="lazy" />
+                  </div>
+                ))}
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
 
       </div>
 
-      {/* ── MOBILE UNIQUEMENT : PHOTOS EMPILÉES SOUS LE FORMULAIRE ── */}
+      {/* ── MOBILE UNIQUEMENT : PHOTOS HORIZONTALES ── */}
       {isMobile && (
         <div className="rec-photos-mobile">
-          {PHOTOS.map((photo, i) => (
-            <div key={i} className="photo-card-mobile">
-              <img src={photo.src} alt="" />
+          {SRCS.slice(0, 10).map((src, i) => (
+            <div key={i} style={{ borderRadius: 14, overflow: 'hidden', flexShrink: 0, width: '72vw', maxWidth: 280 }}>
+              <img src={src} alt="" style={{ width: '100%', height: 220, objectFit: 'cover', display: 'block' }} />
             </div>
           ))}
         </div>

@@ -122,7 +122,12 @@ const BenefitItem: React.FC<{ icon: string; title: string; points: string[] }> =
       <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(26,46,26,0.06)', color: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
         <span className="material-symbols-outlined" style={{ fontSize: 16 }}>{icon}</span>
       </div>
-      <h3 style={{ fontSize: 12, fontWeight: 700, color: '#1a2e1a', fontStyle: 'italic', margin: 0 }}>{title}</h3>
+      <h3
+        className="font-sans"
+        style={{ fontSize: 13, fontWeight: 700, color: '#1a2e1a', margin: 0, letterSpacing: '-0.01em' }}
+      >
+        {title}
+      </h3>
     </div>
     <ul style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingLeft: 0, margin: 0, listStyle: 'none' }}>
       {points.map((p, i) => (
@@ -294,14 +299,10 @@ const Host: React.FC = () => {
             </span>
           </div>
 
-          <h1 className="font-bold text-primary leading-tight" style={{ letterSpacing: '-0.01em', marginBottom: 16 }}>
-            <span className="font-sans not-italic" style={{ fontSize: 'clamp(1.6rem, 2.8vw, 2.4rem)', display: 'block' }}>
-              Partagez votre savoir-faire
-            </span>
-            <span className="font-display italic" style={{ fontSize: 'clamp(2rem, 3.2vw, 3rem)', display: 'block' }}>
-              et votre passion.
-            </span>
-          </h1>
+          <h1 className="font-bold text-primary leading-tight mb-6" style={{ letterSpacing: '-0.01em' }}>
+  <span className="font-sans not-italic text-4xl" style={{ lineHeight: 1 }}>Partagez votre passion, </span>
+  <span className="font-display italic text-5xl" style={{ lineHeight: 1.05 }}>et votre savoir-faire.</span>
+</h1>
 
           <p style={{ color: '#9a9080', fontSize: 13, lineHeight: 1.75, marginBottom: 40, maxWidth: 520 }}>
             Rejoignez le réseau Terrago, dédié au tourisme du terroir français. Accueillez du public, transmettez votre passion et votre savoir-faire, en toute liberté.
