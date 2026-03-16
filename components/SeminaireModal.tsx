@@ -367,9 +367,20 @@ Message: ${form.message || 'Aucun'}
           .sg3 { grid-template-columns:1fr!important }
           .sg4 { grid-template-columns:1fr 1fr!important }
           .ssl { display:none!important }
-          .sem-panel { border-radius:20px!important; max-height:98vh!important }
-          .sem-body  { padding:16px 16px 0!important }
-          .sem-footer { padding:12px 16px!important }
+          .sem-wrapper { align-items:flex-start!important; padding:0!important }
+          .sem-panel {
+            border-radius:0!important;
+            max-height:100vh!important;
+            max-height:100dvh!important;
+            height:100vh!important;
+            height:100dvh!important;
+            min-height:0!important;
+          }
+          .sem-header { padding-top:max(20px, env(safe-area-inset-top))!important }
+          .sem-body { padding:16px 16px 0!important; min-height:0!important }
+          .sem-footer {
+            padding:12px 16px max(12px, env(safe-area-inset-bottom))!important;
+          }
         }
       `}</style>
 
@@ -378,20 +389,20 @@ Message: ${form.message || 'Aucun'}
         style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'rgba(10,20,10,0.72)', backdropFilter: 'blur(8px)', opacity: closing ? 0 : 1, transition: 'opacity .28s ease' }}
       />
 
-      <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}>
+      <div className="sem-wrapper" style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}>
         <div
           className="sem-panel"
           onClick={e => e.stopPropagation()}
           style={{
             pointerEvents: 'auto', width: '100%', maxWidth: 780, maxHeight: '94vh',
-            background: '#fff', borderRadius: 28, display: 'flex', flexDirection: 'column', overflow: 'hidden',
+            background: '#fff', borderRadius: 28, display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0,
             boxShadow: '0 8px 48px rgba(0,0,0,0.14), 0 0 0 1px rgba(10,44,52,0.05)',
             animation: `${closing ? 'semOut' : 'semIn'} .32s cubic-bezier(.22,1,.36,1) both`,
             fontFamily: "'Poppins',sans-serif",
           }}
         >
 
-          <div style={{ padding: '20px 28px 0', background: '#fff', flexShrink: 0, borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
+          <div className="sem-header" style={{ padding: '20px 28px 0', background: '#fff', flexShrink: 0, borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 16, height: 1, background: '#e67e22' }} />
@@ -442,7 +453,7 @@ Message: ${form.message || 'Aucun'}
             </div>
           )}
 
-          <div ref={scrollRef} className="sem-sc sem-body" style={{ flex: 1, overflowY: 'auto', padding: '28px 28px 0' }}>
+          <div ref={scrollRef} className="sem-sc sem-body" style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '28px 28px 0' }}>
             <div style={{ opacity: trans ? 0 : 1, transform: trans ? 'translateY(5px)' : 'translateY(0)', transition: 'all .18s ease' }}>
 
               <h3 style={{ fontFamily: "'Poppins',sans-serif", fontStyle: 'italic', fontWeight: 700, fontSize: 22, color: '#1a2e1a', margin: '0 0 22px' }}>

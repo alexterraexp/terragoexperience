@@ -459,20 +459,20 @@ const Header: React.FC = () => {
             </div>
 
             {/* CTA sticky bas — toujours visible en bas du viewport */}
-            <div className="flex-shrink-0 px-5 pb-8 pt-4 border-t border-black/[0.07] bg-[#faf8f5]">
+            <div className="flex-shrink-0 px-5 pb-7 pt-3 border-t border-black/[0.07] bg-[#faf8f5]">
               <Link
                 to="/entreprises?openModal=true"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center justify-center gap-2 w-full
-                  bg-[#1C2318] text-white rounded-2xl py-4
-                  font-sans text-[12px] font-semibold uppercase tracking-[0.2em]
+                className="flex items-center justify-center gap-1.5 w-full
+                  bg-[#1C2318] text-white rounded-lg py-2.5
+                  font-sans text-[10px] font-extrabold uppercase tracking-[0.14em]
                   transition-all duration-200 hover:bg-[#D4751A] active:scale-95"
               >
-                <span className="w-[6px] h-[6px] bg-[#D4751A] rounded-full inline-block flex-shrink-0" />
-                Envoyer mon brief
-                <span className="text-[13px]">→</span>
+                <span className="w-[4px] h-[4px] bg-[#D4751A] rounded-full inline-block flex-shrink-0" />
+                Organiser mon séminaire
+                <span className="text-[10px]">→</span>
               </Link>
-              <p className="text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9ca3af] mt-3">
+              <p className="text-center text-[8px] sm:text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9ca3af] mt-3">
                 Fabriqué avec passion pour nos territoires.
               </p>
             </div>

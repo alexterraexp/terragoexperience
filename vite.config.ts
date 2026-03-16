@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
     return {
       server: {
         port: 3000,
-        host: 'localhost', // Retour à localhost pour éviter les erreurs système avec le réseau
+        host: 'localhost',
         strictPort: true,
       },
       preview: {
