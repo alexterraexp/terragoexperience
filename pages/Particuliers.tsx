@@ -12,7 +12,12 @@ const UNIVERS_OPTIONS = [
   { emoji: '🧀', label: 'Fromage' },
   { emoji: '💐', label: 'Lavande' },
   { emoji: '🌰', label: 'Noix' },
-  { emoji: '✨', label: 'Surprise !' },
+  { emoji: '🐿️', label: 'Noisettes' },
+  { emoji: '🌶️', label: 'Piments' },
+  { emoji: '🦪', label: 'Huîtres' },
+  { emoji: '🐮', label: 'Élevages' },
+  { emoji: '🍋', label: 'Agrumes' },
+  { emoji: '✨', label: 'Surprise' },
 ];
 
 const Particuliers: React.FC = () => {
@@ -46,7 +51,7 @@ const Particuliers: React.FC = () => {
       `Email : ${email || '—'}`,
       `Téléphone : ${portable || '—'}`,
       `Période ou date souhaitée : ${periode || '—'}`,
-      `Produits / univers à découvrir : ${univers.join(', ') || '—'}`,
+      `Produits / univers intéressants : ${univers.join(', ') || '—'}`,
       `Nombre de personnes : ${participants || '—'}`,
       precisions ? `Précisions : ${precisions}` : '',
       '',
@@ -103,19 +108,93 @@ const Particuliers: React.FC = () => {
         }
         .part-i::placeholder { color: #c4bdb4; }
         @keyframes partSpin { to { transform: rotate(360deg); } }
+        @keyframes scrollBounce {
+          0%, 100% { transform: translateY(0); opacity: 0.4; }
+          50% { transform: translateY(6px); opacity: 0.8; }
+        }
+        .scroll-arrow {
+          animation: scrollBounce 2.2s ease-in-out infinite;
+        }
         @media (max-width: 600px) {
           .part-grid-2 { grid-template-columns: 1fr !important; }
         }
       `}</style>
 
-      {/* ── HEADER ── */}
+      {/* ── SECTION 1 : HEADER ── */}
       <section
-        style={{ paddingTop: 'calc(84px + clamp(3rem, 6vw, 5rem))', paddingBottom: 'clamp(4rem, 8vw, 7rem)' }}
-        className="bg-white"
+        style={{
+          paddingTop: 'calc(84px + clamp(8rem, 13vw, 12rem))',
+          paddingBottom: 'clamp(4rem, 8vw, 7rem)',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          position: 'relative', 
+          overflow: 'hidden', 
+        }}
+        className="bg-white w-full"
       >
+      {/* ── Images droite ── */}
+<div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end', gap: 12, transform: 'translateX(12%)' }}>
+
+<div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+  <div style={{ width: 300, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+    <img src="https://images.unsplash.com/photo-1682996055064-599bec77fc62?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+  </div>
+</div>
+
+<div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+  {['https://images.unsplash.com/photo-1767034243078-c6d0dde763d8?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1765966879544-cadc5b2af695?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'].map((src, i) => (
+    <div key={i} style={{ width: 220, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+      <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+    </div>
+  ))}
+</div>
+
+<div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+  {['https://images.unsplash.com/photo-1600265360126-aac005b63361?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1770453572726-f51592710ca6?q=80&w=2669&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1666955546775-f39d76308be7?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'].map((src, i) => (
+    <div key={i} style={{ width: 220, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+      <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+    </div>
+  ))}
+</div>
+</div>
+
+{/* ── Images gauche ── */}
+<div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', gap: 12, transform: 'translateX(-12%)' }}>
+
+<div style={{ display: 'flex', justifyContent: 'flex-start', gap: 12 }}>
+  <div style={{ width: 300, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+    <img src="https://images.unsplash.com/photo-1640957301215-f665baf6ed1d?q=80&w=1289&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+  </div>
+</div>
+
+<div style={{ display: 'flex', justifyContent: 'flex-start', gap: 12 }}>
+  {['https://images.unsplash.com/photo-1656711695100-d6e39ddd6cb5?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1662960501707-1892f9b540f5?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'].map((src, i) => (
+    <div key={i} style={{ width: 220, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+      <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+    </div>
+  ))}
+</div>
+
+<div style={{ display: 'flex', justifyContent: 'flex-start', gap: 12 }}>
+  {['https://images.unsplash.com/photo-1604300721398-3f58fdf81780?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1650964794396-9b9efaccd585?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1610055885401-dba0225da39b?q=80&w=2274&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'].map((src, i) => (
+    <div key={i} style={{ width: 220, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+      <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+    </div>
+  ))}
+</div>
+</div>
+
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
 
-          <div className="flex items-center justify-center gap-3 mb-6">
+          <div className="flex items-center justify-center gap-3 mb-10">
             <div style={{ width: 20, height: 1, background: '#e67e22' }} />
             <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>
               Entre amis
@@ -123,13 +202,12 @@ const Particuliers: React.FC = () => {
             <div style={{ width: 20, height: 1, background: '#e67e22' }} />
           </div>
 
-          {/* Titre original conservé tel quel */}
           <ScrollAnimate delay={100}>
-            <h1 className="font-bold text-primary leading-tight mb-6">
-              <span className="font-sans not-italic text-3xl sm:text-4xl md:text-4xl">
+            <h1 className="font-bold text-primary leading-tight mb-10">
+              <span className="font-sans not-italic text-4xl sm:text-5xl md:text-5xl">
                 Des expériences & séjours uniques - 100% personnalisés,{' '}
               </span>
-              <span className="font-display italic text-4xl sm:text-4xl md:text-5xl">
+              <span className="font-display italic text-5xl sm:text-6xl md:text-6xl">
                 entre amis ou en famille.
               </span>
             </h1>
@@ -138,69 +216,144 @@ const Particuliers: React.FC = () => {
           <p style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.75 }} className="max-w-2xl mx-auto">
             Vous souhaitez vivre des expériences uniques et authentiques au cœur du terroir ? Remplissez le formulaire ci-dessous : nous vous recontacterons pour vous proposer nos premières pépites.
           </p>
+
+        </div>
+
+        {/* Flèche scroll */}
+        <div className="flex justify-center mt-auto pt-16">
+          <button
+            onClick={() => document.getElementById('ce-que-vous-vivrez')?.scrollIntoView({ behavior: 'smooth' })}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8 }}
+            aria-label="Voir la suite"
+            className="scroll-arrow"
+          >
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 10L13 17L20 10" stroke="#1a2e1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
       </section>
 
-      {/* ── CE QUE VOUS VIVREZ ── */}
-      <section style={{ paddingTop: 'clamp(4rem, 8vw, 7rem)', paddingBottom: 'clamp(4rem, 8vw, 7rem)' }} className="bg-beige-bg">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="mb-14">
-            <div className="flex items-center gap-3 mb-6">
-              <div style={{ width: 20, height: 1, background: '#e67e22' }} />
-              <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>
-                Ce que vous vivrez
-              </span>
+      {/* ── SECTION 2 : CE QUE VOUS VIVREZ ── */}
+      <section
+  id="ce-que-vous-vivrez"
+  style={{
+    paddingTop: 'calc(84px + clamp(8rem, 13vw, 12rem))',
+    paddingBottom: 'clamp(4rem, 8vw, 7rem)',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  }}
+  className="bg-beige-bg w-full"
+>
+  <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
+    <div className="mb-16">
+      <div className="flex items-center gap-3 mb-10">
+        <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+        <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>
+          Ce que vous vivrez
+        </span>
+      </div>
+      <ScrollAnimate delay={150}>
+        <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
+          <span className="font-sans text-4xl sm:text-5xl">Chaque séjour</span>
+          <span className="font-display italic text-5xl sm:text-6xl lg:text-6xl"> vous garantit</span>
+        </h2>
+      </ScrollAnimate>
+    </div>
+  </div>
+
+  {/* Cards full width, sortent des marges */}
+  <div className="w-full px-6 sm:px-8 lg:px-12">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-screen-2xl mx-auto">
+      {[
+        { icon: 'nature_people', label: 'Rencontres authentiques', text: 'Partez à la rencontre de producteurs passionnés qui vous ouvrent les portes de leur monde avec sincérité.', image: 'https://images.unsplash.com/photo-1624720114692-037e42acec41?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+        { icon: 'eco', label: 'Les mains dans la terre', text: 'Récolter, fabriquer, goûter… Des activités vraies, au rythme des saisons et des savoir-faire locaux.', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/VERGERS.jpg' },
+        { icon: 'restaurant', label: 'Repas du terroir', text: 'Des repas pensés autour des producteurs locaux. Chaque assiette raconte une histoire.', image: 'https://images.unsplash.com/photo-1646781652500-40015cee4917?q=80&w=2673&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+        { icon: 'key', label: 'Clé en main', text: 'Logement, activités, repas, transport… Une logistique invisible pour une expérience inoubliable.', image: 'https://images.unsplash.com/photo-1501555088652-021faa106b9b?q=80&w=2673&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+      ].map(item => (
+        <div
+          key={item.icon}
+          className="group relative flex flex-col justify-end overflow-hidden rounded-[20px] cursor-pointer transition-all duration-300 min-h-[280px] sm:min-h-[320px]"
+          style={{ border: '1px solid rgba(26,46,26,0.07)' }}
+        >
+          {/* Image de fond Unsplash */}
+          <img
+            src={item.image}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          {/* Gradient léger en bas pour lisible titre par défaut */}
+          <div
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+            style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.4) 40%, transparent)' }}
+          />
+          <div
+            className="absolute inset-0 pointer-events-none z-0"
+            style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)' }}
+          />
+          {/* Contenu par défaut : logo + titre — disparaît au survol (passe derrière) */}
+          <div className="relative z-10 flex flex-col items-center text-center p-6 pb-8 opacity-100 transition-opacity duration-300 group-hover:opacity-0 group-hover:z-0 pointer-events-none">
+            <div
+              className="w-12 h-12 rounded-full flex items-center justify-center mb-4 flex-shrink-0 shadow-lg"
+              style={{ background: 'rgba(255,255,255,0.95)', color: '#1a2e1a' }}
+            >
+              <span className="material-symbols-outlined text-2xl">{item.icon}</span>
             </div>
-            <ScrollAnimate delay={150}>
-              <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-                <span className="font-sans text-3xl sm:text-4xl">Chaque séjour</span>
-                <span className="font-display italic text-4xl sm:text-4xl lg:text-5xl"> vous garantit.</span>
-              </h2>
-            </ScrollAnimate>
+            <h3 className="font-sans font-bold text-white drop-shadow-md" style={{ fontSize: 16 }}>
+              {item.label}
+            </h3>
           </div>
+          {/* Overlay au survol : filtre sombre + descriptif en blanc */}
+          <div
+            className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
+            style={{ background: 'rgba(0,0,0,0.65)' }}
+          >
+            <div
+              className="w-12 h-12 rounded-full flex items-center justify-center mb-4 flex-shrink-0"
+              style={{ background: 'rgba(255,255,255,0.2)', color: '#fff' }}
+            >
+              <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+            </div>
+            <h3 className="font-sans font-bold text-white mb-3" style={{ fontSize: 16 }}>
+              {item.label}
+            </h3>
+            <p className="text-white text-sm leading-relaxed max-w-[260px]" style={{ lineHeight: 1.7 }}>
+              {item.text}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { icon: 'nature_people', label: 'Rencontres authentiques', text: 'Partez à la rencontre de producteurs passionnés qui vous ouvrent les portes de leur monde avec sincérité.' },
-              { icon: 'eco', label: 'Les mains dans la terre', text: 'Récolter, fabriquer, goûter… Des activités vraies, au rythme des saisons et des savoir-faire locaux.' },
-              { icon: 'restaurant', label: 'Repas du terroir', text: 'Des repas pensés autour des producteurs locaux. Chaque assiette raconte une histoire.' },
-              { icon: 'key', label: 'Clé en main', text: 'Logement, activités, repas, transport… Une logistique invisible pour une expérience inoubliable.' },
-            ].map(item => (
-              <div
-                key={item.icon}
-                className="group flex items-start gap-5 transition-all duration-300 cursor-pointer"
-                style={{ background: '#fff', border: '1px solid rgba(26,46,26,0.07)', borderRadius: '20px', padding: '28px 24px' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.18)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.07)'; }}
-              >
-                <div
-                  className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-                  style={{ background: 'rgba(26,46,26,0.06)', color: '#1a2e1a' }}
-                >
-                  <span className="material-symbols-outlined text-xl">{item.icon}</span>
-                </div>
-                <div>
-                  <h3 className="font-sans font-bold text-primary mb-1.5 group-hover:text-orange transition-colors" style={{ fontSize: 13 }}>
-                    {item.label}
-                  </h3>
-                  <p style={{ color: '#7a7060', fontSize: 13, lineHeight: 1.7 }}>{item.text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Flèche scroll vers formulaire */}
+        <div className="flex justify-center mt-auto pt-16">
+          <button
+            onClick={() => document.getElementById('projet')?.scrollIntoView({ behavior: 'smooth' })}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8 }}
+            aria-label="Voir le formulaire"
+            className="scroll-arrow"
+          >
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 10L13 17L20 10" stroke="#1a2e1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
       </section>
 
-      {/* ── FORMULAIRE ── */}
+      {/* ── SECTION 3 : FORMULAIRE ── */}
       <section
         id="projet"
         style={{ paddingTop: 'clamp(4rem, 8vw, 7rem)', paddingBottom: 'clamp(4rem, 8vw, 7rem)' }}
         className="bg-white scroll-mt-24"
       >
+        
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
 
           <div className="mb-14 text-center">
-            <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="flex items-center justify-center gap-3 mb-10">
               <div style={{ width: 20, height: 1, background: '#e67e22' }} />
               <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>
                 Votre projet
@@ -209,11 +362,11 @@ const Particuliers: React.FC = () => {
             </div>
             <ScrollAnimate delay={150}>
               <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-                <span className="font-sans text-3xl sm:text-4xl">Parlons de</span>
-                <span className="font-display italic text-3xl sm:text-4xl lg:text-5xl"> votre séjour.</span>
+                <span className="font-sans text-4xl sm:text-4xl">Parlons de</span>
+                <span className="font-display italic text-5xl sm:text-5xl lg:text-5xl"> votre séjour.</span>
               </h2>
             </ScrollAnimate>
-            <p className="mt-4" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.75 }}>
+            <p className="mt-6" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.75 }}>
               Un message suffit — nous construisons le reste avec vous.
             </p>
           </div>
@@ -278,7 +431,7 @@ const Particuliers: React.FC = () => {
                     Nombre de personnes
                   </label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {['2 – 4', '5 – 8', '9 – 15', '16 – 25', '25+'].map(opt => {
+                    {['5-8', '9 – 15', '15 – 25', '25+'].map(opt => {
                       const active = participants === opt;
                       return (
                         <button
@@ -307,7 +460,7 @@ const Particuliers: React.FC = () => {
                 {/* Univers pills */}
                 <div style={{ marginBottom: 14 }}>
                   <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', display: 'block', marginBottom: 10 }}>
-                    Produits / univers à découvrir
+                    Produits / univers intéressants
                   </label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {UNIVERS_OPTIONS.map(opt => {
@@ -387,7 +540,7 @@ const Particuliers: React.FC = () => {
         </div>
       </section>
 
-      {/* ── FOOTER LINK ── */}
+      {/* ── SECTION 4 : FOOTER LINK ── */}
       <section style={{ paddingTop: 'clamp(3rem, 6vw, 5rem)', paddingBottom: 'clamp(3rem, 6vw, 5rem)' }} className="bg-beige-bg">
         <div className="max-w-2xl mx-auto px-6 text-center">
           <p style={{ color: '#b0a89e', fontSize: 13, marginBottom: 20 }}>

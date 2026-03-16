@@ -44,11 +44,12 @@ const ProducerStack: React.FC = () => {
 
   return (
     <div
-      className="relative flex items-center justify-center"
+      className="relative flex items-center justify-center w-full"
       style={{ height: '560px' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
+      <div className="relative w-[360px] mx-auto lg:w-full lg:mx-0" style={{ height: '560px' }}>
       <style>{`
         @keyframes sendToBack {
   0%   { transform: translateX(0px)  translateY(0px)  rotate(0deg)  scale(1);    opacity: 1; z-index: 20; }
@@ -65,6 +66,9 @@ const ProducerStack: React.FC = () => {
           0%, 100% { opacity: 0.2; transform: scaleY(0.8); transform-origin: top; }
           50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
         }
+        @media (max-width: 1023px) {
+          .producer-card-hidden-mobile { opacity: 0; visibility: hidden; pointer-events: none; z-index: 0; }
+        }
       `}</style>
 
       {producers.map((person, i) => {
@@ -80,10 +84,11 @@ const ProducerStack: React.FC = () => {
           ? 'translateX(0px) translateY(0px) rotate(0deg) scale(1)'
           : `translateX(${behind * 18}px) translateY(${behind * -4}px) rotate(${behind * 6}deg) scale(${1 - behind * 0.04})`;
 
+        const hiddenOnMobile = behind > 0 && !isExiting && !isPromoting;
         return (
           <div
             key={person.name}
-            className={isExiting ? 'card-send-back' : isPromoting ? 'card-come-fwd' : ''}
+            className={`${isExiting ? 'card-send-back' : isPromoting ? 'card-come-fwd' : ''} ${hiddenOnMobile ? 'producer-card-hidden-mobile' : ''}`}
             style={{
               position: 'absolute',
               width: '360px',
@@ -149,7 +154,7 @@ const ProducerStack: React.FC = () => {
         );
       })}
 
-      <div style={{ position: 'absolute', bottom: 0, display: 'flex', gap: 6, zIndex: 30 }}>
+      <div style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6, zIndex: 30 }}>
         {producers.map((_, i) => (
           <button
             key={i}
@@ -163,6 +168,7 @@ const ProducerStack: React.FC = () => {
             }}
           />
         ))}
+      </div>
       </div>
     </div>
   );
@@ -210,7 +216,7 @@ const Home: React.FC = () => {
 
       {/* ── HERO ── */}
       <section className="relative w-full">
-        <div className="relative min-h-[85vh] sm:min-h-[90vh] lg:min-h-screen w-full overflow-hidden flex items-center justify-center group">
+        <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center group">
           <div
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[14s] group-hover:scale-[1.03]"
             style={{ backgroundImage: 'url("https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/olivierspaysage.jpg")' }}
@@ -226,7 +232,7 @@ const Home: React.FC = () => {
               <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
             </div>
 
-            <h1 className="text-white font-bold leading-[1.08] mb-8 drop-shadow-lg">
+            <h1 className="text-white font-bold leading-[1.08] mb-20 drop-shadow-xl">
               <span className="sm:hidden block text-[2rem] font-sans tracking-tight">
                 Partez à la rencontre de nos{" "}
                 <span style={{ borderBottom: '2px solid rgba(230,126,34,0.9)', paddingBottom: '2px' }} className="inline-block">
@@ -255,25 +261,42 @@ const Home: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
               <Link
                 to="/entreprises"
-                className="text-white border border-white/35 hover:border-white/70 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/10 rounded-full"
+                className="text-white border border-white/100 hover:border-white/70 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/10 rounded-full"
               >
                 Séminaires d'entreprise
               </Link>
               <Link
                 to="/particuliers"
                 className="text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 px-4 py-3"
-                style={{ color: 'rgba(255,255,255,0.45)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.80)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
+                style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'rgb(255, 255, 255)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)')}
               >
                 Séjours entre amis →
               </Link>
             </div>
           </div>
 
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-30">
-            <div style={{ width: 1, height: 44, background: 'white', animation: 'scrollPulse 2.2s ease-in-out infinite' }} />
+          {/* Flèche scroll (comme page Séjours entre amis) */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
+            <button
+              onClick={() => document.getElementById('notre-vision')?.scrollIntoView({ behavior: 'smooth' })}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8 }}
+              aria-label="Voir la suite"
+              className="scroll-arrow-home"
+            >
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 10L13 17L20 10" stroke="rgba(255,255,255,0.9)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
           </div>
+          <style>{`
+            @keyframes scrollBounceHome {
+              0%, 100% { transform: translateY(0); opacity: 0.5; }
+              50% { transform: translateY(6px); opacity: 1; }
+            }
+            .scroll-arrow-home { animation: scrollBounceHome 2.2s ease-in-out infinite; }
+          `}</style>
         </div>
       </section>
 
@@ -305,8 +328,8 @@ const Home: React.FC = () => {
               </div>
               <ScrollAnimate delay={100}>
                 <h2 className="font-bold text-primary leading-[1.06] mb-7" style={{ letterSpacing: '-0.01em' }}>
-                  <span className="block font-sans text-3xl sm:text-4xl">Une envie simple :</span>
-                  <span className="block font-display italic text-3xl sm:text-4xl lg:text-5xl">vivre le terroir pour de vrai.</span>
+                  <span className=" font-sans text-4xl sm:text-5xl">Une envie simple :</span>
+                  <span className=" font-display italic text-5xl sm:text-5xl lg:text-6xl"> vivre le terroir pour de vrai.</span>
                 </h2>
               </ScrollAnimate>
               <div className="space-y-4" style={{ color: '#7a7060', fontSize: 15, lineHeight: 1.75 }}>
@@ -321,7 +344,7 @@ const Home: React.FC = () => {
                 onMouseEnter={e => { e.currentTarget.style.color = '#e67e22'; e.currentTarget.style.borderBottomColor = '#e67e22'; }}
                 onMouseLeave={e => { e.currentTarget.style.color = '#1a2e1a'; e.currentTarget.style.borderBottomColor = '#1a2e1a'; }}
               >
-                Découvrir nos expériences →
+                Découvrir nos séminaires d'entreprise →
               </Link>
             </div>
           </div>
@@ -339,8 +362,8 @@ const Home: React.FC = () => {
             </div>
             <ScrollAnimate delay={100}>
               <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-                <span className="block font-sans text-3xl sm:text-4xl">Des formats pour tous</span>
-                <span className="block font-display italic text-3xl sm:text-4xl lg:text-5xl">les moments de vie</span>
+                <span className=" font-sans text-4xl sm:text-5xl">Des formats pour tous</span>
+                <span className=" font-display italic text-5xl sm:text-5xl lg:text-6xl"> les moments de vie</span>
               </h2>
             </ScrollAnimate>
             <p className="mt-4 max-w-md" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
@@ -364,7 +387,7 @@ const Home: React.FC = () => {
             {[
               { label: 'Séjours en groupe', sub: 'Entre amis, en famille', img: 'https://images.unsplash.com/photo-1683772769298-b77177c029d8?q=80&w=800&auto=format&fit=crop' },
               { label: 'Aventures des terroirs', sub: 'Multi-destinations', img: 'https://images.unsplash.com/photo-1710330336476-d6027e6035cd?q=80&w=800&auto=format&fit=crop' },
-              { label: 'Immersions à la journée', sub: 'Découvertes express', img: 'https://images.unsplash.com/photo-1752606303023-e5b288710422?q=80&w=800&auto=format&fit=crop' },
+              { label: 'Immersions à la journée', sub: 'Découvertes express', img: 'https://images.unsplash.com/photo-1753703986564-a2aa6e7c2a05?q=80&w=985&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
             ].map((item) => (
               <div key={item.label} className="relative bg-white overflow-hidden flex flex-col" style={{ borderRadius: '20px', boxShadow: '0 2px 16px rgba(0,0,0,0.06)', opacity: 0.72 }}>
                 <span className="absolute top-3 right-3 z-10 text-white text-[8px] font-bold uppercase tracking-wider px-3 py-1.5" style={{ background: '#e67e22', borderRadius: '9999px' }}>Bientôt</span>
@@ -388,8 +411,8 @@ const Home: React.FC = () => {
             </div>
             <ScrollAnimate delay={100}>
               <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-                <span className="block font-sans text-3xl sm:text-4xl">Des expériences dans tous</span>
-                <span className="block font-display italic text-3xl sm:text-4xl lg:text-5xl">les univers du terroir</span>
+                <span className=" font-sans text-4xl sm:text-5xl">Des expériences dans tous</span>
+                <span className=" font-display italic text-5xl sm:text-5xl lg:text-6xl"> les univers du terroir</span>
               </h2>
             </ScrollAnimate>
             <p className="mt-4 max-w-xl" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
@@ -423,8 +446,8 @@ const Home: React.FC = () => {
               </div>
               <ScrollAnimate delay={100}>
                 <h2 className="font-bold text-primary leading-[1.06] mb-10" style={{ letterSpacing: '-0.01em' }}>
-                  <span className="block font-sans text-3xl sm:text-4xl">Chaque expérience est</span>
-                  <span className="block font-display italic text-3xl sm:text-4xl lg:text-5xl">portée par un humain.</span>
+                  <span className=" font-sans text-4xl sm:text-5xl">Chaque expérience est</span>
+                  <span className=" font-display italic text-5xl sm:text-5xl lg:text-6xl"> portée par un humain.</span>
                 </h2>
               </ScrollAnimate>
               <div className="space-y-8">
@@ -451,41 +474,26 @@ const Home: React.FC = () => {
       {/* ── ENGAGEMENT ── */}
       <section className="relative overflow-hidden" style={{ backgroundColor: '#0d1a0d', paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="engagement">
         <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            <div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+            {/* Texte (mobile: en premier | desktop: col 1) */}
+            <div className="order-1 lg:order-1">
               <div className="flex items-center gap-3 mb-7">
                 <div style={{ width: 20, height: 1, background: '#e67e22' }} />
                 <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Engagement</span>
               </div>
               <ScrollAnimate delay={100}>
                 <h2 className="font-bold text-white leading-[1.06] mb-6" style={{ letterSpacing: '-0.01em' }}>
-                  <span className="block font-sans text-4xl md:text-5xl">Un engagement</span>
-                  <span className="block font-display italic text-4xl md:text-5xl lg:text-6xl">simple et concret.</span>
+                  <span className=" font-sans text-4xl md:text-5xl">Un engagement</span>
+                  <span className=" font-display italic text-5xl md:text-5xl lg:text-6xl"> simple et concret.</span>
                 </h2>
               </ScrollAnimate>
-              <p className="mb-10 max-w-md" style={{ color: 'rgba(255,255,255,0.40)', fontSize: 14, lineHeight: 1.75 }}>
+              <p className="mb-10 max-w-md lg:mb-0" style={{ color: 'rgba(255,255,255,0.40)', fontSize: 14, lineHeight: 1.75 }}>
                 Chez Terrago, chaque décision est prise en pensant à ceux qui font le terroir et à ceux qui viennent le découvrir.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/entreprises"
-                  className="text-white border border-white/25 hover:border-white/60 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/5 rounded-full text-center"
-                >
-                  Nos séminaires
-                </Link>
-                <Link
-                  to="/particuliers"
-                  className="text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 px-4 py-3 text-center"
-                  style={{ color: 'rgba(255,255,255,0.30)' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.65)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.30)')}
-                >
-                  Séjours entre amis →
-                </Link>
-              </div>
             </div>
 
-            <div className="space-y-3">
+            {/* 3 cards (mobile: au milieu | desktop: col 2) */}
+            <div className="order-2 lg:row-span-2 space-y-3">
               {[
                 { num: '01', title: 'Producteurs engagés', desc: 'Des producteurs de différents univers, tous engagés pour produire bien et bon.' },
                 { num: '02', title: 'Rémunération juste', desc: 'Nos séjours représentent un vrai coup de pouce financier pour les producteurs qui nous accueillent.' },
@@ -511,13 +519,32 @@ const Home: React.FC = () => {
                 </div>
               ))}
             </div>
+
+            {/* Boutons (mobile: en bas | desktop: col 1 sous le texte) */}
+            <div className="order-3 flex flex-col sm:flex-row gap-4">
+              <Link
+                to="/entreprises"
+                className="text-white border border-white/25 hover:border-white/60 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/5 rounded-full text-center"
+              >
+                Nos séminaires
+              </Link>
+              <Link
+                to="/particuliers"
+                className="text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 px-4 py-3 text-center"
+                style={{ color: 'rgba(255,255,255,0.30)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.65)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.30)')}
+              >
+                Séjours entre amis →
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── NEWSLETTER ── */}
       <section className="bg-beige-bg relative overflow-hidden" style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }}>
-        <div className="max-w-xl mx-auto px-6 sm:px-8 relative z-10 text-center">
+        <div className="max-w-4xl mx-auto px-2 sm:px-4 relative z-10 text-center">
           <div className="flex items-center justify-center gap-3 mb-8">
             <div style={{ width: 20, height: 1, background: '#e67e22' }} />
             <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Newsletter</span>
@@ -525,8 +552,8 @@ const Home: React.FC = () => {
           </div>
 
           <h2 className="font-bold text-primary leading-[1.06] mb-4" style={{ letterSpacing: '-0.01em' }}>
-            <span className="block font-sans text-2xl sm:text-3xl">Restez au cœur</span>
-            <span className="block font-display italic text-3xl sm:text-4xl">du terroir.</span>
+            <span className=" font-sans text-3xl sm:text-4xl">Restez informé de</span>
+            <span className=" font-display italic text-[2.65rem] sm:text-[3rem]"> notre évolution.</span>
           </h2>
           <p className="mb-10" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
             Laissez-nous votre email, et nous vous enverrons les nouvelles de Terrago.

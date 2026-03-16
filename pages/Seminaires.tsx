@@ -5,11 +5,11 @@ import ScrollAnimate from '../components/ScrollAnimate';
 // ─── Hero images ──────────────────────────────────────────────────────────────
 
 const heroImages = [
-  'https://images.unsplash.com/photo-1556159991-b4876ad5ef9b?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1646781652500-40015cee4917?q=80&w=2673&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   'https://images.unsplash.com/photo-1761839259494-71caddcdd6b3?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1504224357642-c87eacea1da4?q=80&w=1750&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1622647713877-62a390a414aa?q=80&w=2675&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   'https://images.unsplash.com/photo-1586973831237-7d8dd03a996f?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1633509928027-f1c3b5dc1f92?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1605673348944-faca4794801b?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 ];
 
 // ─── Page types & data ────────────────────────────────────────────────────────
@@ -20,16 +20,18 @@ type UniversData = {
 };
 
 const UNIVERS_DATA: Record<string, UniversData> = {
-  cognac:  { id: 'cognac',  label: 'AUTOUR DU COGNAC',             badge: "COGNAC • 40 MIN D'ANGOULÊME TGV",       description: "Des vignes aux alambics de cuivre, vivez la magie de la double distillation dans les chais centenaires de la Charente.", activites: ['Participation aux vendanges', 'Fabrication de son propre pineau', 'Visite des chais et alambics', 'Golf entre les vignes'], saison: "Toute l'année", couleur: 'rgb(92,42,9)' },
-  olive:   { id: 'olive',   label: "AUTOUR DE L'OLIVE",            badge: "VALENSOLE • 45 MIN D'AIX EN PROVENCE TGV", description: "Sous les oliviers centenaires de Provence, découvrez comment naît une huile d'exception, entre lavande et soleil.", activites: ['Apprentissage et récolte des olives', 'Fabrication de son huile', 'Récolte de lavandes fines', "Distillation de son parfum d'ambiance"], saison: 'Octobre – Décembre', couleur: 'rgb(72,107,9)' },
-  noix:    { id: 'noix',    label: "AUTOUR DE LA NOIX",            badge: "Romans-sur-Isère • 15 MIN De VALENCE TGV", description: "Parmi les noyers centenaires, apprenez la récolte et la fabrication d'une huile de noix artisanale d'une finesse rare.", activites: ['Apprentissage et récolte des noix', 'Fabrication de son huile/vin de noix', 'Session Trail dans un cadre magnifique'], saison: 'Septembre – Novembre', couleur: 'rgb(161,68,7)' },
-  truffe:  { id: 'truffe',  label: "AUTOUR DE LA TRUFFE",          badge: "CHINON • 1H DE TOURS TGV",               description: "Partez à la découverte du champignon le plus mystérieux de France avec un trufficulteur passionné au cœur du Périgord.", activites: ['Cavage et découverte de la truffe', 'Atelier cuisine autour de la truffe', 'Ferme florale et potager', 'Dégustation de produits truffés'], saison: 'Décembre – Mars', couleur: 'rgb(104,102,42)' },
-  fromage: { id: 'fromage', label: "AUTOUR DU FROMAGE DE CHÈVRE",  badge: "1H D'AIX-EN-PROVENCE TGV",               description: "Vivez une journée complète dans une ferme caprine : soins aux bêtes, fabrication du fromage et dégustation en plein air.", activites: ['Soins aux chèvres', 'Fabrication du fromage', 'Dégustation à la ferme', 'Visite de cave'], saison: "Toute l'année", couleur: 'rgb(177,146,7)' },
-  vin:     { id: 'vin',     label: "AUTOUR DU VIN AOC VENTOUX",    badge: "Bédoin • 1H D'AVIGNON TGV",              description: "Les mains dans la terre, entre vignes et ciel provençal, vivez l'aventure viticole au pied du Mont Ventoux.", activites: ['Les mains dans la terre', 'Activité autour de la vigne', 'Soirée soleil et guinguette', 'Excursion vélo au Mont Ventoux'], saison: 'Avril – Octobre', couleur: 'rgb(106,13,13)' },
+  cognac:   { id: 'cognac',   label: 'AUTOUR DU COGNAC',            badge: "COGNAC • 40 MIN D'ANGOULÊME TGV",       description: "Des vignes aux alambics de cuivre, vivez la magie de la double distillation dans les chais centenaires de la Charente.", activites: ['Participation aux vendanges', 'Fabrication de son propre pineau', 'Visite des chais et alambics', 'Golf entre les vignes'], saison: "Toute l'année", couleur: 'rgb(92,42,9)' },
+  olive:    { id: 'olive',    label: "AUTOUR DE L'OLIVE",           badge: "VALENSOLE • 45 MIN D'AIX EN PROVENCE TGV", description: "Sous les oliviers centenaires de Provence, découvrez comment naît une huile d'exception, entre lavande et soleil.", activites: ['Apprentissage et récolte des olives', 'Fabrication de son huile', 'Récolte de lavandes fines', "Distillation de son parfum d'ambiance"], saison: 'Octobre – Décembre', couleur: 'rgb(72,107,9)' },
+  noix:     { id: 'noix',     label: "AUTOUR DE LA NOIX",           badge: "Romans-sur-Isère • 15 MIN De VALENCE TGV", description: "Parmi les noyers centenaires, apprenez la récolte et la fabrication d'une huile de noix artisanale d'une finesse rare.", activites: ['Apprentissage et récolte des noix', 'Fabrication de son huile/vin de noix', 'Repas typique en pleine nature', 'Session Trail dans un cadre magnifique'], saison: 'Septembre – Novembre', couleur: 'rgb(161,68,7)' },
+  truffe:   { id: 'truffe',   label: "AUTOUR DE LA TRUFFE",         badge: "CHINON • 1H DE TOURS TGV",               description: "Partez à la découverte du champignon le plus mystérieux de France avec un trufficulteur passionné au cœur du Périgord.", activites: ['Cavage et découverte de la truffe', 'Atelier cuisine autour de la truffe', 'Ferme florale et potager', 'Dégustation de produits truffés'], saison: 'Décembre – Mars', couleur: 'rgb(104,102,42)' },
+  fromage:  { id: 'fromage',  label: "AUTOUR DU FROMAGE DE CHÈVRE", badge: "1H D'AIX-EN-PROVENCE TGV",               description: "Vivez une journée complète dans une ferme caprine : soins aux bêtes, fabrication de son propre fromage et dégustation en plein air.", activites: ['Soins aux chèvres', 'Fabrication du fromage', 'Dégustation à la ferme', 'Visite de cave'], saison: "Toute l'année", couleur: 'rgb(177,146,7)' },
+  vin:      { id: 'vin',      label: "AUTOUR DU VIN AOC VENTOUX",   badge: "Bédoin • 1H D'AVIGNON TGV",              description: "Les mains dans la terre, entre vignes et ciel provençal, vivez l'aventure viticole au pied du Mont Ventoux.", activites: ['Les mains dans la terre', 'Activité autour de la vigne', 'Soirée soleil et guinguette', 'Excursion vélo au Mont Ventoux'], saison: 'Avril – Octobre', couleur: 'rgb(106,13,13)' },
+  piment:   { id: 'piment',   label: "AUTOUR DU PIMENT",            badge: "Souraïde • 25 MIN DE BAYONNE TGV",      description: "Dans les terres basques, découvrez le cycle complet du piment d'Espelette : de la cueillette à la fabrication de votre propre poudre et confiture de piment.", activites: ['Récolte des piments rouges', 'Fabrication de sa propre poudre de piment', 'Atelier confiture & conserves', 'Initiation à la pelote basque'], saison: 'Septembre – Octobre', couleur: 'rgb(180,40,20)' },
+  noisette: { id: 'noisette', label: "AUTOUR DE LA NOISETTE",       badge: "Gien • 1h30 de Paris",          description: "Parmi les noisetiers, vivez la récolte et découvrez comment naîssent les différents produits à base de noisettes.", activites: ['Récolte des noisettes', 'Fabrication de son huile de noisette', 'Atelier pâtisserie autour de la noisette', 'Yoga en pleine nature'], saison: 'Septembre – Novembre', couleur: 'rgb(120,80,30)' },
 };
 
 const UNIVERS_TO_FILTER: Record<string, string> = {
-  cognac: 'Spiritueux', olive: 'Olives', noix: 'Noix', truffe: 'Truffes', fromage: 'Élevages', vin: 'Vins',
+  cognac: 'Spiritueux', olive: 'Olives', noix: 'Noix', truffe: 'Truffes', fromage: 'Élevages', vin: 'Vins', piment: 'Piments', noisette: 'Noisettes',
 };
 
 // ─── Modal constants ──────────────────────────────────────────────────────────
@@ -41,11 +43,11 @@ const MODAL_REGIONS = [
   { name: "Provence-Alpes-Côte d'Azur", icon: '☀️' },
 ];
 const MODAL_TERROIR = [
-  { label: 'Olives',    emoji: '🫒' }, { label: 'Piments',    emoji: '🌶️' },
-  { label: 'Truffe',    emoji: '🍄' }, { label: 'Fromages',   emoji: '🧀' },
-  { label: 'Huîtres',  emoji: '🦪' }, { label: 'Élevages',   emoji: '🐄' },
-  { label: 'Agrumes',  emoji: '🍊' }, { label: 'Vins',       emoji: '🍷' },
-  { label: 'Spiritueux', emoji: '🥃' },
+  { label: 'Olives',     emoji: '🫒' }, { label: 'Piments',    emoji: '🌶️' },
+  { label: 'Truffe',     emoji: '🍄' }, { label: 'Fromages',   emoji: '🧀' },
+  { label: 'Huîtres',   emoji: '🦪' }, { label: 'Élevages',   emoji: '🐄' },
+  { label: 'Agrumes',   emoji: '🍊' }, { label: 'Vins',       emoji: '🍷' },
+  { label: 'Spiritueux', emoji: '🥃' }, { label: 'Noisettes',  emoji: '🌰' },
 ];
 const MODAL_ACC   = ['Chambres seules', 'Chambres partagées'];
 const MODAL_TRANS = ['De porte à porte', 'Depuis gare SNCF proche'];
@@ -179,7 +181,6 @@ const DateRangePicker: React.FC<{
 
   return (
     <div style={{ background: '#faf8f5', borderRadius: 16, border: '1px solid rgba(10,44,52,0.08)', overflow: 'hidden' }}>
-      {/* Selected range display */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
         {[
           { label: 'Arrivée', val: startDate, key: 'start' as const },
@@ -201,7 +202,6 @@ const DateRangePicker: React.FC<{
         ))}
       </div>
 
-      {/* Calendar header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
         <button type="button" onClick={prevMonth} style={{ width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'rgba(10,44,52,0.06)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1a2e1a', fontSize: 12, transition: 'background .15s' }}
           onMouseOver={e => (e.currentTarget.style.background = 'rgba(10,44,52,0.12)')}
@@ -216,14 +216,12 @@ const DateRangePicker: React.FC<{
         >›</button>
       </div>
 
-      {/* Day labels */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', padding: '0 12px', marginBottom: 4 }}>
         {DAYS_FR.map((d, i) => (
           <div key={i} style={{ textAlign: 'center', fontSize: 9, fontWeight: 700, color: '#b0a89e', letterSpacing: '0.1em', padding: '4px 0' }}>{d}</div>
         ))}
       </div>
 
-      {/* Days grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', padding: '0 12px 14px', gap: 2 }}>
         {cells.map((d, i) => {
           if (!d) return <div key={i} />;
@@ -253,7 +251,6 @@ const DateRangePicker: React.FC<{
         })}
       </div>
 
-      {/* Hint */}
       <div style={{ padding: '8px 16px 12px', borderTop: '1px solid rgba(10,44,52,0.05)', display: 'flex', alignItems: 'center', gap: 6 }}>
         <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', flexShrink: 0 }} />
         <span style={{ fontSize: 9, color: '#b0a89e', fontWeight: 600, letterSpacing: '0.08em' }}>
@@ -413,13 +410,11 @@ Message: ${form.message || 'Aucun'}
         }
       `}</style>
 
-      {/* Backdrop */}
       <div
         onClick={handleClose}
         style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'rgba(10,20,10,0.72)', backdropFilter: 'blur(8px)', opacity: closing ? 0 : 1, transition: 'opacity .28s ease' }}
       />
 
-      {/* Panel */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}>
         <div
           className="sem-panel"
@@ -432,8 +427,6 @@ Message: ${form.message || 'Aucun'}
             fontFamily: "'Poppins',sans-serif",
           }}
         >
-
-          {/* Header */}
           <div style={{ padding: '20px 28px 0', background: '#fff', flexShrink: 0, borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -450,7 +443,6 @@ Message: ${form.message || 'Aucun'}
               >×</button>
             </div>
 
-            {/* Step bars */}
             <div style={{ display: 'flex', gap: 6, paddingBottom: 14 }}>
               {MODAL_STEPS.map((s, i) => {
                 const idx = i + 1, done = step > idx, active = step === idx;
@@ -466,7 +458,6 @@ Message: ${form.message || 'Aucun'}
             </div>
           </div>
 
-          {/* Error banner */}
           {err && (
             <div style={{ background: 'rgba(230,126,34,0.07)', borderBottom: '1px solid rgba(230,126,34,0.18)', padding: '10px 28px', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
               <span style={{ fontSize: 15 }}>⚠️</span>
@@ -475,7 +466,6 @@ Message: ${form.message || 'Aucun'}
             </div>
           )}
 
-          {/* Success overlay */}
           {ok && (
             <div style={{ position: 'absolute', inset: 0, zIndex: 20, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(4px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 28, animation: 'semFd .3s ease' }}>
               <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, boxShadow: '0 8px 30px rgba(26,46,26,0.25)' }}>
@@ -488,7 +478,6 @@ Message: ${form.message || 'Aucun'}
             </div>
           )}
 
-          {/* Body */}
           <div ref={scrollRef} className="sem-sc sem-body" style={{ flex: 1, overflowY: 'auto', padding: '28px 28px 0' }}>
             <div style={{ opacity: trans ? 0 : 1, transform: trans ? 'translateY(5px)' : 'translateY(0)', transition: 'all .18s ease' }}>
 
@@ -496,7 +485,6 @@ Message: ${form.message || 'Aucun'}
                 {STEP_TITLE[step]}
               </h3>
 
-              {/* STEP 1 */}
               {step === 1 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                   <div className="sg2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
@@ -518,10 +506,7 @@ Message: ${form.message || 'Aucun'}
                       <ModeBtn active={pMode === 'months'} onClick={() => { setPMode('months'); setSd(''); setEd(''); }}>Choisir des mois</ModeBtn>
                     </div>
                     {pMode === 'dates' ? (
-                      <DateRangePicker
-                        startDate={sd} endDate={ed}
-                        onStartChange={setSd} onEndChange={setEd}
-                      />
+                      <DateRangePicker startDate={sd} endDate={ed} onStartChange={setSd} onEndChange={setEd} />
                     ) : (
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
                         {MODAL_MONTHS.map(m => <Pill key={m} active={months.includes(m)} onClick={() => tog(months, setMo, m)}>{m}</Pill>)}
@@ -531,7 +516,6 @@ Message: ${form.message || 'Aucun'}
                 </div>
               )}
 
-              {/* STEP 2 */}
               {step === 2 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                   <Field label="Région(s) souhaitée(s)">
@@ -593,7 +577,6 @@ Message: ${form.message || 'Aucun'}
                 </div>
               )}
 
-              {/* STEP 3 */}
               {step === 3 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <div className="sg2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
@@ -610,7 +593,6 @@ Message: ${form.message || 'Aucun'}
                 </div>
               )}
 
-              {/* STEP 4 */}
               {step === 4 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   <p style={{ color: '#b0a89e', fontSize: 12, margin: '0 0 4px' }}>Vérifiez vos informations avant d'envoyer.</p>
@@ -633,7 +615,6 @@ Message: ${form.message || 'Aucun'}
             <div style={{ height: 28 }} />
           </div>
 
-          {/* Footer */}
           <div
             className="sem-footer"
             style={{ padding: '14px 28px', borderTop: '1px solid rgba(10,44,52,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexShrink: 0, background: '#fff', flexWrap: 'wrap' }}
@@ -773,10 +754,12 @@ const Seminaires: React.FC = () => {
   const exampleCards = [
     { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/alambique.png", title: "Cognac & Pineau", desc: "Proche de Cognac", tags: ["Participation aux vendanges", "Fabrication de son propre pineau", "Golf entre les vignes"], producerImage: "/images/producteurs/cognacJF.png", universes: ["le cognac"], universId: "cognac", boldLabel: "AUTOUR DU COGNAC" },
     { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO4.png", title: "Olives & lavande", desc: "Proche d'Aix-en-Provence", tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"], producerImage: "/images/producteurs/olivepaolo.png", universes: ["les olives", "la lavande"], universId: "olive", boldLabel: "AUTOUR DE L'OLIVE" },
-    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/noix.png", title: "Noix & compagnie", desc: "Proche de Valence", tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Session Trail dans un cadre magnifique"], producerImage: "/images/producteurs/noixsabinemarie.jpeg", universes: ["les noix"], universId: "noix", boldLabel: "AUTOUR DE LA NOIX" },
+    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/noix.png", title: "Noix & compagnie", desc: "Proche de Valence", tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Repas en pleine nature", "Récolte de lavande fine"], producerImage: "/images/producteurs/noixsabinemarie.jpeg", universes: ["les noix"], universId: "noix", boldLabel: "AUTOUR DE LA NOIX" },
     { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/truffe.png", title: "Truffe & terroir", desc: "Proche de Tours", tags: ["Cavage et découverte de la truffe", "Atelier cuisine", "Ferme florale et potager"], producerImage: "/images/producteurs/truffeprod.png", universes: ["la truffe"], universId: "truffe", boldLabel: "AUTOUR DE LA TRUFFE" },
-    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/chevres.png", title: "Fromage de chèvre", desc: "Proche d'Aix-en-Provence", tags: ["Soins aux chèvres", "Fabrication du fromage", "Dégustation à la ferme"], producerImage: "/images/producteurs/chevre-bebe.jpg", universes: ["le fromage de chèvre"], universId: "fromage", boldLabel: "AUTOUR DU FROMAGE" },
-    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/cognac.jpg", title: "Vin AOC Ventoux", desc: "Proche de Valence", tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"], producerImage: "/images/producteurs/vincombeaumas.png", universes: ["le vin"], universId: "vin", boldLabel: "AUTOUR DU VIN" },
+    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/chevres.png", title: "Fromage & chèvre", desc: "Proche d'Aix-en-Provence", tags: ["Soins aux chèvres", "Fabrication de son propre fromage", "Dégustation à la ferme", "Visite de cave"], producerImage: "/images/producteurs/chevre-bebe.jpg", universes: ["le fromage de chèvre"], universId: "fromage", boldLabel: "AUTOUR DU FROMAGE" },
+    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/cognac.jpg", title: "Vin & Ventoux", desc: "Proche de Valence", tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"], producerImage: "/images/producteurs/vincombeaumas.png", universes: ["le vin"], universId: "vin", boldLabel: "AUTOUR DU VIN" },
+    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/baptiste3.png", title: "Piments & Pays Basque", desc: "Proche de Biarrtiz", tags: ["Récolte des piments rouges", "Fabrication de sa propre corde de piments", "Atelier confiture & conserves", "Dégustation de spécialités basques"], producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png", universes: ["les piments"], universId: "piment", boldLabel: "AUTOUR DU PIMENT" },
+    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/VERGERS.jpg", title: "Noisette & fruits à coque", desc: "Proche de Orléans", tags: ["Récolte des noisettes", "Fabrication de son huile de noisette", "Atelier pâtisserie autour de la noisette", "Yoga en pleine nature"], producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png", universes: ["les noisettes"], universId: "noisette", boldLabel: "AUTOUR DE LA NOISETTE" },
   ];
   const filteredCards = selectedUniverse ? exampleCards.filter(c => c.universes.includes(selectedUniverse)) : exampleCards;
 
@@ -785,22 +768,22 @@ const Seminaires: React.FC = () => {
       <SeminaireModal isOpen={isModalOpen} onClose={closeModal} />
 
       {/* ── HERO ── */}
-      <section className="relative w-full overflow-hidden min-h-[75vh] lg:min-h-screen flex items-center justify-center">
+      <section className="relative w-full overflow-hidden min-h-screen flex items-center justify-center">
         {heroImages.map((image, index) => (
           <div key={index} className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ease-in-out" style={{ backgroundImage: `url('${image}')`, opacity: index === currentImageIndex ? 1 : 0, zIndex: index === currentImageIndex ? 0 : -1 }} />
         ))}
         <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.32) 60%, rgba(0,0,0,0.55) 100%)' }} />
 
         <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
-          <div className="flex items-center justify-center gap-3 mb-7">
+          <div className="flex items-center justify-center gap-3 mb-10 sm:mb-7">
             <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
             <span style={{ color: 'rgba(255,255,255,0.60)', fontSize: 10, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase' }}>Immersion & Cohésion</span>
             <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
           </div>
 
-          <h1 className="text-white font-bold leading-[1.06] mb-7 drop-shadow-lg" style={{ letterSpacing: '-0.01em' }}>
-            <span className="block font-display italic text-4xl md:text-5xl lg:text-6xl mb-1">Optez pour des séminaires</span>
-            <span className="block font-sans font-bold text-3xl md:text-4xl lg:text-5xl" style={{ letterSpacing: '-0.01em' }}>
+          <h1 className="text-white font-bold leading-[1.06] mb-12 sm:mb-7 drop-shadow-lg" style={{ letterSpacing: '-0.01em' }}>
+            <span className="block font-display italic text-5xl md:text-5xl lg:text-6xl mb-1">Optez pour des séminaires</span>
+            <span className="block font-sans font-bold text-5xl md:text-4xl lg:text-5xl" style={{ letterSpacing: '-0.01em' }}>
               plus{' '}
               <span style={{ color: 'rgb(255,223,202)' }}>
                 {displayedText}
@@ -823,23 +806,34 @@ const Seminaires: React.FC = () => {
             <Link
               to="/entreprises?scroll=nos-univers"
               className="text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 px-4 py-3"
-              style={{ color: 'rgba(255,255,255,0.45)' }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.80)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
+              style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)')}
             >
               Découvrir nos univers →
             </Link>
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-25">
-          <div style={{ width: 1, height: 44, background: 'white', animation: 'scrollPulse 2.2s ease-in-out infinite' }} />
+        {/* Flèche scroll (comme page Séjours entre amis) */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
+          <button
+            onClick={() => document.getElementById('etoiles')?.scrollIntoView({ behavior: 'smooth' })}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8 }}
+            aria-label="Voir la suite"
+            className="scroll-arrow-sem"
+          >
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 10L13 17L20 10" stroke="rgba(255,255,255,0.9)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
         <style>{`
-          @keyframes scrollPulse {
-            0%,100%{opacity:.2;transform:scaleY(.8);transform-origin:top}
-            50%{opacity:1;transform:scaleY(1);transform-origin:top}
+          @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(6px); opacity: 1; }
           }
+          .scroll-arrow-sem { animation: scrollBounce 2.2s ease-in-out infinite; }
           .seminaires-section-after-hero { padding-top: clamp(5rem, 10vw, 9rem); }
           @media (min-width: 1024px) { .seminaires-section-after-hero { padding-top: calc(9rem + 84px); } }
         `}</style>
@@ -847,31 +841,67 @@ const Seminaires: React.FC = () => {
 
       {/* ── 5 ÉTOILES ── */}
       <section style={{ paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} className="bg-white seminaires-section-after-hero" id="etoiles">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="mb-14">
-            <div className="flex items-center gap-3 mb-2">
-              <div style={{ width: 20, height: 1, background: '#e67e22' }} />
-              <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>5 étoiles</span>
-            </div>
-            <p style={{ color: '#e67e22', fontSize: 14, marginBottom: 12, letterSpacing: '0.3em' }}>⭐⭐⭐⭐⭐</p>
-            <ScrollAnimate delay={150}>
-              <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-                <span className="font-sans text-3xl sm:text-4xl">Des séminaires</span>
-                <span className="font-display italic text-3xl sm:text-4xl lg:text-5xl"> 5 étoiles.</span>
-              </h2>
-            </ScrollAnimate>
-            <p className="mt-4 max-w-2xl" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.75 }}>
-              Nos "5 étoiles" ne se mesurent pas au luxe, mais aux liens humains, au contact de la terre et à l'engagement des producteurs. Des expériences sincères qui renforcent la cohésion et laissent une trace durable.
-            </p>
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 mb-14">
+          <div className="flex items-center gap-3 mb-2">
+            <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+            <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>5 étoiles</span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <p style={{ color: '#e67e22', fontSize: 14, marginBottom: 12, letterSpacing: '0.3em' }}>⭐⭐⭐⭐⭐</p>
+          <ScrollAnimate delay={150}>
+            <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
+              <span className="font-sans text-4xl sm:text-5xl">Des séminaires</span>
+              <span className="font-display italic text-5xl sm:text-5xl lg:text-6xl"> 5 étoiles.</span>
+            </h2>
+          </ScrollAnimate>
+          <p className="mt-4 max-w-2xl" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.75 }}>
+            Nos "5 étoiles" ne se mesurent pas au luxe, mais aux liens humains, au contact de la terre et à l'engagement des producteurs. Des expériences sincères qui renforcent la cohésion et laissent une trace durable.
+          </p>
+        </div>
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 lg:gap-6">
             {[
-              { icon: 'diversity_3', title: 'Humain',      text: 'Décrochez et découvrez la richesse de vos équipes par des échanges vrais en rencontrant ceux qui nous nourrissent.' },
-              { icon: 'handyman',    title: 'Immersif',    text: 'Sortez de votre zone de confort et exprimez-vous en mettant les mains dans la Terre. Vous allez vous en souvenir !' },
-              { icon: 'restaurant', title: 'Authentique', text: "Retrouvez le sens de l'essentiel au contact de producteurs qui incarnent la vérité et l'exigence du terrain." },
-              { icon: 'eco',        title: 'Engagé',      text: 'Transformez votre séminaire en acte managérial fort en soutenant directement ceux qui agissent pour la Terre.' },
-              { icon: 'handshake',  title: 'Passionnant', text: "Utilisez le terroir comme fondation pour reconstruire une cohésion d'équipe naturelle et durable." },
-            ].map(item => <PillarCard key={item.title} icon={item.icon} title={item.title} text={item.text} />)}
+              { icon: 'diversity_3', title: 'Humain',      text: 'Décrochez et découvrez la richesse de vos équipes par des échanges vrais en rencontrant ceux qui nous nourrissent.', image: 'https://images.unsplash.com/photo-1624720114692-037e42acec41?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+              { icon: 'handyman',    title: 'Immersif',    text: 'Sortez de votre zone de confort et exprimez-vous en mettant les mains dans la Terre. Vous allez vous en souvenir !', image: 'https://images.unsplash.com/photo-1720420865912-2bbd6bfa1e85?q=80&w=3131&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+              { icon: 'restaurant', title: 'Authentique', text: "Retrouvez le sens de l'essentiel au contact de producteurs qui incarnent la vérité et l'exigence du terrain.", image: 'https://images.unsplash.com/photo-1594928357228-3075ba0e4674?q=80&w=1293&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+              { icon: 'eco',        title: 'Engagé',      text: 'Transformez votre séminaire en acte managérial fort en soutenant directement ceux qui agissent pour la Terre.', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/VERGERS.jpg' },
+              { icon: 'handshake',  title: 'Passionnant', text: "Utilisez le terroir comme fondation pour reconstruire une cohésion d'équipe naturelle et durable.", image: 'https://images.unsplash.com/photo-1662558739852-613841d6b834?q=80&w=1348&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+            ].map(item => (
+              <div
+                key={item.title}
+                className="group relative flex flex-col justify-end overflow-hidden rounded-[22px] cursor-pointer transition-all duration-300 min-h-[260px] sm:min-h-[300px]"
+                style={{ border: '1px solid rgba(26,46,26,0.07)', boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}
+              >
+                <img
+                  src={item.image}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.4) 40%, transparent)' }}
+                />
+                <div
+                  className="absolute inset-0 pointer-events-none z-0"
+                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)' }}
+                />
+                <div className="relative z-10 flex flex-col items-center text-center p-6 pb-8 opacity-100 transition-opacity duration-300 group-hover:opacity-0 group-hover:z-0 pointer-events-none">
+                  <div className="w-11 h-11 rounded-full flex items-center justify-center mb-4 flex-shrink-0 shadow-lg" style={{ background: 'rgba(255,255,255,0.95)', color: '#1a2e1a' }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: 22 }}>{item.icon}</span>
+                  </div>
+                  <h3 className="font-sans font-bold text-white drop-shadow-md" style={{ fontSize: 15, fontWeight: 500 }}>{item.title}</h3>
+                </div>
+                <div
+                  className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
+                  style={{ background: 'rgba(0,0,0,0.65)' }}
+                >
+                  <div className="w-11 h-11 rounded-full flex items-center justify-center mb-4 flex-shrink-0" style={{ background: 'rgba(255,255,255,0.2)', color: '#fff' }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: 22 }}>{item.icon}</span>
+                  </div>
+                  <h3 className="font-sans font-bold text-white mb-3" style={{ fontSize: 15, fontWeight: 500 }}>{item.title}</h3>
+                  <p className="text-white text-sm leading-relaxed max-w-[240px]" style={{ lineHeight: 1.7 }}>{item.text}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -886,8 +916,8 @@ const Seminaires: React.FC = () => {
             </div>
             <ScrollAnimate delay={200}>
               <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-                <span className="font-sans text-3xl sm:text-4xl">Tous nos séminaires</span>
-                <span className="font-display italic text-3xl sm:text-4xl lg:text-5xl"> vous garantissent.</span>
+                <span className="font-sans text-4xl sm:text-5xl">Tous nos séminaires</span>
+                <span className="font-display italic text-5xl sm:text-5xl lg:text-6xl"> vous garantissent.</span>
               </h2>
             </ScrollAnimate>
           </div>
@@ -895,12 +925,12 @@ const Seminaires: React.FC = () => {
         <div className="max-w-screen-2xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              { icon: 'groups',     label: 'Rencontres authentiques',       text: 'Partez à la rencontre de producteurs et artisans passionnés, qui vous partageront leur quotidien, et leur savoir-faire avec authenticité.' },
+              { icon: 'groups',     label: 'Rencontres authentiques',          text: 'Partez à la rencontre de producteurs et artisans passionnés, qui vous partageront leur quotidien, et leur savoir-faire avec authenticité.' },
               { icon: 'eco',        label: 'Activité les mains dans la terre', text: 'Récolter, tailler, planter, fabriquer… dans la peau de celles et ceux qui font le terroir, au rythme des saisons et des savoir-faire locaux.' },
-              { icon: 'restaurant', label: 'Tissu local',                   text: 'Savourez le vrai : des repas pensés autour des producteurs locaux, de saison et engagés. Chaque assiette raconte une histoire.' },
-              { icon: 'nature',     label: 'Cadre ressourçant',             text: 'Nos séminaires se déroulent dans des lieux naturels soigneusement choisis pour leur authenticité — fermes, domaines agricoles, espaces verdoyants.' },
-              { icon: 'diversity_3',label: 'Cohésion sur mesure',           text: 'Des activités ludiques et même sportives, pensées sur-mesure pour renforcer les liens, et créer de vrais moments de complicité.' },
-              { icon: 'key',        label: 'Clé en main',                   text: 'Logement, activités, repas, transport... Une logistique invisible pour des expériences inoubliables.' },
+              { icon: 'restaurant', label: 'Tissu local',                      text: 'Savourez le vrai : des repas pensés autour des producteurs locaux, de saison et engagés. Chaque assiette raconte une histoire.' },
+              { icon: 'nature',     label: 'Cadre ressourçant',                text: 'Nos séminaires se déroulent dans des lieux naturels soigneusement choisis pour leur authenticité — fermes, domaines agricoles, espaces verdoyants.' },
+              { icon: 'diversity_3',label: 'Cohésion sur mesure',              text: 'Des activités ludiques et même sportives, pensées sur-mesure pour renforcer les liens, et créer de vrais moments de complicité.' },
+              { icon: 'key',        label: 'Clé en main',                      text: 'Logement, activités, repas, transport... Une logistique invisible pour des expériences inoubliables.' },
             ].map(item => (
               <div
                 key={item.icon}
@@ -909,11 +939,21 @@ const Seminaires: React.FC = () => {
                 onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.18)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.07)'; }}
               >
-                <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(26,46,26,0.06)', color: '#1a2e1a' }}>
+                <div
+                  className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300"
+                  style={{ background: 'rgba(26,46,26,0.06)', color: '#1a2e1a' }}
+                  ref={el => {
+                    if (!el) return;
+                    const parent = el.closest('.group');
+                    if (!parent) return;
+                    parent.addEventListener('mouseenter', () => { el.style.color = '#e67e22'; });
+                    parent.addEventListener('mouseleave', () => { el.style.color = '#1a2e1a'; });
+                  }}
+                >
                   <span className="material-symbols-outlined text-xl">{item.icon}</span>
                 </div>
                 <div>
-                  <h3 className="font-sans font-bold text-primary mb-1.5 group-hover:text-orange transition-colors" style={{ fontSize: 13 }}>{item.label}</h3>
+                  <h3 className="font-sans font-bold text-primary mb-1.5 group-hover:text-orange transition-colors" style={{ fontSize: 16 }}>{item.label}</h3>
                   <p style={{ color: '#7a7060', fontSize: 13, lineHeight: 1.7 }}>{item.text}</p>
                 </div>
               </div>
@@ -932,16 +972,16 @@ const Seminaires: React.FC = () => {
             </div>
             <ScrollAnimate delay={200}>
               <h2 className="font-bold text-white leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-                <span className="font-sans text-3xl sm:text-4xl">Des formats pensés</span>
-                <span className="font-display italic text-3xl sm:text-4xl lg:text-5xl"> pour vos équipes.</span>
+                <span className="font-sans text-4xl sm:text-5xl">Des formats pensés</span>
+                <span className="font-display italic text-5xl sm:text-5xl lg:text-6xl"> pour vos équipes.</span>
               </h2>
             </ScrollAnimate>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { icon: 'calendar_today', tag: 'Format court',   label: 'À la journée', text: 'Un format concentré pour (re)mettre du sens dans une journée hors du bureau, au contact direct du terroir.',                                     duration: '1 jour',    people: 'dès 6 pers.' },
-              { icon: 'event',          tag: 'Format immersif', label: 'Sur 2 jours',  text: 'Deux jours pour alterner temps de travail, immersion dans les exploitations et moments de cohésion en équipe.',                                    duration: '2 jours',   people: 'dès 6 pers.' },
-              { icon: 'design_services',tag: 'Format plus',     label: 'Sur mesure',   text: 'Un séminaire entièrement construit avec vous : rythme, intensité, thématique, et producteurs partenaires.',                                        duration: 'Durée libre', people: 'tout effectif' },
+              { icon: 'calendar_today', tag: 'Format court',    label: 'À la journée', text: 'Un format concentré pour (re)mettre du sens dans une journée hors du bureau, au contact direct du terroir.',                                  duration: '1 jour',     people: 'dès 6 pers.' },
+              { icon: 'event',          tag: 'Format immersif', label: 'Sur 2 jours',  text: 'Deux jours pour alterner temps de travail, immersion dans les exploitations et moments de cohésion en équipe.',                               duration: '2 jours',    people: 'dès 6 pers.' },
+              { icon: 'design_services',tag: 'Format plus',     label: 'Sur mesure',   text: 'Un séminaire entièrement construit avec vous : rythme, intensité, thématique, et producteurs partenaires.',                                    duration: 'Durée libre', people: 'tout effectif' },
             ].map(item => (
               <div
                 key={item.label}
@@ -979,8 +1019,8 @@ const Seminaires: React.FC = () => {
               </div>
               <ScrollAnimate delay={150}>
                 <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-                  <span className="font-sans text-3xl sm:text-4xl">Nos premiers</span>
-                  <span className="font-display italic text-3xl sm:text-4xl lg:text-5xl"> univers.</span>
+                  <span className="font-sans text-4xl sm:text-5xl">Nos premiers</span>
+                  <span className="font-display italic text-5xl sm:text-5xl lg:text-6xl"> univers.</span>
                 </h2>
               </ScrollAnimate>
             </div>
@@ -996,7 +1036,7 @@ const Seminaires: React.FC = () => {
 
           {/* Filtres */}
           <div className="flex flex-wrap gap-2 mt-8">
-            {['le vin', 'la truffe', 'les olives', 'la lavande', 'le fromage de chèvre', 'les noix', 'le cognac'].map(product => (
+            {['le vin', 'la truffe', 'les olives', 'la lavande', 'le fromage de chèvre', 'les noix', 'le cognac', 'les piments', 'les noisettes'].map(product => (
               <button
                 key={product} onClick={() => setSelectedUniverse(selectedUniverse === product ? null : product)}
                 className="transition-all duration-300"
@@ -1042,15 +1082,15 @@ const Seminaires: React.FC = () => {
 
       {/* ── PLAQUETTE ── */}
       <section style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} className="bg-beige-bg">
-        <div className="max-w-xl mx-auto px-6 sm:px-8 text-center">
+        <div className="max-w-4xl mx-auto px-2 sm:px-4 text-center">
           <div className="flex items-center justify-center gap-3 mb-8">
             <div style={{ width: 20, height: 1, background: '#e67e22' }} />
             <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Nos offres</span>
             <div style={{ width: 20, height: 1, background: '#e67e22' }} />
           </div>
           <h2 className="font-bold text-primary leading-[1.06] mb-4" style={{ letterSpacing: '-0.01em' }}>
-            <span className="block font-sans text-2xl sm:text-3xl">Recevez notre</span>
-            <span className="block font-display italic text-3xl sm:text-4xl">plaquette 2026.</span>
+            <span className="font-sans text-3xl sm:text-4xl">Recevez notre</span>
+            <span className="font-display italic text-[2.65rem] sm:text-[3rem]"> plaquette 2026.</span>
           </h2>
           <p className="mb-10" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
             Laissez-nous votre email et recevez notre plaquette regroupant toutes nos offres. Sous 24h, promis !
@@ -1092,97 +1132,73 @@ const Seminaires: React.FC = () => {
       </section>
 
       {/* ── MODAL UNIVERS ── */}
-      {selectedUniversModal && (
-        <div onClick={closeUniversModal} style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(10,20,10,0.78)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', opacity: isUniversModalClosing ? 0 : 1, transition: 'opacity 0.25s ease' }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: 24, maxWidth: 620, width: '100%', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.30)', transform: isUniversModalClosing ? 'translateY(20px) scale(0.97)' : 'translateY(0) scale(1)', transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', maxHeight: '90vh', overflowY: 'auto' }}>
-            {(() => {
-              const card = exampleCards.find(c => c.universId === selectedUniversModal.id);
-              return (
-                <div style={{ position: 'relative', height: 180, overflow: 'visible', flexShrink: 0 }}>
-                  <img src={card?.image ?? ''} alt={selectedUniversModal.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${selectedUniversModal.couleur} -10%, transparent 0%)` }} />
-                  <button onClick={closeUniversModal} style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.95)', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#1a2e1a' }}>×</button>
-                  <div style={{ position: 'absolute', top: 16, left: 16, background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)', borderRadius: 9999, padding: '5px 14px', fontSize: 9, fontWeight: 700, color: '#fff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{selectedUniversModal.badge}</div>
-                  <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20, fontSize: 'clamp(17px,3vw,26px)', fontWeight: 900, color: '#fff', lineHeight: 1.05, textTransform: 'uppercase', letterSpacing: '-0.01em', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>{selectedUniversModal.label}</div>
-                  {card?.producerImage && <img src={card.producerImage} alt="" style={{ position: 'absolute', bottom: -36, right: 24, width: 76, height: 76, borderRadius: '50%', objectFit: 'cover', border: '3px solid #fff', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }} />}
+      {selectedUniversModal && (() => {
+        const card = exampleCards.find(c => c.universId === selectedUniversModal.id);
+        return (
+          <div onClick={closeUniversModal} style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(10,20,10,0.78)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', opacity: isUniversModalClosing ? 0 : 1, transition: 'opacity 0.25s ease' }}>
+            <div onClick={e => e.stopPropagation()} className="bg-white" style={{ borderRadius: 24, maxWidth: 620, width: '100%', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.25)', transform: isUniversModalClosing ? 'translateY(20px) scale(0.97)' : 'translateY(0) scale(1)', transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', maxHeight: '90vh', overflowY: 'auto', border: '1px solid rgba(26,46,26,0.08)' }}>
+              {/* Header avec image univers + producteur — hauteur réduite */}
+              <div style={{ position: 'relative', paddingTop: '34%', overflow: 'visible' }}>
+                <img src={card?.image ?? ''} alt={selectedUniversModal.label} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${selectedUniversModal.couleur}99 0%, transparent 50%)` }} />
+                <button onClick={closeUniversModal} className="flex items-center justify-center" style={{ position: 'absolute', top: 16, right: 16, width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(26,46,26,0.08)', cursor: 'pointer', color: '#1a2e1a', fontSize: 20, fontWeight: 400 }}>×</button>
+                <div style={{ position: 'absolute', top: 16, left: 16, padding: '6px 14px', borderRadius: 9999, background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', fontSize: 9, fontWeight: 700, color: '#fff', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{selectedUniversModal.badge}</div>
+                {card?.producerImage && (
+                  <div style={{ position: 'absolute', left: '50%', bottom: -56, transform: 'translateX(-50%)', width: 130, height: 130, borderRadius: '50%', overflow: 'hidden', border: '5px solid #fff', boxShadow: '0 12px 40px rgba(0,0,0,0.2)' }}>
+                    <img src={card.producerImage} alt="" className="w-full h-full object-cover" />
+                  </div>
+                )}
+              </div>
+              {/* Contenu — descriptif et programme plus visibles */}
+              <div className="px-6 pb-8" style={{ paddingTop: card?.producerImage ? 76 : 24, background: '#fff' }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+                  <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Univers</span>
                 </div>
-              );
-            })()}
-            <div style={{ padding: '36px 28px 28px' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 6 }}>
-                <div style={{ fontSize: 20, fontWeight: 800, color: '#1a2e1a' }}>{exampleCards.find(c => c.universId === selectedUniversModal.id)?.title}</div>
-                <div style={{ fontSize: 11, color: '#9a9080', marginTop: 4 }}>📅 {selectedUniversModal.saison}</div>
+                <h3 className="font-display italic font-bold text-primary leading-tight mb-1" style={{ fontSize: 'clamp(22px,4vw,28px)' }}>{exampleCards.find(c => c.universId === selectedUniversModal.id)?.title}</h3>
+                <p style={{ fontSize: 16, color: '#7a7060', lineHeight: 1.75, marginBottom: 26 }}>{selectedUniversModal.description}</p>
+                <div style={{ marginBottom: 28 }}>
+                  <span style={{ display: 'block', fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', color: '#b8ad9e', textTransform: 'uppercase', marginBottom: 12 }}>Exemple d'activités</span>
+                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {selectedUniversModal.activites.map(a => (
+                      <li key={a} className="flex items-start gap-3" style={{ fontSize: 15, color: '#1a2e1a', lineHeight: 1.55 }}>
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', flexShrink: 0, marginTop: 7 }} />{a}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="flex flex-col gap-3 items-center">
+                  <button
+                    onClick={() => { closeUniversModal(); openModal(); }}
+                    className="py-4 rounded-full font-bold uppercase transition-colors duration-300"
+                    style={{ width: '92%', maxWidth: 380, background: '#1a2e1a', color: '#fff', border: 'none', fontSize: 10, letterSpacing: '0.15em', cursor: 'pointer' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = '#e67e22'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = '#1a2e1a'; }}
+                  >
+                    Demander un devis pour cet univers →
+                  </button>
+                  <button
+                    onClick={() => { closeUniversModal(); navigate('/entreprises/offres'); }}
+                    className="py-3.5 rounded-full font-bold uppercase transition-all duration-300"
+                    style={{ width: '92%', maxWidth: 380, background: 'transparent', color: '#e67e22', border: '1.5px solid rgba(230,126,34,0.4)', cursor: 'pointer', fontSize: 10, letterSpacing: '0.15em' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = '#e67e22'; e.currentTarget.style.color = '#fff'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#e67e22'; }}
+                  >
+                    Découvrir nos offres packagées →
+                  </button>
+                </div>
               </div>
-              <p style={{ fontSize: 13, color: '#7a7060', lineHeight: 1.75, marginBottom: 20 }}>{selectedUniversModal.description}</p>
-              <div style={{ marginBottom: 24 }}>
-                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', color: '#b8ad9e', textTransform: 'uppercase', marginBottom: 10 }}>Au programme</div>
-                <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {selectedUniversModal.activites.map(a => (
-                    <li key={a} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#4a4a4a' }}>
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', flexShrink: 0, display: 'inline-block' }} />{a}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <button
-                onClick={() => { closeUniversModal(); openModal(); }}
-                style={{ width: '100%', background: '#1a2e1a', color: '#fff', border: 'none', borderRadius: 9999, padding: '14px', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', transition: 'background 0.2s', marginBottom: 10 }}
-                onMouseOver={e => (e.currentTarget.style.background = '#2b3e24')}
-                onMouseOut={e => (e.currentTarget.style.background = '#1a2e1a')}
-              >
-                Demander un devis pour cet univers →
-              </button>
-              {UNIVERS_TO_FILTER[selectedUniversModal.id] && (
-                <button
-                  onClick={() => { const f = UNIVERS_TO_FILTER[selectedUniversModal.id]; closeUniversModal(); navigate(`/partenaires?filter=${encodeURIComponent(f)}`); }}
-                  style={{ width: '100%', background: 'transparent', color: '#e67e22', border: '1.5px solid rgba(230,126,34,0.3)', borderRadius: 9999, padding: '12px', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s' }}
-                  onMouseOver={e => { e.currentTarget.style.background = '#e67e22'; e.currentTarget.style.color = '#fff'; }}
-                  onMouseOut={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#e67e22'; }}
-                >
-                  Voir nos producteurs partenaires →
-                </button>
-              )}
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-const PillarCard = ({ icon, title, text }: any) => (
-  <div
-    className="group relative bg-white overflow-hidden transition-all duration-500 cursor-pointer hover:-translate-y-1"
-    style={{ borderRadius: '20px', border: '1px solid rgba(26,46,26,0.07)', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}
-    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.16)'; }}
-    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.07)'; }}
-  >
-    <div className="p-5 sm:p-6 flex flex-col items-center text-center">
-      <div className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 mb-3" style={{ background: 'rgba(26,46,26,0.07)' }}>
-        <span
-          className="material-symbols-outlined text-lg transition-colors duration-300"
-          style={{ color: '#1a2e1a' }}
-          ref={el => {
-            if (!el) return;
-            const parent = el.closest('.group');
-            if (!parent) return;
-            parent.addEventListener('mouseenter', () => { el.style.color = '#e67e22'; });
-            parent.addEventListener('mouseleave', () => { el.style.color = '#1a2e1a'; });
-          }}
-        >{icon}</span>
-      </div>
-      <h3 className="font-sans transition-colors duration-300 group-hover:text-orange" style={{ fontSize: 13, fontWeight: 500, color: '#1a2e1a', marginBottom: 0 }}>{title}</h3>
-      <div className="max-h-0 overflow-hidden group-hover:max-h-[160px] transition-all duration-500 ease-out">
-        <p style={{ color: '#7a7060', fontSize: 12, lineHeight: 1.7, paddingTop: 12 }}>{text}</p>
-      </div>
-    </div>
-    <div className="absolute bottom-0 left-0 right-0 h-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: '#e67e22' }} />
-  </div>
-);
-
-const UniverseCard = ({ image, title, desc, tags, producerImage, boldLabel, onOpenModal }: any) => (
+const UniverseCard = ({ image, title, onOpenModal }: any) => (
   <div
     className="group relative bg-white transition-all duration-500 flex flex-col cursor-pointer overflow-hidden"
     style={{ height: 480, borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.07)', border: '1px solid rgba(26,46,26,0.06)' }}
@@ -1190,33 +1206,20 @@ const UniverseCard = ({ image, title, desc, tags, producerImage, boldLabel, onOp
     onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 40px rgba(0,0,0,0.13)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.12)'; }}
     onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 4px 20px rgba(0,0,0,0.07)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.06)'; }}
   >
-    <div className="relative flex-shrink-0 overflow-hidden" style={{ height: 220, borderRadius: '20px 20px 0 0' }}>
-      <img src={image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={title} />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-      <div className="absolute top-3 left-3 backdrop-blur-sm px-3 py-1" style={{ background: 'rgba(255,255,255,0.88)', borderRadius: '9999px' }}>
-        <p style={{ fontSize: 9, fontWeight: 700, color: '#1a2e1a', textTransform: 'uppercase', letterSpacing: '0.12em' }}>{desc}</p>
-      </div>
-      <div className="absolute bottom-10 left-4 right-4">
-        <p className="font-sans font-black text-white uppercase" style={{ fontSize: 'clamp(14px,2vw,19px)', letterSpacing: '-0.01em', textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>{boldLabel}</p>
-      </div>
-    </div>
-    {producerImage && <div className="absolute z-20 overflow-hidden" style={{ width: 56, height: 56, top: 192, right: 16, borderRadius: '50%', border: '3px solid #fff', boxShadow: '0 2px 10px rgba(0,0,0,0.12)' }}><img src={producerImage} alt="" className="w-full h-full object-cover" /></div>}
-    <div className="relative flex flex-col px-5 pt-10 pb-4" style={{ flex: 1 }}>
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-0.5 h-5 rounded-full flex-shrink-0 transition-colors duration-300" style={{ background: '#1a2e1a' }} />
-        <h3 className="font-sans font-bold text-primary not-italic leading-tight group-hover:text-orange transition-colors duration-300" style={{ fontSize: 14 }}>{title}</h3>
-      </div>
-      <div className="flex flex-col gap-2" style={{ minHeight: 110 }}>
-        {tags.map((tag: string) => (
-          <div key={tag} className="flex items-start gap-2">
-            <div className="rounded-full mt-1.5 flex-shrink-0" style={{ width: 5, height: 5, background: '#e67e22' }} />
-            <span style={{ fontSize: 11, color: '#7a7060', lineHeight: 1.6 }}>{tag}</span>
-          </div>
-        ))}
-      </div>
-      <div className="mt-auto pt-3 flex items-center justify-between" style={{ borderTop: '1px solid rgba(26,46,26,0.07)' }}>
-        <span style={{ fontSize: 9, fontWeight: 700, color: '#b8ad9e', textTransform: 'uppercase', letterSpacing: '0.18em' }}>Voir le détail</span>
-        <span style={{ fontSize: 12, fontWeight: 700, color: '#e67e22' }}>→</span>
+    <div className="relative flex-1 flex flex-col overflow-hidden" style={{ borderRadius: '20px' }}>
+      <img src={image} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={title} />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+      <div className="relative flex flex-col justify-end flex-1 px-5 pb-6 pt-20">
+        <h3
+          className="font-sans font-bold not-italic leading-tight mb-3 inline-block w-fit rounded-full px-4 py-2.5 transition-all duration-300 border-[3px] border-transparent group-hover:border-white/70 text-white group-hover:text-white/90"
+          style={{ fontSize: 'clamp(16px,2.2vw,20px)', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}
+        >
+          {title}
+        </h3>
+        <span className="inline-flex items-center gap-2 pl-4 text-white font-semibold" style={{ fontSize: 14, letterSpacing: '0.02em' }}>
+          En savoir plus
+          <span className="material-symbols-outlined text-white group-hover:translate-x-0.5 transition-transform duration-300" style={{ fontSize: 18 }}>arrow_forward</span>
+        </span>
       </div>
     </div>
   </div>

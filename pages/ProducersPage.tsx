@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import {
@@ -19,21 +20,52 @@ type RegionDropdownProps = {
 
 const RegionDropdown: React.FC<RegionDropdownProps> = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ bottom: 0, left: 0 });
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const isActive = value !== 'Toutes régions';
+
+  // Mettre à jour la position du menu à l'ouverture et au scroll/resize
+  useEffect(() => {
+    if (!open || !triggerRef.current) return;
+    const update = () => {
+      if (triggerRef.current) {
+        const rect = triggerRef.current.getBoundingClientRect();
+        setPosition({
+          bottom: window.innerHeight - rect.top + 8,
+          left: rect.left,
+        });
+      }
+    };
+    update();
+    window.addEventListener('scroll', update, true);
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update, true);
+      window.removeEventListener('resize', update);
+    };
+  }, [open]);
 
   // Fermer si clic extérieur
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      const target = e.target as Node;
+      if (
+        open &&
+        triggerRef.current && !triggerRef.current.contains(target) &&
+        menuRef.current && !menuRef.current.contains(target)
+      ) {
+        setOpen(false);
+      }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, []);
+  }, [open]);
 
   return (
-    <div ref={ref} style={{ position: 'relative' }}>
+    <>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((o) => !o)}
         style={{
@@ -66,19 +98,22 @@ const RegionDropdown: React.FC<RegionDropdownProps> = ({ value, onChange }) => {
         </span>
       </button>
 
-      {open && (
-        <div style={{
-          position: 'absolute',
-          top: 'calc(100% + 8px)',
-          left: 0,
-          background: '#fff',
-          border: '1.5px solid #e5e0d8',
-          borderRadius: 16,
-          boxShadow: '0 8px 32px rgba(10,44,52,0.12)',
-          overflow: 'hidden',
-          zIndex: 100,
-          minWidth: 200,
-        }}>
+      {open && createPortal(
+        <div
+          ref={menuRef}
+          style={{
+            position: 'fixed',
+            bottom: position.bottom,
+            left: position.left,
+            background: '#fff',
+            border: '1.5px solid #e5e0d8',
+            borderRadius: 16,
+            boxShadow: '0 8px 32px rgba(10,44,52,0.12)',
+            overflow: 'hidden',
+            zIndex: 9999,
+            minWidth: 200,
+          }}
+        >
           {REGIONS.map((r) => {
             const selected = r === value;
             return (
@@ -107,9 +142,10 @@ const RegionDropdown: React.FC<RegionDropdownProps> = ({ value, onChange }) => {
               </button>
             );
           })}
-        </div>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   );
 };
 
@@ -249,7 +285,7 @@ const ProducersPage: React.FC = () => {
 
       {/* ── HERO ── */}
       <section className="relative w-full">
-        <div className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[75vh] w-full overflow-hidden flex items-center justify-center group">
+        <div className="relative min-h-[88vh] sm:min-h-[82vh] lg:min-h-[78vh] w-full overflow-hidden flex items-center justify-center group">
           <div
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[14s] group-hover:scale-[1.03]"
             style={{ backgroundImage: 'url("https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/vache2.avif' }}
@@ -264,15 +300,15 @@ const ProducersPage: React.FC = () => {
               <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
             </div>
             <h1 className="text-white font-semibold leading-[1.06] mb-6 drop-shadow-lg">
-              <span className="font-sans text-3xl md:text-4xl lg:text-5xl">Nos producteurs </span>
-              <span className="font-display italic text-3xl md:text-5xl lg:text-6xl">partenaires.</span>
+              <span className="font-sans text-4xl md:text-4xl lg:text-5xl">Nos producteurs </span>
+              <span className="font-display italic text-5xl md:text-5xl lg:text-6xl">partenaires.</span>
             </h1>
-            <p className="text-white/80 text-ml max-w-xl mx-auto mb-8 leading-relaxed">
+            <p className="text-white/80 text-ml max-w-xl mx-auto mb-10 leading-relaxed">
               Des producteurs, éleveurs, vignerons et artisans soigneusement sélectionnés pour leur authenticité et leur savoir-faire.
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/entreprises" className="text-white border border-white/35 hover:border-white/70 px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/10 rounded-full">
-                Nos séminaires
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+              <Link to="/entreprises" className="text-white border border-white/100 hover:border-white/70 px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/10 rounded-full">
+                Nos séminaires d'entreprise
               </Link>
               <Link to="/recommander-un-producteur" className="text-white/90 hover:text-white text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300">
                 Recommander un producteur →
@@ -282,11 +318,13 @@ const ProducersPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── RECHERCHE + FILTRES ── */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #f0ebe4', position: 'sticky', top: 0, zIndex: 10 }}>
+      {/* Espace entre hero et barre de recherche */}
+      <div className="bg-beige-bg" style={{ height: 56 }} />
 
+      {/* ── RECHERCHE + FILTRES (même fond que grille, pas de séparateur) ── */}
+      <div id="section-recherche" className="bg-beige-bg" style={{ position: 'sticky', top: 0, zIndex: 10 }}>
         {/* Barre de recherche centrée */}
-        <div style={{ padding: '16px 24px', display: 'flex', justifyContent: 'center', borderBottom: '1px solid #f0ebe4' }}>
+        <div style={{ padding: '16px 24px', display: 'flex', justifyContent: 'center' }}>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 10,
             background: '#f9f6f2', borderRadius: 24,
@@ -338,7 +376,7 @@ const ProducersPage: React.FC = () => {
       </div>
 
       {/* ── GRILLE ── */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '48px 24px' }}>
+      <div className="bg-beige-bg" style={{ maxWidth: 1200, margin: '0 auto', padding: '48px 24px' }}>
         {loading && (
           <div style={{ textAlign: 'center', padding: '80px 0', color: '#6b7280' }}>
             <p style={{ fontSize: 16, fontWeight: 600 }}>Chargement des producteurs...</p>
@@ -370,8 +408,9 @@ const ProducersPage: React.FC = () => {
           </>
         )}
 
-        {/* Bandeau partenaire */}
-        <div style={{ background: '#1e291a', borderRadius: 24, padding: '48px 64px', marginTop: 48, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
+        {/* Séparateur + gros espace avant bandeau partenaire */}
+        <div style={{ marginTop: 96, paddingTop: 48, borderTop: '1px solid #e5e0d8' }}>
+          <div style={{ background: '#1e291a', borderRadius: 24, padding: '48px 64px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
           <div>
             <h3 style={{ color: '#fff', margin: '0 0 10px', lineHeight: 1.3 }}>
               <span style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 23 }}>Vous êtes un producteur engagé ou </span>
@@ -382,6 +421,7 @@ const ProducersPage: React.FC = () => {
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <Link to="/nous-rejoindre" className="bg-[#f78d00] text-white px-5 py-3 rounded-xl text-[11px] font-bold uppercase tracking-[0.1em] no-underline hover:opacity-90 transition-opacity">Devenir partenaire →</Link>
             <Link to="/recommander-un-producteur" className="bg-white/10 text-white px-5 py-3 rounded-xl text-[11px] font-bold uppercase tracking-[0.1em] border border-white/20 no-underline hover:bg-white/20 transition-colors">Recommander un producteur →</Link>
+          </div>
           </div>
         </div>
       </div>

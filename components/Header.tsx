@@ -25,7 +25,7 @@ const NAV_ITEMS: NavItem[] = [
     label: "Séminaires d'entreprise",
     path: '/entreprises',
     dropdown: [
-      { label: 'Séminaires engagés',   description: 'Du sens, du vrai, et du vivant',            path: '#etoiles', targetPath: '/entreprises',  emoji: '🌿' },
+      { label: 'Séminaires engagés',   description: 'Du sens, du vrai, et du vivant',            path: '/seminaires-entreprise', emoji: '🌿' },
       { label: 'Nos offres packagées', description: 'À la journée, sur 2 jours, ou sur mesure',  path: '/entreprises/offres',                    emoji: '📦' },
     ],
   },
@@ -50,8 +50,8 @@ const NAV_ITEMS: NavItem[] = [
     label: 'À propos',
     path: '/a-propos',
     dropdown: [
-      { label: 'Mission et engagements', description: "Notre raison d'être", path: '#qui',    targetPath: '/notre-engagement', emoji: '🎯' },
-      { label: 'Qui sommes-nous',        description: "L'équipe Terrago",    path: '#equipe', targetPath: '/notre-engagement', emoji: '👋' },
+      { label: 'Mission et engagements', description: "Notre raison d'être", path: '/mission-engagements', emoji: '🎯' },
+      { label: 'Qui sommes-nous',        description: "L'équipe Terrago",    path: '#equipe', targetPath: '/mission-engagements', emoji: '👋' },
     ],
   },
 ];
@@ -231,8 +231,9 @@ const Header: React.FC = () => {
   const hasHeroTransparent = (
     location.pathname === '/' ||
     location.pathname === '/entreprises' ||
+    location.pathname === '/seminaires-entreprise' ||
     location.pathname === '/partenaires' ||
-    location.pathname === '/notre-engagement'
+    location.pathname === '/mission-engagements'
   );
   const isHeroTransparent = hasHeroTransparent && !isScrolled;
 
@@ -286,7 +287,9 @@ const Header: React.FC = () => {
           {/* Nav desktop */}
           <nav className="hidden lg:flex items-center gap-0 ml-auto mr-8 flex-nowrap">
             {NAV_ITEMS.map((nav) => {
-              const isActive = location.pathname === nav.path;
+              const isActive = nav.path === '/entreprises'
+                ? (location.pathname === '/entreprises' || location.pathname === '/seminaires-entreprise')
+                : location.pathname === nav.path;
               const isOpen   = openDropdown === nav.label;
               return (
                 <div

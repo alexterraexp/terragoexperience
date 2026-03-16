@@ -1,7 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const RECOMMEND_EMAIL = 'alexso.terrago@gmail.com';
 const FORMSPREE_RECOMMEND_ID = (import.meta.env?.VITE_FORMSPREE_RECOMMEND_ID as string | undefined) || undefined;
+
+// ─── Hook responsive ───────────────────────────────────────────────────────────
+
+const useBreakpoint = () => {
+  const getBreakpoint = () => {
+    if (typeof window === 'undefined') return 'desktop';
+    if (window.innerWidth <= 860) return 'mobile';
+    if (window.innerWidth <= 1100) return 'tablet';
+    return 'desktop';
+  };
+  const [bp, setBp] = useState(getBreakpoint);
+  useEffect(() => {
+    const handler = () => setBp(getBreakpoint());
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return bp;
+};
 
 // ─── Sub-component ─────────────────────────────────────────────────────────────
 
@@ -27,13 +45,13 @@ const SRCS = [
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png',
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/paysageterroir.png',
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png',
-
 ];
 
 const ANIM_DURATION = 15;
 
 interface PhotoCard {
   src: string;
+  // Desktop
   width: number;
   height: number;
   top?: string;
@@ -42,22 +60,53 @@ interface PhotoCard {
   right?: string;
   rotate: string;
   delay: string;
+  // Tablet overrides
+  tabletWidth?: number;
+  tabletHeight?: number;
+  tabletTop?: string;
+  tabletBottom?: string;
+  tabletLeft?: string;
+  tabletRight?: string;
 }
 
-// 7 cartes couvrant bien les zones : haut-gauche, haut-droite, milieu-gauche,
-// milieu-centre, milieu-droite, bas-gauche, bas-droite
+// Desktop : positions originales
+// Tablet  : 3 cartes seulement, positionnées sans chevauchement
 const PHOTOS: PhotoCard[] = [
-  { src: SRCS[0], width: 310, height: 370, top: '15%',    left: '6%',   rotate: '-4deg', delay: '0s'   },
-  { src: SRCS[7], width: 365, height: 405, top: '9%',    right: '10%',  rotate: '3deg',  delay: '1s'   },
-  { src: SRCS[5], width: 225, height: 345, top: '59%',   left: '4%',   rotate: '5deg',  delay: '3s'   },
-  { src: SRCS[9], width: 285, height: 395, bottom: '3%',   left: '36%',  rotate: '-2deg', delay: '4s'   },
-  { src: SRCS[4], width: 225, height: 315, bottom: '13%',    right: '4%',  rotate: '7deg', delay: '2s'   },
-
+  {
+    src: SRCS[0],
+    width: 310, height: 370, top: '15%', left: '6%', rotate: '-4deg', delay: '0s',
+    tabletWidth: 180, tabletHeight: 220, tabletTop: '10%', tabletLeft: '4%',
+  },
+  {
+    src: SRCS[7],
+    width: 365, height: 405, top: '9%', right: '10%', rotate: '3deg', delay: '1s',
+    tabletWidth: 190, tabletHeight: 230, tabletTop: '8%', tabletRight: '4%',
+  },
+  {
+    src: SRCS[5],
+    width: 225, height: 345, top: '59%', left: '4%', rotate: '5deg', delay: '3s',
+    tabletWidth: 165, tabletHeight: 210, tabletTop: '52%', tabletLeft: '4%',
+  },
+  {
+    src: SRCS[9],
+    width: 285, height: 395, bottom: '3%', left: '36%', rotate: '-2deg', delay: '4s',
+    // Masquée sur tablette (trop centrale, crée de l'overlap)
+    tabletWidth: 0, tabletHeight: 0,
+  },
+  {
+    src: SRCS[4],
+    width: 225, height: 315, bottom: '13%', right: '4%', rotate: '7deg', delay: '2s',
+    tabletWidth: 160, tabletHeight: 200, tabletBottom: '10%', tabletRight: '4%',
+  },
 ];
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 const RecommendProducer: React.FC = () => {
+  const bp = useBreakpoint();
+  const isMobile = bp === 'mobile';
+  const isTablet = bp === 'tablet';
+
   const [formData, setFormData] = useState({
     producerName: '',
     yourName: '',
@@ -170,7 +219,7 @@ const RecommendProducer: React.FC = () => {
           100% { opacity: 0; transform: var(--rot) translateY(28px); }
         }
 
-        .photo-card {
+        .photo-card-desktop {
           position: absolute;
           border-radius: 18px;
           overflow: hidden;
@@ -178,9 +227,24 @@ const RecommendProducer: React.FC = () => {
           opacity: 0;
           animation: photoFloat ${ANIM_DURATION}s ease-in-out infinite;
         }
-        .photo-card img {
+        .photo-card-desktop img {
           width: 100%;
           height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        .photo-card-mobile {
+          border-radius: 14px;
+          overflow: hidden;
+          box-shadow: 0 8px 28px rgba(0,0,0,0.13);
+          flex-shrink: 0;
+          width: 72vw;
+          max-width: 280px;
+        }
+        .photo-card-mobile img {
+          width: 100%;
+          height: 220px;
           object-fit: cover;
           display: block;
         }
@@ -193,11 +257,33 @@ const RecommendProducer: React.FC = () => {
         .rec-left {
           padding-left: calc(max(0px, (100vw - 1080px) / 2) + clamp(1.5rem, 4vw, 3rem)) !important;
         }
-        @media (max-width: 860px) {
-          .rec-split { grid-template-columns: 1fr; }
-          .rec-right { display: none !important; }
-          .rec-left { padding: calc(84px + 3rem) clamp(1.5rem, 4vw, 3rem) 4rem clamp(1.5rem, 4vw, 3rem) !important; }
+
+        .rec-photos-mobile {
+          display: none;
         }
+
+        @media (max-width: 860px) {
+          .rec-split {
+            grid-template-columns: 1fr;
+          }
+          .rec-right-desktop {
+            display: none !important;
+          }
+          .rec-left {
+            padding: calc(84px + 3rem) clamp(1.5rem, 4vw, 3rem) 2rem clamp(1.5rem, 4vw, 3rem) !important;
+          }
+          .rec-photos-mobile {
+            display: flex;
+            flex-direction: row;
+            gap: 14px;
+            overflow-x: auto;
+            padding: 0 clamp(1.5rem, 4vw, 3rem) 3rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+          }
+          .rec-photos-mobile::-webkit-scrollbar { display: none; }
+        }
+
         @media (max-width: 600px) {
           .rec-grid-2 { grid-template-columns: 1fr !important; }
         }
@@ -216,7 +302,6 @@ const RecommendProducer: React.FC = () => {
             justifyContent: 'center',
           }}
         >
-          {/* Eyebrow */}
           <div className="flex items-center gap-3 mb-8">
             <div style={{ width: 20, height: 1, background: '#e67e22' }} />
             <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>
@@ -224,7 +309,6 @@ const RecommendProducer: React.FC = () => {
             </span>
           </div>
 
-          {/* Titre */}
           <h1 className="font-bold text-primary leading-tight mb-6" style={{ letterSpacing: '-0.01em' }}>
             <span className="font-sans not-italic" style={{ fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', display: 'block' }}>
               Recommander
@@ -234,7 +318,6 @@ const RecommendProducer: React.FC = () => {
             </span>
           </h1>
 
-          {/* Stat card */}
           <div style={{
             display: 'flex', alignItems: 'center', gap: 12,
             background: '#f5f2ed', borderRadius: 14, padding: '10px 16px',
@@ -242,7 +325,8 @@ const RecommendProducer: React.FC = () => {
           }}>
             <div style={{ width: 8, height: 8, background: '#e67e22', borderRadius: '50%', flexShrink: 0, animation: 'recPulse 2s infinite' }} />
             <span style={{ fontSize: 11, color: '#7a6e62' }}>
-             On a hâte de <strong style={{ color: '#1a2e1a' }}>découvrir vos pépites !</strong>  </span>
+              On a hâte de <strong style={{ color: '#1a2e1a' }}>découvrir vos pépites !</strong>
+            </span>
           </div>
 
           {submitSuccess ? (
@@ -273,7 +357,6 @@ const RecommendProducer: React.FC = () => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-
               {submitError && (
                 <div style={{ background: 'rgba(230,126,34,0.07)', border: '1px solid rgba(230,126,34,0.2)', borderRadius: 12, padding: '10px 16px', display: 'flex', gap: 10, alignItems: 'center' }}>
                   <span style={{ fontSize: 15 }}>⚠️</span>
@@ -369,9 +452,9 @@ const RecommendProducer: React.FC = () => {
           )}
         </div>
 
-        {/* ── DROITE : PHOTOS FLOTTANTES SANS FOND ── */}
+        {/* ── DROITE DESKTOP + TABLET : PHOTOS FLOTTANTES ── */}
         <div
-          className="rec-right"
+          className="rec-right-desktop"
           style={{
             position: 'sticky',
             top: 0,
@@ -380,27 +463,65 @@ const RecommendProducer: React.FC = () => {
             background: 'transparent',
           }}
         >
+          {PHOTOS.map((photo, i) => {
+            // Sur tablette : utiliser les positions tablet, masquer si tabletWidth = 0
+            if (isTablet) {
+              if (!photo.tabletWidth) return null;
+              return (
+                <div
+                  key={i}
+                  className="photo-card-desktop"
+                  style={{
+                    width: photo.tabletWidth,
+                    height: photo.tabletHeight,
+                    top: photo.tabletTop,
+                    bottom: photo.tabletBottom,
+                    left: photo.tabletLeft,
+                    right: photo.tabletRight,
+                    animationDelay: photo.delay,
+                    ['--rot' as string]: `rotate(${photo.rotate})`,
+                  } as React.CSSProperties}
+                >
+                  <img src={photo.src} alt="" />
+                </div>
+              );
+            }
+
+            // Desktop : positions originales
+            return (
+              <div
+                key={i}
+                className="photo-card-desktop"
+                style={{
+                  width: photo.width,
+                  height: photo.height,
+                  top: photo.top,
+                  bottom: photo.bottom,
+                  left: photo.left,
+                  right: photo.right,
+                  animationDelay: photo.delay,
+                  ['--rot' as string]: `rotate(${photo.rotate})`,
+                } as React.CSSProperties}
+              >
+                <img src={photo.src} alt="" />
+              </div>
+            );
+          })}
+        </div>
+
+      </div>
+
+      {/* ── MOBILE UNIQUEMENT : PHOTOS EMPILÉES SOUS LE FORMULAIRE ── */}
+      {isMobile && (
+        <div className="rec-photos-mobile">
           {PHOTOS.map((photo, i) => (
-            <div
-              key={i}
-              className="photo-card"
-              style={{
-                width: photo.width,
-                height: photo.height,
-                top: photo.top,
-                bottom: photo.bottom,
-                left: photo.left,
-                right: photo.right,
-                animationDelay: photo.delay,
-                ['--rot' as string]: `rotate(${photo.rotate})`,
-              } as React.CSSProperties}
-            >
+            <div key={i} className="photo-card-mobile">
               <img src={photo.src} alt="" />
             </div>
           ))}
         </div>
+      )}
 
-      </div>
     </div>
   );
 };

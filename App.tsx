@@ -31,10 +31,11 @@ const App: React.FC = () => {
           <Route path="/partenaires" element={<ProducersPage />} />
           <Route path="/partenaires/:producerId" element={<ProducerDetailPage />} />
           <Route path="/entreprises" element={<Seminaires />} />
+          <Route path="/seminaires-entreprise" element={<Seminaires />} />
           <Route path="/entreprises/offres" element={<SeminairesPack />} />
           <Route path="/entre-amis" element={<Particuliers />} />
           <Route path="/particuliers" element={<Particuliers />} />
-          <Route path="/notre-engagement" element={<Engagement />} />
+          <Route path="/mission-engagements" element={<Engagement />} />
           <Route path="/nous-rejoindre" element={<Host />} />
           <Route path="/recommander-un-producteur" element={<RecommendProducer />} />
           <Route path="/auth" element={<Auth />} />
