@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import ReactGA from 'react-ga4';
+import CookieBanner from './components/CookieBanner';
 import Layout from './components/Layout';
 import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
@@ -30,6 +31,7 @@ const PageTracker: React.FC = () => {
 const App: React.FC = () => {
   return (
     <Router>
+      <CookieBanner />
       <PageTracker />
       <ScrollToTop />
       <Layout>
