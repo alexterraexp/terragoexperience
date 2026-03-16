@@ -115,6 +115,14 @@ const Particuliers: React.FC = () => {
         .scroll-arrow {
           animation: scrollBounce 2.2s ease-in-out infinite;
         }
+        .part-side-images {
+          display: flex;
+        }
+        @media (max-width: 1024px) {
+          .part-side-images {
+            display: none;
+          }
+        }
         @media (max-width: 600px) {
           .part-grid-2 { grid-template-columns: 1fr !important; }
         }
@@ -135,10 +143,10 @@ const Particuliers: React.FC = () => {
         className="bg-white w-full"
       >
       {/* ── Images droite ── */}
-<div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end', gap: 12, transform: 'translateX(12%)' }}>
+<div className="part-side-images" style={{ position: 'absolute', right: 0, top: 0, bottom: 0, pointerEvents: 'none', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end', gap: 12, transform: 'translateX(6%) translateY(3cm)' }}>
 
 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
-  <div style={{ width: 300, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+  <div style={{ width: 215, height: 180, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
     <img src="https://images.unsplash.com/photo-1682996055064-599bec77fc62?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
   </div>
 </div>
@@ -146,7 +154,7 @@ const Particuliers: React.FC = () => {
 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
   {['https://images.unsplash.com/photo-1767034243078-c6d0dde763d8?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://images.unsplash.com/photo-1765966879544-cadc5b2af695?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'].map((src, i) => (
-    <div key={i} style={{ width: 220, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+    <div key={i} style={{ width: 155, height: 170, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
       <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
     </div>
   ))}
@@ -156,7 +164,7 @@ const Particuliers: React.FC = () => {
   {['https://images.unsplash.com/photo-1600265360126-aac005b63361?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://images.unsplash.com/photo-1770453572726-f51592710ca6?q=80&w=2669&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://images.unsplash.com/photo-1666955546775-f39d76308be7?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'].map((src, i) => (
-    <div key={i} style={{ width: 220, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+    <div key={i} style={{ width: 155, height: 170, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
       <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
     </div>
   ))}
@@ -164,10 +172,10 @@ const Particuliers: React.FC = () => {
 </div>
 
 {/* ── Images gauche ── */}
-<div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', gap: 12, transform: 'translateX(-12%)' }}>
+<div className="part-side-images" style={{ position: 'absolute', left: 0, top: 0, bottom: 0, pointerEvents: 'none', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', gap: 12, transform: 'translateX(-6%) translateY(3cm)' }}>
 
 <div style={{ display: 'flex', justifyContent: 'flex-start', gap: 12 }}>
-  <div style={{ width: 300, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+  <div style={{ width: 215, height: 180, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
     <img src="https://images.unsplash.com/photo-1640957301215-f665baf6ed1d?q=80&w=1289&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
   </div>
 </div>
@@ -175,7 +183,7 @@ const Particuliers: React.FC = () => {
 <div style={{ display: 'flex', justifyContent: 'flex-start', gap: 12 }}>
   {['https://images.unsplash.com/photo-1656711695100-d6e39ddd6cb5?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://images.unsplash.com/photo-1662960501707-1892f9b540f5?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'].map((src, i) => (
-    <div key={i} style={{ width: 220, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+    <div key={i} style={{ width: 155, height: 170, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
       <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
     </div>
   ))}
@@ -185,7 +193,7 @@ const Particuliers: React.FC = () => {
   {['https://images.unsplash.com/photo-1604300721398-3f58fdf81780?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://images.unsplash.com/photo-1650964794396-9b9efaccd585?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://images.unsplash.com/photo-1610055885401-dba0225da39b?q=80&w=2274&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'].map((src, i) => (
-    <div key={i} style={{ width: 220, height: 240, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+    <div key={i} style={{ width: 155, height: 170, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
       <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
     </div>
   ))}
