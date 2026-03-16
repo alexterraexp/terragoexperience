@@ -77,11 +77,11 @@ const AccordionSection: React.FC<{
           {nav.label}
         </span>
 
-        {/* Bouton + → × design */}
+        {/* Bouton + (gris fermé) → ouverture : full orange + croix blanche (pas de gris dans l’animation) */}
         <span
           className={[
             'flex-shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center',
-            'transition-all duration-250',
+            'transition-all duration-300',
             isOpen
               ? 'border-[#D4751A] bg-[#D4751A] text-white rotate-45'
               : 'border-[#1C2318]/20 bg-transparent text-[#1C2318] group-hover:border-[#D4751A] group-hover:text-[#D4751A]',

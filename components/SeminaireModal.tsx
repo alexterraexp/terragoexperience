@@ -367,17 +367,35 @@ Message: ${form.message || 'Aucun'}
           .sg3 { grid-template-columns:1fr!important }
           .sg4 { grid-template-columns:1fr 1fr!important }
           .ssl { display:none!important }
-          .sem-wrapper { align-items:flex-start!important; padding:0!important }
+
+          /* Le panneau occupe tout l'écran sur mobile */
+          .sem-wrapper {
+            align-items:stretch!important;
+            justify-content:stretch!important;
+            padding:0!important;
+          }
           .sem-panel {
+            position:fixed!important;
+            inset:0!important;
             border-radius:0!important;
-            max-height:100vh!important;
-            max-height:100dvh!important;
+            max-width:none!important;
+            width:100%!important;
             height:100vh!important;
             height:100dvh!important;
+            max-height:none!important;
+            min-height:0!important;
+            box-shadow:none!important;
+          }
+
+          .sem-header {
+            padding-top:max(20px, env(safe-area-inset-top))!important;
+          }
+
+          .sem-body {
+            padding:16px 16px 0!important;
             min-height:0!important;
           }
-          .sem-header { padding-top:max(20px, env(safe-area-inset-top))!important }
-          .sem-body { padding:16px 16px 0!important; min-height:0!important }
+
           .sem-footer {
             padding:12px 16px max(12px, env(safe-area-inset-bottom))!important;
           }
