@@ -1,14 +1,6 @@
 import type { Metadata } from 'next';
-import { Suspense } from 'react';
-import ProducerDetailPage from '../../../views/ProducerDetailPage';
 import { supabaseServer as supabase } from '../../../lib/supabase';
-
-export async function generateStaticParams() {
-  const { data } = await supabase
-    .from('producers')
-    .select('id');
-  return (data ?? []).map((p: { id: string }) => ({ producerId: p.id }));
-}
+import ProducerClientWrapper from './ClientWrapper';
 
 export const metadata: Metadata = {
   title: 'Producteur partenaire – Terrago',
@@ -17,10 +9,13 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+export async function generateStaticParams() {
+  const { data } = await supabase
+    .from('producers')
+    .select('id');
+  return (data ?? []).map((p: { id: string }) => ({ producerId: p.id }));
+}
+
 export default function ProducerPage() {
-  return (
-    <Suspense fallback={null}>
-      <ProducerDetailPage />
-    </Suspense>
-  );
+  return <ProducerClientWrapper />;
 }
