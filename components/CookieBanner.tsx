@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import ReactGA from 'react-ga4';
 
@@ -22,6 +24,10 @@ const CookieBanner: React.FC = () => {
   useEffect(() => {
     const consent = window.localStorage.getItem('cookie_consent');
     if (!consent) setVisible(true);
+
+    const handleOpen = () => { setStep(1); setVisible(true); };
+    window.addEventListener('openCookieBanner', handleOpen);
+    return () => window.removeEventListener('openCookieBanner', handleOpen);
   }, []);
 
   const applyConsent = (s: boolean, m: boolean, p: boolean) => {

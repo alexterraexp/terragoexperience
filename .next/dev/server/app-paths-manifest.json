@@ -1,0 +1,11 @@
+{
+  "/blog/[slug]/page": "app/blog/[slug]/page.js",
+  "/blog/page": "app/blog/page.js",
+  "/entre-amis/sejours/page": "app/entre-amis/sejours/page.js",
+  "/mission-engagements/page": "app/mission-engagements/page.js",
+  "/nous-rejoindre/page": "app/nous-rejoindre/page.js",
+  "/page": "app/page.js",
+  "/partenaires/page": "app/partenaires/page.js",
+  "/seminaires-entreprise/page": "app/seminaires-entreprise/page.js",
+  "/seminaires/offres/page": "app/seminaires/offres/page.js"
+}

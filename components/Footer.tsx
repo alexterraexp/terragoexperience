@@ -1,22 +1,48 @@
+'use client';
+
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
+
+const linkStyle: React.CSSProperties = {
+  fontSize: 13, color: '#7a7060', textDecoration: 'none', transition: 'color .2s',
+};
+
+const sectionTitle: React.CSSProperties = {
+  fontSize: 15, fontWeight: 700, color: '#1a2e1a', marginBottom: 22, marginTop: 0,
+};
 
 const Footer: React.FC = () => {
+  const openCookies = () => {
+    window.dispatchEvent(new CustomEvent('openCookieBanner'));
+  };
+
   return (
     <footer style={{ background: '#ffffff', fontFamily: "'Poppins', sans-serif" }}>
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-20 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-12">
+      <style>{`
+        .footer-grid {
+          display: grid;
+          grid-template-columns: 1.4fr 1fr 0.9fr 0.9fr;
+          gap: 1.25rem;
+          align-items: start;
+        }
+        @media (max-width: 768px) {
+          .footer-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+          }
+        }
+      `}</style>
 
-          {/* ── Brand (colonne gauche) ── */}
-          <div className="lg:col-span-3 flex flex-col gap-6">
+      <div className="max-w-[1440px] mx-auto" style={{ padding: 'clamp(2rem, 4vw, 3rem) clamp(1.5rem, 4vw, 3rem)' }}>
+        <div className="footer-grid">
 
+          {/* ── Col 1 · Brand ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <img
               src="/logo.png"
               alt="Terrago"
-              className="h-20 md:h-24 lg:h-28 w-auto"
-              style={{ alignSelf: 'flex-start' }}
+              style={{ height: 140, width: 'auto', alignSelf: 'flex-start' }}
             />
-
             <p style={{ color: '#6b6355', fontSize: 13, lineHeight: 1.65, margin: 0, maxWidth: 240 }}>
               Des séminaires et séjours de groupe au cœur du terroir français.
             </p>
@@ -81,31 +107,23 @@ const Footer: React.FC = () => {
             </div>
 
             {/* Badge */}
-            <div
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '8px 14px', borderRadius: 8,
-                background: 'rgba(26,46,26,0.05)',
-                border: '1px solid rgba(26,46,26,0.08)',
-                alignSelf: 'flex-start',
-              }}
-            >
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '8px 14px', borderRadius: 8,
+              background: 'rgba(26,46,26,0.05)',
+              border: '1px solid rgba(26,46,26,0.08)',
+              alignSelf: 'flex-start',
+            }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', flexShrink: 0 }} />
-              <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#1a2e1a' }}>
+              <span style={{ fontSize: 7.5, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#1a2e1a' }}>
                 100% Français &amp; Authentique
               </span>
             </div>
-
           </div>
 
-          {/* ── Spacer ── */}
-          <div className="hidden lg:block lg:col-span-1" />
-
-          {/* ── Plateforme ── */}
-          <div className="lg:col-span-2">
-            <h6 style={{ fontSize: 15, fontWeight: 700, color: '#1a2e1a', marginBottom: 22, marginTop: 0 }}>
-              Plateforme
-            </h6>
+          {/* ── Col 2 · Plateforme ── */}
+          <div>
+            <h6 style={sectionTitle}>Plateforme</h6>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
               {[
                 { to: '/entreprises', label: "Séminaires d'entreprise" },
@@ -116,8 +134,8 @@ const Footer: React.FC = () => {
               ].map(item => (
                 <li key={item.to}>
                   <Link
-                    to={item.to}
-                    style={{ fontSize: 13, color: '#7a7060', textDecoration: 'none', transition: 'color .2s' }}
+                    href={item.to}
+                    style={linkStyle}
                     onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#1a2e1a')}
                     onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
                   >
@@ -128,42 +146,20 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* ── À propos ── */}
-          <div className="lg:col-span-2">
-            <h6 style={{ fontSize: 15, fontWeight: 700, color: '#1a2e1a', marginBottom: 22, marginTop: 0 }}>
-              À propos
-            </h6>
+          {/* ── Col 3 · À propos ── */}
+          <div>
+            <h6 style={sectionTitle}>À propos</h6>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
               {[
                 { to: '/nous-rejoindre', label: 'Devenir partenaire' },
                 { to: '/recommander-un-producteur', label: 'Recommander un producteur' },
-                { to: '#', label: 'Nous contacter' },
+                { to: '/blog', label: 'Le blog Terrago' },
+                { to: 'mailto:terragoexperiences@gmail.com', label: 'Nous contacter' },
               ].map(item => (
                 <li key={item.to}>
                   <Link
-                    to={item.to}
-                    style={{ fontSize: 13, color: '#7a7060', textDecoration: 'none', transition: 'color .2s' }}
-                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#1a2e1a')}
-                    onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            <h6 style={{ fontSize: 15, fontWeight: 700, color: '#1a2e1a', marginBottom: 22, marginTop: 32 }}>
-              Légal
-            </h6>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {[
-                { to: '/mentions-legales', label: 'Mentions légales' },
-                { to: '/confidentialite', label: 'Politique de confidentialité' },
-              ].map(item => (
-                <li key={item.to}>
-                  <Link
-                    to={item.to}
-                    style={{ fontSize: 13, color: '#7a7060', textDecoration: 'none', transition: 'color .2s' }}
+                    href={item.to}
+                    style={linkStyle}
                     onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#1a2e1a')}
                     onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
                   >
@@ -174,12 +170,10 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* ── Contact ── */}
-          <div className="lg:col-span-2">
-            <h6 style={{ fontSize: 15, fontWeight: 700, color: '#1a2e1a', marginBottom: 22, marginTop: 0 }}>
-              Contact
-            </h6>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {/* ── Col 4 · Contact + Légal ── */}
+          <div>
+            <h6 style={sectionTitle}>Contact</h6>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 32 }}>
               <a
                 href="mailto:terragoexperiences@gmail.com"
                 style={{ display: 'flex', alignItems: 'flex-start', gap: 10, textDecoration: 'none', color: '#7a7060', fontSize: 13, lineHeight: 1.6, transition: 'color .2s' }}
@@ -200,6 +194,40 @@ const Footer: React.FC = () => {
                 France entière
               </div>
             </div>
+
+            <h6 style={sectionTitle}>Légal</h6>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {[
+                { to: '/mentions-legales', label: 'Mentions légales' },
+                { to: '/confidentialite', label: 'Politique de confidentialité' },
+              ].map(item => (
+                <li key={item.to}>
+                  <Link
+                    href={item.to}
+                    style={linkStyle}
+                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#1a2e1a')}
+                    onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <button
+                  onClick={openCookies}
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    padding: 0, fontSize: 13, color: '#7a7060',
+                    fontFamily: 'inherit', textAlign: 'left',
+                    transition: 'color .2s',
+                  }}
+                  onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.color = '#1a2e1a')}
+                  onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.color = '#7a7060')}
+                >
+                  Cookies
+                </button>
+              </li>
+            </ul>
           </div>
 
         </div>

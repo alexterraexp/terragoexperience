@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -26,14 +29,14 @@ const NAV_ITEMS: NavItem[] = [
     path: '/entreprises',
     dropdown: [
       { label: 'Séminaires engagés',   description: 'Du sens, du vrai, et du vivant',            path: '/seminaires-entreprise', emoji: '🌿' },
-      { label: 'Nos offres packagées', description: 'À la journée, sur 2 jours, ou sur mesure',  path: '/entreprises/offres',                    emoji: '📦' },
+      { label: 'Nos offres packagées', description: 'À la journée, sur 2 jours, ou sur mesure',  path: '/seminaires/offres',                     emoji: '📦' },
     ],
   },
   {
     label: 'Entre amis',
     path: '/entre-amis',
     dropdown: [
-      { label: 'Séjours uniques', description: 'On vous écoute !',         path: '#séjours', targetPath: '/entre-amis', emoji: '💬' },
+      { label: 'Séjours uniques', description: 'On vous écoute !',         path: '/entre-amis/sejours',                     emoji: '💬' },
       { label: 'Nos offres partagées',  description: 'Entre amis ou en famille', path: '#', comingSoon: true,               emoji: '🫶' },
     ],
   },
@@ -163,8 +166,8 @@ const AccordionSection: React.FC<{
 // ─── Composant principal ──────────────────────────────────────────────────────
 
 const Header: React.FC = () => {
-  const location  = useLocation();
-  const navigate  = useNavigate();
+  const pathname  = usePathname();
+  const router    = useRouter();
   const [isMenuOpen,   setIsMenuOpen]   = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpenSection, setMobileOpenSection] = useState<string | null>(null);
@@ -183,7 +186,7 @@ const Header: React.FC = () => {
     setIsMenuOpen(false);
     setOpenDropdown(null);
     setMobileOpenSection(null);
-  }, [location]);
+  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : 'unset';
@@ -217,23 +220,25 @@ const Header: React.FC = () => {
     setOpenDropdown(null);
     setIsMenuOpen(false);
     if (item.path.startsWith('#')) {
-      if (location.pathname === item.targetPath) {
+      if (pathname === item.targetPath) {
         document.querySelector(item.path)?.scrollIntoView({ behavior: 'smooth' });
       } else {
-        navigate(`${item.targetPath}${item.path}`);
+        router.push(`${item.targetPath}${item.path}`);
       }
     } else {
-      navigate(item.path);
+      router.push(item.path);
     }
   };
 
   // Pages avec héro plein écran où le header doit être transparent en haut de page
   const hasHeroTransparent = (
-    location.pathname === '/' ||
-    location.pathname === '/entreprises' ||
-    location.pathname === '/seminaires-entreprise' ||
-    location.pathname === '/partenaires' ||
-    location.pathname === '/mission-engagements'
+    pathname === '/' ||
+    pathname === '/entreprises' ||
+    pathname === '/seminaires-entreprise' ||
+    pathname === '/partenaires' ||
+    pathname === '/mission-engagements' ||
+    pathname === '/blog' ||
+    pathname.startsWith('/blog/')
   );
   const isHeroTransparent = hasHeroTransparent && !isScrolled;
 
@@ -269,11 +274,11 @@ const Header: React.FC = () => {
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12 h-full flex items-center justify-between gap-4">
 
           {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center group shrink-0"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
+            <Link
+              href="/"
+              className="flex items-center group shrink-0"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
             <img
               src="/logo.png"
               alt="Terrago"
@@ -288,8 +293,8 @@ const Header: React.FC = () => {
           <nav className="hidden lg:flex items-center gap-0 ml-auto mr-8 flex-nowrap">
             {NAV_ITEMS.map((nav) => {
               const isActive = nav.path === '/entreprises'
-                ? (location.pathname === '/entreprises' || location.pathname === '/seminaires-entreprise')
-                : location.pathname === nav.path;
+                ? (pathname === '/entreprises' || pathname === '/seminaires-entreprise')
+                : pathname === nav.path;
               const isOpen   = openDropdown === nav.label;
               return (
                 <div
@@ -316,7 +321,7 @@ const Header: React.FC = () => {
           {/* CTA + hamburger */}
           <div className="flex items-center gap-3 shrink-0">
             <Link
-              to="/entreprises?openModal=true"
+              href="/entreprises?openModal=true"
               className={[
                 'hidden sm:inline-flex items-center gap-2 rounded-full',
                 'px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5',
@@ -464,7 +469,7 @@ const Header: React.FC = () => {
                 type="button"
                 onClick={() => {
                   setIsMenuOpen(false);
-                  navigate('/entreprises', { state: { openSeminaireModal: true } });
+                  router.push('/entreprises?openModal=true');
                 }}
                 className="flex items-center justify-center gap-1.5 w-full
                   bg-[#1C2318] text-white rounded-lg py-2.5
