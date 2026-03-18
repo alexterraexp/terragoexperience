@@ -1,8 +1,19 @@
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
-  RewriteRule ^index\.html$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
-</IfModule>
+Options -MultiViews
+RewriteEngine On
+RewriteBase /
+
+# Fichiers statiques directs
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Ajouter .html si le fichier existe
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html [L]
+
+# Dossier avec index.html
+RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+RewriteRule ^(.*)/?$ /$1/index.html [L]
+
+# Fallback
+RewriteRule ^ /index.html [L]
