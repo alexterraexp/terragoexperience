@@ -1,0 +1,194 @@
+1:"$Sreact.fragment"
+2:I[25930,["/_next/static/chunks/424c0bbc38637cae.js","/_next/static/chunks/a9578fd8aaa578c0.js"],"default"]
+3:I[34377,["/_next/static/chunks/424c0bbc38637cae.js","/_next/static/chunks/a9578fd8aaa578c0.js"],"default"]
+4:I[70119,["/_next/static/chunks/424c0bbc38637cae.js","/_next/static/chunks/a9578fd8aaa578c0.js"],"default"]
+5:I[39756,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/d2be314c3ece3fbe.js"],"default"]
+6:I[37457,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/d2be314c3ece3fbe.js"],"default"]
+7:I[56691,["/_next/static/chunks/424c0bbc38637cae.js","/_next/static/chunks/a9578fd8aaa578c0.js"],"default"]
+9:I[97367,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/d2be314c3ece3fbe.js"],"OutletBoundary"]
+a:"$Sreact.suspense"
+c:I[97367,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/d2be314c3ece3fbe.js"],"ViewportBoundary"]
+e:I[97367,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/d2be314c3ece3fbe.js"],"MetadataBoundary"]
+10:I[68027,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/d2be314c3ece3fbe.js"],"default"]
+:HL["/_next/static/chunks/2bb9258b407acefe.css","style"]
+:HL["https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap","style"]
+:HL["https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap","style"]
+0:{"P":null,"b":"NNZUKQAHmv2vkL7lOnKIx","c":["","blog",""],"q":"","i":false,"f":[[["",{"children":["blog",{"children":["__PAGE__",{}]}]},"$undefined","$undefined",true],[["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/2bb9258b407acefe.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","script","script-0",{"src":"/_next/static/chunks/424c0bbc38637cae.js","async":true,"nonce":"$undefined"}],["$","script","script-1",{"src":"/_next/static/chunks/a9578fd8aaa578c0.js","async":true,"nonce":"$undefined"}]],["$","html",null,{"lang":"fr","children":[["$","head",null,{"children":[["$","link",null,{"rel":"preconnect","href":"https://fonts.googleapis.com"}],["$","link",null,{"rel":"preconnect","href":"https://fonts.gstatic.com","crossOrigin":"anonymous"}],["$","link",null,{"href":"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap","rel":"stylesheet"}],["$","link",null,{"href":"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap","rel":"stylesheet"}],["$","link",null,{"rel":"icon","type":"image/png","href":"/logo.png"}]]}],["$","body",null,{"className":"bg-beige-bg text-[#1A1F18]","children":[["$","$L2",null,{}],["$","$L3",null,{}],["$","div",null,{"className":"flex flex-col min-h-screen","children":[["$","$L4",null,{}],["$","main",null,{"className":"flex-grow","children":["$","$L5",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}],["$","$L7",null,{}]]}]]}]]}]]}],{"children":[["$","$1","c",{"children":[null,["$","$L5",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":[["$","$1","c",{"children":["$L8",[["$","script","script-0",{"src":"/_next/static/chunks/20c36b65b4054ffa.js","async":true,"nonce":"$undefined"}]],["$","$L9",null,{"children":["$","$a",null,{"name":"Next.MetadataOutlet","children":"$@b"}]}]]}],{},null,false,false]},null,false,false]},null,false,false],["$","$1","h",{"children":[null,["$","$Lc",null,{"children":"$Ld"}],["$","div",null,{"hidden":true,"children":["$","$Le",null,{"children":["$","$a",null,{"name":"Next.Metadata","children":"$Lf"}]}]}],null]}],false]],"m":"$undefined","G":["$10",[]],"S":true}
+d:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+b:null
+f:[["$","title","0",{"children":"Blog séminaires & terroir – Terrago"}],["$","meta","1",{"name":"description","content":"Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français."}],["$","link","2",{"rel":"canonical","href":"https://terragoexperiences.fr/blog/"}],["$","meta","3",{"property":"og:title","content":"Blog séminaires & terroir – Terrago"}],["$","meta","4",{"property":"og:description","content":"Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français."}],["$","meta","5",{"property":"og:url","content":"https://terragoexperiences.fr/blog/"}],["$","meta","6",{"property":"og:type","content":"website"}],["$","meta","7",{"name":"twitter:card","content":"summary"}],["$","meta","8",{"name":"twitter:title","content":"Blog séminaires & terroir – Terrago"}],["$","meta","9",{"name":"twitter:description","content":"Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français."}]]
+11:I[59683,["/_next/static/chunks/424c0bbc38637cae.js","/_next/static/chunks/a9578fd8aaa578c0.js","/_next/static/chunks/20c36b65b4054ffa.js"],"default"]
+12:T19b2,Le séminaire annuel approche, et cette année, vous avez envie de faire les choses différemment. Finis les salles de réunion climatisées, les présentations qui s'enchaînent et le dîner en hôtel. Vous voulez quelque chose de vrai, de mémorable, qui donnera envie à vos équipes de revenir le lundi avec quelque chose en plus.
+
+**Bienvenue dans l'univers du séminaire au vert, made in Terrago.**
+
+Dans ce guide, nous partageons tout ce que nous avons appris en organisant des séminaires immersifs chez des producteurs du terroir français : les bonnes questions à se poser, les erreurs classiques à éviter, et les clés d'une expérience qui laisse une trace durable.
+
+## Pourquoi choisir un séminaire au vert en 2026 ?
+
+La demande pour les séminaires nature a explosé ces dernières années. Et ce n'est pas un hasard.
+
+Les équipes sont épuisées par les écrans, les réunions en visio et la sur-sollicitation permanente. Elles cherchent à se reconnecter — entre elles, mais aussi à quelque chose de plus concret, de plus humain. Un séminaire au vert répond exactement à ce besoin.
+
+> Selon plusieurs études RH, les séminaires en milieu naturel génèrent 40 % de conversations informelles supplémentaires par rapport aux séminaires en hôtel. Ce sont ces conversations-là qui créent la vraie cohésion.
+
+En 2026, choisir un séminaire au vert, c'est aussi un signal fort envoyé à vos collaborateurs : vous vous souciez de leur expérience, vous alignez vos valeurs et vos actes, vous investissez dans quelque chose qui a du sens.
+
+## Les 5 critères pour bien choisir son lieu
+
+Le lieu est la décision la plus importante. Voici les cinq questions à vous poser avant de signer quoi que ce soit.
+
+- **1. Le lieu raconte-t-il une histoire ?** Un espace naturel quelconque ne suffit pas. Le lieu idéal a une âme — une exploitation agricole, un domaine viticole, une ferme d'élevage. Vos équipes doivent sentir qu'elles sont quelque part, pas n'importe où.
+- **2. Y a-t-il un ancrage humain fort ?** Les meilleures expériences sont celles où un producteur ouvre sa porte et partage son savoir-faire. C'est cette rencontre qui reste.
+- **3. Le lieu peut-il accueillir votre groupe confortablement ?** Espace de réunion, restauration, hébergement si besoin : vérifiez que la logistique suit.
+- **4. Est-il accessible depuis votre ville ?** Deux heures de trajet maximum est une règle de bon sens.
+- **5. Quel est l'engagement du producteur ?** Authenticité et engagement sont non négociables — vos équipes méritent de rencontrer des gens qui font vraiment les choses bien : produire bien & bon, très bon même !
+
+## Quelle durée ? 1 jour vs/ 2 jours vs/ sur mesure
+
+### Le format 1 journée — idéal pour commencer
+
+Une journée bien conçue chez un producteur peut transformer la dynamique d'une équipe. C'est accessible, peu contraignant, et parfait pour des groupes qui découvrent ce type d'expérience. Matinée d'immersion, déjeuner autour des produits du lieu, après-midi de travail dans un cadre inédit.
+
+*Pour qui ?* Les équipes de 6 à 30 personnes, les CSE avec un budget maîtrisé, les premières expériences "hors du bureau".
+
+### Le format 2 jours — pour une transformation en profondeur
+
+Deux jours permettent ce que la journée ne permet pas : le temps long. La première soirée autour d'un repas partagé crée des liens que huit heures n'auraient jamais créés. Le lendemain matin, l'équipe est différente — plus détendue, plus ouverte, plus créative.
+
+*Pour qui ?* Les équipes en période de transformation, les comités de direction, les équipes qui ont besoin de se retrouver vraiment, ou simplement les équipes qui veulent vivre des moments forts.
+
+### Le format sur mesure — quand rien ne rentre dans une case
+
+Thématique spécifique, effectif important, contraintes particulières : certains projets méritent une construction sur mesure. Chez Terrago, nous construisons ces formats avec vous, en partant de vos enjeux réels.
+
+## Quel budget prévoir ?
+
+Soyons concrets. Un séminaire au vert de qualité se situe généralement dans ces fourchettes :
+
+- **Format 1 journée** : entre 120 € et 350 € par personne (activités, déjeuner, matériel inclus)
+- **Format 2 jours** : entre 280 € et 650 € par personne (hébergement, tous repas, activités)
+- **Format sur mesure** : sur devis, selon les options choisies
+
+Ces tarifs peuvent sembler plus élevés qu'un séminaire en hôtel classique. Mais ils incluent une chose que l'hôtel ne peut pas offrir : une expérience dont vos équipes se souviendront dans cinq ans.
+
+> Bon à savoir : les séminaires Terrago sont éligibles aux budgets CSE et peuvent être intégrés dans les dispositifs de formation professionnelle selon le contenu retenu.
+
+## Les 4 erreurs classiques à éviter
+
+**Erreur n°1 : choisir le lieu avant les objectifs.** Le lieu découle des objectifs, jamais l'inverse. Commencez par vous demander ce que vous voulez que vos équipes ressentent en rentrant.
+
+**Erreur n°2 : surcharger le programme.** Un séminaire au vert qui ressemble à un séminaire classique avec des arbres autour est raté. Laissez des moments non programmés — c'est dans ces blancs que la magie opère.
+
+**Erreur n°3 : négliger la logistique.** Transport, régimes alimentaires, accessibilité : les détails pratiques conditionnent le vécu de l'expérience. Un séminaire réussi, c'est une logistique invisible.
+
+**Erreur n°4 : ne pas impliquer les équipes en amont.** Quelques questions simples avant le séminaire transforment un événement organisé pour les équipes en événement organisé avec elles.
+
+## Pourquoi l'immersion chez un producteur change tout
+
+Il y a une différence fondamentale entre un séminaire "dans la nature" et un séminaire "chez un producteur". Dans le premier cas, la nature est un décor. Dans le second, elle est le sujet.
+
+Quand vos équipes passent une journée à récolter des truffes avec un trufficulteur, à vendanger sur un domaine du Ventoux ou à fabriquer de l'huile d'olive en Provence, il se passe quelque chose de rare : tout le monde est sur un pied d'égalité. Le manager et le stagiaire côte à côte dans les rangs de vigne. Personne n'a d'expertise particulière. Tout le monde découvre, tout le monde apprend.
+
+> C'est dans cette égalité-là que naît la vraie cohésion.
+
+Chez Terrago, nous ne proposons pas des lieux "naturels". Nous proposons des rencontres avec des producteurs extraordinaires qui ont envie de partager leur monde avec vous.13:T1a74,Oubliez les escape games en salle et les quiz Kahoot. En 2025, les équipes qui se souviennent vraiment de leur team building sont celles qui ont mis les mains dans la terre, goûté quelque chose d'authentique, et rencontré des gens passionnés par ce qu'ils font.
+
+**Le terroir français est le meilleur terrain de cohésion qui soit.**
+
+Voici 8 idées de team building chez des producteurs partenaires Terrago — une pour chaque univers, toutes testées, toutes mémorables.
+
+## 1. Le cognac & la distillation — Charente
+
+![Distillerie Cognac](https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/alambique.png)
+
+Chez Jean-François, aux portes de Cognac, vos équipes découvrent l'alambic charentais, l'art de la distillation et les secrets du vieillissement en fût de chêne. Il s'en suit une dégustation guidée de cognac et de pineau des Charentes. L'atelier se termine enfin par la cuvée spéciale.: l'assemblage de votre propre pineau.
+
+**Ce qui crée la cohésion :** la découverte collective d'un savoir-faire centenaire et un atelier participatif pour assembler votre cuvée. Personne n'est expert — tout le monde est curieux.
+
+*Format : 1 journée · dès 6 personnes · Proche de Cognac*
+
+## 2. L'atelier olive & huile — Provence
+
+![Paolo - Producteur](https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO3.jpg)
+
+Dans les oliveraies provençales de Paolo, entre Aix et les Alpilles, vos équipes participent à la récolte des olives et à la fabrication de l'huile. De l'arbre à la bouteille en une journée — avec une table garnie de produits locaux pour finir.
+
+**Ce qui crée la cohésion :** travailler ensemble sur quelque chose de physique et concret. La fatigue partagée crée des liens que les réunions ne créent pas.
+
+*Format : 1 journée · dès 6 personnes · Proche d'Aix-en-Provence*
+
+## 3. La vendange & la dégustation — Ventoux
+
+![Thomas - Vigneron](https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/vigneron2.png)
+
+Sur le domaine de Marie-Sophie et Thomas, au pied du Mont Ventoux, vos équipes vendangent à la main le matin et apprennent à déguster les vins du domaine l'après-midi. Une journée rythmée par les saisons, le soleil et la vigne.
+
+**Ce qui crée la cohésion :** le rythme collectif de la vendange. Dans les rangs, on parle, on rit, on transpire ensemble. C'est simple et efficace.
+
+*Format : 1 à 2 jours · dès 6 personnes · Proche de Valence*
+
+## 4. Le fromage de chèvre — Provence
+
+![Chèvre Provence atelier team building](https://images.unsplash.com/photo-1624806972468-ea9c923a425e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)
+
+Dans une ferme caprine entre Aix et le Luberon, vos équipes participent à la traite des chèvres, à la fabrication du fromage frais et à l'affinage. Un atelier sensoriel et joyeux, qui finit toujours autour d'une planche garnie.
+
+**Ce qui crée la cohésion :** le contact avec les animaux brise instantanément les barrières hiérarchiques. Le directeur général et le stagiaire nourrissent la même chèvre.
+
+*Format : 1 journée · dès 6 personnes · Proche d'Aix-en-Provence*
+
+## 5. Les piments du Pays Basque — Biarritz
+
+![Piments Espelette Pays Basque](https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/baptiste3.png)
+
+Chez Baptiste, dans les collines d'Espelette, vos équipes participent à la récolte des piments rouges, apprennent à les enlacer et découvrent les secrets de cette épice emblématique du Pays Basque. Repas basque traditionnel inclus.
+
+**Ce qui crée la cohésion :** la fierté de faire quelque chose avec ses mains dans un cadre extraordinaire. Le Pays Basque fait le reste.
+
+*Format : 1 à 2 jours · dès 6 personnes · Proche de Biarritz*
+
+## 6. La lavande en Provence — Plateau de Valensole
+
+![Paolo - Producteur](https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO6.png)
+
+Sur le plateau de Valensole ou dans le Luberon, vos équipes découvrent la culture de la lavande, la distillation de l'huile essentielle et les usages de cette plante emblématique. Un cadre visuel inoubliable — surtout en juillet.
+
+**Ce qui crée la cohésion :** la beauté du lieu crée une émotion partagée. Les équipes qui ont vécu quelque chose de beau ensemble en parlent longtemps.
+
+*Format : 1 journée · dès 6 personnes · Plateau de Valensole*
+
+## 7. Les noisettes & fruits à coque — Centre-Val de Loire
+
+![Nathalie & Benjamin](https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png)
+
+Chez Nathalie et Benjamin près de Gien, ou chez Sabine et Marie-Lise près de Valence, vos équipes participent à la récolte des noix et noisettes, à la découverte de tout les processus de transformation et à la dégustation des produits — huiles, pâtes, poudres, liqueurs.
+
+**Ce qui crée la cohésion :** la répétition collective du geste. Éplucher des noix ensemble pendant deux heures, c'est l'une des meilleures conversations qu'une équipe puisse avoir.
+
+*Format : 1 journée · dès 6 personnes · Drôme ou Loiret*
+
+## 8. La récolte de truffes — Périgord & Provence
+
+![Andrea Cairone - Unsplash](https://images.unsplash.com/photo-1589208038781-a183a2d3c0fc?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)
+
+La truffe, c'est le Graal du terroir. Avec un trufficulteur partenaire Terrago, vos équipes partent en forêt avec le chien truffier, apprennent à lire le terrain et à identifier les truffes. Une chasse au trésor naturelle qui finit autour d'un repas entièrement truffe.
+
+**Ce qui crée la cohésion :** le suspense collectif. Quand le chien marque un point, tout le monde retient son souffle ensemble. Ce moment-là, on ne l'oublie pas.
+
+*Format : 1 journée · dès 6 personnes · Périgord ou Provence*
+
+---
+
+## Comment choisir parmi ces 8 idées ?
+
+Tout dépend de trois critères : la saison, la localisation de votre équipe, et l'émotion que vous cherchez à créer.
+
+- **Vous voulez du prestige et du mystère ?** → La truffe
+- **Vous voulez un cadre spectaculaire ?** → La lavande ou les vendanges aux pieds du Mont Ventoux
+- **Vous voulez quelque chose de joyeux et sans prise de tête ?** → Le fromage de chèvre ou les piments
+- **Vous voulez un team building gastronomique ?** → Le cognac ou les noix
+
+Chez Terrago, nous vous aidons à choisir l'univers qui correspond à votre équipe, à votre budget et à votre moment de vie. Chaque expérience est construite avec le producteur — pas assemblée à la chaîne.
+8:["$","div",null,{"style":{"fontFamily":"'Poppins', sans-serif","background":"#faf8f5","color":"#1a2e1a","minHeight":"100vh"},"children":[["$","div",null,{"style":{"position":"relative","height":"72vh","minHeight":480,"display":"flex","alignItems":"flex-end","justifyContent":"center","overflow":"hidden"},"children":[["$","div",null,{"style":{"position":"absolute","inset":0,"backgroundImage":"url('https://images.unsplash.com/photo-1632676162165-bd9f2fad90b2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')","backgroundSize":"cover","backgroundPosition":"center"}}],["$","div",null,{"style":{"position":"absolute","inset":0,"background":"linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.45) 70%, rgba(0,0,0,0.65) 100%)"}}],["$","div",null,{"style":{"position":"relative","zIndex":2,"textAlign":"center","padding":"0 1.5rem 4rem"},"children":["$","h1",null,{"style":{"color":"#fff","lineHeight":1.1,"margin":0},"children":[["$","span",null,{"style":{"fontFamily":"'Poppins', sans-serif","fontWeight":700,"fontSize":"clamp(1.2rem, 3vw, 2.2rem)","display":"inline"},"children":["Le terroir français,"," "]}],["$","em",null,{"style":{"fontFamily":"'Cormorant Garamond', serif","fontStyle":"italic","fontWeight":600,"fontSize":"clamp(1.6rem, 5vw, 3.6rem)","display":"inline"},"children":"ça se vit de l'intérieur."}]]}]}]]}],["$","div",null,{"style":{"maxWidth":1200,"margin":"0 auto","padding":"0 clamp(1.5rem, 4vw, 3rem)"},"children":[["$","div",null,{"style":{"textAlign":"center","paddingTop":"2.5rem","marginBottom":"1.5rem"},"children":[["$","h2",null,{"style":{"margin":"0 0 .75rem","lineHeight":1.15},"children":[["$","span",null,{"style":{"fontFamily":"'Poppins', sans-serif","fontWeight":700,"fontSize":"clamp(1.8rem, 3.5vw, 2.6rem)","color":"#1a2e1a"},"children":["Articles"," "]}],["$","em",null,{"style":{"fontFamily":"'Cormorant Garamond', serif","fontStyle":"italic","fontWeight":600,"fontSize":"clamp(2rem, 4vw, 3rem)","color":"#1a2e1a"},"children":"à la Une"}]]}],["$","p",null,{"style":{"fontSize":15,"color":"#9a9080","maxWidth":520,"margin":"0 auto","lineHeight":1.7},"children":"Conseils, guides et inspirations pour organiser des expériences inoubliables au cœur du terroir français."}]]}],["$","$L11",null,{"featured":{"id":"864cd12c-3bc7-4323-977a-4809b867a46f","slug":"seminaire-au-vert-guide-2026","title":"Comment organiser un séminaire au vert : le guide complet 2026","description":"Tout ce qu'il faut savoir pour organiser un séminaire au vert reussi.","content":"$12","category":"Séminaires","cover_url":"https://images.unsplash.com/photo-1761927710826-9447de4f83b9?q=80&w=2075&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D","reading_time":"7 min","published":true,"published_at":"2026-03-17T22:41:38.258344+00:00","created_at":"2026-03-17T22:41:38.258344+00:00","updated_at":"2026-03-17T22:41:38.258344+00:00","featured":true},"latestPosts":[{"id":"805ff27d-2399-4c18-88d0-d8cf6777d44c","slug":"team-building-terroir","title":"Team building terroir : 8 idees originales pour souder vos equipes","description":"Noix, truffe, cognac, fromage, piments… 8 idées de team building immersifs chez des producteurs du terroir français. Originales, mémorables et clé en main avec Terrago.","content":"$13","category":"Team building","cover_url":"https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/VERGERS.jpg","reading_time":"10 min","published":true,"published_at":"2026-03-18T10:25:11+00:00","created_at":"2026-03-17T22:41:38.258344+00:00","updated_at":"2026-03-17T22:41:38.258344+00:00","featured":false}],"soonPosts":[{"id":"2197915d-d2d8-4233-8bee-0ea96d41e659","slug":"week-end-vigneron-ventoux","title":"Week-end chez un vigneron : notre guide pour une immersion Ventoux","description":null,"content":null,"category":"Terroir et producteurs","cover_url":"https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D","reading_time":null,"published":false,"published_at":null,"created_at":"2026-03-17T22:41:38.258344+00:00","updated_at":"2026-03-17T22:41:38.258344+00:00","featured":false},{"id":"2163722b-5e88-4da8-ba3c-2cdddd2300a7","slug":"séminaires-engagés-2026","title":"Séminaires engagés : pourquoi et comment en organiser un en 2026","description":"aveavev","content":"eveve","category":"Séminaires","cover_url":"https://images.unsplash.com/photo-1506112573664-1a1b66d93ff3?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D","reading_time":"eveve","published":false,"published_at":null,"created_at":"2026-03-17T22:41:38.258344+00:00","updated_at":"2026-03-17T22:41:38.258344+00:00","featured":false}]}],"$L14"]}]]}]
+14:["$","div",null,{"style":{"background":"#1a2e1a","borderRadius":24,"padding":"clamp(2.5rem, 5vw, 4rem) clamp(2rem, 5vw, 5rem)","display":"flex","alignItems":"center","justifyContent":"space-between","gap":"2rem","flexWrap":"wrap","marginBottom":"clamp(1.5rem, 3vw, 2.5rem)"},"children":[["$","div",null,{"children":[["$","h3",null,{"style":{"color":"#fff","fontFamily":"'Poppins', sans-serif","fontWeight":700,"fontSize":"clamp(1.6rem, 3vw, 2.2rem)","lineHeight":1.3,"margin":"0 0 .5rem"},"children":["Restez informé de"," ",["$","em",null,{"style":{"fontFamily":"'Cormorant Garamond', serif","fontStyle":"italic","fontSize":"clamp(2.2rem, 3.5vw, 2.6rem)"},"children":"notre évolution."}]]}],["$","p",null,{"style":{"color":"rgba(255,255,255,.5)","fontSize":13,"lineHeight":1.6,"margin":0},"children":"Nouveaux articles, nouveaux producteurs — dans votre boîte mail."}]]}],["$","div",null,{"style":{"display":"flex","gap":10,"flexWrap":"wrap"},"children":[["$","input",null,{"type":"email","placeholder":"votre@email.fr","style":{"padding":"12px 20px","borderRadius":9999,"border":"1px solid rgba(255,255,255,.2)","background":"rgba(255,255,255,.08)","color":"#fff","fontFamily":"'Poppins', sans-serif","fontSize":13,"outline":"none","width":240}}],["$","button",null,{"style":{"padding":"12px 24px","borderRadius":9999,"background":"#e67e22","color":"#fff","border":"none","fontFamily":"'Poppins', sans-serif","fontSize":11,"fontWeight":700,"letterSpacing":"0.12em","textTransform":"uppercase","cursor":"pointer"},"children":"S'inscrire"}]]}]]}]

@@ -5,7 +5,7 @@ import remarkGfm from 'remark-gfm';
 import { supabaseServer as supabase } from '../../../lib/supabase';
 import TableOfContents from './TableOfContents';
 
-export const revalidate = 0;
+export const dynamic = 'force-static';
 
 export async function generateStaticParams() {
   const { data } = await supabase

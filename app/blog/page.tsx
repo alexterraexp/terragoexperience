@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { supabaseServer as supabase } from '../../lib/supabase';
 import BlogCards from './BlogCards';
 
-export const revalidate = 0;
+export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
   title: 'Blog séminaires & terroir – Terrago',
