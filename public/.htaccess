@@ -1,19 +1,18 @@
-Options -MultiViews
+Options -Indexes
 RewriteEngine On
-RewriteBase /
 
-# Fichiers statiques directs
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
+# Si le fichier exact existe, le servir directement
+RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
 
-# Ajouter .html si le fichier existe
-RewriteCond %{REQUEST_FILENAME}.html -f
-RewriteRule ^(.*)$ $1.html [L]
+# Si c'est un dossier avec index.html, le servir
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_FILENAME}/index.html -f
+RewriteRule ^(.*)/$ $1/index.html [L]
 
-# Dossier avec index.html
-RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
-RewriteRule ^(.*)/?$ /$1/index.html [L]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_FILENAME}/index.html -f  
+RewriteRule ^(.+[^/])$ $1/index.html [L]
 
-# Fallback
+# Fallback vers home uniquement si rien d'autre ne matche
 RewriteRule ^ /index.html [L]
