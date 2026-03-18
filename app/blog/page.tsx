@@ -34,8 +34,6 @@ interface BlogPost {
 
 // ── Fallbacks statiques ────────────────────────────────────────────────────────
 
-const FALLBACK_SOON: never[] = [];
-
 const DEFAULT_COVER = 'https://images.unsplash.com/photo-1632676162165-bd9f2fad90b2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
 // ── Page ───────────────────────────────────────────────────────────────────────
@@ -72,18 +70,7 @@ export default async function BlogPage() {
 
   const soonFromDB: BlogPost[] = soonArr ?? [];
 
-  const publishedSlugs = new Set([
-    ...(featuredArr ?? []).map((p: BlogPost) => p.slug),
-    ...(latestArr ?? []).map((p: BlogPost) => p.slug),
-  ]);
-
-  const soonPosts = [
-    ...soonFromDB,
-    ...FALLBACK_SOON.filter(
-      f => !soonFromDB.some(db => db.slug === f.slug)
-        && !publishedSlugs.has(f.slug)
-    ),
-  ].slice(0, 3);
+  const soonPosts = soonFromDB.slice(0, 3);
 
   return (
     <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', color: '#1a2e1a', minHeight: '100vh' }}>
