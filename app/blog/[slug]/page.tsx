@@ -7,6 +7,14 @@ import TableOfContents from './TableOfContents';
 
 export const revalidate = 0;
 
+export async function generateStaticParams() {
+  const { data } = await supabase
+    .from('blog_posts')
+    .select('slug')
+    .eq('published', true);
+  return (data ?? []).map((post: { slug: string }) => ({ slug: post.slug }));
+}
+
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 interface BlogPost {

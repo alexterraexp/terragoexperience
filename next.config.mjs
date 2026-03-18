@@ -1,5 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  images: {
+    unoptimized: true,
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'plus.unsplash.com' },
+      { protocol: 'https', hostname: 'lxlvcwwvnujfbqgcfzze.supabase.co' },
+      { protocol: 'https', hostname: 'i.f1g.fr' },
+    ],
+  },
   async redirects() {
     return [
       {
@@ -23,14 +33,6 @@ const nextConfig = {
         permanent: true,
       },
     ];
-  },
-  images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-      { protocol: 'https', hostname: 'plus.unsplash.com' },
-      { protocol: 'https', hostname: 'lxlvcwwvnujfbqgcfzze.supabase.co' },
-      { protocol: 'https', hostname: 'i.f1g.fr' },
-    ],
   },
 };
 

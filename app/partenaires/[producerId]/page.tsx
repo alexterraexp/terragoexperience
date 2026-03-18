@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import ProducerDetailPage from '../../../views/ProducerDetailPage';
+import { supabaseServer as supabase } from '../../../lib/supabase';
+
+export async function generateStaticParams() {
+  const { data } = await supabase
+    .from('producers')
+    .select('id');
+  return (data ?? []).map((p: { id: string }) => ({ producerId: p.id }));
+}
 
 export const metadata: Metadata = {
   title: 'Producteur partenaire – Terrago',
