@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import ScrollAnimate from '../components/ScrollAnimate';
 
@@ -21,6 +21,10 @@ const ProducerStack: React.FC = () => {
   const [hovered, setHovered] = useState(false);
   const [animating, setAnimating] = useState(false);
   const [exitingIndex, setExitingIndex] = useState<number | null>(null);
+
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const isTouchDevice = useRef(false);
 
   const goNext = () => {
     if (animating) return;
@@ -44,12 +48,28 @@ const ProducerStack: React.FC = () => {
     }, 500);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    isTouchDevice.current = true;
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
+    if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > deltaY) {
+      goNext();
+    }
+  };
+
   return (
     <div
       className="relative flex items-center justify-center w-full"
       style={{ height: '560px' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => { if (!isTouchDevice.current) setHovered(true); }}
+      onMouseLeave={() => { if (!isTouchDevice.current) setHovered(false); }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       <div className="relative w-[360px] mx-auto lg:w-full lg:mx-0" style={{ height: '560px' }}>
       <style>{`
@@ -70,6 +90,9 @@ const ProducerStack: React.FC = () => {
         }
         @media (max-width: 1023px) {
           .producer-card-hidden-mobile { opacity: 0; visibility: hidden; pointer-events: none; z-index: 0; }
+        }
+        @media (hover: none) {
+          .producer-hover-arrow { display: none !important; }
         }
       `}</style>
 
@@ -106,7 +129,7 @@ const ProducerStack: React.FC = () => {
               transform: isExiting || isPromoting ? undefined : staticTransform,
               transition: isExiting || isPromoting ? 'none' : 'transform 0.5s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s ease',
             }}
-            onClick={isActive ? goNext : undefined}
+            onClick={isActive ? () => { if (!isTouchDevice.current) goNext(); } : undefined}
           >
             <img
               src={person.image}
@@ -130,7 +153,7 @@ const ProducerStack: React.FC = () => {
             )}
 
             {isActive && !isExiting && (
-              <div style={{
+              <div className="producer-hover-arrow" style={{
                 position: 'absolute', inset: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
                 paddingRight: 24,

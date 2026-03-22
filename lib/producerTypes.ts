@@ -1,8 +1,13 @@
 /**
- * Types pour les producteurs (app) et mapping depuis les champs Supabase (snake_case).
- * Champs Supabase : id, name, type, location, region, tags, rating, review_count, capacity,
- * cover, avatar, highlight, price, owner, description, hero_badge, certifications,
- * experiences, gallery, bio.
+ * Types pour les producteurs — lus depuis la vue Supabase `producers_full`
+ * qui joint `producers` et `seminaires`.
+ *
+ * Champs issus de `producers` : id, seminaire_id, name, type, tags, rating,
+ *   review_count, capacity, avatar, highlight, price, description, hero_badge,
+ *   certifications, experiences, reviews, bio
+ *
+ * Champs issus de `seminaires` (via la vue) : owner, location, region, cover,
+ *   gallery, lat, lng, couleur, couleur_light, seminaire_label, bestseller, emoji
  */
 
 export type ExperienceItem = {
@@ -24,6 +29,7 @@ export type ReviewItem = {
 
 export type Producer = {
   id: string;
+  seminaire_id: string;
   name: string;
   type: string;
   location: string;
@@ -46,45 +52,63 @@ export type ProducerFull = Producer & {
   experiences: ExperienceItem[];
   gallery: string[];
   reviews: ReviewItem[];
+  lat?: number;
+  lng?: number;
+  couleur?: string;
+  seminaireLabel?: string;
 };
 
-/** Row renvoyée par Supabase (snake_case) */
+/** Row renvoyée par la vue `producers_full` */
 export type SupabaseProducerRow = {
   id: string;
+  seminaire_id: string;
   name: string;
   type: string;
-  location: string;
-  region: string;
-  tags: string[];
+  tags: string[] | unknown;
   rating: number;
   review_count: number;
   capacity: string;
-  cover: string;
   avatar: string;
   highlight: string;
   price: string;
-  owner: string;
   description: string;
   hero_badge: string;
-  certifications: string[];
-  experiences: ExperienceItem[];
-  gallery: string[];
+  certifications: string[] | unknown;
+  experiences: ExperienceItem[] | unknown;
+  reviews: ReviewItem[] | unknown;
   bio?: string;
-  reviews?: ReviewItem[];
+  // Champs hérités de seminaires (via la vue)
+  owner: string;
+  location: string;
+  region: string;
+  cover: string;
+  gallery: string[] | unknown;
+  lat?: number;
+  lng?: number;
+  couleur?: string;
+  couleur_light?: string;
+  seminaire_label?: string;
+  bestseller?: boolean;
+  emoji?: string;
 };
 
 function ensureArray<T>(v: unknown): T[] {
   if (Array.isArray(v)) return v as T[];
+  if (v && typeof v === 'object') {
+    // JSONB peut arriver comme objet indexé {0: ..., 1: ...}
+    return Object.values(v) as T[];
+  }
   return [];
 }
 
 export function mapSupabaseRowToFull(row: SupabaseProducerRow): ProducerFull {
   return {
     id: row.id,
-    name: row.name,
-    type: row.type,
-    location: row.location,
-    region: row.region,
+    seminaire_id: row.seminaire_id ?? '',
+    name: row.name ?? '',
+    type: row.type ?? '',
+    location: row.location ?? row.region ?? '',
+    region: row.region ?? '',
     tags: ensureArray<string>(row.tags),
     rating: Number(row.rating) || 0,
     reviewCount: Number(row.review_count) ?? 0,
@@ -100,12 +124,17 @@ export function mapSupabaseRowToFull(row: SupabaseProducerRow): ProducerFull {
     experiences: ensureArray<ExperienceItem>(row.experiences),
     gallery: ensureArray<string>(row.gallery),
     reviews: ensureArray<ReviewItem>(row.reviews),
+    lat: row.lat ?? undefined,
+    lng: row.lng ?? undefined,
+    couleur: row.couleur ?? undefined,
+    seminaireLabel: row.seminaire_label ?? undefined,
   };
 }
 
 export function fullToProducer(p: ProducerFull): Producer {
   return {
     id: p.id,
+    seminaire_id: p.seminaire_id,
     name: p.name,
     type: p.type,
     location: p.location,

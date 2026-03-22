@@ -820,7 +820,15 @@ const Seminaires: React.FC = () => {
     { image: "https://images.unsplash.com/photo-1720420866056-07fe15991f16?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Piments & Pays Basque", desc: "Proche de Biarrtiz", tags: ["Récolte des piments rouges", "Fabrication de sa propre corde de piments", "Atelier confiture & conserves", "Dégustation de spécialités basques"], producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png", universes: ["les piments"], universId: "piment", boldLabel: "AUTOUR DU PIMENT" },
     { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/VERGERS.jpg", title: "Noisette & fruits à coque", desc: "Proche de Orléans", tags: ["Récolte des noisettes", "Fabrication de son huile de noisette", "Atelier pâtisserie autour de la noisette", "Yoga en pleine nature"], producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png", universes: ["les noisettes"], universId: "noisette", boldLabel: "AUTOUR DE LA NOISETTE" },
   ];
-  const filteredCards = selectedUniverse ? exampleCards.filter(c => c.universes.includes(selectedUniverse)) : exampleCards;
+  const FRUITS_A_COQUE    = ['les noix', 'les noisettes', 'les noix de pécan', 'les amandes'];
+  const VINS_SPIRITUEUX   = ['le vin', 'le cognac'];
+  const filteredCards = selectedUniverse
+    ? exampleCards.filter(c => {
+        if (selectedUniverse === 'les fruits à coque') return c.universes.some(u => FRUITS_A_COQUE.includes(u));
+        if (selectedUniverse === 'vins & spiritueux')  return c.universes.some(u => VINS_SPIRITUEUX.includes(u));
+        return c.universes.includes(selectedUniverse);
+      })
+    : exampleCards;
 
   return (
     <div className="font-sans bg-beige-bg min-h-screen overflow-x-hidden">
@@ -859,21 +867,21 @@ const Seminaires: React.FC = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
-            <button
-              onClick={() => openModal()}
+            <Link
+              href="/seminaires-entreprise/offres"
               className="text-white border border-white/100 hover:border-white/70 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/25 rounded-full"
             >
-              Organiser votre séminaire
-            </button>
-              <Link
-              href="/entreprises?scroll=nos-univers"
+              Découvrir nos offres séminaires
+            </Link>
+            <button
+              onClick={() => openModal()}
               className="text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 px-4 py-3"
-              style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+              style={{ color: 'rgba(255, 255, 255, 0.8)', background: 'none', border: 'none', cursor: 'pointer' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)')}
             >
-              Découvrir nos univers →
-            </Link>
+              Envoyer votre brief →
+            </button>
           </div>
         </div>
 
@@ -925,9 +933,9 @@ const Seminaires: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 lg:gap-6">
             {[
               { icon: 'diversity_3', title: 'Humain',      text: 'Décrochez et découvrez la richesse de vos équipes par des échanges vrais en rencontrant ceux qui nous nourrissent.', image: 'https://images.unsplash.com/photo-1624720114692-037e42acec41?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-              { icon: 'handyman',    title: 'Immersif',    text: 'Sortez de votre zone de confort et exprimez-vous en mettant les mains dans la Terre. Vous allez vous en souvenir !', image: 'https://images.unsplash.com/photo-1720420865912-2bbd6bfa1e85?q=80&w=3131&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+              { icon: 'handyman',    title: 'Immersif',    text: 'Sortez de votre zone de confort et exprimez-vous en mettant les mains dans la Terre. Vous allez vous en souvenir !', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/VERGERS.jpg' },
               { icon: 'flare', title: 'Authentique', text: "Retrouvez le sens de l'essentiel au contact de producteurs qui incarnent la vérité et l'exigence du terrain.", image: 'https://images.unsplash.com/photo-1594928357228-3075ba0e4674?q=80&w=1293&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-              { icon: 'eco',        title: 'Engagé',      text: 'Transformez votre séminaire en acte managérial fort en soutenant directement ceux qui agissent pour la Terre.', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/VERGERS.jpg' },
+              { icon: 'eco',        title: 'Engagé',      text: 'Transformez votre séminaire en acte managérial fort en soutenant directement ceux qui agissent pour la Terre.', image: 'https://images.unsplash.com/photo-1665072204431-b3ba11bd6d06?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
               { icon: 'handshake',  title: 'Passionnant', text: "Utilisez le terroir comme fondation pour reconstruire une cohésion d'équipe naturelle et durable.", image: 'https://images.unsplash.com/photo-1662558739852-613841d6b834?q=80&w=1348&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
             ].map(item => (
               <div
@@ -1103,7 +1111,7 @@ const Seminaires: React.FC = () => {
 
           {/* Filtres */}
           <div className="flex flex-wrap gap-2 mt-8">
-            {['le vin', 'la truffe', 'les olives', 'la lavande', 'le fromage de chèvre', 'les noix', 'le cognac', 'les piments', 'les noisettes'].map(product => (
+            {['vins & spiritueux', 'la truffe', 'les olives', 'la lavande', 'le fromage de chèvre', 'les fruits à coque', 'les piments'].map(product => (
               <button
                 key={product} onClick={() => setSelectedUniverse(selectedUniverse === product ? null : product)}
                 className="transition-all duration-300"

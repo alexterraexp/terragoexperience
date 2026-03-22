@@ -29,7 +29,7 @@ const NAV_ITEMS: NavItem[] = [
     path: '/entreprises',
     dropdown: [
       { label: 'Séminaires engagés',   description: 'Du sens, du vrai, et du vivant',            path: '/seminaires-entreprise', emoji: '🌿' },
-      { label: 'Nos offres packagées', description: 'À la journée, sur 2 jours, ou sur mesure',  path: '/seminaires/offres',                     emoji: '📦' },
+      { label: 'Nos offres de séminaire', description: 'À la journée, sur 2 jours, ou sur mesure',  path: '/seminaires-entreprise/offres',           emoji: '📦' },
     ],
   },
   {

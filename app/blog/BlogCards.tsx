@@ -141,7 +141,7 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
               Dites-nous ce que vous cherchez — durée, univers, effectif — et nous construisons l&apos;expérience avec vous. Réponse sous 48h.
             </p>
             <Link
-              href="/seminaires/offres"
+              href="/seminaires-entreprise/offres"
               onMouseEnter={() => setCtaHovered(true)}
               onMouseLeave={() => setCtaHovered(false)}
               style={{

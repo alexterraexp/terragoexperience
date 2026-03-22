@@ -435,7 +435,7 @@ export default async function BlogArticlePage(
                 <p style={{ fontSize: 13, color: '#9a9080', lineHeight: 1.65, margin: '0 0 20px' }}>
                   De la sélection du producteur à la logistique — on s&apos;occupe de tout.
                 </p>
-                <Link href="/seminaires/offres" style={{
+                <Link href="/seminaires-entreprise/offres" style={{
                   display: 'block', padding: '13px 0', borderRadius: 12,
                   background: '#1a2e1a', color: '#fff',
                   fontFamily: "'Poppins', sans-serif", fontSize: 12, fontWeight: 700,

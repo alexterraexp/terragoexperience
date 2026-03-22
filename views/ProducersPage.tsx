@@ -12,7 +12,18 @@ import {
   fullToProducer,
 } from '../lib/producerTypes';
 
-const FILTERS = ['Tous', 'Olives', 'Huîtres', 'Vins', 'Piments', 'Truffes', 'Agrumes', 'Noix', 'Spiritueux', 'Élevages'];
+const FILTERS = ['Tous', 'Truffes', 'Olives', 'Fruits à coque', 'Piments', 'Vins & Spiritueux', 'Huîtres', 'Fromage'];
+
+// Types qui correspondent à chaque filtre (comparaison insensible à la casse)
+const FILTER_TYPES: Record<string, string[]> = {
+  'Truffes':          ['truffes', 'truffe'],
+  'Olives':           ['olives', 'olive', 'huile d\'olive'],
+  'Fruits à coque':   ['fruits à coque', 'noix', 'noisettes', 'amandes', 'noix de pécan'],
+  'Piments':          ['piments', 'piment'],
+  'Vins & Spiritueux':['vins & spiritueux', 'vins', 'vin', 'spiritueux', 'cognac', 'pineau', 'armagnac', 'calvados'],
+  'Huîtres':          ['huîtres', 'huitres', 'huître'],
+  'Fromage':          ['fromage', 'fromages', 'chèvre', 'chevre'],
+};
 const REGIONS = ['Toutes régions', 'Nouvelle-Aquitaine', 'Occitanie', "Provence-Alpes-Côte-d'Azur", 'Grand Est'];
 
 // ── Dropdown région custom (pas de <select> natif) ──────────────────────────
@@ -180,17 +191,20 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
       }}
     >
       <div style={{ position: 'relative', height: 200, overflow: 'hidden', flexShrink: 0 }}>
-        <img
-          src={producer.cover}
-          alt={`${producer.name} – ${producer.type} ${producer.location} – Terrago`}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.06)' : 'scale(1)', transition: 'transform 0.6s ease' }}
-        />
+        {producer.cover ? (
+          <img
+            src={producer.cover}
+            alt={`${producer.name} – ${producer.type} ${producer.location} – Terrago`}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.06)' : 'scale(1)', transition: 'transform 0.6s ease' }}
+          />
+        ) : (
+          <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #1e291a, #3a5a2a)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48 }}>
+            🌿
+          </div>
+        )}
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,44,52,0.5) 0%, transparent 60%)' }} />
         <div style={{ position: 'absolute', top: 14, left: 14, background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(8px)', borderRadius: 20, padding: '4px 12px', fontSize: 11, fontWeight: 600, color: '#1e291a', letterSpacing: '0.05em' }}>
           {producer.type}
-        </div>
-        <div style={{ position: 'absolute', top: 14, right: 14, background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(8px)', borderRadius: 20, padding: '4px 10px', fontSize: 12, fontWeight: 700, color: '#f78d00', display: 'flex', alignItems: 'center', gap: 4 }}>
-          ★ {producer.rating}
         </div>
         <div style={{ position: 'absolute', bottom: 12, left: 14, fontSize: 11, color: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', gap: 4 }}>
           <span style={{ fontSize: 13 }}>📍</span> {producer.location}
@@ -199,7 +213,13 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
 
       <div style={{ padding: '18px 20px 20px', display: 'flex', flexDirection: 'column', flex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-          <img src={producer.avatar} alt={producer.name} style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '2px solid #f0ebe4' }} />
+          {producer.avatar ? (
+            <img src={producer.avatar} alt={producer.name} style={{ width: 36, height: 36, minWidth: 36, borderRadius: '50%', objectFit: 'cover', border: '2px solid #f0ebe4', flexShrink: 0, aspectRatio: '1 / 1' }} />
+          ) : (
+            <div style={{ width: 36, height: 36, minWidth: 36, borderRadius: '50%', background: '#f5f0ea', border: '2px solid #f0ebe4', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, color: '#9ca3af', flexShrink: 0 }}>
+              🧑‍🌾
+            </div>
+          )}
           <div style={{ fontWeight: 700, fontSize: 15, color: '#1e291a', lineHeight: 1.2 }}>{producer.name}</div>
         </div>
         <p style={{ fontSize: 12.5, color: '#6b7280', lineHeight: 1.6, marginBottom: 12, fontStyle: 'italic' }}>{producer.highlight}</p>
@@ -251,7 +271,7 @@ const ProducersPage: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const { data, error: err } = await supabase.from('producers').select('*');
+        const { data, error: err } = await supabase.from('producers_full').select('*');
         if (cancelled) return;
         if (err) {
           setError(err.message);
@@ -274,7 +294,9 @@ const ProducersPage: React.FC = () => {
   }, []);
 
   const filtered = producers.filter((p) => {
-    const matchType = activeFilter === 'Tous' || p.type === activeFilter;
+    const matchType = activeFilter === 'Tous' || (
+      FILTER_TYPES[activeFilter]?.includes(p.type?.toLowerCase()) ?? p.type === activeFilter
+    );
     const matchRegion = activeRegion === 'Toutes régions' || p.region === activeRegion;
     const matchSearch = search.trim() === '' || getSearchableText(p).includes(search.trim().toLowerCase());
     return matchType && matchRegion && matchSearch;
@@ -375,8 +397,6 @@ const ProducersPage: React.FC = () => {
                   {f}
                 </button>
               ))}
-              <div style={{ width: 1, background: '#e5e0d8', alignSelf: 'stretch', margin: '0 4px' }} />
-              <RegionDropdown value={activeRegion} onChange={setActiveRegion} />
             </div>
           </div>
         </div>
