@@ -8,15 +8,7 @@ import { fetchSeminaires } from '../lib/seminaires';
 import type { Seminaire, Format, ProgrammeItem } from '../lib/seminaires';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-
-/**
- * Jeton **public** Mapbox (préfixe pk.), prévu pour le navigateur — ne jamais y mettre un secret (sk.).
- * Nom sans « ACCESS_TOKEN » pour éviter l’avertissement Vercel sur les NEXT_PUBLIC_*.
- */
-const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
-if (MAPBOX_TOKEN) {
-  mapboxgl.accessToken = MAPBOX_TOKEN;
-}
+import { useMapboxPublicToken } from '@/components/MapboxTokenProvider';
 
 export type { Seminaire, Format, ProgrammeItem };
 
@@ -461,6 +453,7 @@ function SeminaireCard({ s, activeFormat, isActive, onSelect, onDevis }: {
   const active = !isComing && (isActive || hovered);
   return (
     <div
+      className="sem-pack-card"
       onClick={isComing ? undefined : onSelect}
       onMouseEnter={() => { if (!isComing) setHovered(true); }}
       onMouseLeave={() => setHovered(false)}
@@ -473,7 +466,7 @@ function SeminaireCard({ s, activeFormat, isActive, onSelect, onDevis }: {
         transform: active ? 'translateY(-4px)' : 'none',
         opacity: isComing ? 0.72 : 1,
       }}>
-      <div style={{ position: 'relative', width: '100%', aspectRatio: '1 / 1', overflow: 'hidden' }}>
+      <div className="sem-pack-card-visual">
         <img
           src={s.images[0] ?? ''} alt={fmt?.titre ?? s.label}
           style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s ease', transform: hovered ? 'scale(1.06)' : 'scale(1)', filter: isComing ? 'grayscale(35%)' : 'none' }}
@@ -494,27 +487,28 @@ function SeminaireCard({ s, activeFormat, isActive, onSelect, onDevis }: {
         )}
         <div style={{ position: 'absolute', bottom: 8, left: 10, fontSize: 9, color: 'rgba(255,255,255,0.9)', fontWeight: 600 }}>{s.region}</div>
       </div>
-      <div style={{ padding: '10px 12px 12px' }}>
+      <div className="sem-pack-card-body">
         <div style={{ fontSize: 8, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', color: '#b0a89e', marginBottom: 3 }}>{s.producteur}</div>
-        <div style={{ fontWeight: 700, fontSize: 13, color: '#1a2e1a', lineHeight: 1.3, marginBottom: 2 }}>{fmt?.titre ?? s.label}</div>
+        <div className="sem-pack-card-title" style={{ fontWeight: 700, fontSize: 13, color: '#1a2e1a', lineHeight: 1.3, marginBottom: 2 }}>{fmt?.titre ?? s.label}</div>
         {isComing ? (
-          <div style={{ fontSize: 11, color: '#b0a89e', fontStyle: 'italic', marginTop: 6 }}>Disponible prochainement</div>
+          <div style={{ fontSize: 11, color: '#b0a89e', fontStyle: 'italic', marginTop: 'auto', paddingTop: 8 }}>Disponible prochainement</div>
         ) : (
           <>
-            <div style={{ fontSize: 11, color: '#9a9080', fontStyle: 'italic', marginBottom: 8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{fmt!.sous_titre}</div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, minWidth: 0 }}>
+            <div className="sem-pack-card-sub" style={{ fontSize: 11, color: '#9a9080', fontStyle: 'italic', marginBottom: 8 }}>{fmt!.sous_titre}</div>
+            <div className="sem-pack-card-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, minWidth: 0 }}>
               <div style={{ minWidth: 0, overflow: 'hidden' }}>
                 {activeFormat === 'mesure' ? (
                   <span style={{ fontSize: 11, fontWeight: 700, color: '#1a2e1a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>{fmt!.prix}</span>
                 ) : (
-                  <span style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'nowrap', gap: 4 }}>
-                    <span style={{ fontSize: 9, fontWeight: 600, color: '#9a9080', whiteSpace: 'nowrap' }}>À partir de</span>
+                  <span className="sem-pack-card-price" style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'nowrap', gap: 4 }}>
+                    <span className="sem-pack-price-from" style={{ fontSize: 9, fontWeight: 600, color: '#9a9080', whiteSpace: 'nowrap' }}>À partir de</span>
                     <span style={{ fontSize: 13, fontWeight: 800, color: '#1a2e1a', whiteSpace: 'nowrap' }}>{fmt!.prix}</span>
                     <span style={{ fontSize: 9, fontWeight: 600, color: '#9a9080', whiteSpace: 'nowrap' }}>/pers.</span>
                   </span>
                 )}
               </div>
               <button onClick={e => { e.stopPropagation(); onSelect(); }}
+                className="sem-pack-card-btn"
                 style={{ flexShrink: 0, background: '#1a2e1a', color: '#fff', fontSize: 9, fontWeight: 700, letterSpacing: '0.06em', padding: '6px 12px', borderRadius: 9999, border: 'none', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
                 En détails →
               </button>
@@ -532,6 +526,7 @@ function MapboxMap({ seminaires, activeId, activeFormat, onSelect, onExpand, exp
   seminaires: Seminaire[]; activeId: string | null; activeFormat: string;
   onSelect: (id: string) => void; onExpand?: () => void; expanded?: boolean;
 }) {
+  const mapboxToken = useMapboxPublicToken();
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef       = useRef<mapboxgl.Map | null>(null);
   const markersRef   = useRef<{ [id: string]: mapboxgl.Marker }>({});
@@ -540,7 +535,8 @@ function MapboxMap({ seminaires, activeId, activeFormat, onSelect, onExpand, exp
   const [cardSem, setCardSem] = useState<Seminaire | null>(null);
 
   useEffect(() => {
-    if (!MAPBOX_TOKEN || !mapContainer.current || mapRef.current) return;
+    if (!mapboxToken || !mapContainer.current || mapRef.current) return;
+    mapboxgl.accessToken = mapboxToken;
     const map = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
@@ -554,7 +550,7 @@ function MapboxMap({ seminaires, activeId, activeFormat, onSelect, onExpand, exp
     });
     mapRef.current = map;
     return () => { map.remove(); mapRef.current = null; setMapReady(false); };
-  }, []);
+  }, [mapboxToken]);
 
   useEffect(() => {
     if (!mapReady || !mapRef.current) return;
@@ -600,7 +596,7 @@ function MapboxMap({ seminaires, activeId, activeFormat, onSelect, onExpand, exp
 
   const cardFmt = cardSem ? (cardSem.formats[activeFormat] ?? Object.values(cardSem.formats)[0]) : null;
 
-  if (!MAPBOX_TOKEN) {
+  if (!mapboxToken) {
     return (
       <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', width: '100%', height: '100%', background: 'linear-gradient(145deg, #f5f2ec 0%, #ebe6dc 100%)', border: '1px solid rgba(26,46,26,0.08)' }}>
         <div style={{ width: '100%', height: '100%', minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>
@@ -616,7 +612,7 @@ function MapboxMap({ seminaires, activeId, activeFormat, onSelect, onExpand, exp
     <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', width: '100%', height: '100%' }}>
       <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
       {cardSem && cardFmt && (
-        <div style={{ position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 20, width: 230, borderRadius: 18, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.22)', background: '#fff', animation: 'fadeInUp 0.18s ease' }}>
+        <div style={{ position: 'absolute', bottom: 'max(16px, calc(env(safe-area-inset-bottom, 0px) + 12px))', left: '50%', transform: 'translateX(-50%)', zIndex: 100, width: 'min(230px, calc(100% - 32px))', maxWidth: 'calc(100vw - 32px)', borderRadius: 18, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.22)', background: '#fff', animation: 'fadeInUp 0.18s ease' }}>
           {(cardSem.images[0] ?? cardSem.image) && (
             <img src={cardSem.images[0] ?? cardSem.image} alt={cardFmt.titre} style={{ width: '100%', height: 120, objectFit: 'cover', display: 'block' }} />
           )}
@@ -808,7 +804,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
             <div style={{ position: 'absolute', top: 16, right: 16, zIndex: 10, background: 'rgba(60,60,60,0.5)', borderRadius: 9999, padding: '3px 10px', fontSize: 8, fontWeight: 700, color: '#fff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>★ Populaire</div>
           )}
 
-          <div style={{ position: 'absolute', bottom: 36, left: 20, right: 20, zIndex: 10, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', bottom: 'max(36px, calc(env(safe-area-inset-bottom, 0px) + 28px))', left: 20, right: 20, zIndex: 10, pointerEvents: 'none' }}>
             <h2 style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700, fontStyle: 'italic', fontSize: 'clamp(20px,5vw,26px)', color: '#fff', lineHeight: 1.15, margin: '0 0 6px', textShadow: '0 1px 4px rgba(0,0,0,0.3)' }}>
               {fmt.titre}
             </h2>
@@ -816,7 +812,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
           </div>
 
           {s.images.length > 1 && (
-            <div style={{ position: 'absolute', bottom: 14, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 5, zIndex: 10, pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', bottom: 'max(14px, calc(env(safe-area-inset-bottom, 0px) + 8px))', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 5, zIndex: 10, pointerEvents: 'none' }}>
               {s.images.map((_, i) => (
                 <div key={i} style={{ width: i === mobilePhotoIdx ? 20 : 6, height: 6, borderRadius: 3, background: i === mobilePhotoIdx ? '#fff' : 'rgba(255,255,255,0.45)', transition: 'all 0.3s ease' }} />
               ))}
@@ -939,11 +935,13 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
 // ─── MiniMap ──────────────────────────────────────────────────────────────────
 
 function MiniMap({ s }: { s: Seminaire }) {
+  const mapboxToken = useMapboxPublicToken();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef       = useRef<mapboxgl.Map | null>(null);
 
   useEffect(() => {
-    if (!MAPBOX_TOKEN || !containerRef.current || mapRef.current || s.lat == null || s.lng == null) return;
+    if (!mapboxToken || !containerRef.current || mapRef.current || s.lat == null || s.lng == null) return;
+    mapboxgl.accessToken = mapboxToken;
     const map = new mapboxgl.Map({
       container: containerRef.current,
       style: 'mapbox://styles/mapbox/streets-v12',
@@ -960,7 +958,7 @@ function MiniMap({ s }: { s: Seminaire }) {
     });
     mapRef.current = map;
     return () => { map.remove(); mapRef.current = null; };
-  }, [s.id]);
+  }, [s.id, mapboxToken]);
 
   if (s.lat == null || s.lng == null) return null;
 
@@ -969,7 +967,7 @@ function MiniMap({ s }: { s: Seminaire }) {
       <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', marginBottom: 14 }}>Localisation</div>
       <div style={{ fontSize: 15, fontWeight: 700, color: '#1a2e1a', marginBottom: 4 }}>{s.region}</div>
       <div style={{ fontSize: 13, color: '#9a9080', marginBottom: 16 }}>{s.producteur}</div>
-      {MAPBOX_TOKEN ? (
+      {mapboxToken ? (
         <div ref={containerRef} style={{ width: '100%', height: 260, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(26,46,26,0.08)', boxShadow: '0 2px 12px rgba(26,46,26,0.07)' }} />
       ) : (
         <div style={{ width: '100%', height: 160, borderRadius: 16, border: '1px dashed rgba(26,46,26,0.12)', background: '#faf8f5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#9a9080', padding: 16, textAlign: 'center' }}>
@@ -1398,8 +1396,12 @@ export default function SeminairesPage() {
         .sem-filter-chip.active { color:#fff; border-color:transparent; }
         .sem-filter-chip:hover:not(.active):not(:disabled) { background:#f0ece5; color:#1a2e1a; }
         .sem-split      { display:grid; grid-template-columns:1fr 380px; gap:28px; align-items:start; }
-        .sem-grid       { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
-        .sem-grid > div { min-width:0; }
+        .sem-grid       { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; align-items:stretch; }
+        .sem-grid > div { min-width:0; display:flex; }
+        .sem-pack-card { flex:1; width:100%; min-height:0; display:flex; flex-direction:column; }
+        .sem-pack-card-visual { position:relative; width:100%; flex-shrink:0; aspect-ratio:1/1; overflow:hidden; }
+        .sem-pack-card-body { flex:1; display:flex; flex-direction:column; min-height:0; padding:10px 12px 12px; }
+        .sem-pack-card-row { margin-top:auto; }
         .sem-map-widget { border-radius:16px; overflow:hidden; height:640px; box-shadow:0 2px 16px rgba(26,46,26,0.12); }
         .sem-cta-band   { display:flex; flex-direction:row; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap; background:#1e291a; border-radius:24px; padding:48px 64px; }
         .sem-detail-cols { display:grid; grid-template-columns:1fr 440px; gap:48px; align-items:start; }
@@ -1415,7 +1417,8 @@ export default function SeminairesPage() {
         @media (max-width:900px)  { .sem-grid  { grid-template-columns:repeat(2,1fr); } }
         @media (max-width:768px)  {
           .sem-split { grid-template-columns:1fr; }
-          .sem-map-widget { height:300px; }
+          .sem-grid { gap:10px; }
+          .sem-map-widget { height:300px; min-height: 240px; }
           .sem-header-top { padding-top:calc(64px + 2rem); }
           .sem-cta-band { flex-direction:column; text-align:center; padding:32px 24px; gap:24px; }
           .sem-detail-cols { grid-template-columns:1fr; gap:24px; }
@@ -1424,6 +1427,17 @@ export default function SeminairesPage() {
           .sem-mobile-carousel { display:block; position:relative; width:100vw; left:50%; transform:translateX(-50%); height:55vh; overflow:hidden; margin-bottom:28px; }
           .sem-photo-grid-desktop { display:none !important; }
           .sem-detail-title { display:none; }
+          .sem-pack-card { border-radius:16px !important; }
+          .sem-pack-card-visual { aspect-ratio:auto; height:clamp(100px,30vw,120px); max-height:none; }
+          .sem-pack-card-body { padding:9px 10px 11px; }
+          .sem-pack-card-title { font-size:12px !important; line-height:1.3 !important; min-height:calc(1.3em * 2); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+          .sem-pack-card-sub { min-height:1.35em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+          .sem-pack-card-row { flex-wrap:nowrap; align-items:center !important; gap:4px !important; }
+          .sem-pack-card-btn { padding:6px 9px !important; font-size:8px !important; letter-spacing:0.05em !important; }
+          .sem-pack-card-price { flex-wrap:nowrap !important; gap:3px !important; }
+          .sem-pack-card-price span:nth-child(2) { font-size:12px !important; }
+          .sem-pack-card-price .sem-pack-price-from { font-size:8px !important; }
+          .sem-pack-card-price span:last-child { font-size:8px !important; }
         }
         @media (max-width:600px)  {
           .sem-photo-grid.has-small { grid-template-columns:1fr; grid-template-rows:clamp(200px,60vw,300px) clamp(120px,32vw,180px) clamp(120px,32vw,180px); }
@@ -1432,8 +1446,9 @@ export default function SeminairesPage() {
           .sem-grid { grid-template-columns:repeat(2,1fr); }
         }
         @media (max-width:480px)  {
-          .sem-grid { grid-template-columns:1fr; }
-          .sem-map-widget { display:none; }
+          .sem-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+          /* Garder la carte visible : la carte « aperçu » au tap sur un pin vit ici ; display:none la masquait entièrement sur petits téléphones */
+          .sem-map-widget { height: min(280px, 52dvh); min-height: 220px; }
           .sem-cta-band { border-radius:16px; }
         }
       `}</style>

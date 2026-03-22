@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { MapboxTokenProvider } from '@/components/MapboxTokenProvider';
+import { getMapboxPublicToken } from '@/lib/mapbox-public';
 import SeminaireDetailWrapper from './ClientWrapper';
 
 export const metadata: Metadata = {
@@ -12,7 +14,9 @@ export const metadata: Metadata = {
 export default function SeminaireSlugPage() {
   return (
     <Suspense fallback={null}>
-      <SeminaireDetailWrapper />
+      <MapboxTokenProvider token={getMapboxPublicToken()}>
+        <SeminaireDetailWrapper />
+      </MapboxTokenProvider>
     </Suspense>
   );
 }
