@@ -9,7 +9,11 @@ import type { Seminaire, Format, ProgrammeItem } from '../lib/seminaires';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ?? '';
+/** Sans cette variable sur Vercel, Mapbox lève une erreur au `new mapboxgl.Map` → page blanche / erreur client. */
+const MAPBOX_ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ?? '';
+if (MAPBOX_ACCESS_TOKEN) {
+  mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
+}
 
 export type { Seminaire, Format, ProgrammeItem };
 
@@ -533,7 +537,7 @@ function MapboxMap({ seminaires, activeId, activeFormat, onSelect, onExpand, exp
   const [cardSem, setCardSem] = useState<Seminaire | null>(null);
 
   useEffect(() => {
-    if (!mapContainer.current || mapRef.current) return;
+    if (!MAPBOX_ACCESS_TOKEN || !mapContainer.current || mapRef.current) return;
     const map = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
@@ -592,6 +596,18 @@ function MapboxMap({ seminaires, activeId, activeFormat, onSelect, onExpand, exp
   }, [activeId]);
 
   const cardFmt = cardSem ? (cardSem.formats[activeFormat] ?? Object.values(cardSem.formats)[0]) : null;
+
+  if (!MAPBOX_ACCESS_TOKEN) {
+    return (
+      <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', width: '100%', height: '100%', background: 'linear-gradient(145deg, #f5f2ec 0%, #ebe6dc 100%)', border: '1px solid rgba(26,46,26,0.08)' }}>
+        <div style={{ width: '100%', height: '100%', minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>
+          <p style={{ margin: 0, fontSize: 13, color: '#7a7060', lineHeight: 1.6, maxWidth: 280 }}>
+            La carte des producteurs nécessite une configuration Mapbox côté hébergement. En attendant, parcourez les offres dans la liste à gauche.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', width: '100%', height: '100%' }}>
@@ -924,7 +940,7 @@ function MiniMap({ s }: { s: Seminaire }) {
   const mapRef       = useRef<mapboxgl.Map | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current || mapRef.current || s.lat == null || s.lng == null) return;
+    if (!MAPBOX_ACCESS_TOKEN || !containerRef.current || mapRef.current || s.lat == null || s.lng == null) return;
     const map = new mapboxgl.Map({
       container: containerRef.current,
       style: 'mapbox://styles/mapbox/streets-v12',
@@ -950,7 +966,13 @@ function MiniMap({ s }: { s: Seminaire }) {
       <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', marginBottom: 14 }}>Localisation</div>
       <div style={{ fontSize: 15, fontWeight: 700, color: '#1a2e1a', marginBottom: 4 }}>{s.region}</div>
       <div style={{ fontSize: 13, color: '#9a9080', marginBottom: 16 }}>{s.producteur}</div>
-      <div ref={containerRef} style={{ width: '100%', height: 260, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(26,46,26,0.08)', boxShadow: '0 2px 12px rgba(26,46,26,0.07)' }} />
+      {MAPBOX_ACCESS_TOKEN ? (
+        <div ref={containerRef} style={{ width: '100%', height: 260, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(26,46,26,0.08)', boxShadow: '0 2px 12px rgba(26,46,26,0.07)' }} />
+      ) : (
+        <div style={{ width: '100%', height: 160, borderRadius: 16, border: '1px dashed rgba(26,46,26,0.12)', background: '#faf8f5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#9a9080', padding: 16, textAlign: 'center' }}>
+          Carte non disponible (clé Mapbox à configurer sur l’hébergeur).
+        </div>
+      )}
     </div>
   );
 }
