@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { processReservation } from '../../../api/reservation.js';
+import { processReservation } from '@/lib/reservation';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
