@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseServer } from '../../../lib/supabase';
+import { isSupabaseConfigured, supabaseServer } from '../../../lib/supabase';
 
 export async function POST(req: NextRequest) {
   try {
+    if (!isSupabaseConfigured) {
+      return NextResponse.json(
+        { error: 'Service indisponible : configuration Supabase manquante sur le serveur.' },
+        { status: 503 }
+      );
+    }
+
     const body = await req.json();
 
     const {

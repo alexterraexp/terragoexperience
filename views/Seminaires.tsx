@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import ScrollAnimate from '../components/ScrollAnimate';
+import { CollapsibleDateRangePicker } from '../components/CollapsibleDateRangePicker';
+import { VilleDepartInput } from '../components/VilleDepartInput';
 
 // ─── Hero images ──────────────────────────────────────────────────────────────
 
@@ -39,28 +41,11 @@ const UNIVERS_TO_FILTER: Record<string, string> = {
 
 // ─── Modal constants ──────────────────────────────────────────────────────────
 
-const MODAL_MONTHS  = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-const MODAL_REGIONS = [
-  { name: 'Nouvelle-Aquitaine',         icon: '⛵' },
-  { name: 'Auvergne-Rhône-Alpes',       icon: '🏔' },
-  { name: "Provence-Alpes-Côte d'Azur", icon: '☀️' },
-];
-const MODAL_TERROIR = [
-  { label: 'Olives',     emoji: '🫒' }, { label: 'Piments',    emoji: '🌶️' },
-  { label: 'Truffe',     emoji: '🍄' }, { label: 'Fromages',   emoji: '🧀' },
-  { label: 'Huîtres',   emoji: '🦪' }, { label: 'Élevages',   emoji: '🐄' },
-  { label: 'Agrumes',   emoji: '🍊' }, { label: 'Vins',       emoji: '🍷' },
-  { label: 'Spiritueux', emoji: '🥃' }, { label: 'Noisettes',  emoji: '🌰' },
-];
-// Mapping univers modal → label "Quel produit du terroir découvrir ?" pour présélection au devis
-const UNIVERS_ID_TO_TERROIR_LABEL: Record<string, string> = {
-  cognac: 'Spiritueux', olive: 'Olives', truffe: 'Truffe',
-  fromage: 'Fromages', vin: 'Vins', piment: 'Piments', noisette: 'Noisettes',
-};
-const MODAL_ACC   = ['Chambres seules', 'Chambres partagées'];
+const MODAL_ACC = ['Chambres seules', 'Chambres partagées'];
 const MODAL_TRANS = ['De porte à porte', 'Depuis gare SNCF proche'];
-const MODAL_PARTS = ['Moins de 10', '10 – 20', '20 – 40', '40 – 80', '80 – 150', '150+'];
-const MODAL_STEPS = [{ label: 'Coordonnées' }, { label: 'Destination' }, { label: 'Logistique' }, { label: 'Récapitulatif' }];
+const MODAL_STEPS = [{ label: 'Coordonnées' }, { label: 'Dates & lieu' }, { label: 'Logistique' }, { label: 'Récapitulatif' }];
+const ACTIVITY_MAINS = 'Les mains dans la terre';
+const ACTIVITY_OPTIONS = ['Activité sportive', 'Cours de cuisine', 'Activité nature', 'Activité jeux'] as const;
 
 // ─── Modal sub-components ─────────────────────────────────────────────────────
 
@@ -93,20 +78,6 @@ const Pill: React.FC<{ active: boolean; onClick: () => void; children: React.Rea
   </button>
 );
 
-const ModeBtn: React.FC<{ active: boolean; onClick: () => void; children: React.ReactNode }> = ({ active, onClick, children }) => (
-  <button
-    type="button" onClick={onClick}
-    style={{
-      padding: '7px 18px', borderRadius: 9999,
-      border: `1.5px solid ${active ? '#1a2e1a' : 'rgba(10,44,52,0.12)'}`,
-      background: active ? '#1a2e1a' : '#fff',
-      color: active ? '#fff' : '#9ca3af',
-      fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
-      cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s ease',
-    }}
-  >{children}</button>
-);
-
 const ToggleCard: React.FC<{ icon: string; label: string; active: boolean; onToggle: () => void; children?: React.ReactNode }> = ({ icon, label, active, onToggle, children }) => (
   <div style={{ padding: '18px', borderRadius: 16, border: `1.5px solid ${active ? '#1a2e1a' : 'rgba(10,44,52,0.08)'}`, background: active ? 'rgba(26,46,26,0.03)' : '#fff', transition: 'all .2s ease' }}>
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -132,146 +103,11 @@ const RecapRow: React.FC<{ label: string; value: string }> = ({ label, value }) 
   </div>
 );
 
-// ─── DateRangePicker ─────────────────────────────────────────────────────────
-
-const DAYS_FR = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
-const MONTHS_FR = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-
-const DateRangePicker: React.FC<{
-  startDate: string; endDate: string;
-  onStartChange: (d: string) => void; onEndChange: (d: string) => void;
-}> = ({ startDate, endDate, onStartChange, onEndChange }) => {
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const [viewYear, setViewYear] = useState(today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(today.getMonth());
-  const [selecting, setSelecting] = useState<'start' | 'end'>('start');
-  const [hovered, setHovered] = useState<string | null>(null);
-
-  const sd = startDate ? new Date(startDate + 'T00:00:00') : null;
-  const ed = endDate   ? new Date(endDate   + 'T00:00:00') : null;
-
-  const toStr = (d: Date) => d.toISOString().split('T')[0];
-
-  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
-  const offset = (firstDay === 0 ? 6 : firstDay - 1);
-  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-
-  const cells: (Date | null)[] = [];
-  for (let i = 0; i < offset; i++) cells.push(null);
-  for (let i = 1; i <= daysInMonth; i++) cells.push(new Date(viewYear, viewMonth, i));
-
-  const prevMonth = () => { if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); } else setViewMonth(m => m - 1); };
-  const nextMonth = () => { if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); } else setViewMonth(m => m + 1); };
-
-  const handleDayClick = (d: Date) => {
-    const s = toStr(d);
-    if (selecting === 'start') {
-      onStartChange(s);
-      if (endDate && s > endDate) onEndChange('');
-      setSelecting('end');
-    } else {
-      if (startDate && s < startDate) { onStartChange(s); setSelecting('end'); }
-      else { onEndChange(s); setSelecting('start'); }
-    }
-  };
-
-  const isInRange = (d: Date) => {
-    const s = toStr(d);
-    const rangeEnd = hovered && selecting === 'end' && startDate ? hovered : endDate;
-    if (!startDate || !rangeEnd) return false;
-    return s > startDate && s < rangeEnd;
-  };
-  const isStart  = (d: Date) => !!startDate && toStr(d) === startDate;
-  const isEnd    = (d: Date) => !!endDate   && toStr(d) === endDate;
-  const isPast   = (d: Date) => d < today;
-
-  const fmtDisplay = (s: string) => s ? new Date(s + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
-
-  return (
-    <div style={{ background: '#faf8f5', borderRadius: 16, border: '1px solid rgba(10,44,52,0.08)', overflow: 'hidden' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
-        {[
-          { label: 'Arrivée', val: startDate, key: 'start' as const },
-          { label: 'Départ',  val: endDate,   key: 'end'   as const },
-        ].map(({ label, val, key }) => (
-          <button
-            key={key} type="button"
-            onClick={() => setSelecting(key)}
-            style={{
-              padding: '12px 16px', background: selecting === key ? '#fff' : 'transparent',
-              border: 'none', borderBottom: `2px solid ${selecting === key ? '#1a2e1a' : 'transparent'}`,
-              cursor: 'pointer', textAlign: 'left', transition: 'all .15s ease',
-              borderRight: key === 'start' ? '1px solid rgba(10,44,52,0.06)' : 'none',
-            }}
-          >
-            <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: selecting === key ? '#e67e22' : '#b0a89e', marginBottom: 3 }}>{label}</div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: val ? '#1a2e1a' : '#c4bdb4' }}>{val ? fmtDisplay(val) : 'Choisir...'}</div>
-          </button>
-        ))}
-      </div>
-
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
-        <button type="button" onClick={prevMonth} style={{ width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'rgba(10,44,52,0.06)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1a2e1a', fontSize: 12, transition: 'background .15s' }}
-          onMouseOver={e => (e.currentTarget.style.background = 'rgba(10,44,52,0.12)')}
-          onMouseOut={e => (e.currentTarget.style.background = 'rgba(10,44,52,0.06)')}
-        >‹</button>
-        <span style={{ fontSize: 11, fontWeight: 700, color: '#1a2e1a', textTransform: 'capitalize', letterSpacing: '0.05em' }}>
-          {MONTHS_FR[viewMonth]} {viewYear}
-        </span>
-        <button type="button" onClick={nextMonth} style={{ width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'rgba(10,44,52,0.06)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1a2e1a', fontSize: 12, transition: 'background .15s' }}
-          onMouseOver={e => (e.currentTarget.style.background = 'rgba(10,44,52,0.12)')}
-          onMouseOut={e => (e.currentTarget.style.background = 'rgba(10,44,52,0.06)')}
-        >›</button>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', padding: '0 12px', marginBottom: 4 }}>
-        {DAYS_FR.map((d, i) => (
-          <div key={i} style={{ textAlign: 'center', fontSize: 9, fontWeight: 700, color: '#b0a89e', letterSpacing: '0.1em', padding: '4px 0' }}>{d}</div>
-        ))}
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', padding: '0 12px 14px', gap: 2 }}>
-        {cells.map((d, i) => {
-          if (!d) return <div key={i} />;
-          const start = isStart(d), end = isEnd(d), inRange = isInRange(d), past = isPast(d);
-          const isToday = toStr(d) === toStr(today);
-          return (
-            <button
-              key={i} type="button"
-              disabled={past}
-              onClick={() => !past && handleDayClick(d)}
-              onMouseEnter={() => setHovered(toStr(d))}
-              onMouseLeave={() => setHovered(null)}
-              style={{
-                height: 32, borderRadius: start || end ? 9999 : inRange ? 0 : 9999,
-                border: isToday && !start && !end ? '1.5px solid rgba(230,126,34,0.4)' : 'none',
-                background: start || end ? '#1a2e1a' : inRange ? 'rgba(26,46,26,0.08)' : 'transparent',
-                color: start || end ? '#fff' : past ? '#d5cfc7' : '#1a2e1a',
-                fontSize: 11, fontWeight: start || end ? 700 : isToday ? 700 : 400,
-                cursor: past ? 'not-allowed' : 'pointer',
-                transition: 'all .12s ease',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-            >
-              {d.getDate()}
-            </button>
-          );
-        })}
-      </div>
-
-      <div style={{ padding: '8px 16px 12px', borderTop: '1px solid rgba(10,44,52,0.05)', display: 'flex', alignItems: 'center', gap: 6 }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', flexShrink: 0 }} />
-        <span style={{ fontSize: 9, color: '#b0a89e', fontWeight: 600, letterSpacing: '0.08em' }}>
-          {selecting === 'start' ? "Sélectionnez la date d'arrivée" : "Sélectionnez la date de départ"}
-        </span>
-      </div>
-    </div>
-  );
-};
-
 // ─── SeminaireModal ───────────────────────────────────────────────────────────
 
-const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void; preselectedTerroirLabels?: string[] }> = ({ isOpen, onClose, preselectedTerroirLabels }) => {
+const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [step, setStep]       = useState(1);
   const [closing, setClosing] = useState(false);
   const [trans, setTrans]     = useState(false);
@@ -279,19 +115,16 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void; preselect
   const [ok, setOk]           = useState(false);
   const [err, setErr]         = useState('');
 
-  const [form, setForm]   = useState({ prenom: '', nom: '', email: '', entreprise: '', participants: '', message: '' });
-  const [regions, setReg] = useState<string[]>([]);
-  const [terroir, setTer] = useState<string[]>([]);
-  const [autre, setAutre] = useState('');
-  const [ville, setVille] = useState('');
-  const [acc, setAcc]     = useState<string[]>([]);
-  const [trans2, setTr2]  = useState('');
-  const [months, setMo]   = useState<string[]>([]);
-  const [pMode, setPMode] = useState<'dates' | 'months'>('dates');
-  const [sd, setSd]       = useState('');
-  const [ed, setEd]       = useState('');
-  const [heb, setHeb]     = useState(false);
-  const [wt, setWt]       = useState(false);
+  const [form, setForm] = useState({ prenom: '', nom: '', email: '', entreprise: '', participants: '', message: '' });
+  const [acc, setAcc] = useState<string[]>([]);
+  const [trans2, setTr2] = useState('');
+  const [sd, setSd] = useState('');
+  const [ed, setEd] = useState('');
+  const [villeDepart, setVilleDepart] = useState('');
+  const [maxTrajetH, setMaxTrajetH] = useState(3);
+  const [extraActivities, setExtraActivities] = useState<string[]>([]);
+  const [heb, setHeb] = useState(false);
+  const [wt, setWt] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 600);
@@ -317,19 +150,18 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void; preselect
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  useEffect(() => {
-    if (isOpen && preselectedTerroirLabels?.length) setTer(preselectedTerroirLabels);
-  }, [isOpen, preselectedTerroirLabels]);
-
   const handleClose = () => {
     setClosing(true);
     setTimeout(() => {
       setClosing(false); setStep(1); setOk(false); setErr('');
       setForm({ prenom: '', nom: '', email: '', entreprise: '', participants: '', message: '' });
-      setReg([]); setTer([]); setAcc([]); setTr2(''); setMo([]);
-      setHeb(false); setWt(false); setAutre(''); setVille('');
-      setPMode('dates'); setSd(''); setEd('');
+      setAcc([]); setTr2(''); setSd(''); setEd(''); setVilleDepart(''); setMaxTrajetH(3); setExtraActivities([]);
+      setHeb(false); setWt(false);
       onClose();
+      // Revenir sur la page « séminaires engagés » : /demande-seminaire sert surtout d’entrée CTA
+      if (pathname === '/demande-seminaire') {
+        router.replace('/seminaires-entreprise');
+      }
     }, 280);
   };
 
@@ -340,9 +172,13 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void; preselect
     setErr('');
     if (step === 1) {
       const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
-      const perOk = pMode === 'months' ? months.length > 0 : !!sd && !!ed;
-      if (!form.prenom || !form.nom || !form.email || !emailOk || !form.entreprise || !form.participants || !perOk) {
+      if (!form.prenom || !form.nom || !form.email || !emailOk || !form.entreprise || !form.participants.trim()) {
         setErr('Certains champs obligatoires sont manquants ou invalides.'); return;
+      }
+    }
+    if (step === 2) {
+      if (!sd || !ed || !villeDepart.trim()) {
+        setErr('Indiquez les dates et la ville de départ.'); return;
       }
     }
     setTrans(true);
@@ -356,49 +192,54 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void; preselect
 
   const handleSubmit = async () => {
     setBusy(true);
-    const perStr = pMode === 'dates'
-      ? (sd && ed ? `Du ${new Date(sd).toLocaleDateString('fr-FR')} au ${new Date(ed).toLocaleDateString('fr-FR')}` : 'Dates non renseignées')
-      : (months.length > 0 ? months.join(', ') : 'Aucun mois');
-    const body = `
-Nouvelle demande de séminaire - Terrago
-
-=== INFORMATIONS CLIENT ===
-Prénom: ${form.prenom} | Nom: ${form.nom}
-Email: ${form.email} | Entreprise: ${form.entreprise}
-Participants: ${form.participants}
-Période: ${perStr}
-
-=== DESTINATION & TERROIR ===
-Région(s): ${[...regions, autre].filter(Boolean).join(', ') || 'Non précisée'}
-${ville ? `Ville: ${ville}` : ''}
-Produits du terroir: ${terroir.join(', ') || 'Non précisé'}
-
-=== LOGISTIQUE ===
-Hébergement: ${heb ? (acc.join(', ') || 'Oui') : 'Non'}
-Transport: ${wt ? (trans2 || 'Oui') : 'Non'}
-Message: ${form.message || 'Aucun'}
-    `.trim();
+    setErr('');
+    const perStr =
+      sd && ed
+        ? `Du ${new Date(sd).toLocaleDateString('fr-FR')} au ${new Date(ed).toLocaleDateString('fr-FR')}`
+        : 'Dates non renseignées';
+    const activitesStr = [ACTIVITY_MAINS, ...extraActivities].join(', ');
+    const activitesPayload = form.message.trim()
+      ? `${activitesStr} — ${form.message.trim()}`
+      : activitesStr;
+    const payload = {
+      nom: `${form.prenom} ${form.nom}`.trim(),
+      email: form.email.trim(),
+      entreprise: form.entreprise.trim(),
+      participants: form.participants.trim(),
+      periode: perStr,
+      villeDepart: villeDepart.trim(),
+      trajetMax: `${maxTrajetH} h`,
+      hebergement: heb ? (acc.length > 0 ? acc.join(', ') : 'Oui') : 'Non',
+      transport: wt ? (trans2 || 'Oui') : 'Non',
+      activites: activitesPayload,
+    };
     try {
-      const res = await fetch('https://formsubmit.co/ajax/alexso.terrago@gmail.com', {
+      const res = await fetch('/api/reservation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name: `${form.prenom} ${form.nom}`, email: form.email, subject: `Nouvelle demande de séminaire - ${form.entreprise}`, message: body, _captcha: false, _template: 'table' }),
+        body: JSON.stringify(payload),
       });
-      if (res.ok) { setOk(true); setTimeout(handleClose, 2400); }
-      else throw new Error();
-    } catch { alert("Erreur lors de l'envoi. Veuillez réessayer."); }
-    finally { setBusy(false); }
+      const data = (await res.json().catch(() => ({}))) as { success?: boolean; message?: string };
+      if (res.ok && data.success) {
+        setOk(true);
+        setTimeout(handleClose, 2400);
+      } else {
+        setErr(data.message || "Erreur lors de l'envoi. Veuillez réessayer.");
+      }
+    } catch {
+      setErr("Erreur lors de l'envoi. Veuillez réessayer.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   if (!isOpen) return null;
 
-  const perStr = pMode === 'dates'
-    ? (sd && ed ? `${new Date(sd).toLocaleDateString('fr-FR')} → ${new Date(ed).toLocaleDateString('fr-FR')}` : '')
-    : months.join(', ');
+  const perStr = sd && ed ? `${new Date(sd).toLocaleDateString('fr-FR')} → ${new Date(ed).toLocaleDateString('fr-FR')}` : '';
 
   const STEP_TITLE: Record<number, string> = {
     1: 'Commençons par vous.',
-    2: 'Destination & terroir.',
+    2: 'Dates & destination.',
     3: 'Logistique & sur-mesure.',
     4: 'Votre récapitulatif.',
   };
@@ -539,83 +380,53 @@ Message: ${form.message || 'Aucun'}
                   </div>
 
                   <Field label="Nombre de participants" required>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                      {MODAL_PARTS.map(p => <Pill key={p} active={form.participants === p} onClick={() => setForm({ ...form, participants: p })}>{p}</Pill>)}
-                    </div>
-                  </Field>
-
-                  <Field label="Période souhaitée" required>
-                    <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-                      <ModeBtn active={pMode === 'dates'} onClick={() => { setPMode('dates'); setMo([]); }}>Dates précises</ModeBtn>
-                      <ModeBtn active={pMode === 'months'} onClick={() => { setPMode('months'); setSd(''); setEd(''); }}>Choisir des mois</ModeBtn>
-                    </div>
-                    {pMode === 'dates' ? (
-                      <DateRangePicker startDate={sd} endDate={ed} onStartChange={setSd} onEndChange={setEd} />
-                    ) : (
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
-                        {MODAL_MONTHS.map(m => <Pill key={m} active={months.includes(m)} onClick={() => tog(months, setMo, m)}>{m}</Pill>)}
-                      </div>
-                    )}
+                    <input
+                      className="sem-i"
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Ex. 24, une fourchette, ou « entre 15 et 30 »"
+                      value={form.participants}
+                      onChange={e => setForm({ ...form, participants: e.target.value })}
+                    />
                   </Field>
                 </div>
               )}
 
               {step === 2 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                  <Field label="Région(s) souhaitée(s)">
-                    <div className="sg3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }}>
-                      {MODAL_REGIONS.map(r => {
-                        const a = regions.includes(r.name);
-                        return (
-                          <button
-                            key={r.name} type="button"
-                            onClick={() => tog(regions, setReg, r.name)}
-                            style={{
-                              padding: '18px 12px', borderRadius: 20, fontFamily: 'inherit',
-                              border: `1.5px solid ${a ? '#1a2e1a' : 'rgba(10,44,52,0.08)'}`,
-                              background: a ? '#1a2e1a' : '#faf8f5',
-                              cursor: 'pointer', textAlign: 'center', transition: 'all .2s ease',
-                              transform: a ? 'translateY(-2px)' : 'none',
-                              boxShadow: a ? '0 6px 20px rgba(26,46,26,.16)' : 'none',
-                            }}
-                          >
-                            <div style={{ fontSize: 24, marginBottom: 8 }}>{r.icon}</div>
-                            <div style={{ fontSize: 10, fontWeight: 700, color: a ? '#fff' : '#1a2e1a', lineHeight: 1.3 }}>{r.name}</div>
-                            {a && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', margin: '8px auto 0' }} />}
-                          </button>
-                        );
-                      })}
-                    </div>
+                  <Field label="Dates du séjour" required>
+                    <CollapsibleDateRangePicker collapseCalendar startDate={sd} endDate={ed} onStartChange={setSd} onEndChange={setEd} />
                   </Field>
-
-                  <div className="sg2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                    <Field label="Autre région"><input className="sem-i" placeholder="Ex : Bretagne, Occitanie…" value={autre} onChange={e => setAutre(e.target.value)} /></Field>
-                    <Field label="Ville"><input className="sem-i" placeholder="Ex : Bordeaux, Lyon…" value={ville} onChange={e => setVille(e.target.value)} /></Field>
-                  </div>
-
-                  <Field label="Quel produit du terroir découvrir ?">
-                    <div className="sg4" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 9 }}>
-                      {MODAL_TERROIR.map(p => {
-                        const a = terroir.includes(p.label);
-                        return (
-                          <button
-                            key={p.label} type="button"
-                            onClick={() => tog(terroir, setTer, p.label)}
-                            style={{
-                              padding: '12px 8px', borderRadius: 16, fontFamily: 'inherit',
-                              border: `1.5px solid ${a ? '#1a2e1a' : 'rgba(10,44,52,0.08)'}`,
-                              background: a ? '#1a2e1a' : '#faf8f5',
-                              cursor: 'pointer', textAlign: 'center', transition: 'all .2s ease',
-                              boxShadow: a ? '0 4px 14px rgba(26,46,26,.14)' : 'none',
-                              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
-                            }}
-                          >
-                            <span style={{ fontSize: 22 }}>{p.emoji}</span>
-                            <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: a ? '#fff' : '#4b5563' }}>{p.label}</span>
-                            {a && <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#e67e22', display: 'inline-block' }} />}
-                          </button>
-                        );
-                      })}
+                  <Field label="Votre ville de départ" required>
+                    <VilleDepartInput value={villeDepart} onChange={setVilleDepart} className="sem-i" style={{ width: '100%', boxSizing: 'border-box' }} />
+                  </Field>
+                  <Field label="Temps maximum de trajet souhaité" required>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                      <button
+                        type="button"
+                        onClick={() => setMaxTrajetH(h => Math.max(1, h - 1))}
+                        style={{
+                          width: 40, height: 40, borderRadius: '50%', border: '1px solid rgba(10,44,52,0.12)', background: '#faf8f5',
+                          cursor: 'pointer', fontSize: 20, fontWeight: 700, color: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'inherit',
+                        }}
+                        aria-label="Diminuer le temps de trajet"
+                      >
+                        −
+                      </button>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: '#1a2e1a', minWidth: 120, textAlign: 'center' }}>
+                        {maxTrajetH} heure{maxTrajetH > 1 ? 's' : ''}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setMaxTrajetH(h => Math.min(8, h + 1))}
+                        style={{
+                          width: 40, height: 40, borderRadius: '50%', border: '1px solid rgba(10,44,52,0.12)', background: '#faf8f5',
+                          cursor: 'pointer', fontSize: 20, fontWeight: 700, color: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'inherit',
+                        }}
+                        aria-label="Augmenter le temps de trajet"
+                      >
+                        +
+                      </button>
                     </div>
                   </Field>
                 </div>
@@ -631,6 +442,27 @@ Message: ${form.message || 'Aucun'}
                       {wt && <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>{MODAL_TRANS.map(t => <Pill key={t} active={trans2 === t} onClick={() => setTr2(t)} small>{t}</Pill>)}</div>}
                     </ToggleCard>
                   </div>
+                  <Field label="Activités possibles">
+                    <p style={{ fontSize: 11, color: '#7a7060', margin: '0 0 12px', lineHeight: 1.55 }}>
+                      Toutes nos activités sont conçues pour renforcer les liens et faciliter la cohésion d&apos;équipe.
+                    </p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                      <span
+                        style={{
+                          padding: '7px 14px', borderRadius: 9999,
+                          border: '1.5px solid #1a2e1a', background: '#1a2e1a', color: '#fff',
+                          fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
+                          fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 5, cursor: 'default',
+                          boxShadow: '0 2px 10px rgba(26,46,26,0.15)',
+                        }}
+                      >
+                        ✓ {ACTIVITY_MAINS}
+                      </span>
+                      {ACTIVITY_OPTIONS.map(a => (
+                        <Pill key={a} active={extraActivities.includes(a)} onClick={() => tog(extraActivities, setExtraActivities, a)}>{a}</Pill>
+                      ))}
+                    </div>
+                  </Field>
                   <Field label="Un message particulier ?">
                     <textarea className="sem-i" rows={4} style={{ resize: 'none', lineHeight: 1.6 }} placeholder="Salles de réunion, pauses gourmandes, activités team building particulières…" value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} />
                   </Field>
@@ -641,9 +473,9 @@ Message: ${form.message || 'Aucun'}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   <p style={{ color: '#b0a89e', fontSize: 12, margin: '0 0 4px' }}>Vérifiez vos informations avant d'envoyer.</p>
                   {[
-                    { title: '01 — Coordonnées', rows: [{ label: 'Nom', value: `${form.prenom} ${form.nom}` }, { label: 'Email', value: form.email }, { label: 'Entreprise', value: form.entreprise }, { label: 'Participants', value: form.participants }, { label: 'Période', value: perStr }] },
-                    { title: '02 — Destination & Terroir', rows: [{ label: 'Région(s)', value: [...regions, autre].filter(Boolean).join(', ') }, { label: 'Produits', value: terroir.join(', ') }, ...(ville ? [{ label: 'Ville', value: ville }] : [])] },
-                    { title: '03 — Logistique', rows: [{ label: 'Hébergement', value: heb ? (acc.length > 0 ? acc.join(', ') : 'Oui') : 'Non' }, { label: 'Transport', value: wt ? (trans2 || 'Oui') : 'Non' }, ...(form.message ? [{ label: 'Message', value: form.message }] : [])] },
+                    { title: '01 — Coordonnées', rows: [{ label: 'Nom', value: `${form.prenom} ${form.nom}` }, { label: 'Email', value: form.email }, { label: 'Entreprise', value: form.entreprise }, { label: 'Participants', value: form.participants }] },
+                    { title: '02 — Dates & lieu', rows: [{ label: 'Période', value: perStr }, { label: 'Ville de départ', value: villeDepart.trim() }, { label: 'Temps max. trajet', value: `${maxTrajetH} h` }] },
+                    { title: '03 — Logistique & activités', rows: [{ label: 'Hébergement', value: heb ? (acc.length > 0 ? acc.join(', ') : 'Oui') : 'Non' }, { label: 'Transport', value: wt ? (trans2 || 'Oui') : 'Non' }, { label: 'Activités', value: [ACTIVITY_MAINS, ...extraActivities].join(', ') }, ...(form.message ? [{ label: 'Message', value: form.message }] : [])] },
                   ].map(block => (
                     <div key={block.title} style={{ background: '#faf8f5', borderRadius: 16, padding: '14px 18px' }}>
                       <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#e67e22', marginBottom: 10 }}>{block.title}</div>
@@ -769,9 +601,9 @@ const Seminaires: React.FC = () => {
   useEffect(() => {
     if (searchParams.get('openModal') === 'true') {
       setIsModalOpen(true);
-      router.replace('/entreprises');
+      router.replace(pathname || '/demande-seminaire');
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, pathname]);
 
   const rotatingTexts = ['humains', 'simples', 'inspirants', 'captivants', 'authentiques', 'engagés', 'gourmands', 'durables', 'sensoriels'];
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
@@ -786,15 +618,8 @@ const Seminaires: React.FC = () => {
   useEffect(() => { heroImages.forEach(src => { const img = new Image(); img.src = src; }); }, []);
   useEffect(() => { const id = setInterval(() => setCurrentImageIndex(p => (p + 1) % heroImages.length), 3000); return () => clearInterval(id); }, []);
 
-  const [preselectedTerroirForModal, setPreselectedTerroirForModal] = useState<string[]>([]);
-  const openModal = (universId?: string) => {
-    if (universId) {
-      const label = UNIVERS_ID_TO_TERROIR_LABEL[universId];
-      setPreselectedTerroirForModal(label ? [label] : []);
-    } else setPreselectedTerroirForModal([]);
-    setIsModalOpen(true);
-  };
-  const closeModal = () => { setIsModalOpen(false); setPreselectedTerroirForModal([]); };
+  const openModal = () => { setIsModalOpen(true); };
+  const closeModal = () => { setIsModalOpen(false); };
   const openUniversModal = (id: string) => { const d = UNIVERS_DATA[id]; if (!d) return; setSelectedUniversModal(d); setIsUniversModalClosing(false); document.body.style.overflow = 'hidden'; };
   const closeUniversModal = () => { setIsUniversModalClosing(true); setTimeout(() => { setSelectedUniversModal(null); setIsUniversModalClosing(false); document.body.style.overflow = ''; }, 250); };
   useEffect(() => { const h = (e: KeyboardEvent) => { if (e.key === 'Escape' && selectedUniversModal) closeUniversModal(); }; document.addEventListener('keydown', h); return () => document.removeEventListener('keydown', h); }, [selectedUniversModal]);
@@ -832,7 +657,7 @@ const Seminaires: React.FC = () => {
 
   return (
     <div className="font-sans bg-beige-bg min-h-screen overflow-x-hidden">
-      <SeminaireModal isOpen={isModalOpen} onClose={closeModal} preselectedTerroirLabels={preselectedTerroirForModal} />
+      <SeminaireModal isOpen={isModalOpen} onClose={closeModal} />
 
       {/* ── HERO ── */}
       <section className="relative w-full overflow-hidden min-h-screen flex items-center justify-center">
@@ -1244,7 +1069,7 @@ const Seminaires: React.FC = () => {
                 </div>
                 <div className="flex flex-col gap-3 items-center">
                   <button
-                    onClick={() => { closeUniversModal(); openModal(selectedUniversModal?.id); }}
+                    onClick={() => { closeUniversModal(); openModal(); }}
                     className="py-4 rounded-full font-bold uppercase transition-colors duration-300"
                     style={{ width: '92%', maxWidth: 380, background: '#1a2e1a', color: '#fff', border: 'none', fontSize: 10, letterSpacing: '0.15em', cursor: 'pointer' }}
                     onMouseEnter={e => { e.currentTarget.style.background = '#e67e22'; }}

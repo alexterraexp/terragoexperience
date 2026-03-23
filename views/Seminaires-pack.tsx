@@ -9,6 +9,8 @@ import type { Seminaire, Format, ProgrammeItem } from '../lib/seminaires';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useMapboxPublicToken } from '@/components/MapboxTokenProvider';
+import { CollapsibleDateRangePicker } from '@/components/CollapsibleDateRangePicker';
+import { VilleDepartInput } from '@/components/VilleDepartInput';
 
 export type { Seminaire, Format, ProgrammeItem };
 
@@ -58,9 +60,9 @@ export const AMENITIES_MAP: Record<string, { label: string; icon: React.ReactNod
   soiree_theme:         { label: 'Soirée à thème',                      icon: <PartyPopper  size={26} color={AMENITY_COLOR} strokeWidth={1.6} /> },
 };
 
-const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-const PARTICIPANTS_OPTIONS = ['Moins de 10','10 – 20','20 – 40','40 – 80','80 – 150','150+'];
-const STEPS = [{ label: 'Sélection' }, { label: 'Coordonnées' }, { label: 'Logistique' }, { label: 'Récapitulatif' }];
+const STEPS = [{ label: 'Sélection' }, { label: 'Coordonnées' }, { label: 'Dates & lieu' }, { label: 'Logistique' }, { label: 'Récapitulatif' }];
+const ACTIVITY_MAINS_PACK = 'Les mains dans la terre';
+const ACTIVITY_OPTIONS_PACK = ['Activité sportive', 'Cours de cuisine', 'Activité nature', 'Activité jeux'] as const;
 
 // ─── Mailto pré-rempli ────────────────────────────────────────────────────────
 
@@ -187,21 +189,6 @@ const TagBtn: React.FC<{ active: boolean; onClick: () => void; children: ReactNo
   </button>
 );
 
-// ─── ModeBtn ──────────────────────────────────────────────────────────────────
-
-const ModeBtn: React.FC<{ active: boolean; onClick: () => void; children: ReactNode }> = ({ active, onClick, children }) => (
-  <button onClick={onClick} style={{
-    padding: '7px 16px', borderRadius: 9999,
-    border: `1.5px solid ${active ? '#e67e22' : 'rgba(10,44,52,0.1)'}`,
-    background: active ? '#e67e22' : '#faf8f5',
-    color: active ? '#fff' : '#b0a89e',
-    fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
-    cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s ease',
-  }}>
-    {children}
-  </button>
-);
-
 // ─── ToggleCard ───────────────────────────────────────────────────────────────
 
 const ToggleCard: React.FC<{ icon: ReactNode; label: string; active: boolean; onToggle: () => void; children?: ReactNode }> = ({ icon, label, active, onToggle, children }) => (
@@ -262,82 +249,6 @@ const CustomSelect: React.FC<{
           </div>
         </div>
       )}
-    </div>
-  );
-};
-
-// ─── DateRangePicker ──────────────────────────────────────────────────────────
-
-const DAYS_FR = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
-const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-
-const DateRangePicker: React.FC<{ startDate: string; endDate: string; onStartChange: (d: string) => void; onEndChange: (d: string) => void }> = ({ startDate, endDate, onStartChange, onEndChange }) => {
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const [viewYear, setViewYear] = useState(today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(today.getMonth());
-  const [selecting, setSelecting] = useState<'start' | 'end'>('start');
-  const [hovered, setHovered] = useState<string | null>(null);
-  const toStr = (d: Date) => d.toISOString().split('T')[0];
-  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
-  const offset = (firstDay === 0 ? 6 : firstDay - 1);
-  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-  const cells: (Date | null)[] = [];
-  for (let i = 0; i < offset; i++) cells.push(null);
-  for (let i = 1; i <= daysInMonth; i++) cells.push(new Date(viewYear, viewMonth, i));
-  const prevMonth = () => { if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); } else setViewMonth(m => m - 1); };
-  const nextMonth = () => { if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); } else setViewMonth(m => m + 1); };
-  const handleDayClick = (d: Date) => {
-    const s = toStr(d);
-    if (selecting === 'start') { onStartChange(s); if (endDate && s > endDate) onEndChange(''); setSelecting('end'); }
-    else { if (startDate && s < startDate) { onStartChange(s); setSelecting('end'); } else { onEndChange(s); setSelecting('start'); } }
-  };
-  const isInRange = (d: Date) => {
-    const s = toStr(d);
-    const rangeEnd = hovered && selecting === 'end' && startDate ? hovered : endDate;
-    if (!startDate || !rangeEnd) return false;
-    return s > startDate && s < rangeEnd;
-  };
-  const isStart = (d: Date) => !!startDate && toStr(d) === startDate;
-  const isEnd   = (d: Date) => !!endDate && toStr(d) === endDate;
-  const isPast  = (d: Date) => d < today;
-  const fmtDisplay = (s: string) => s ? new Date(s + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
-
-  return (
-    <div style={{ background: '#faf8f5', borderRadius: 18, border: '1px solid rgba(10,44,52,0.08)', overflow: 'hidden' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
-        {(['start', 'end'] as const).map(key => (
-          <button key={key} type="button" onClick={() => setSelecting(key)} style={{ padding: '12px 16px', background: selecting === key ? '#fff' : 'transparent', border: 'none', borderBottom: `2px solid ${selecting === key ? '#1a2e1a' : 'transparent'}`, cursor: 'pointer', textAlign: 'left', transition: 'all .15s ease', borderRight: key === 'start' ? '1px solid rgba(10,44,52,0.06)' : 'none' }}>
-            <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: selecting === key ? '#e67e22' : '#b0a89e', marginBottom: 3 }}>{key === 'start' ? 'Arrivée' : 'Départ'}</div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: (key === 'start' ? startDate : endDate) ? '#1a2e1a' : '#c4bdb4' }}>{fmtDisplay(key === 'start' ? startDate : endDate)}</div>
-          </button>
-        ))}
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
-        <button type="button" onClick={prevMonth} style={{ width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'rgba(10,44,52,0.06)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1a2e1a', fontSize: 12 }}>‹</button>
-        <span style={{ fontSize: 11, fontWeight: 700, color: '#1a2e1a', textTransform: 'capitalize', letterSpacing: '0.05em' }}>{MONTHS_FR[viewMonth]} {viewYear}</span>
-        <button type="button" onClick={nextMonth} style={{ width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'rgba(10,44,52,0.06)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1a2e1a', fontSize: 12 }}>›</button>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', padding: '0 12px', marginBottom: 4 }}>
-        {DAYS_FR.map((d, i) => <div key={i} style={{ textAlign: 'center', fontSize: 9, fontWeight: 700, color: '#b0a89e', letterSpacing: '0.1em', padding: '4px 0' }}>{d}</div>)}
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', padding: '0 12px 14px', gap: 2 }}>
-        {cells.map((d, i) => {
-          if (!d) return <div key={i} />;
-          const start = isStart(d), end = isEnd(d), inRange = isInRange(d), past = isPast(d);
-          const isToday = toStr(d) === toStr(today);
-          return (
-            <button key={i} type="button" disabled={past} onClick={() => !past && handleDayClick(d)}
-              onMouseEnter={() => setHovered(toStr(d))} onMouseLeave={() => setHovered(null)}
-              style={{ height: 32, borderRadius: start || end ? 9999 : inRange ? 0 : 9999, border: isToday && !start && !end ? '1.5px solid rgba(230,126,34,0.4)' : 'none', background: start || end ? '#1a2e1a' : inRange ? 'rgba(26,46,26,0.08)' : 'transparent', color: start || end ? '#fff' : past ? '#d5cfc7' : '#1a2e1a', fontSize: 11, fontWeight: start || end ? 700 : isToday ? 700 : 400, cursor: past ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {d.getDate()}
-            </button>
-          );
-        })}
-      </div>
-      <div style={{ padding: '8px 16px 12px', borderTop: '1px solid rgba(10,44,52,0.05)', display: 'flex', alignItems: 'center', gap: 6 }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', flexShrink: 0 }} />
-        <span style={{ fontSize: 9, color: '#b0a89e', fontWeight: 600, letterSpacing: '0.08em' }}>{selecting === 'start' ? "Sélectionnez la date d'arrivée" : "Sélectionnez la date de départ"}</span>
-      </div>
     </div>
   );
 };
@@ -995,14 +906,13 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   const [selectedFormatId, setSelectedFormatId] = useState('1jour');
   const [accTypes, setAccTypes] = useState<string[]>([]);
   const [transport, setTransport] = useState('');
-  const [months, setMonths] = useState<string[]>([]);
-  const [periodMode, setPeriod] = useState<'dates' | 'months'>('dates');
   const [startDate, setStart] = useState('');
   const [endDate, setEnd] = useState('');
   const [hebergement, setHeberg] = useState(false);
   const [withTransport, setWithT] = useState(false);
   const [villeDepart, setVilleDepart] = useState('');
-  const [distanceHours, setDistanceHours] = useState(1);
+  const [distanceHours, setDistanceHours] = useState(3);
+  const [extraActivities, setExtraActivities] = useState<string[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -1028,8 +938,8 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
     setTimeout(() => {
       setClosing(false); setStep(1); setSuccess(false); setError('');
       setForm({ prenom: '', nom: '', email: '', entreprise: '', participants: '', message: '' });
-      setSelectedSeminaireId(null); setSelectedFormatId('1jour'); setAccTypes([]); setTransport(''); setMonths([]);
-      setStart(''); setEnd(''); setHeberg(false); setWithT(false); setVilleDepart(''); setDistanceHours(1);
+      setSelectedSeminaireId(null); setSelectedFormatId('1jour'); setAccTypes([]); setTransport('');
+      setStart(''); setEnd(''); setHeberg(false); setWithT(false); setVilleDepart(''); setDistanceHours(3); setExtraActivities([]);
       onClose();
     }, 280);
   };
@@ -1045,21 +955,26 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
     setError('');
     if (step === 1 && (!selectedSeminaireId || !selectedFormatId)) { setError('Veuillez sélectionner une offre.'); return; }
     if (step === 2) {
-      const emailOk   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
-      const periodOk  = periodMode === 'months' ? months.length > 0 : !!startDate && !!endDate;
-      if (!form.prenom || !form.nom || !form.email || !emailOk || !form.entreprise || !form.participants || !periodOk) {
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+      if (!form.prenom || !form.nom || !form.email || !emailOk || !form.entreprise || !form.participants.trim()) {
         setError('Certains champs obligatoires sont manquants ou invalides.'); return;
       }
     }
+    if (step === 3) {
+      if (!startDate || !endDate || !villeDepart.trim()) {
+        setError('Indiquez les dates et la ville de départ.'); return;
+      }
+    }
     setTrans(true);
-    setTimeout(() => { setStep(s => Math.min(s + 1, 4)); setTrans(false); }, 180);
+    setTimeout(() => { setStep(s => Math.min(s + 1, 5)); setTrans(false); }, 180);
   };
 
   const goPrev = () => { setTrans(true); setTimeout(() => { setStep(s => Math.max(s - 1, 1)); setTrans(false); }, 180); };
 
-  const periodStr = periodMode === 'dates'
-    ? (startDate && endDate ? `${new Date(startDate).toLocaleDateString('fr-FR')} → ${new Date(endDate).toLocaleDateString('fr-FR')}` : '')
-    : (months.length > 0 ? months.join(', ') : '');
+  const periodStr =
+    startDate && endDate ? `${new Date(startDate).toLocaleDateString('fr-FR')} → ${new Date(endDate).toLocaleDateString('fr-FR')}` : '';
+
+  const activitesLine = [ACTIVITY_MAINS_PACK, ...extraActivities].join(', ');
 
   const handleSubmit = async () => {
     setSubmit(true);
@@ -1086,7 +1001,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
           hebergement_type: hebergement ? accTypes.join(', ') : null,
           transport:        withTransport,
           transport_type:   withTransport ? transport : null,
-          message:          form.message || null,
+          message:          [form.message?.trim() && form.message.trim(), `Activités : ${activitesLine}`].filter(Boolean).join('\n\n') || null,
         }),
       });
 
@@ -1109,6 +1024,8 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
         `Distance max : ${distanceHours ? `${distanceHours}h` : 'Non renseignée'}`,
         `Hébergement : ${hebergement ? `Oui — ${accTypes.join(', ')}` : 'Non'}`,
         `Transport : ${withTransport ? `Oui — ${transport}` : 'Non'}`,
+        ``,
+        `Activités : ${activitesLine}`,
         ``,
         `Message : ${form.message || '(aucun)'}`,
       ].join('\n');
@@ -1219,7 +1136,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
                   <div>
                     <h3 style={{ fontStyle: 'italic', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Informations & coordonnées.</h3>
-                    <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Qui vous êtes et quand vous souhaitez partir.</p>
+                    <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Qui vous êtes et combien vous serez.</p>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
                     <FieldBlock label="Prénom" required><input style={inputStyle} placeholder="Jean" value={form.prenom} onChange={e => setForm({ ...form, prenom: e.target.value })} /></FieldBlock>
@@ -1228,18 +1145,14 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
                     <FieldBlock label="Entreprise" required><input style={inputStyle} placeholder="Terroir SAS" value={form.entreprise} onChange={e => setForm({ ...form, entreprise: e.target.value })} /></FieldBlock>
                   </div>
                   <FieldBlock label="Nombre de participants" required>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                      {PARTICIPANTS_OPTIONS.map(p => <TagBtn key={p} active={form.participants === p} onClick={() => setForm({ ...form, participants: p })}>{p}</TagBtn>)}
-                    </div>
-                  </FieldBlock>
-                  <FieldBlock label="Période souhaitée" required>
-                    <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-                      <ModeBtn active={periodMode === 'dates'} onClick={() => { setPeriod('dates'); setMonths([]); }}>Dates précises</ModeBtn>
-                      <ModeBtn active={periodMode === 'months'} onClick={() => { setPeriod('months'); setStart(''); setEnd(''); }}>Choisir des mois</ModeBtn>
-                    </div>
-                    {periodMode === 'dates'
-                      ? <DateRangePicker startDate={startDate} endDate={endDate} onStartChange={setStart} onEndChange={setEnd} />
-                      : <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>{MONTHS.map(m => <TagBtn key={m} active={months.includes(m)} onClick={() => toggle(months, setMonths, m)}>{m}</TagBtn>)}</div>}
+                    <input
+                      style={inputStyle}
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Ex. 24, une fourchette, ou « entre 15 et 30 »"
+                      value={form.participants}
+                      onChange={e => setForm({ ...form, participants: e.target.value })}
+                    />
                   </FieldBlock>
                 </div>
               )}
@@ -1247,19 +1160,31 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
               {step === 3 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
                   <div>
-                    <h3 style={{ fontStyle: 'italic', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Logistique.</h3>
-                    <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Ville de départ, distance, hébergement et transport.</p>
+                    <h3 style={{ fontStyle: 'italic', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Dates & destination.</h3>
+                    <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Quand vous partez et depuis où.</p>
                   </div>
-                  <FieldBlock label="Votre ville de départ">
-                    <input style={inputStyle} placeholder="Ex : Paris, Lyon, Bordeaux…" value={villeDepart} onChange={e => setVilleDepart(e.target.value)} />
+                  <FieldBlock label="Dates du séjour" required>
+                    <CollapsibleDateRangePicker collapseCalendar startDate={startDate} endDate={endDate} onStartChange={setStart} onEndChange={setEnd} />
                   </FieldBlock>
-                  <FieldBlock label="Distance max souhaitée">
+                  <FieldBlock label="Votre ville de départ" required>
+                    <VilleDepartInput value={villeDepart} onChange={setVilleDepart} style={inputStyle} />
+                  </FieldBlock>
+                  <FieldBlock label="Temps maximum de trajet souhaité" required>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <button type="button" onClick={() => setDistanceHours(h => Math.max(1, h - 1))} style={{ width: 36, height: 36, borderRadius: '50%', border: '1px solid rgba(10,44,52,0.15)', background: '#fff', cursor: 'pointer', fontSize: 18, fontWeight: 700, color: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
-                      <span style={{ fontSize: 16, fontWeight: 700, color: '#1a2e1a', minWidth: 80, textAlign: 'center' }}>{distanceHours} heure{distanceHours > 1 ? 's' : ''}</span>
-                      <button type="button" onClick={() => setDistanceHours(h => Math.min(6, h + 1))} style={{ width: 36, height: 36, borderRadius: '50%', border: '1px solid rgba(10,44,52,0.15)', background: '#fff', cursor: 'pointer', fontSize: 18, fontWeight: 700, color: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                      <button type="button" onClick={() => setDistanceHours(h => Math.max(1, h - 1))} style={{ width: 36, height: 36, borderRadius: '50%', border: '1px solid rgba(10,44,52,0.15)', background: '#fff', cursor: 'pointer', fontSize: 18, fontWeight: 700, color: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="Diminuer">−</button>
+                      <span style={{ fontSize: 16, fontWeight: 700, color: '#1a2e1a', minWidth: 100, textAlign: 'center' }}>{distanceHours} heure{distanceHours > 1 ? 's' : ''}</span>
+                      <button type="button" onClick={() => setDistanceHours(h => Math.min(8, h + 1))} style={{ width: 36, height: 36, borderRadius: '50%', border: '1px solid rgba(10,44,52,0.15)', background: '#fff', cursor: 'pointer', fontSize: 18, fontWeight: 700, color: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="Augmenter">+</button>
                     </div>
                   </FieldBlock>
+                </div>
+              )}
+
+              {step === 4 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+                  <div>
+                    <h3 style={{ fontStyle: 'italic', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Logistique & sur-mesure.</h3>
+                    <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Hébergement, transport, activités et message.</p>
+                  </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
                     <ToggleCard icon="🏠" label="Hébergement" active={hebergement} onToggle={() => setHeberg(v => !v)}>
                       {hebergement && <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>{['Chambres seules', 'Chambres partagées'].map(t => <TagBtn key={t} active={accTypes.includes(t)} onClick={() => toggle(accTypes, setAccTypes, t)} small>{t}</TagBtn>)}</div>}
@@ -1268,19 +1193,36 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
                       {withTransport && <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>{['De porte à porte', 'Depuis gare SNCF proche'].map(t => <TagBtn key={t} active={transport === t} onClick={() => setTransport(t)} small>{t}</TagBtn>)}</div>}
                     </ToggleCard>
                   </div>
+                  <FieldBlock label="Activités possibles">
+                    <p style={{ fontSize: 12, color: '#7a7060', margin: '0 0 12px', lineHeight: 1.55 }}>
+                      Toutes nos activités sont conçues pour renforcer les liens et faciliter la cohésion d&apos;équipe.
+                    </p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                      <span style={{
+                        padding: '6px 14px', borderRadius: 9999, border: '1.5px solid #1a2e1a', background: '#1a2e1a', color: '#fff',
+                        fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 5, cursor: 'default',
+                      }}>
+                        ✓ {ACTIVITY_MAINS_PACK}
+                      </span>
+                      {ACTIVITY_OPTIONS_PACK.map(a => (
+                        <TagBtn key={a} active={extraActivities.includes(a)} onClick={() => toggle(extraActivities, setExtraActivities, a)}>{a}</TagBtn>
+                      ))}
+                    </div>
+                  </FieldBlock>
                   <FieldBlock label="Un message particulier ?">
                     <textarea rows={4} style={{ ...inputStyle, resize: 'none', lineHeight: 1.6 }} placeholder="Salles de réunion, pauses gourmandes, team building…" value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} />
                   </FieldBlock>
                 </div>
               )}
 
-              {step === 4 && (
+              {step === 5 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   <p style={{ color: '#b0a89e', fontSize: 14, margin: '0 0 4px' }}>Vérifiez vos informations avant d'envoyer.</p>
                   {[
                     { num: 1, title: 'Sélection', rows: [{ label: 'Produit / offre', value: selectedSeminaire && selectedFormat ? `${selectedSeminaire.producteur} — ${formatLabel} (${selectedFormat.titre})` : '—' }] },
-                    { num: 2, title: 'Coordonnées', rows: [{ label: 'Nom', value: `${form.prenom} ${form.nom}` }, { label: 'Email', value: form.email }, { label: 'Entreprise', value: form.entreprise }, { label: 'Participants', value: form.participants }, { label: 'Période', value: periodStr || '—' }] },
-                    { num: 3, title: 'Logistique', rows: [{ label: 'Ville de départ', value: villeDepart || '—' }, { label: 'Distance max', value: `${distanceHours} h` }, { label: 'Hébergement', value: hebergement ? (accTypes.length > 0 ? accTypes.join(', ') : 'Oui') : 'Non' }, { label: 'Transport', value: withTransport ? (transport || 'Oui') : 'Non' }, ...(form.message ? [{ label: 'Message', value: form.message }] : [])] },
+                    { num: 2, title: 'Coordonnées', rows: [{ label: 'Nom', value: `${form.prenom} ${form.nom}` }, { label: 'Email', value: form.email }, { label: 'Entreprise', value: form.entreprise }, { label: 'Participants', value: form.participants }] },
+                    { num: 3, title: 'Dates & lieu', rows: [{ label: 'Période', value: periodStr || '—' }, { label: 'Ville de départ', value: villeDepart.trim() || '—' }, { label: 'Temps max. trajet', value: `${distanceHours} h` }] },
+                    { num: 4, title: 'Logistique & activités', rows: [{ label: 'Hébergement', value: hebergement ? (accTypes.length > 0 ? accTypes.join(', ') : 'Oui') : 'Non' }, { label: 'Transport', value: withTransport ? (transport || 'Oui') : 'Non' }, { label: 'Activités', value: activitesLine }, ...(form.message ? [{ label: 'Message', value: form.message }] : [])] },
                   ].map(block => (
                     <div key={block.num} style={{ background: '#faf8f5', borderRadius: 18, padding: '14px 18px', border: '1px solid rgba(10,44,52,0.06)' }}>
                       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#e67e22', marginBottom: 10 }}>{block.num} — {block.title}</div>
@@ -1299,8 +1241,8 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
             </button>
             <div style={{ display: 'flex', gap: 10 }}>
               <button onClick={handleClose} style={{ padding: '11px 20px', borderRadius: 9999, border: '1px solid rgba(26,46,26,0.1)', background: '#faf8f5', fontFamily: 'inherit', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#b0a89e', cursor: 'pointer' }}>Annuler</button>
-              <button onClick={step < 4 ? goNext : handleSubmit} disabled={submitting} style={{ padding: '11px 24px', borderRadius: 9999, background: '#1a2e1a', color: '#fff', border: 'none', fontFamily: 'inherit', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'flex', alignItems: 'center', gap: 8, minWidth: 150, justifyContent: 'center' }}>
-                {submitting ? 'Envoi…' : step < 4 ? 'Continuer →' : 'Demander un devis'}
+              <button onClick={step < 5 ? goNext : handleSubmit} disabled={submitting} style={{ padding: '11px 24px', borderRadius: 9999, background: '#1a2e1a', color: '#fff', border: 'none', fontFamily: 'inherit', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'flex', alignItems: 'center', gap: 8, minWidth: 150, justifyContent: 'center' }}>
+                {submitting ? 'Envoi…' : step < 5 ? 'Continuer →' : 'Demander un devis'}
               </button>
             </div>
           </div>

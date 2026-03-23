@@ -12,7 +12,7 @@ import {
   fullToProducer,
 } from '../lib/producerTypes';
 
-const FILTERS = ['Tous', 'Truffes', 'Olives', 'Fruits à coque', 'Piments', 'Vins & Spiritueux', 'Huîtres', 'Fromage'];
+const FILTERS = ['Tous', 'Truffes', 'Olives', 'Fruits à coque', 'Piments', 'Vins & Spiritueux', 'Huîtres', 'Fromage', 'Maraîchage', 'Élevages', 'Brasserie'];
 
 // Types qui correspondent à chaque filtre (comparaison insensible à la casse)
 const FILTER_TYPES: Record<string, string[]> = {
@@ -23,6 +23,9 @@ const FILTER_TYPES: Record<string, string[]> = {
   'Vins & Spiritueux':['vins & spiritueux', 'vins', 'vin', 'spiritueux', 'cognac', 'pineau', 'armagnac', 'calvados'],
   'Huîtres':          ['huîtres', 'huitres', 'huître'],
   'Fromage':          ['fromage', 'fromages', 'chèvre', 'chevre'],
+  'Maraîchage':       ['maraîchage', 'maraichage', 'maraîcher', 'maraicher', 'maraîchère', 'maraichere', 'légumes', 'legumes', 'potager'],
+  'Élevages':         ['élevages', 'élevage', 'elevages', 'elevage', 'bovins', 'bovin', 'ovins', 'ovin', 'porcins', 'porcin', 'volailles', 'volaille'],
+  'Brasserie':        ['brasserie', 'brasseur', 'bière', 'bières', 'biere', 'bieres'],
 };
 const REGIONS = ['Toutes régions', 'Nouvelle-Aquitaine', 'Occitanie', "Provence-Alpes-Côte-d'Azur", 'Grand Est'];
 

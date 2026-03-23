@@ -234,6 +234,7 @@ const Header: React.FC = () => {
   const hasHeroTransparent = (
     pathname === '/' ||
     pathname === '/entreprises' ||
+    pathname === '/demande-seminaire' ||
     pathname === '/seminaires-entreprise' ||
     pathname === '/partenaires' ||
     pathname === '/mission-engagements' ||
@@ -293,7 +294,7 @@ const Header: React.FC = () => {
           <nav className="hidden lg:flex items-center gap-0 ml-auto mr-8 flex-nowrap">
             {NAV_ITEMS.map((nav) => {
               const isActive = nav.path === '/entreprises'
-                ? (pathname === '/entreprises' || pathname === '/seminaires-entreprise')
+                ? (pathname === '/entreprises' || pathname === '/demande-seminaire' || pathname === '/seminaires-entreprise')
                 : pathname === nav.path;
               const isOpen   = openDropdown === nav.label;
               return (
@@ -321,7 +322,7 @@ const Header: React.FC = () => {
           {/* CTA + hamburger */}
           <div className="flex items-center gap-3 shrink-0">
             <Link
-              href="/entreprises?openModal=true"
+              href="/demande-seminaire?openModal=true"
               className={[
                 'hidden sm:inline-flex items-center gap-2 rounded-full',
                 'px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5',
@@ -469,7 +470,7 @@ const Header: React.FC = () => {
                 type="button"
                 onClick={() => {
                   setIsMenuOpen(false);
-                  router.push('/entreprises?openModal=true');
+                  router.push('/demande-seminaire?openModal=true');
                 }}
                 className="flex items-center justify-center gap-1.5 w-full
                   bg-[#1C2318] text-white rounded-lg py-2.5
