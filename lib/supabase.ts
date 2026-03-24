@@ -33,3 +33,20 @@ export const supabaseServer = createClient(supabaseUrl, supabaseKey, {
     fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }),
   },
 });
+
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+
+/**
+ * Client service role : contourne RLS, réservé au serveur (routes API).
+ * À utiliser pour les insertions depuis Next.js ; ne jamais exposer la clé au navigateur.
+ * Si absent, les écritures retombent sur la clé anon (souvent bloquées par RLS).
+ */
+export const supabaseAdmin =
+  isSupabaseConfigured && serviceRoleKey
+    ? createClient(supabaseUrl, serviceRoleKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+        global: {
+          fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }),
+        },
+      })
+    : null;

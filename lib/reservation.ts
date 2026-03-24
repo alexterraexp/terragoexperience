@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import { isSupabaseConfigured, supabaseServer } from './supabase';
+import { isSupabaseConfigured, supabaseAdmin, supabaseServer } from './supabase';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -131,7 +131,8 @@ export async function processReservation(
       : null;
 
   if (isSupabaseConfigured) {
-    const { error: supabaseError } = await supabaseServer
+    const db = supabaseAdmin ?? supabaseServer;
+    const { error: supabaseError } = await db
       .from('demandes_organiser_seminaire')
       .insert({
         nom: nomStr,
@@ -149,6 +150,11 @@ export async function processReservation(
       });
     if (supabaseError) {
       console.error('Erreur Supabase (demandes_organiser_seminaire) :', supabaseError);
+      if (!supabaseAdmin && process.env.NODE_ENV === 'development') {
+        console.warn(
+          '[Terrago] Définissez SUPABASE_SERVICE_ROLE_KEY sur le serveur pour les insertions (la clé anon est souvent bloquée par RLS).',
+        );
+      }
       return {
         status: 500,
         body: { success: false, message: "Erreur lors de l'enregistrement de la demande." },

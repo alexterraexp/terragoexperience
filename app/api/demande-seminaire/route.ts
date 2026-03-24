@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { isSupabaseConfigured, supabaseServer } from '../../../lib/supabase';
+import { isSupabaseConfigured, supabaseAdmin, supabaseServer } from '../../../lib/supabase';
 
 export async function POST(req: NextRequest) {
   try {
@@ -39,7 +39,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { error } = await supabaseServer
+    const db = supabaseAdmin ?? supabaseServer;
+    const { error } = await db
       .from('demandes_seminaires')
       .insert([
         {
