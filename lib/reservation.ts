@@ -104,7 +104,6 @@ export async function processReservation(
     hebergement,
     transport,
     activites,
-    message,
   };
   const missing = Object.entries(required)
     .filter(([, v]) => v === undefined || v === null || String(v).trim() === '')
