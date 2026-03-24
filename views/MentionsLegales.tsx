@@ -22,7 +22,7 @@ const MentionsLegales: React.FC = () => {
               <h2 className="text-xl font-display font-bold text-primary mb-4 italic">1. Éditeur du site</h2>
               <p>
                 Le site <strong>Terrago</strong> est édité par Terrago SAS, société par actions simplifiée au capital de 1 000 euros, 
-                immatriculée au RCS de Paris sous le numéro 123 456 789, dont le siège social est situé au Rue de la Jonquière, 75017 Paris, France.
+                immatriculée au RCS de Paris sous le numéro __________, dont le siège social est situé à Annecy, 74000 Annecy, France.
               </p>
             </section>
 
@@ -82,8 +82,6 @@ const MentionsLegales: React.FC = () => {
               </p>
               <ul className="list-disc list-inside mt-2 space-y-1">
                 <li>Email : <a href="mailto:contact@terroir-exception.fr" className="text-orange hover:underline">contact@terroir-exception.fr</a></li>
-                <li>Téléphone : +33 (0)1 89 20 44 00</li>
-                <li>Adresse : 123 rue de la Terre, 75001 Paris, France</li>
               </ul>
             </section>
           </div>

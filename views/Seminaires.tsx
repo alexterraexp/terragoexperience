@@ -45,7 +45,7 @@ const MODAL_ACC = ['Chambres seules', 'Chambres partagées'];
 const MODAL_TRANS = ['De porte à porte', 'Depuis gare SNCF proche'];
 const MODAL_STEPS = [{ label: 'Coordonnées' }, { label: 'Dates & lieu' }, { label: 'Logistique' }, { label: 'Récapitulatif' }];
 const ACTIVITY_MAINS = 'Les mains dans la terre';
-const ACTIVITY_OPTIONS = ['Activité sportive', 'Cours de cuisine', 'Activité nature', 'Activité jeux'] as const;
+const ACTIVITY_OPTIONS = ['Activité sportive', 'Cours de cuisine', 'Activité nature', 'Activité Team-Building'] as const;
 
 // ─── Modal sub-components ─────────────────────────────────────────────────────
 
@@ -198,9 +198,6 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
         ? `Du ${new Date(sd).toLocaleDateString('fr-FR')} au ${new Date(ed).toLocaleDateString('fr-FR')}`
         : 'Dates non renseignées';
     const activitesStr = [ACTIVITY_MAINS, ...extraActivities].join(', ');
-    const activitesPayload = form.message.trim()
-      ? `${activitesStr} — ${form.message.trim()}`
-      : activitesStr;
     const payload = {
       nom: `${form.prenom} ${form.nom}`.trim(),
       email: form.email.trim(),
@@ -211,7 +208,8 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
       trajetMax: `${maxTrajetH} h`,
       hebergement: heb ? (acc.length > 0 ? acc.join(', ') : 'Oui') : 'Non',
       transport: wt ? (trans2 || 'Oui') : 'Non',
-      activites: activitesPayload,
+      activites: activitesStr,
+      message: form.message.trim() || '—',
     };
     try {
       const res = await fetch('/api/reservation', {

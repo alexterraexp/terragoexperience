@@ -17,7 +17,7 @@
     .body { padding: 32px 36px; text-align: left; }
     .greeting { font-family: 'Poppins', Arial, sans-serif; font-size: 20px; font-weight: 600; color: #1A2810; margin: 0 0 12px; }
     .body-text { font-family: 'Poppins', Arial, sans-serif; font-size: 15px; line-height: 1.75; color: #4A4438; margin: 0 0 6px; }
-    .catchline { display: inline-block; font-family: 'Cormorant', Georgia, serif; font-size: 18px; font-style: italic; font-weight: 700; color: #E8733A; margin: 6px 0 28px; }
+    .catchline { display: inline-block; font-family: 'Cormorant', Georgia, serif; font-size: 16px; font-style: italic; font-weight: 700; color: #E8733A; margin: 6px 0 28px; }
     .recap-title { font-family: 'Poppins', Arial, sans-serif; font-size: 11px; font-weight: 500; color: #A09080; letter-spacing: 0.16em; text-transform: uppercase; margin: 0 0 14px; }
     .recap-section-label { font-family: 'Poppins', Arial, sans-serif; font-size: 11px; font-weight: 600; color: #E8733A; letter-spacing: 0.16em; text-transform: uppercase; margin: 14px 0 6px; padding: 0; }
     .recap-key { font-family: 'Poppins', Arial, sans-serif; font-size: 11px; font-weight: 500; color: #9A9080; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 3px; }
@@ -32,7 +32,7 @@
       .footer { padding-left: 20px !important; padding-right: 20px !important; }
       .greeting { font-size: 18px !important; }
       .body-text { font-size: 14px !important; }
-      .catchline { font-size: 16px !important; }
+      .catchline { font-size: 14px !important; }
       .recap-title { font-size: 10px !important; }
       .recap-section-label { font-size: 10px !important; }
       .recap-key { font-size: 10px !important; }
@@ -40,9 +40,9 @@
       .fine-print { font-size: 12px !important; line-height: 1.6 !important; }
       .footer-links a { font-size: 12px !important; }
       .footer-legal { font-size: 11px !important; }
-      .hero-main-text { font-size: 17px !important; line-height: 1.35 !important; }
+      .hero-main-text { font-size: 18px !important; line-height: 1.35 !important; }
       .hero-secondary-text { font-size: 20px !important; }
-      .hero-subtext { font-size: 13px !important; line-height: 1.6 !important; }
+      .hero-subtext { font-size: 11px !important; line-height: 1.6 !important; }
     }
   </style>
 </head>
@@ -64,10 +64,10 @@
               </tr>
               <tr>
                 <td style="padding:12px 36px 32px;text-align:center;">
-                  <p class="hero-main-text" style="font-family:'Poppins',Arial,sans-serif;font-size:19px;font-weight:700;color:#FFFFFF;margin:0 0 8px;line-height:1.4;">
+                  <p class="hero-main-text" style="font-family:'Poppins',Arial,sans-serif;font-size:21px;font-weight:700;color:#FFFFFF;margin:0 0 8px;line-height:1.4;">
                     Votre demande de séminaire est entre de bonnes mains — <span class="hero-secondary-text" style="font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:700;font-size:22px;">on s'en occupe avec soin !</span>
                   </p>
-                  <p class="hero-subtext" style="font-family:'Poppins',Arial,sans-serif;font-size:14px;color:#8AAA7A;margin:0;line-height:1.65;">
+                  <p class="hero-subtext" style="font-family:'Poppins',Arial,sans-serif;font-size:12px;color:#8AAA7A;margin:0;line-height:1.65;">
                     Notre équipe va examiner votre demande dans les plus brefs délais et vous répondre par e-mail.
                   </p>
                 </td>
@@ -149,6 +149,12 @@
                 <td colspan="2" style="padding:12px 14px;vertical-align:top;">
                   <span class="recap-key">Activités</span>
                   <span class="recap-val">{{ACTIVITES}}</span>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" style="padding:12px 14px;border-top:1px solid #E4E0DA;vertical-align:top;">
+                  <span class="recap-key">Message</span>
+                  <span class="recap-val">{{MESSAGE}}</span>
                 </td>
               </tr>
             </table>

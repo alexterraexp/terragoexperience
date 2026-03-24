@@ -34,6 +34,7 @@ type ReservationEmailData = {
   hebergement: string;
   transport: string;
   activites: string;
+  message: string;
   reference: string;
 };
 
@@ -57,6 +58,7 @@ function buildEmailHtml(data: ReservationEmailData) {
     .replace(/{{HEBERGEMENT}}/g, escapeHtml(data.hebergement))
     .replace(/{{TRANSPORT}}/g, escapeHtml(data.transport))
     .replace(/{{ACTIVITES}}/g, escapeHtml(data.activites))
+    .replace(/{{MESSAGE}}/g, escapeHtml(data.message || '—'))
     .replace(/{{REFERENCE}}/g, escapeHtml(data.reference))
     .replace(/{{LIEN_SITE}}/g, 'https://terragoexperiences.fr')
     .replace(/{{LIEN_OFFRES}}/g, 'https://terragoexperiences.fr/seminaires-entreprise/offres')
@@ -89,6 +91,7 @@ export async function processReservation(
     hebergement,
     transport,
     activites,
+    message,
   } = b;
 
   const required: Record<string, unknown> = {
@@ -101,6 +104,7 @@ export async function processReservation(
     hebergement,
     transport,
     activites,
+    message,
   };
   const missing = Object.entries(required)
     .filter(([, v]) => v === undefined || v === null || String(v).trim() === '')
@@ -141,6 +145,7 @@ export async function processReservation(
         hebergement: String(hebergement),
         transport: String(transport),
         activites: String(activites),
+        message: message != null && String(message).trim() !== '' ? String(message) : null,
         reference,
       });
     if (supabaseError) {
@@ -163,6 +168,7 @@ export async function processReservation(
     hebergement: String(hebergement),
     transport: String(transport),
     activites: String(activites),
+    message: message != null && String(message).trim() !== '' ? String(message) : '—',
     reference,
   });
 
@@ -210,6 +216,7 @@ export async function processReservation(
           `Hébergement : ${hebergement}`,
           `Transport : ${transport}`,
           `Activités : ${activites}`,
+          `Message : ${message != null && String(message).trim() !== '' ? String(message) : '—'}`,
           `Référence : ${reference}`,
         ].join('\n'),
       });

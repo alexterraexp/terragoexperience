@@ -83,7 +83,7 @@ const Confidentialite: React.FC = () => {
                 <li>Droit de retirer votre consentement à tout moment</li>
               </ul>
               <p className="mt-4">
-                Pour exercer ces droits, contactez-nous à : <a href="mailto:contact@terroir-exception.fr" className="text-orange hover:underline">contact@terroir-exception.fr</a>
+                Pour exercer ces droits, contactez-nous à : <a href="mailto:terragoexperiences@gmail.com" className="text-orange hover:underline">terragoexperiences@gmail.com</a>
               </p>
             </section>
 
@@ -117,9 +117,8 @@ const Confidentialite: React.FC = () => {
                 Pour toute question concernant cette politique de confidentialité ou vos données personnelles :
               </p>
               <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>Email : <a href="mailto:contact@terroir-exception.fr" className="text-orange hover:underline">contact@terroir-exception.fr</a></li>
-                <li>Téléphone : +33 (0)1 89 20 44 00</li>
-                <li>Adresse : 123 rue de la Terre, 75001 Paris, France</li>
+                <li>Email : <a href="mailto:terragoexperiences@gmail.com" className="text-orange hover:underline">terragoexperiences@gmail.com </a></li>
+                <li>Adresse : 74000 Annecy, France</li>
               </ul>
             </section>
           </div>
