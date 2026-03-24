@@ -358,8 +358,12 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                   <path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 style={{ fontWeight: 700, fontStyle: 'italic', fontSize: 26, color: '#1a2e1a', margin: '0 0 8px', fontFamily: "'Poppins',sans-serif" }}>Demande envoyée !</h3>
-              <p style={{ color: '#9ca3af', fontSize: 13, margin: 0 }}>Nous vous recontacterons sous 48h.</p>
+              <h3 style={{ fontWeight: 700, fontStyle: 'italic', fontSize: 22, lineHeight: 1.35, color: '#1a2e1a', margin: '0 0 10px', fontFamily: "'Poppins',sans-serif", textAlign: 'center', maxWidth: 520 }}>
+                Merci de votre confiance ! Votre demande de séminaire a bien été transmise.
+              </h3>
+              <p style={{ color: '#9ca3af', fontSize: 13, margin: 0, textAlign: 'center' }}>
+                Notre équipe revient vers vous dans les plus brefs délais !
+              </p>
             </div>
           )}
 
