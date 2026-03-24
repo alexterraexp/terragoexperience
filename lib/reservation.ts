@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { isSupabaseConfigured, supabaseServer } from './supabase';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -121,22 +122,51 @@ export async function processReservation(
   const emailStr = String(email);
   const reference = generateReference();
   const prenom = nomStr.split(' ')[0];
+  const entrepriseStr =
+    entreprise != null && String(entreprise).trim() !== ''
+      ? String(entreprise)
+      : null;
+
+  if (isSupabaseConfigured) {
+    const { error: supabaseError } = await supabaseServer
+      .from('demandes_organiser_seminaire')
+      .insert({
+        nom: nomStr,
+        email: emailStr,
+        entreprise: entrepriseStr,
+        participants: String(participants),
+        periode: String(periode),
+        ville_depart: String(villeDepart),
+        trajet_max: String(trajetMax),
+        hebergement: String(hebergement),
+        transport: String(transport),
+        activites: String(activites),
+        reference,
+      });
+    if (supabaseError) {
+      console.error('Erreur Supabase (demandes_organiser_seminaire) :', supabaseError);
+      return {
+        status: 500,
+        body: { success: false, message: "Erreur lors de l'enregistrement de la demande." },
+      };
+    }
+  }
+
+  const html = buildEmailHtml({
+    nom: nomStr,
+    email: emailStr,
+    entreprise: entrepriseStr ?? undefined,
+    participants: String(participants),
+    periode: String(periode),
+    villeDepart: String(villeDepart),
+    trajetMax: String(trajetMax),
+    hebergement: String(hebergement),
+    transport: String(transport),
+    activites: String(activites),
+    reference,
+  });
 
   try {
-    const html = buildEmailHtml({
-      nom: nomStr,
-      email: emailStr,
-      entreprise: entreprise != null ? String(entreprise) : undefined,
-      participants: String(participants),
-      periode: String(periode),
-      villeDepart: String(villeDepart),
-      trajetMax: String(trajetMax),
-      hebergement: String(hebergement),
-      transport: String(transport),
-      activites: String(activites),
-      reference,
-    });
-
     await resend.emails.send({
       from:
         process.env.EMAIL_FROM ||
@@ -146,8 +176,21 @@ export async function processReservation(
       html,
       text: `Bonjour ${prenom},\n\nNous avons bien reçu votre demande (réf. ${reference}).\nNous vous répondons sous peu.\n\nTerraGo Expériences`,
     });
+  } catch (err) {
+    console.error('Erreur Resend (e-mail client) :', err);
+    return {
+      status: 200,
+      body: {
+        success: true,
+        message:
+          "Demande enregistrée. L'envoi de l'e-mail de confirmation a échoué ; nous vous recontacterons via les coordonnées fournies.",
+        reference,
+      },
+    };
+  }
 
-    if (process.env.NOTIFY_EMAIL) {
+  if (process.env.NOTIFY_EMAIL) {
+    try {
       await resend.emails.send({
         from:
           process.env.EMAIL_FROM ||
@@ -159,7 +202,7 @@ export async function processReservation(
           ``,
           `Nom : ${nomStr}`,
           `Email : ${emailStr}`,
-          `Entreprise : ${entreprise != null && String(entreprise).trim() !== '' ? String(entreprise) : '—'}`,
+          `Entreprise : ${entrepriseStr ?? '—'}`,
           `Participants : ${participants}`,
           `Période : ${periode}`,
           `Ville de départ : ${villeDepart}`,
@@ -170,17 +213,13 @@ export async function processReservation(
           `Référence : ${reference}`,
         ].join('\n'),
       });
+    } catch (err) {
+      console.error('Erreur Resend (notification interne) :', err);
     }
-
-    return {
-      status: 200,
-      body: { success: true, message: "E-mail envoyé.", reference },
-    };
-  } catch (err) {
-    console.error('Erreur Resend :', err);
-    return {
-      status: 500,
-      body: { success: false, message: "Erreur lors de l'envoi." },
-    };
   }
+
+  return {
+    status: 200,
+    body: { success: true, message: "E-mail envoyé.", reference },
+  };
 }
