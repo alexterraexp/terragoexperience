@@ -63,22 +63,32 @@ const Particuliers: React.FC = () => {
     ].filter(Boolean).join('\n');
 
     try {
-      const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+      const response = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          name: `${prenom} ${nom}`,
+          action: 'particuliers',
+          nom,
+          prenom,
           email,
-          subject: `Entre amis - Demande de ${prenom} ${nom}`,
-          message,
-          _captcha: false,
-          _template: 'table'
-        })
+          portable,
+          periode,
+          univers,
+          participants,
+          precisions,
+        }),
       });
-      if (response.ok) {
+      const data = (await response.json().catch(() => ({}))) as { success?: boolean };
+      if (response.ok && data.success) {
         setSubmitSuccess(true);
-        setNom(''); setPrenom(''); setEmail(''); setPortable('');
-        setPeriode(''); setUnivers([]); setParticipants(''); setPrecisions('');
+        setNom('');
+        setPrenom('');
+        setEmail('');
+        setPortable('');
+        setPeriode('');
+        setUnivers([]);
+        setParticipants('');
+        setPrecisions('');
       } else throw new Error();
     } catch {
       setSubmitError('Une erreur est survenue. Veuillez réessayer ou nous contacter à terragoexperiences@gmail.com');

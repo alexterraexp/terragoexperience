@@ -81,7 +81,7 @@ const MentionsLegales: React.FC = () => {
                 Pour toute question concernant ces mentions légales, vous pouvez nous contacter :
               </p>
               <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>Email : <a href="mailto:contact@terroir-exception.fr" className="text-orange hover:underline">contact@terroir-exception.fr</a></li>
+                <li>Email : <a href="mailto:terragoexperiences@gmail.com" className="text-orange hover:underline">terragoexperiences@gmail.com                </a></li>
               </ul>
             </section>
           </div>

@@ -93,31 +93,28 @@ const ProducerDetailPage: React.FC = () => {
 
     setContactSubmitting(true);
     try {
-      const response = await fetch('https://formsubmit.co/ajax/terragoexperiences@gmail.com', {
+      const response = await fetch('/api/lead', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          _subject: `Demande séminaire - ${producer.name}`,
-          _captcha: false,
+          action: 'producteur_fiche',
+          producerName: producer.name,
+          producerLocation: producer.location,
           nom: contactNom.trim(),
           email: contactEmail.trim(),
           participants: contactParticipants.trim(),
           dates: contactDates.trim(),
-          message: `Demande envoyée depuis la fiche producteur ${producer.name} (${producer.location}).`,
         }),
       });
-
-      if (response.ok) {
+      const data = (await response.json().catch(() => ({}))) as { success?: boolean; message?: string };
+      if (response.ok && data.success) {
         setContactSuccess(true);
         setContactNom('');
         setContactEmail('');
         setContactParticipants('');
         setContactDates('');
       } else {
-        setContactError("Une erreur est survenue lors de l'envoi. Merci de réessayer.");
+        setContactError(data.message || "Une erreur est survenue lors de l'envoi. Merci de réessayer.");
       }
     } catch {
       setContactError("Une erreur est survenue lors de l'envoi. Merci de réessayer.");

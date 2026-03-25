@@ -900,6 +900,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   const [transitioning, setTrans] = useState(false);
   const [submitting, setSubmit] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [successSubtext, setSuccessSubtext] = useState('');
   const [error, setError] = useState('');
   const [form, setForm] = useState({ prenom: '', nom: '', email: '', entreprise: '', participants: '', message: '' });
   const [selectedSeminaireId, setSelectedSeminaireId] = useState<string | null>(null);
@@ -936,7 +937,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   const handleClose = () => {
     setClosing(true);
     setTimeout(() => {
-      setClosing(false); setStep(1); setSuccess(false); setError('');
+      setClosing(false); setStep(1); setSuccess(false); setSuccessSubtext(''); setError('');
       setForm({ prenom: '', nom: '', email: '', entreprise: '', participants: '', message: '' });
       setSelectedSeminaireId(null); setSelectedFormatId('1jour'); setAccTypes([]); setTransport('');
       setStart(''); setEnd(''); setHeberg(false); setWithT(false); setVilleDepart(''); setDistanceHours(3); setExtraActivities([]);
@@ -985,10 +986,14 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
       const res = await fetch('/api/demande-seminaire', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
         body: JSON.stringify({
           seminaire_id:     selectedSeminaireId,
           format_id:        selectedFormatId,
           selection_label:  selectionLine,
+          offre_image_url:
+            selectedSeminaire?.images?.[0] ?? selectedSeminaire?.image ?? null,
+          offre_footer_image_url: selectedSeminaire?.images?.[2] ?? null,
           prenom:           form.prenom,
           nom:              form.nom,
           email:            form.email,
@@ -1001,48 +1006,30 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
           hebergement_type: hebergement ? accTypes.join(', ') : null,
           transport:        withTransport,
           transport_type:   withTransport ? transport : null,
-          message:          [form.message?.trim() && form.message.trim(), `Activités : ${activitesLine}`].filter(Boolean).join('\n\n') || null,
+          activites:        activitesLine,
+          message:          form.message?.trim() ? form.message.trim() : null,
         }),
       });
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Erreur lors de l\'envoi.');
+      const data = (await res.json().catch(() => ({}))) as {
+        success?: boolean;
+        error?: string;
+        message?: string;
+      };
+
+      if (!res.ok || !data.success) {
+        throw new Error(
+          data.error || data.message || 'Erreur lors de l\'envoi. Veuillez réessayer.',
+        );
       }
 
-      const emailBody = [
-        `Séminaire : ${selectionLine}`,
-        ``,
-        `Prénom : ${form.prenom}`,
-        `Nom : ${form.nom}`,
-        `Email : ${form.email}`,
-        `Entreprise : ${form.entreprise}`,
-        `Participants : ${form.participants || 'Non renseigné'}`,
-        `Période : ${periodStr || 'Non renseignée'}`,
-        ``,
-        `Ville de départ : ${villeDepart || 'Non renseignée'}`,
-        `Distance max : ${distanceHours ? `${distanceHours}h` : 'Non renseignée'}`,
-        `Hébergement : ${hebergement ? `Oui — ${accTypes.join(', ')}` : 'Non'}`,
-        `Transport : ${withTransport ? `Oui — ${transport}` : 'Non'}`,
-        ``,
-        `Activités : ${activitesLine}`,
-        ``,
-        `Message : ${form.message || '(aucun)'}`,
-      ].join('\n');
-
-      fetch('https://formsubmit.co/ajax/alexso.terrago@gmail.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          name: `${form.prenom} ${form.nom}`,
-          email: form.email,
-          subject: `Nouvelle demande séminaire — ${form.entreprise}`,
-          message: emailBody,
-          _captcha: false,
-          _template: 'table',
-        }),
-      }).catch(() => {});
-
+      const sub =
+        typeof data.message === 'string' &&
+        data.message.trim() !== '' &&
+        data.message !== 'E-mail envoyé.'
+          ? data.message
+          : 'Nous vous recontacterons sous 48h.';
+      setSuccessSubtext(sub);
       setSuccess(true);
       setTimeout(handleClose, 2200);
     } catch (err: any) {
@@ -1097,7 +1084,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
                 <svg width="24" height="24" viewBox="0 0 34 34" fill="none"><path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </div>
               <h3 style={{ fontStyle: 'italic', fontSize: 28, fontWeight: 700, color: '#1a2e1a', margin: '0 0 8px', fontFamily: 'inherit' }}>Demande envoyée !</h3>
-              <p style={{ color: '#9a9080', fontSize: 15, margin: 0 }}>Nous vous recontacterons sous 48h.</p>
+              <p style={{ color: '#9a9080', fontSize: 15, margin: 0, textAlign: 'center', maxWidth: 320, lineHeight: 1.5 }}>{successSubtext}</p>
             </div>
           )}
 

@@ -168,60 +168,34 @@ const SeminarDomains: React.FC = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
-    // Préparer le contenu de l'email
-    const emailContent = `
-Nouvelle demande de séminaire - Terrago
-
-=== INFORMATIONS CLIENT ===
-Prénom: ${formData.prenom}
-Nom: ${formData.nom}
-Email: ${formData.email}
-Entreprise: ${formData.entreprise}
-Nombre de participants: ${formData.participants}
-Période souhaitée: ${selectedMonths.length > 0 ? selectedMonths.join(', ') : 'Aucun mois sélectionné'}
-
-=== RÉGION(S) SOUHAITÉE(S) ===
-${selectedRegions.length > 0 ? selectedRegions.join(', ') : 'Aucune sélectionnée'}
-
-=== LOGISTIQUE ===
-Hébergement: ${hasAccommodation ? 'Oui' : 'Non'}
-${hasAccommodation && selectedAccTypes.length > 0 ? `Types d'hébergement: ${selectedAccTypes.join(', ')}` : ''}
-
-Transport: ${hasTransport ? 'Oui' : 'Non'}
-${hasTransport && selectedTransport ? `Option transport: ${selectedTransport}` : ''}
-
-=== MESSAGE COMPLÉMENTAIRE ===
-${formData.message || 'Aucun message'}
-
----
-Email envoyé depuis le formulaire de séminaire Terrago
-    `.trim();
-
     try {
-      // Utiliser FormSubmit (service gratuit) pour envoyer l'email
-      const response = await fetch('https://formsubmit.co/ajax/alexso.terrago@gmail.com', {
+      const response = await fetch('/api/lead', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          name: `${formData.prenom} ${formData.nom}`,
+          action: 'seminaire_territoires',
+          prenom: formData.prenom,
+          nom: formData.nom,
           email: formData.email,
-          subject: `Nouvelle demande de séminaire - ${formData.entreprise}`,
-          message: emailContent,
-          _captcha: false,
-          _template: 'table'
-        })
+          entreprise: formData.entreprise,
+          participants: formData.participants,
+          selectedMonths,
+          selectedRegions,
+          hasAccommodation,
+          selectedAccTypes,
+          hasTransport,
+          selectedTransport,
+          message: formData.message,
+        }),
       });
-
-      if (response.ok) {
+      const data = await response.json().catch(() => ({}));
+      if (response.ok && data.success) {
         setSubmitSuccess(true);
         setTimeout(() => {
           closeModal();
         }, 2000);
       } else {
-        throw new Error('Erreur lors de l\'envoi');
+        throw new Error(data.message || 'Erreur lors de l\'envoi');
       }
     } catch (error) {
       console.error('Erreur:', error);

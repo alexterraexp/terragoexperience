@@ -2,8 +2,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 
-const HOST_FORM_EMAIL = 'alexso.terrago@gmail.com';
-
 const SECTEURS = ['Viticulture','Oléiculture','Horticulture','Maraîchage','Apiculture','Élevage','Ostréiculture','Trufficulture','Fromagerie / Crèmerie','Charcuterie artisanale','Distillation','Autre'];
 
 // ─── Custom Select ─────────────────────────────────────────────────────────────
@@ -206,15 +204,21 @@ const Host: React.FC = () => {
     if (!telephone) { setSubmitError("Le numéro de téléphone est obligatoire."); return; }
     setIsSubmitting(true);
 
-    const body = ['=== CANDIDATURE NOUS REJOINDRE ===', '', `Responsable: ${formData.responsable || '—'}`, `Exploitation: ${exploitation}`, `Secteur: ${formData.secteur || '—'}`, `Email: ${email}`, `Téléphone: ${telephone}`, '', '---', 'Envoyé depuis la page Nous rejoindre - Terrago'].join('\n');
-
     try {
-      const res = await fetch(`https://formsubmit.co/ajax/${HOST_FORM_EMAIL}`, {
+      const res = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name: formData.responsable || 'Candidature', email: formData.email || HOST_FORM_EMAIL, subject: `Candidature Nous rejoindre - ${formData.exploitation || 'Sans nom'}`, message: body, _captcha: false, _template: 'table' })
+        body: JSON.stringify({
+          action: 'host',
+          responsable: formData.responsable,
+          exploitation,
+          secteur: formData.secteur,
+          email,
+          telephone,
+        }),
       });
-      if (!res.ok) throw new Error();
+      const data = (await res.json().catch(() => ({}))) as { success?: boolean };
+      if (!res.ok || !data.success) throw new Error();
       setSubmitSuccess(true);
       setFormData({ responsable: '', exploitation: '', secteur: '', email: '', telephone: '' });
     } catch {

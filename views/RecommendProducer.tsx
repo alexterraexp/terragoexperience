@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 
-const RECOMMEND_EMAIL = 'alexso.terrago@gmail.com';
 const FORMSPREE_RECOMMEND_ID = (process.env.NEXT_PUBLIC_FORMSPREE_RECOMMEND_ID as string | undefined) || undefined;
 
 // ─── Hook responsive ───────────────────────────────────────────────────────────
@@ -129,19 +128,20 @@ const RecommendProducer: React.FC = () => {
         });
         if (!res.ok) throw new Error('Erreur envoi');
       } else {
-        const res = await fetch(`https://formsubmit.co/ajax/${RECOMMEND_EMAIL}`, {
+        const res = await fetch('/api/lead', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
-            name: formData.yourName || 'Anonyme',
-            email: formData.yourEmail || RECOMMEND_EMAIL,
-            subject: `Recommandation producteur : ${formData.producerName || 'Sans nom'}`,
-            message: emailBody,
-            _captcha: false,
-            _template: 'table'
-          })
+            action: 'recommend_producteur',
+            producerName: formData.producerName,
+            yourName: formData.yourName,
+            yourEmail: formData.yourEmail,
+            producerContact: formData.producerContact,
+            message: formData.message,
+          }),
         });
-        if (!res.ok) throw new Error('Erreur envoi');
+        const j = (await res.json().catch(() => ({}))) as { success?: boolean };
+        if (!res.ok || !j.success) throw new Error('Erreur envoi');
       }
 
       setSubmitSuccess(true);

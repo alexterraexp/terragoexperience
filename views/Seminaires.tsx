@@ -632,9 +632,20 @@ const Seminaires: React.FC = () => {
     if (!plaquetteEmail.trim() || !re.test(plaquetteEmail.trim())) { setPlaquetteEmailError('Veuillez renseigner une adresse mail valide'); return; }
     setPlaquetteSubmitting(true);
     try {
-      const r = await fetch('https://formsubmit.co/ajax/alexso.terrago@gmail.com', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ email: plaquetteEmail.trim(), subject: 'Demande plaquette offres 2026 - Terrago', message: `Demande plaquette.\nEmail: ${plaquetteEmail.trim()}`, _captcha: false }) });
-      if (r.ok) { setPlaquetteSuccess(true); setPlaquetteEmail(''); } else throw new Error();
-    } catch { alert('Une erreur est survenue.'); } finally { setPlaquetteSubmitting(false); }
+      const r = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ action: 'plaquette', email: plaquetteEmail.trim() }),
+      });
+      const data = (await r.json().catch(() => ({}))) as { success?: boolean };
+      if (!r.ok || !data.success) throw new Error();
+      setPlaquetteSuccess(true);
+      setPlaquetteEmail('');
+    } catch {
+      alert('Une erreur est survenue.');
+    } finally {
+      setPlaquetteSubmitting(false);
+    }
   };
 
   const exampleCards = [

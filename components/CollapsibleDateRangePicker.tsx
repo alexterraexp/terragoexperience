@@ -86,9 +86,11 @@ export function CollapsibleDateRangePicker({
   const fmtDisplay = (str: string) =>
     str ? new Date(`${str}T00:00:00`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
 
+  /** Mois affiché : aligné sur la date pertinente (ex. après l’arrivée, le panneau « départ » ouvre le même mois que l’arrivée). */
   useEffect(() => {
-    if (!collapseCalendar || !calendarOpen) return;
-    const refStr = selecting === 'start' ? startDate : endDate;
+    if (collapseCalendar && !calendarOpen) return;
+    const refStr =
+      selecting === 'start' ? startDate : endDate || startDate;
     if (refStr) {
       const d = new Date(`${refStr}T00:00:00`);
       setViewYear(d.getFullYear());
@@ -97,8 +99,8 @@ export function CollapsibleDateRangePicker({
       setViewYear(today.getFullYear());
       setViewMonth(today.getMonth());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- ancrage volontaire à l’ouverture
-  }, [collapseCalendar, calendarOpen, selecting]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- ancrage à l’ouverture / au changement de cible, pas à chaque navigation mois
+  }, [collapseCalendar, calendarOpen, selecting, startDate, endDate]);
 
   const triggerRow = (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>

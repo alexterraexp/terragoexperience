@@ -310,35 +310,41 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
     const perStr = pMode === 'dates'
       ? (sd && ed ? `Du ${new Date(sd).toLocaleDateString('fr-FR')} au ${new Date(ed).toLocaleDateString('fr-FR')}` : 'Dates non renseignées')
       : (months.length > 0 ? months.join(', ') : 'Aucun mois');
-    const body = `
-Nouvelle demande de séminaire - Terrago
-
-=== INFORMATIONS CLIENT ===
-Prénom: ${form.prenom} | Nom: ${form.nom}
-Email: ${form.email} | Entreprise: ${form.entreprise}
-Participants: ${form.participants}
-Période: ${perStr}
-
-=== DESTINATION & TERROIR ===
-Région(s): ${[...regions, autre].filter(Boolean).join(', ') || 'Non précisée'}
-${ville ? `Ville: ${ville}` : ''}
-Produits du terroir: ${terroir.join(', ') || 'Non précisé'}
-
-=== LOGISTIQUE ===
-Hébergement: ${heb ? (acc.join(', ') || 'Oui') : 'Non'}
-Transport: ${wt ? (trans2 || 'Oui') : 'Non'}
-Message: ${form.message || 'Aucun'}
-    `.trim();
     try {
-      const res = await fetch('https://formsubmit.co/ajax/alexso.terrago@gmail.com', {
+      const res = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name: `${form.prenom} ${form.nom}`, email: form.email, subject: `Nouvelle demande de séminaire - ${form.entreprise}`, message: body, _captcha: false, _template: 'table' }),
+        body: JSON.stringify({
+          action: 'seminaire_sur_mesure',
+          prenom: form.prenom,
+          nom: form.nom,
+          email: form.email,
+          entreprise: form.entreprise,
+          participants: form.participants,
+          periodeStr: perStr,
+          regions,
+          autreRegion: autre,
+          ville,
+          terroir,
+          hebergement: heb,
+          accTypes: acc,
+          transport: wt,
+          transportDetail: trans2,
+          message: form.message,
+        }),
       });
-      if (res.ok) { setOk(true); setTimeout(handleClose, 2400); }
-      else throw new Error();
-    } catch { alert("Erreur lors de l'envoi. Veuillez réessayer."); }
-    finally { setBusy(false); }
+      const data = (await res.json().catch(() => ({}))) as { success?: boolean };
+      if (res.ok && data.success) {
+        setOk(true);
+        setTimeout(handleClose, 2400);
+      } else {
+        throw new Error();
+      }
+    } catch {
+      alert("Erreur lors de l'envoi. Veuillez réessayer.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   if (!isOpen) return null;
