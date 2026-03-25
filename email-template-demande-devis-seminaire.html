@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="format-detection" content="telephone=no,date=no,address=no,email=no" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
   <title>Demande de devis séminaire — TerraGo Expériences</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,600;0,700;1,400;1,600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
     table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
     img { -ms-interpolation-mode: bicubic; border: 0; outline: none; display: block; }
+    :root { color-scheme: light; }
     body { margin: 0; padding: 0; background-color: #FFFFFF; font-family: 'Poppins', Arial, sans-serif; }
     .wrapper { width: 100%; background-color: #FFFFFF; padding: 32px 0; }
     .card { max-width: 600px; margin: 0 auto; background-color: #FFFFFF; border-radius: 18px; overflow: hidden; border: 1.5px solid #E0DEDA; }
@@ -49,17 +52,23 @@
       .offre-banner-td { padding: 32px 22px !important; min-height: 168px !important; }
       .offre-banner-title { font-size: 18px !important; line-height: 1.4 !important; }
     }
+    @media (prefers-color-scheme: dark) {
+      body, .wrapper, .card, .body {
+        background-color: #FFFFFF !important;
+        color: #4A4438 !important;
+      }
+    }
   </style>
 </head>
 <body>
-<div class="wrapper">
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<div class="wrapper" style="background-color:#FFFFFF !important;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#FFFFFF !important;">
   <tr>
-    <td style="padding: 0 20px;">
-      <table class="card" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:680px;margin:0 auto;background-color:#FFFFFF;border-radius:18px;border:1.5px solid #E0DEDA;overflow:hidden;">
+    <td bgcolor="#FFFFFF" style="padding: 0 20px; background-color:#FFFFFF !important;">
+      <table class="card" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFFFF" style="max-width:680px;margin:0 auto;background-color:#FFFFFF !important;border-radius:18px;border:1.5px solid #E0DEDA;overflow:hidden;">
 
         <tr>
-          <td style="padding:18px;">
+          <td bgcolor="#FFFFFF" style="padding:18px; background-color:#FFFFFF !important;">
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#1A2810;border-radius:16px;">
               <tr>
                 <td style="padding:28px 36px 8px;text-align:center;">
@@ -81,7 +90,7 @@
         </tr>
 
         <tr>
-          <td class="body">
+          <td class="body" bgcolor="#FFFFFF" style="background-color:#FFFFFF !important;">
 
             <p class="greeting">Bonjour {{PRENOM}},</p>
             <p class="body-text">Nous avons bien reçu votre demande de devis pour une offre séminaire et nous vous en remercions. Notre équipe va l'examiner dans les plus brefs délais et vous répondre par e-mail.</p>
@@ -106,7 +115,7 @@
             </table>
 
             <p class="recap-section-label">02 — Coordonnées</p>
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border:1.5px solid #E4E0DA;border-radius:12px;overflow:hidden;margin-bottom:6px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFFFF" style="background-color:#FFFFFF !important;border:1.5px solid #E4E0DA;border-radius:12px;overflow:hidden;margin-bottom:6px;">
               <tr>
                 <td width="50%" style="padding:12px 14px;border-bottom:1px solid #E4E0DA;vertical-align:top;">
                   <span class="recap-key">Prénom</span>
@@ -136,7 +145,7 @@
             </table>
 
             <p class="recap-section-label">03 — Dates &amp; destination</p>
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border:1.5px solid #E4E0DA;border-radius:12px;overflow:hidden;margin-bottom:6px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFFFF" style="background-color:#FFFFFF !important;border:1.5px solid #E4E0DA;border-radius:12px;overflow:hidden;margin-bottom:6px;">
               <tr>
                 <td width="50%" style="padding:12px 14px;border-bottom:1px solid #E4E0DA;vertical-align:top;">
                   <span class="recap-key">Période</span>
@@ -156,7 +165,7 @@
             </table>
 
             <p class="recap-section-label">04 — Logistique, activités &amp; message</p>
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border:1.5px solid #E4E0DA;border-radius:12px;overflow:hidden;margin-bottom:28px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFFFF" style="background-color:#FFFFFF !important;border:1.5px solid #E4E0DA;border-radius:12px;overflow:hidden;margin-bottom:28px;">
               <tr>
                 <td width="50%" style="padding:12px 14px;border-bottom:1px solid #E4E0DA;vertical-align:top;">
                   <span class="recap-key">Hébergement</span>
