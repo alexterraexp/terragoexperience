@@ -30,7 +30,13 @@ export function CollapsibleDateRangePicker({
   const [selecting, setSelecting] = useState<'start' | 'end'>('start');
   const [hovered, setHovered] = useState<string | null>(null);
 
-  const toStr = (d: Date) => d.toISOString().split('T')[0];
+  // IMPORTANT: ne pas utiliser toISOString() (UTC) → décale d’un jour en timezone FR.
+  const toStr = (d: Date) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  };
 
   const firstDay = new Date(viewYear, viewMonth, 1).getDay();
   const offset = firstDay === 0 ? 6 : firstDay - 1;
@@ -314,6 +320,7 @@ export function CollapsibleDateRangePicker({
             const inRange = isInRange(d);
             const past = isPast(d);
             const isToday = toStr(d) === toStr(today);
+            const isHover = hovered != null && toStr(d) === hovered;
             return (
               <button
                 key={i}
@@ -326,7 +333,14 @@ export function CollapsibleDateRangePicker({
                   height: 32,
                   borderRadius: start || end ? 9999 : inRange ? 0 : 9999,
                   border: isToday && !start && !end ? '1.5px solid rgba(230,126,34,0.4)' : 'none',
-                  background: start || end ? '#1a2e1a' : inRange ? 'rgba(26,46,26,0.08)' : 'transparent',
+                  background:
+                    start || end
+                      ? '#1a2e1a'
+                      : inRange
+                        ? 'rgba(26,46,26,0.08)'
+                        : isHover && !past
+                          ? 'rgba(26,46,26,0.18)'
+                          : 'transparent',
                   color: start || end ? '#fff' : past ? '#d5cfc7' : '#1a2e1a',
                   fontSize: 11,
                   fontWeight: start || end ? 700 : isToday ? 700 : 400,

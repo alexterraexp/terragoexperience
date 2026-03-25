@@ -1088,7 +1088,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
             </div>
           )}
 
-          <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '28px 24px 0', scrollbarWidth: 'none' }}>
+          <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '28px 24px 24px', scrollbarWidth: 'none' }}>
             <div style={{ opacity: transitioning ? 0 : 1, transform: transitioning ? 'translateY(6px)' : 'translateY(0)', transition: 'all 0.18s ease' }}>
 
               {step === 1 && (

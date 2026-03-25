@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { matchFrenchCities } from '@/lib/frenchCities';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 type VilleDepartInputProps = {
   value: string;
@@ -14,7 +13,11 @@ type VilleDepartInputProps = {
 export function VilleDepartInput({ value, onChange, placeholder = 'Ex. Paris, Lyon…', className, style }: VilleDepartInputProps) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const suggestions = useMemo(() => (open && value.trim() ? matchFrenchCities(value, 12) : []), [open, value]);
+  const [loading, setLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState<Array<{ id?: string; place_name: string }>>([]);
+  const debounceRef = useRef<number | null>(null);
+
+  const hasSuggestions = useMemo(() => open && suggestions.length > 0, [open, suggestions.length]);
 
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
@@ -23,6 +26,39 @@ export function VilleDepartInput({ value, onChange, placeholder = 'Ex. Paris, Ly
     document.addEventListener('mousedown', onDoc);
     return () => document.removeEventListener('mousedown', onDoc);
   }, []);
+
+  useEffect(() => {
+    const q = value.trim();
+    if (!open) return;
+    if (q.length < 2) {
+      setSuggestions([]);
+      setLoading(false);
+      return;
+    }
+
+    if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    setLoading(true);
+    debounceRef.current = window.setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/ville-autocomplete?q=${encodeURIComponent(q)}`, {
+          headers: { Accept: 'application/json' },
+        });
+        const data = (await res.json().catch(() => ({}))) as {
+          suggestions?: Array<{ id?: string; place_name: string }>;
+        };
+        const next = Array.isArray(data.suggestions) ? data.suggestions : [];
+        setSuggestions(next);
+      } catch {
+        setSuggestions([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 250);
+
+    return () => {
+      if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    };
+  }, [value, open]);
 
   return (
     <div ref={wrapRef} style={{ position: 'relative' }}>
@@ -38,9 +74,9 @@ export function VilleDepartInput({ value, onChange, placeholder = 'Ex. Paris, Ly
         placeholder={placeholder}
         autoComplete="off"
         aria-autocomplete="list"
-        aria-expanded={open && suggestions.length > 0}
+        aria-expanded={hasSuggestions}
       />
-      {suggestions.length > 0 && (
+      {hasSuggestions && (
         <ul
           role="listbox"
           style={{
@@ -60,14 +96,14 @@ export function VilleDepartInput({ value, onChange, placeholder = 'Ex. Paris, Ly
             zIndex: 40,
           }}
         >
-          {suggestions.map((c) => (
-            <li key={c}>
+          {suggestions.map((s) => (
+            <li key={s.id ?? s.place_name}>
               <button
                 type="button"
                 role="option"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
-                  onChange(c);
+                  onChange(s.place_name);
                   setOpen(false);
                 }}
                 style={{
@@ -83,11 +119,25 @@ export function VilleDepartInput({ value, onChange, placeholder = 'Ex. Paris, Ly
                   cursor: 'pointer',
                 }}
               >
-                {c}
+                {s.place_name}
               </button>
             </li>
           ))}
         </ul>
+      )}
+      {loading && (
+        <div
+          style={{
+            position: 'absolute',
+            right: 12,
+            top: 12,
+            fontSize: 12,
+            color: '#b0a89e',
+            pointerEvents: 'none',
+          }}
+        >
+          Chargement...
+        </div>
       )}
     </div>
   );
