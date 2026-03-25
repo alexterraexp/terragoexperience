@@ -458,7 +458,7 @@ const SeminarDomains: React.FC = () => {
                   <div className="size-16 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                     <span className="material-symbols-outlined text-3xl">check</span>
                   </div>
-                  <h3 className="text-2xl font-display font-bold text-primary italic mb-3">Demande envoyée !</h3>
+                  <h3 className="text-2xl font-display font-bold text-primary not-italic mb-3">Demande envoyée !</h3>
                   <p className="text-gray-500 text-sm">Nous vous recontacterons sous 48h.</p>
                 </div>
               </div>
@@ -470,7 +470,7 @@ const SeminarDomains: React.FC = () => {
                 {currentStep === 1 && (
                   <div className={`space-y-10 transition-opacity duration-200 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
                     <div>
-                      <h3 className="text-3xl font-display font-bold text-primary italic mb-2">Commençons par vous.</h3>
+                      <h3 className="text-3xl font-display font-bold text-primary not-italic mb-2">Commençons par vous.</h3>
                       <p className="text-xs text-gray-400 font-light italic">Dites-nous qui vous êtes pour mieux cerner vos besoins.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
@@ -549,7 +549,7 @@ const SeminarDomains: React.FC = () => {
                 {currentStep === 2 && (
                   <div className={`space-y-10 transition-opacity duration-200 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
                     <div>
-                      <h3 className="text-3xl font-display font-bold text-primary italic mb-2">Choisissez votre terroir</h3>
+                      <h3 className="text-3xl font-display font-bold text-primary not-italic mb-2">Choisissez votre terroir</h3>
                       <p className="text-xs text-gray-400 font-light italic">Où souhaitez-vous vivre l'expérience ? Nos domaines vous accueillent dans les plus belles régions de France.</p>
                     </div>
                     
@@ -596,7 +596,7 @@ const SeminarDomains: React.FC = () => {
                 {currentStep === 3 && (
                   <div className={`space-y-10 transition-opacity duration-200 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
                     <div>
-                      <h3 className="text-3xl font-display font-bold text-primary italic mb-2">Logistique & Sur-mesure</h3>
+                      <h3 className="text-3xl font-display font-bold text-primary not-italic mb-2">Logistique & Sur-mesure</h3>
                       <p className="text-xs text-gray-400 font-light italic">Affinez les détails pour une organisation parfaite.</p>
                     </div>
                     

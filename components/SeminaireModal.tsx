@@ -502,7 +502,7 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
                   <path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 style={{ fontWeight: 700, fontStyle: 'italic', fontSize: 26, color: '#1a2e1a', margin: '0 0 8px', fontFamily: "'Poppins',sans-serif" }}>Demande envoyée !</h3>
+              <h3 style={{ fontWeight: 700, fontStyle: 'normal', fontSize: 26, color: '#1a2e1a', margin: '0 0 8px', fontFamily: "'Poppins',sans-serif" }}>Demande envoyée !</h3>
               <p style={{ color: '#9ca3af', fontSize: 13, margin: 0 }}>Nous vous recontacterons sous 48h.</p>
             </div>
           )}
@@ -510,7 +510,7 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
           <div ref={scrollRef} className="sem-sc sem-body" style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '28px 28px 0' }}>
             <div style={{ opacity: trans ? 0 : 1, transform: trans ? 'translateY(5px)' : 'translateY(0)', transition: 'all .18s ease' }}>
 
-              <h3 style={{ fontFamily: "'Poppins',sans-serif", fontStyle: 'italic', fontWeight: 700, fontSize: 22, color: '#1a2e1a', margin: '0 0 22px' }}>
+              <h3 style={{ fontFamily: "'Poppins',sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 22, color: '#1a2e1a', margin: '0 0 22px' }}>
                 {STEP_TITLE[step]}
               </h3>
 

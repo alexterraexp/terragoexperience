@@ -900,7 +900,6 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   const [transitioning, setTrans] = useState(false);
   const [submitting, setSubmit] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [successSubtext, setSuccessSubtext] = useState('');
   const [error, setError] = useState('');
   const [form, setForm] = useState({ prenom: '', nom: '', email: '', entreprise: '', participants: '', message: '' });
   const [selectedSeminaireId, setSelectedSeminaireId] = useState<string | null>(null);
@@ -915,6 +914,14 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   const [distanceHours, setDistanceHours] = useState(3);
   const [extraActivities, setExtraActivities] = useState<string[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 600);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 600);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   useEffect(() => {
     if (isOpen && initialSeminaire) {
@@ -937,7 +944,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   const handleClose = () => {
     setClosing(true);
     setTimeout(() => {
-      setClosing(false); setStep(1); setSuccess(false); setSuccessSubtext(''); setError('');
+      setClosing(false); setStep(1); setSuccess(false); setError('');
       setForm({ prenom: '', nom: '', email: '', entreprise: '', participants: '', message: '' });
       setSelectedSeminaireId(null); setSelectedFormatId('1jour'); setAccTypes([]); setTransport('');
       setStart(''); setEnd(''); setHeberg(false); setWithT(false); setVilleDepart(''); setDistanceHours(3); setExtraActivities([]);
@@ -1023,13 +1030,6 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
         );
       }
 
-      const sub =
-        typeof data.message === 'string' &&
-        data.message.trim() !== '' &&
-        data.message !== 'E-mail envoyé.'
-          ? data.message
-          : 'Nous vous recontacterons sous 48h.';
-      setSuccessSubtext(sub);
       setSuccess(true);
       setTimeout(handleClose, 2200);
     } catch (err: any) {
@@ -1045,11 +1045,76 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
 
   return (
     <>
+      <style>{`
+        @media (max-width: 600px) {
+          .pack-sem-wrapper { align-items: stretch !important; justify-content: stretch !important; padding: 0 !important; }
+          .pack-sem-panel {
+            border-radius: 0 !important;
+            max-height: 100dvh !important;
+            height: 100dvh !important;
+            min-height: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+          }
+          .pack-sem-header { padding-top: max(20px, env(safe-area-inset-top)) !important; flex-shrink: 0 !important; }
+          .pack-sem-body { padding: 16px 16px 0 !important; min-height: 0 !important; flex: 1 !important; overflow-y: auto !important; }
+          .pack-sem-footer { padding: 12px 16px max(12px, env(safe-area-inset-bottom)) !important; flex-shrink: 0 !important; }
+        }
+      `}</style>
       <div onClick={handleClose} style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'rgba(10,20,10,0.65)', backdropFilter: 'blur(6px)', opacity: closing ? 0 : 1, transition: 'opacity 0.28s ease' }} />
-      <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}>
-        <div onClick={e => e.stopPropagation()} style={{ pointerEvents: 'auto', width: '100%', maxWidth: 860, maxHeight: '96vh', background: '#fff', borderRadius: 28, display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 8px 48px rgba(0,0,0,0.14)', animation: `${closing ? 'semModalOut' : 'semModalIn'} 0.32s cubic-bezier(0.22,1,0.36,1) both`, fontFamily: 'inherit', position: 'relative' }}>
+      <div
+        className="pack-sem-wrapper"
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: isMobile ? 'stretch' : 'center',
+          justifyContent: isMobile ? 'stretch' : 'center',
+          padding: isMobile ? 0 : 16,
+          pointerEvents: 'none',
+        }}
+      >
+        <div
+          className="pack-sem-panel"
+          onClick={e => e.stopPropagation()}
+          style={{
+            pointerEvents: 'auto',
+            ...(isMobile
+              ? {
+                  position: 'fixed' as const,
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: '100%',
+                  maxWidth: 'none',
+                  height: '100dvh',
+                  maxHeight: '100dvh',
+                  minHeight: 0,
+                  borderRadius: 0,
+                  boxShadow: 'none',
+                }
+              : {
+                  width: '100%',
+                  maxWidth: 860,
+                  maxHeight: '96vh',
+                  minHeight: 0,
+                  borderRadius: 28,
+                  boxShadow: '0 8px 48px rgba(0,0,0,0.14)',
+                  position: 'relative' as const,
+                }),
+            background: '#fff',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            animation: `${closing ? 'semModalOut' : 'semModalIn'} 0.32s cubic-bezier(0.22,1,0.36,1) both`,
+            fontFamily: 'inherit',
+          }}
+        >
 
-          <div style={{ padding: '20px 24px 0', background: '#fff', flexShrink: 0, borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
+          <div className="pack-sem-header" style={{ padding: '20px 24px 0', background: '#fff', flexShrink: 0, borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 16, height: 1, background: '#e67e22' }} />
@@ -1079,22 +1144,75 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
           )}
 
           {success && (
-            <div style={{ position: 'absolute', inset: 0, zIndex: 20, background: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(4px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 24 }}>
-              <div style={{ width: 60, height: 60, borderRadius: '50%', background: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-                <svg width="24" height="24" viewBox="0 0 34 34" fill="none"><path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 20,
+                background: 'rgba(255,255,255,0.97)',
+                backdropFilter: 'blur(4px)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: isMobile ? 0 : 24,
+                padding: 16,
+              }}
+            >
+              <div
+                style={{
+                  border: '1.5px solid #E4E0DA',
+                  borderRadius: '16px',
+                  padding: '28px 32px',
+                  background: '#fff',
+                  fontFamily: 'Poppins, sans-serif',
+                  maxWidth: '100%',
+                  width: 'min(100%, 420px)',
+                }}
+              >
+                <div
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: '#2D3B1F',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '14px',
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path
+                      d="M5 13l4 4L19 7"
+                      stroke="#8AAA7A"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <p style={{ fontSize: '15px', fontWeight: 600, color: '#1A2810', margin: '0 0 6px', lineHeight: 1.4 }}>
+                  C'est noté, merci !
+                </p>
+                <p style={{ fontSize: '13px', color: '#6B6460', margin: 0, lineHeight: 1.6 }}>
+                  Votre demande est entre de bonnes mains. Vous recevrez un email de confirmation dans quelques instants.
+                </p>
+                <hr style={{ border: 'none', borderTop: '1px solid #E4E0DA', margin: '16px 0' }} />
+                <p style={{ fontSize: '11px', color: '#A09080', margin: 0, fontStyle: 'italic' }}>
+                  Des séminaires engagés et engageants.
+                </p>
               </div>
-              <h3 style={{ fontStyle: 'italic', fontSize: 28, fontWeight: 700, color: '#1a2e1a', margin: '0 0 8px', fontFamily: 'inherit' }}>Demande envoyée !</h3>
-              <p style={{ color: '#9a9080', fontSize: 15, margin: 0, textAlign: 'center', maxWidth: 320, lineHeight: 1.5 }}>{successSubtext}</p>
             </div>
           )}
 
-          <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '28px 24px 24px', scrollbarWidth: 'none' }}>
+          <div ref={scrollRef} className="pack-sem-body" style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '28px 24px 24px', scrollbarWidth: 'none' }}>
             <div style={{ opacity: transitioning ? 0 : 1, transform: transitioning ? 'translateY(6px)' : 'translateY(0)', transition: 'all 0.18s ease' }}>
 
               {step === 1 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
                   <div>
-                    <h3 style={{ fontStyle: 'italic', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Votre sélection.</h3>
+                    <h3 style={{ fontStyle: 'normal', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Votre sélection.</h3>
                     <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Récapitulatif de l'offre choisie. Vous pouvez en sélectionner une autre.</p>
                   </div>
                   {selectedSeminaire && selectedFormat && (
@@ -1122,7 +1240,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
               {step === 2 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
                   <div>
-                    <h3 style={{ fontStyle: 'italic', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Informations & coordonnées.</h3>
+                    <h3 style={{ fontStyle: 'normal', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Informations & coordonnées.</h3>
                     <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Qui vous êtes et combien vous serez.</p>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
@@ -1147,7 +1265,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
               {step === 3 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
                   <div>
-                    <h3 style={{ fontStyle: 'italic', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Dates & destination.</h3>
+                    <h3 style={{ fontStyle: 'normal', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Dates & destination.</h3>
                     <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Quand vous partez et depuis où.</p>
                   </div>
                   <FieldBlock label="Dates du séjour" required>
@@ -1169,7 +1287,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
               {step === 4 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
                   <div>
-                    <h3 style={{ fontStyle: 'italic', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Logistique & sur-mesure.</h3>
+                    <h3 style={{ fontStyle: 'normal', fontSize: 24, fontWeight: 700, color: '#1a2e1a', margin: '0 0 4px', fontFamily: 'inherit' }}>Logistique & sur-mesure.</h3>
                     <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Hébergement, transport, activités et message.</p>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
@@ -1222,7 +1340,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
             </div>
           </div>
 
-          <div style={{ padding: '20px 24px', borderTop: '1px solid rgba(26,46,26,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexShrink: 0, flexWrap: 'wrap' }}>
+          <div className="pack-sem-footer" style={{ padding: '20px 24px', borderTop: '1px solid rgba(26,46,26,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexShrink: 0, flexWrap: 'wrap' }}>
             <button onClick={goPrev} disabled={step === 1} style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: step === 1 ? 'transparent' : '#b0a89e', background: 'none', border: 'none', cursor: step === 1 ? 'default' : 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6, pointerEvents: step === 1 ? 'none' : 'auto' }}>
               ← Précédent
             </button>

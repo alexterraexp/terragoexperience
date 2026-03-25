@@ -46,7 +46,7 @@ const Booking: React.FC = () => {
           <div className="size-20 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg shadow-green-200">
             <span className="material-symbols-outlined text-4xl">check</span>
           </div>
-          <h1 className="text-4xl font-display font-bold text-primary italic mb-4">Réservation confirmée !</h1>
+          <h1 className="text-4xl font-display font-bold text-primary not-italic mb-4">Réservation confirmée !</h1>
           <p className="text-gray-500 italic mb-8">
             Merci pour votre confiance. Un email récapitulatif contenant les détails de votre rencontre avec {exp?.host.name} et l'adresse exacte vous a été envoyé.
           </p>
@@ -92,14 +92,14 @@ const Booking: React.FC = () => {
           <button onClick={() => router.back()} className="size-10 rounded-full bg-white flex items-center justify-center border border-black/5 hover:bg-gray-50 transition-colors shadow-sm">
             <span className="material-symbols-outlined text-xl">west</span>
           </button>
-          <h1 className="text-3xl font-display font-bold text-primary italic">Finaliser votre réservation</h1>
+          <h1 className="text-3xl font-display font-bold text-primary not-italic">Finaliser votre réservation</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
           <div className="lg:col-span-7 space-y-8">
             <div className="bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-black/5">
-              <h2 className="text-xl font-display font-bold text-primary mb-8 italic flex items-center gap-3">
+              <h2 className="text-xl font-display font-bold text-primary mb-8 not-italic flex items-center gap-3">
                 <span className="material-symbols-outlined text-orange">person</span>
                 Vos informations
               </h2>
@@ -121,7 +121,7 @@ const Booking: React.FC = () => {
 
             <div className="bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-black/5">
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-display font-bold text-primary italic flex items-center gap-3">
+                <h2 className="text-xl font-display font-bold text-primary not-italic flex items-center gap-3">
                   <span className="material-symbols-outlined text-orange">credit_card</span>
                   Paiement sécurisé
                 </h2>

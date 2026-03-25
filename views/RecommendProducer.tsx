@@ -315,7 +315,7 @@ const RecommendProducer: React.FC = () => {
                   <path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h2 className="font-display italic font-bold text-primary" style={{ fontSize: 22 }}>Recommandation envoyée !</h2>
+              <h2 className="font-display not-italic font-bold text-primary" style={{ fontSize: 22 }}>Recommandation envoyée !</h2>
               <p style={{ fontSize: 13, color: '#7a6e62', lineHeight: 1.7 }}>
                 Merci pour votre coup de pouce. On contactera <strong>{formData.producerName || 'ce producteur'}</strong> dans les prochains jours pour lui présenter Terrago.
               </p>

@@ -35,6 +35,7 @@ type ReservationEmailData = {
   transport: string;
   activites: string;
   message: string;
+  budget: string;
   reference: string;
 };
 
@@ -59,6 +60,7 @@ function buildEmailHtml(data: ReservationEmailData) {
     .replace(/{{TRANSPORT}}/g, escapeHtml(data.transport))
     .replace(/{{ACTIVITES}}/g, escapeHtml(data.activites))
     .replace(/{{MESSAGE}}/g, escapeHtml(data.message || '—'))
+    .replace(/{{BUDGET}}/g, escapeHtml(data.budget || '—'))
     .replace(/{{REFERENCE}}/g, escapeHtml(data.reference))
     .replace(/{{LIEN_SITE}}/g, 'https://terragoexperiences.fr')
     .replace(/{{LIEN_OFFRES}}/g, 'https://terragoexperiences.fr/seminaires-entreprise/offres')
@@ -92,6 +94,7 @@ export async function processReservation(
     transport,
     activites,
     message,
+    budget,
   } = b;
 
   const required: Record<string, unknown> = {
@@ -146,6 +149,7 @@ export async function processReservation(
         transport: String(transport),
         activites: String(activites),
         message: message != null && String(message).trim() !== '' ? String(message) : null,
+        budget: budget != null && String(budget).trim() !== '' ? String(budget) : null,
         reference,
       });
     if (supabaseError) {
@@ -174,6 +178,7 @@ export async function processReservation(
     transport: String(transport),
     activites: String(activites),
     message: message != null && String(message).trim() !== '' ? String(message) : '—',
+    budget: budget != null && String(budget).trim() !== '' ? String(budget) : '—',
     reference,
   });
 
@@ -221,6 +226,7 @@ export async function processReservation(
           `Hébergement : ${hebergement}`,
           `Transport : ${transport}`,
           `Activités : ${activites}`,
+          `Budget indicatif : ${budget != null && String(budget).trim() !== '' ? String(budget) : '—'}`,
           `Message : ${message != null && String(message).trim() !== '' ? String(message) : '—'}`,
           `Référence : ${reference}`,
         ].join('\n'),

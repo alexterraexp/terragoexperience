@@ -401,7 +401,7 @@ const Host: React.FC = () => {
                   <path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 className="font-display italic font-bold text-primary" style={{ fontSize: 20, marginBottom: 8 }}>Demande envoyée !</h3>
+              <h3 className="font-display not-italic font-bold text-primary" style={{ fontSize: 20, marginBottom: 8 }}>Demande envoyée !</h3>
               <p style={{ color: '#9a9080', fontSize: 13, marginBottom: 24, lineHeight: 1.7 }}>Nous vous recontacterons sous 72h.</p>
               <button
                 type="button"

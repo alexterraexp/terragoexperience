@@ -213,7 +213,7 @@ const Particuliers: React.FC = () => {
 
 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
   {[
-    { src: 'https://images.unsplash.com/photo-1600265360126-aac005b63361?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Producteur terroir français – Terrago' },
+    { src: 'https://images.unsplash.com/photo-1600265360126-aac005b63361?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Copains et terroir, et producteurs France – Terrago' },
     { src: 'https://images.unsplash.com/photo-1770453572726-f51592710ca6?q=80&w=2669&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Séjour immersif entre amis – Terrago' },
     { src: 'https://images.unsplash.com/photo-1666955546775-f39d76308be7?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Expérience unique chez un artisan – Terrago' },
   ].map(({ src, alt }, i) => (
@@ -431,7 +431,7 @@ const Particuliers: React.FC = () => {
             <ScrollAnimate delay={150}>
               <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
                 <span className="font-sans text-4xl sm:text-4xl">Parlons de</span>
-                <span className="font-display italic text-5xl sm:text-5xl lg:text-5xl"> votre séjour.</span>
+                <span className="font-display not-italic text-5xl sm:text-5xl lg:text-5xl"> votre séjour.</span>
               </h2>
             </ScrollAnimate>
             <p className="mt-6" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.75 }}>
@@ -450,7 +450,7 @@ const Particuliers: React.FC = () => {
                     <path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <h2 className="font-display italic font-bold text-primary mb-2" style={{ fontSize: 26 }}>Demande envoyée !</h2>
+                <h2 className="font-display not-italic font-bold text-primary mb-2" style={{ fontSize: 26 }}>Demande envoyée !</h2>
                 <p style={{ color: '#9a9080', fontSize: 13 }}>Nous vous recontacterons très prochainement.</p>
               </div>
             ) : (

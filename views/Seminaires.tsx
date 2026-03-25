@@ -125,6 +125,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
   const [extraActivities, setExtraActivities] = useState<string[]>([]);
   const [heb, setHeb] = useState(false);
   const [wt, setWt] = useState(false);
+  const [budget, setBudget] = useState('');
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 600);
@@ -156,7 +157,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
       setClosing(false); setStep(1); setOk(false); setErr('');
       setForm({ prenom: '', nom: '', email: '', entreprise: '', participants: '', message: '' });
       setAcc([]); setTr2(''); setSd(''); setEd(''); setVilleDepart(''); setMaxTrajetH(3); setExtraActivities([]);
-      setHeb(false); setWt(false);
+      setHeb(false); setWt(false); setBudget('');
       onClose();
       // Revenir sur la page « séminaires engagés » : /demande-seminaire sert surtout d’entrée CTA
       if (pathname === '/demande-seminaire') {
@@ -210,6 +211,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
       transport: wt ? (trans2 || 'Oui') : 'Non',
       activites: activitesStr,
       message: form.message.trim() || '—',
+      budget: budget.trim(),
     };
     try {
       const res = await fetch('/api/reservation', {
@@ -258,6 +260,23 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
         }
         .sem-i:focus { border-color:#1a2e1a; background:#fff; box-shadow:0 0 0 3px rgba(26,46,26,.06); }
         .sem-i::placeholder { color:#c4bdb4; }
+        @media (min-width: 601px) {
+          .sem-step3-toggle-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .sem-act-pills {
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+          }
+          .sem-act-pills > * { flex-shrink: 0; }
+        }
         @media(max-width:600px) {
           .sg2 { grid-template-columns:1fr!important }
           .sg3 { grid-template-columns:1fr!important }
@@ -300,7 +319,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                   minHeight: 0, borderRadius: 0, boxShadow: 'none',
                 }
               : {
-                  width: '100%', maxWidth: 780, maxHeight: '94vh', minHeight: 0,
+                  width: '100%', maxWidth: 1000, maxHeight: '96vh', minHeight: 0,
                   borderRadius: 28,
                   boxShadow: '0 8px 48px rgba(0,0,0,0.14), 0 0 0 1px rgba(10,44,52,0.05)',
                 }),
@@ -350,25 +369,73 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
           )}
 
           {ok && (
-            <div style={{ position: 'absolute', inset: 0, zIndex: 20, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(4px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 28, animation: 'semFd .3s ease' }}>
-              <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, boxShadow: '0 8px 30px rgba(26,46,26,0.25)' }}>
-                <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
-                  <path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 20,
+                background: 'rgba(255,255,255,0.97)',
+                backdropFilter: 'blur(4px)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 28,
+                animation: 'semFd .3s ease',
+                padding: 16,
+              }}
+            >
+              <div
+                style={{
+                  border: '1.5px solid #E4E0DA',
+                  borderRadius: '16px',
+                  padding: '28px 32px',
+                  background: '#fff',
+                  fontFamily: 'Poppins, sans-serif',
+                  maxWidth: '100%',
+                  width: 'min(100%, 420px)',
+                }}
+              >
+                <div
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: '#2D3B1F',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '14px',
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path
+                      d="M5 13l4 4L19 7"
+                      stroke="#8AAA7A"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <p style={{ fontSize: '15px', fontWeight: 600, color: '#1A2810', margin: '0 0 6px', lineHeight: 1.4 }}>
+                  C'est noté, merci !
+                </p>
+                <p style={{ fontSize: '13px', color: '#6B6460', margin: 0, lineHeight: 1.6 }}>
+                  Votre demande est entre de bonnes mains. Vous recevrez un email de confirmation dans quelques instants.
+                </p>
+                <hr style={{ border: 'none', borderTop: '1px solid #E4E0DA', margin: '16px 0' }} />
+                <p style={{ fontSize: '11px', color: '#A09080', margin: 0, fontStyle: 'italic' }}>
+                  Des séminaires engagés et engageants.
+                </p>
               </div>
-              <h3 style={{ fontWeight: 700, fontStyle: 'italic', fontSize: 22, lineHeight: 1.35, color: '#1a2e1a', margin: '0 0 10px', fontFamily: "'Poppins',sans-serif", textAlign: 'center', maxWidth: 520 }}>
-                Merci de votre confiance ! Votre demande de séminaire a bien été transmise.
-              </h3>
-              <p style={{ color: '#9ca3af', fontSize: 13, margin: 0, textAlign: 'center' }}>
-                Notre équipe revient vers vous dans les plus brefs délais !
-              </p>
             </div>
           )}
 
           <div ref={scrollRef} className="sem-sc sem-body" style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '28px 28px 0' }}>
             <div style={{ opacity: trans ? 0 : 1, transform: trans ? 'translateY(5px)' : 'translateY(0)', transition: 'all .18s ease' }}>
 
-              <h3 style={{ fontFamily: "'Poppins',sans-serif", fontStyle: 'italic', fontWeight: 700, fontSize: 22, color: '#1a2e1a', margin: '0 0 22px' }}>
+              <h3 style={{ fontFamily: "'Poppins',sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 22, color: '#1a2e1a', margin: '0 0 22px' }}>
                 {STEP_TITLE[step]}
               </h3>
 
@@ -435,8 +502,8 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
               )}
 
               {step === 3 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                  <div className="sg2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+                  <div className="sg2 sem-step3-toggle-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                     <ToggleCard icon="🏠" label="Hébergement" active={heb} onToggle={() => setHeb(v => !v)}>
                       {heb && <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>{MODAL_ACC.map(t => <Pill key={t} active={acc.includes(t)} onClick={() => tog(acc, setAcc, t)} small>{t}</Pill>)}</div>}
                     </ToggleCard>
@@ -448,7 +515,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                     <p style={{ fontSize: 11, color: '#7a7060', margin: '0 0 12px', lineHeight: 1.55 }}>
                       Toutes nos activités sont conçues pour renforcer les liens et faciliter la cohésion d&apos;équipe.
                     </p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    <div className="sem-act-pills" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                       <span
                         style={{
                           padding: '7px 14px', borderRadius: 9999,
@@ -456,6 +523,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                           fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
                           fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 5, cursor: 'default',
                           boxShadow: '0 2px 10px rgba(26,46,26,0.15)',
+                          flexShrink: 0,
                         }}
                       >
                         ✓ {ACTIVITY_MAINS}
@@ -464,6 +532,18 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                         <Pill key={a} active={extraActivities.includes(a)} onClick={() => tog(extraActivities, setExtraActivities, a)}>{a}</Pill>
                       ))}
                     </div>
+                  </Field>
+                  <Field label="Budget indicatif">
+                    <input
+                      className="sem-i"
+                      type="text"
+                      placeholder="Ex. 400–600 € / personne, enveloppe globale, ou « à définir avec vous »"
+                      value={budget}
+                      onChange={e => { setBudget(e.target.value); setErr(''); }}
+                    />
+                    <p style={{ fontSize: 10, color: '#b0a89e', margin: '8px 0 0', lineHeight: 1.5 }}>
+                      Une fourchette ou un ordre de grandeur nous aide à vous proposer une offre réaliste.
+                    </p>
                   </Field>
                   <Field label="Un message particulier ?">
                     <textarea className="sem-i" rows={4} style={{ resize: 'none', lineHeight: 1.6 }} placeholder="Salles de réunion, pauses gourmandes, activités team building particulières…" value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} />
@@ -477,7 +557,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                   {[
                     { title: '01 — Coordonnées', rows: [{ label: 'Nom', value: `${form.prenom} ${form.nom}` }, { label: 'Email', value: form.email }, { label: 'Entreprise', value: form.entreprise }, { label: 'Participants', value: form.participants }] },
                     { title: '02 — Dates & lieu', rows: [{ label: 'Période', value: perStr }, { label: 'Ville de départ', value: villeDepart.trim() }, { label: 'Temps max. trajet', value: `${maxTrajetH} h` }] },
-                    { title: '03 — Logistique & activités', rows: [{ label: 'Hébergement', value: heb ? (acc.length > 0 ? acc.join(', ') : 'Oui') : 'Non' }, { label: 'Transport', value: wt ? (trans2 || 'Oui') : 'Non' }, { label: 'Activités', value: [ACTIVITY_MAINS, ...extraActivities].join(', ') }, ...(form.message ? [{ label: 'Message', value: form.message }] : [])] },
+                    { title: '03 — Logistique & activités', rows: [{ label: 'Hébergement', value: heb ? (acc.length > 0 ? acc.join(', ') : 'Oui') : 'Non' }, { label: 'Transport', value: wt ? (trans2 || 'Oui') : 'Non' }, { label: 'Activités', value: [ACTIVITY_MAINS, ...extraActivities].join(', ') }, ...(budget.trim() ? [{ label: 'Budget indicatif', value: budget.trim() }] : []), ...(form.message ? [{ label: 'Message', value: form.message }] : [])] },
                   ].map(block => (
                     <div key={block.title} style={{ background: '#faf8f5', borderRadius: 16, padding: '14px 18px' }}>
                       <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#e67e22', marginBottom: 10 }}>{block.title}</div>
