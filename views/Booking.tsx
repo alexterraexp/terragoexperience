@@ -58,7 +58,7 @@ const Booking: React.FC = () => {
             </div>
             <div className="flex justify-between mb-2">
               <span className="text-xs text-gray-400 italic">Date & Heure</span>
-              <span className="text-xs font-bold text-primary">{date ? new Date(date).toLocaleDateString('fr-FR') : ''} à {time}</span>
+              <span className="text-xs font-bold text-primary">{date ? new Date(`${date}T00:00:00`).toLocaleDateString('fr-FR') : ''} à {time}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-xs text-gray-400 italic">Nombre de places</span>
@@ -198,7 +198,7 @@ const Booking: React.FC = () => {
                     <div>
                       <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Date & Heure</p>
                       <p className="text-xs font-bold text-primary italic">
-                        {date ? new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''} à {time}
+                        {date ? new Date(`${date}T00:00:00`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''} à {time}
                       </p>
                     </div>
                   </div>

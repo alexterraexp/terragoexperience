@@ -973,7 +973,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   const goPrev = () => { setTrans(true); setTimeout(() => { setStep(s => Math.max(s - 1, 1)); setTrans(false); }, 180); };
 
   const periodStr =
-    startDate && endDate ? `${new Date(startDate).toLocaleDateString('fr-FR')} → ${new Date(endDate).toLocaleDateString('fr-FR')}` : '';
+    startDate && endDate ? `${new Date(`${startDate}T00:00:00`).toLocaleDateString('fr-FR')} → ${new Date(`${endDate}T00:00:00`).toLocaleDateString('fr-FR')}` : '';
 
   const activitesLine = [ACTIVITY_MAINS_PACK, ...extraActivities].join(', ');
 

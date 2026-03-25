@@ -195,7 +195,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
     setErr('');
     const perStr =
       sd && ed
-        ? `Du ${new Date(sd).toLocaleDateString('fr-FR')} au ${new Date(ed).toLocaleDateString('fr-FR')}`
+        ? `Du ${new Date(`${sd}T00:00:00`).toLocaleDateString('fr-FR')} au ${new Date(`${ed}T00:00:00`).toLocaleDateString('fr-FR')}`
         : 'Dates non renseignées';
     const activitesStr = [ACTIVITY_MAINS, ...extraActivities].join(', ');
     const payload = {
@@ -233,7 +233,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
 
   if (!isOpen) return null;
 
-  const perStr = sd && ed ? `${new Date(sd).toLocaleDateString('fr-FR')} → ${new Date(ed).toLocaleDateString('fr-FR')}` : '';
+  const perStr = sd && ed ? `${new Date(`${sd}T00:00:00`).toLocaleDateString('fr-FR')} → ${new Date(`${ed}T00:00:00`).toLocaleDateString('fr-FR')}` : '';
 
   const STEP_TITLE: Record<number, string> = {
     1: 'Commençons par vous.',

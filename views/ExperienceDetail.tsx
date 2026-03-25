@@ -200,7 +200,7 @@ const ExperienceDetail: React.FC = () => {
                          className={`relative w-full bg-beige-bg/50 border rounded-2xl px-6 py-4 transition-all cursor-pointer flex items-center justify-between group hover:border-orange/30 ${selectedDate ? 'border-orange bg-white shadow-md' : 'border-black/5'}`}
                        >
                           <span className={`text-[13px] ${selectedDate ? 'text-primary font-bold' : 'text-gray-300 italic'}`}>
-                             {selectedDate ? new Date(selectedDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Sélectionner une date'}
+                             {selectedDate ? new Date(`${selectedDate}T00:00:00`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Sélectionner une date'}
                           </span>
                           <span className="material-symbols-outlined text-gray-400 text-xl group-hover:text-orange transition-colors">calendar_month</span>
                           <input ref={dateInputRef} type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer" min={new Date().toISOString().split('T')[0]} />

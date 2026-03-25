@@ -308,7 +308,7 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async () => {
     setBusy(true);
     const perStr = pMode === 'dates'
-      ? (sd && ed ? `Du ${new Date(sd).toLocaleDateString('fr-FR')} au ${new Date(ed).toLocaleDateString('fr-FR')}` : 'Dates non renseignées')
+      ? (sd && ed ? `Du ${new Date(`${sd}T00:00:00`).toLocaleDateString('fr-FR')} au ${new Date(`${ed}T00:00:00`).toLocaleDateString('fr-FR')}` : 'Dates non renseignées')
       : (months.length > 0 ? months.join(', ') : 'Aucun mois');
     try {
       const res = await fetch('/api/lead', {
@@ -350,7 +350,7 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const perStr = pMode === 'dates'
-    ? (sd && ed ? `${new Date(sd).toLocaleDateString('fr-FR')} → ${new Date(ed).toLocaleDateString('fr-FR')}` : '')
+    ? (sd && ed ? `${new Date(`${sd}T00:00:00`).toLocaleDateString('fr-FR')} → ${new Date(`${ed}T00:00:00`).toLocaleDateString('fr-FR')}` : '')
     : months.join(', ');
 
   const STEP_TITLE: Record<number, string> = {
