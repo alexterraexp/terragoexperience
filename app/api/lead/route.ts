@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { notifyTeam } from '@/lib/team-notify';
+import { processSejoursEntreAmis } from '@/lib/sejours-entre-amis';
 
 function validEmail(e: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
@@ -27,8 +28,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, message: 'Action manquante.' }, { status: 400 });
   }
 
-  let subject: string;
-  let text: string;
+  let subject = '';
+  let text = '';
   let replyTo: string | undefined;
 
   switch (action) {
@@ -185,44 +186,8 @@ export async function POST(req: NextRequest) {
     }
 
     case 'particuliers': {
-      const nom = str(body.nom);
-      const prenom = str(body.prenom);
-      const email = str(body.email);
-      if (!nom || !prenom || !email || !validEmail(email)) {
-        return NextResponse.json(
-          { success: false, message: 'Champs obligatoires manquants.' },
-          { status: 400 },
-        );
-      }
-      const portable = str(body.portable);
-      const periode = str(body.periode);
-      const univers = strArr(body.univers);
-      const participants = str(body.participants);
-      const precisions = str(body.precisions);
-
-      text = [
-        'Bonjour,',
-        '',
-        'Demande « Entre amis » / particuliers — Terrago',
-        '',
-        `Nom : ${nom}`,
-        `Prénom : ${prenom}`,
-        `Email : ${email}`,
-        `Téléphone : ${portable || '—'}`,
-        `Période : ${periode || '—'}`,
-        `Univers / produits : ${univers.join(', ') || '—'}`,
-        `Nombre de personnes : ${participants || '—'}`,
-        precisions ? `Précisions : ${precisions}` : '',
-        '',
-        '---',
-        'Page Particuliers — terragoexperiences.fr',
-      ]
-        .filter((line) => line !== '')
-        .join('\n');
-
-      subject = `Entre amis — Demande de ${prenom} ${nom}`;
-      replyTo = email;
-      break;
+      const result = await processSejoursEntreAmis(body);
+      return NextResponse.json(result.body, { status: result.status });
     }
 
     case 'host': {

@@ -1,25 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import ScrollAnimate from '../components/ScrollAnimate';
 
 const CONTACT_EMAIL = 'terragoexperiences@gmail.com';
 
-const UNIVERS_OPTIONS = [
-  { emoji: '🍷', label: 'Vin' },
-  { emoji: '🫒', label: 'Olives' },
-  { emoji: '🥃', label: 'Cognac' },
-  { emoji: '🍄', label: 'Truffe' },
-  { emoji: '🧀', label: 'Fromage' },
-  { emoji: '💐', label: 'Lavande' },
-  { emoji: '🌰', label: 'Noix' },
-  { emoji: '🐿️', label: 'Noisettes' },
-  { emoji: '🌶️', label: 'Piments' },
-  { emoji: '🦪', label: 'Huîtres' },
-  { emoji: '🐮', label: 'Élevages' },
-  { emoji: '🍋', label: 'Agrumes' },
-  { emoji: '✨', label: 'Surprise' },
+const TYPE_SEJOURS_OPTIONS = [
+  { label: 'EVG / EVJF' },
+  { label: 'Week-end copains' },
+  { label: 'Séjour en famille' },
+  { label: 'Séjour nature / gastronomie' },
 ];
 
 const Particuliers: React.FC = () => {
@@ -28,39 +19,73 @@ const Particuliers: React.FC = () => {
   const [email, setEmail] = useState('');
   const [portable, setPortable] = useState('');
   const [periode, setPeriode] = useState('');
-  const [univers, setUnivers] = useState<string[]>([]);
-  const [participants, setParticipants] = useState('');
+  const [typeSejour, setTypeSejour] = useState('');
+  const [villeDepart, setVilleDepart] = useState('');
+  const [trajetMaxMinutes, setTrajetMaxMinutes] = useState<number>(120); // 2h00 par défaut
+  const [villeSuggestions, setVilleSuggestions] = useState<Array<{ id?: string; place_name: string }>>([]);
+  const [villeLoading, setVilleLoading] = useState(false);
+  const [villeDropdownOpen, setVilleDropdownOpen] = useState(false);
+  const villeDebounceRef = useRef<number | null>(null);
+  const [participantsCount, setParticipantsCount] = useState<number>(10); // 10 par défaut
   const [precisions, setPrecisions] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  const toggleUnivers = (label: string) =>
-    setUnivers(prev => prev.includes(label) ? prev.filter(u => u !== label) : [...prev, label]);
+  useEffect(() => {
+    const q = villeDepart.trim();
+    if (q.length < 2) {
+      setVilleSuggestions([]);
+      setVilleDropdownOpen(false);
+      setVilleLoading(false);
+      return;
+    }
+
+    if (villeDebounceRef.current) window.clearTimeout(villeDebounceRef.current);
+    setVilleLoading(true);
+
+    villeDebounceRef.current = window.setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/ville-autocomplete?q=${encodeURIComponent(q)}`, {
+          headers: { Accept: 'application/json' },
+        });
+        const data = (await res.json().catch(() => ({}))) as {
+          suggestions?: Array<{ id?: string; place_name: string }>;
+        };
+        const suggestions = Array.isArray(data.suggestions) ? data.suggestions : [];
+        setVilleSuggestions(suggestions);
+        setVilleDropdownOpen(suggestions.length > 0);
+      } catch {
+        setVilleSuggestions([]);
+        setVilleDropdownOpen(false);
+      } finally {
+        setVilleLoading(false);
+      }
+    }, 250);
+
+    return () => {
+      if (villeDebounceRef.current) window.clearTimeout(villeDebounceRef.current);
+    };
+  }, [villeDepart]);
+
+  const formatMinutesAsHhMm = (totalMinutes: number) => {
+    const m = Math.max(0, Math.round(totalMinutes));
+    const h = Math.floor(m / 60);
+    const mm = m % 60;
+    const mmStr = String(mm).padStart(2, '0');
+    return `${h}h${mmStr}`;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError('');
-    setIsSubmitting(true);
 
-    const message = [
-      'Bonjour,',
-      '',
-      'Je suis intéressé(e) par une expérience ou un séjour avec Terrago. Voici les détails de ma demande :',
-      '',
-      `Nom : ${nom}`,
-      `Prénom : ${prenom}`,
-      `Email : ${email || '—'}`,
-      `Téléphone : ${portable || '—'}`,
-      `Période ou date souhaitée : ${periode || '—'}`,
-      `Produits / univers intéressants : ${univers.join(', ') || '—'}`,
-      `Nombre de personnes : ${participants || '—'}`,
-      precisions ? `Précisions : ${precisions}` : '',
-      '',
-      'Merci pour votre retour.',
-      '',
-      `${prenom} ${nom}`
-    ].filter(Boolean).join('\n');
+    if (typeSejour.trim() === '' || participantsCount < 1) {
+      setSubmitError('Champs obligatoires manquants.');
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
       const response = await fetch('/api/lead', {
@@ -73,12 +98,14 @@ const Particuliers: React.FC = () => {
           email,
           portable,
           periode,
-          univers,
-          participants,
+          type_sejour: typeSejour,
+          ville_depart: villeDepart,
+          trajet_max: formatMinutesAsHhMm(trajetMaxMinutes),
+          participants: participantsCount,
           precisions,
         }),
       });
-      const data = (await response.json().catch(() => ({}))) as { success?: boolean };
+      const data = (await response.json().catch(() => ({}))) as { success?: boolean; message?: string };
       if (response.ok && data.success) {
         setSubmitSuccess(true);
         setNom('');
@@ -86,15 +113,25 @@ const Particuliers: React.FC = () => {
         setEmail('');
         setPortable('');
         setPeriode('');
-        setUnivers([]);
-        setParticipants('');
+        setTypeSejour('');
+        setVilleDepart('');
+        setTrajetMaxMinutes(120);
+        setParticipantsCount(10);
         setPrecisions('');
-      } else throw new Error();
+      } else {
+        setSubmitError(typeof data.message === 'string' ? data.message : 'Une erreur est survenue. Veuillez réessayer ou nous contacter à terragoexperiences@gmail.com');
+      }
     } catch {
       setSubmitError('Une erreur est survenue. Veuillez réessayer ou nous contacter à terragoexperiences@gmail.com');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const pickVille = (placeName: string) => {
+    setVilleDepart(placeName);
+    setVilleSuggestions([]);
+    setVilleDropdownOpen(false);
   };
 
   return (
@@ -456,64 +493,211 @@ const Particuliers: React.FC = () => {
                   </FieldBlock>
                 </div>
 
-                {/* Participants */}
+                {/* Ville de départ + trajet */}
+                <div className="part-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+                  <FieldBlock label="Ville de départ">
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        className="part-i"
+                        placeholder="Ex. Lyon, Nantes…"
+                        value={villeDepart}
+                        onChange={e => setVilleDepart(e.target.value)}
+                        onFocus={() => setVilleDropdownOpen(villeSuggestions.length > 0)}
+                        onBlur={() => {
+                          window.setTimeout(() => setVilleDropdownOpen(false), 120);
+                        }}
+                      />
+                      {villeDropdownOpen && villeSuggestions.length > 0 && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            left: 0,
+                            right: 0,
+                            top: 'calc(100% + 6px)',
+                            background: '#fff',
+                            border: '1px solid rgba(10,44,52,0.10)',
+                            borderRadius: 14,
+                            boxShadow: '0 18px 60px rgba(0,0,0,0.10)',
+                            zIndex: 50,
+                            maxHeight: 260,
+                            overflow: 'auto',
+                          }}
+                        >
+                          {villeSuggestions.map((s) => (
+                            <button
+                              key={s.id ?? s.place_name}
+                              type="button"
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                pickVille(s.place_name);
+                              }}
+                              style={{
+                                width: '100%',
+                                textAlign: 'left',
+                                padding: '10px 12px',
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontFamily: 'inherit',
+                                fontSize: 13,
+                                color: '#1a2e1a',
+                              }}
+                            >
+                              {s.place_name}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {villeLoading && (
+                        <div style={{ position: 'absolute', right: 12, top: 12, fontSize: 12, color: '#b0a89e' }}>
+                          Chargement...
+                        </div>
+                      )}
+                    </div>
+                  </FieldBlock>
+                  <FieldBlock label="Temps maximum de trajet souhaité">
+                    <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                      <button
+                        type="button"
+                        onClick={() => setTrajetMaxMinutes((m) => Math.max(0, m - 30))}
+                        aria-label="Diminuer le temps de trajet de 30 minutes"
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 12,
+                          background: '#fff',
+                          border: '1.5px solid rgba(10,44,52,0.12)',
+                          cursor: 'pointer',
+                          fontFamily: 'inherit',
+                          color: '#1a2e1a',
+                          fontSize: 18,
+                          fontWeight: 700,
+                          lineHeight: 1,
+                        }}
+                      >
+                        -
+                      </button>
+                      <input
+                        className="part-i"
+                        value={formatMinutesAsHhMm(trajetMaxMinutes)}
+                        readOnly
+                        aria-label="Temps maximum de trajet souhaité"
+                        style={{ textAlign: 'center', flex: 1 }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setTrajetMaxMinutes((m) => Math.min(24 * 60, m + 30))}
+                        aria-label="Augmenter le temps de trajet de 30 minutes"
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 12,
+                          background: '#fff',
+                          border: '1.5px solid rgba(10,44,52,0.12)',
+                          cursor: 'pointer',
+                          fontFamily: 'inherit',
+                          color: '#1a2e1a',
+                          fontSize: 18,
+                          fontWeight: 700,
+                          lineHeight: 1,
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </FieldBlock>
+                </div>
+
+                {/* Participants (libre) */}
                 <div style={{ marginBottom: 14 }}>
                   <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', display: 'block', marginBottom: 10 }}>
                     Nombre de personnes
                   </label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {['5-8', '9 – 15', '15 – 25', '25+'].map(opt => {
-                      const active = participants === opt;
-                      return (
-                        <button
-                          key={opt}
-                          type="button"
-                          onClick={() => setParticipants(active ? '' : opt)}
-                          style={{
-                            padding: '6px 14px', borderRadius: 9999, fontFamily: 'inherit',
-                            border: `1.5px solid ${active ? '#1a2e1a' : 'rgba(10,44,52,0.1)'}`,
-                            background: active ? '#1a2e1a' : '#faf8f5',
-                            color: active ? '#fff' : '#6b7280',
-                            fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
-                            cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 5,
-                            boxShadow: active ? '0 2px 10px rgba(26,46,26,0.15)' : 'none',
-                            transition: 'all .15s ease',
-                          }}
-                        >
-                          {active && <span style={{ fontSize: 8 }}>✓</span>}
-                          {opt}
-                        </button>
-                      );
-                    })}
+                  <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                    <button
+                      type="button"
+                      onClick={() => setParticipantsCount((n) => Math.max(1, n - 1))}
+                      aria-label="Diminuer le nombre de personnes"
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 12,
+                        background: '#fff',
+                        border: '1.5px solid rgba(10,44,52,0.12)',
+                        cursor: 'pointer',
+                        fontFamily: 'inherit',
+                        color: '#1a2e1a',
+                        fontSize: 18,
+                        fontWeight: 700,
+                        lineHeight: 1,
+                      }}
+                    >
+                      -
+                    </button>
+                    <input
+                      className="part-i"
+                      value={participantsCount}
+                      readOnly
+                      aria-label="Nombre de personnes"
+                      style={{ textAlign: 'center', flex: 1 }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setParticipantsCount((n) => Math.min(50, n + 1))}
+                      aria-label="Augmenter le nombre de personnes"
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 12,
+                        background: '#fff',
+                        border: '1.5px solid rgba(10,44,52,0.12)',
+                        cursor: 'pointer',
+                        fontFamily: 'inherit',
+                        color: '#1a2e1a',
+                        fontSize: 18,
+                        fontWeight: 700,
+                        lineHeight: 1,
+                      }}
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
 
-                {/* Univers pills */}
+                {/* Type de séjours */}
                 <div style={{ marginBottom: 14 }}>
                   <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', display: 'block', marginBottom: 10 }}>
-                    Produits / univers intéressants
+                    Type de séjour/ week-end
                   </label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {UNIVERS_OPTIONS.map(opt => {
-                      const active = univers.includes(opt.label);
+                    {TYPE_SEJOURS_OPTIONS.map(opt => {
+                      const active = typeSejour === opt.label;
                       return (
                         <button
                           key={opt.label}
                           type="button"
-                          onClick={() => toggleUnivers(opt.label)}
+                          onClick={() => setTypeSejour(active ? '' : opt.label)}
                           style={{
-                            padding: '6px 14px', borderRadius: 9999, fontFamily: 'inherit',
+                            padding: '6px 14px',
+                            borderRadius: 9999,
+                            fontFamily: 'inherit',
                             border: `1.5px solid ${active ? '#1a2e1a' : 'rgba(10,44,52,0.1)'}`,
                             background: active ? '#1a2e1a' : '#fff',
                             color: active ? '#fff' : '#6b7280',
-                            fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
-                            cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 5,
+                            fontSize: 10,
+                            fontWeight: 700,
+                            letterSpacing: '0.06em',
+                            textTransform: 'uppercase',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 5,
                             boxShadow: active ? '0 2px 10px rgba(26,46,26,0.15)' : 'none',
                             transition: 'all .15s ease',
                           }}
                         >
                           {active && <span style={{ fontSize: 8 }}>✓</span>}
-                          <span>{opt.emoji}</span> {opt.label}
+                          {opt.label}
                         </button>
                       );
                     })}
@@ -527,7 +711,7 @@ const Particuliers: React.FC = () => {
                       className="part-i"
                       rows={4}
                       style={{ resize: 'none', lineHeight: 1.6 }}
-                      placeholder="Nombre de personnes, envies particulières, région préférée…"
+                      placeholder="Type de logement, éléments importants, activités ''fun'' etc"
                       value={precisions}
                       onChange={e => setPrecisions(e.target.value)}
                     />

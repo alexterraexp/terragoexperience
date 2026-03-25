@@ -207,7 +207,7 @@ export async function processReservation(
           process.env.EMAIL_FROM ||
           'TerraGo Expériences <contact@mail.terragoexperiences.fr>',
         to: process.env.NOTIFY_EMAIL,
-        subject: `[Nouvelle demande] ${nomStr} — ${participants} pers. — ${periode}`,
+        subject: `[Nouvelle demande séminaire] ${nomStr} — ${participants} pers. — ${periode}`,
         text: [
           `Nouvelle demande de séminaire`,
           ``,
