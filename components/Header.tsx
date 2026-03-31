@@ -29,7 +29,7 @@ const NAV_ITEMS: NavItem[] = [
     path: '/entreprises',
     dropdown: [
       { label: 'Séminaires engagés',   description: 'Du sens, du vrai, et du vivant',            path: '/seminaires-entreprise', emoji: '🌿' },
-      { label: 'Nos offres de séminaire', description: 'À la journée, sur 2 jours, ou sur mesure',  path: '/seminaires-entreprise/offres',           emoji: '📦' },
+      { label: 'Nos offres de séminaires', description: 'À la journée, sur 2 jours, ou sur mesure',  path: '/seminaires-entreprise/offres',           emoji: '📦' },
     ],
   },
   {
@@ -37,7 +37,7 @@ const NAV_ITEMS: NavItem[] = [
     path: '/entre-amis',
     dropdown: [
       { label: 'Séjours uniques', description: 'On vous écoute !',         path: '/entre-amis/sejours',                     emoji: '💬' },
-      { label: 'Nos offres partagées',  description: 'Entre amis ou en famille', path: '#', comingSoon: true,               emoji: '🫶' },
+      { label: 'Nos offres de séjours',  description: 'Entre amis ou en famille', path: '#', comingSoon: true,               emoji: '🫶' },
     ],
   },
   {

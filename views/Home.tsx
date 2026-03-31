@@ -244,11 +244,11 @@ const Home: React.FC = () => {
         <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center group">
           <div
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[14s] group-hover:scale-[1.03]"
-            style={{ backgroundImage: 'url("https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/olivierspaysage.jpg")' }}
+            style={{ backgroundImage: 'url("https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/oliveraie.JPG")' }}
           />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.28) 60%, rgba(0,0,0,0.50) 100%)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.10) 60%, rgba(0,0,0,0.20) 100%)' }} />
 
-          <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+          <div className="relative z-10 w-full max-w-5xl mx-auto px-3 sm:px-5 lg:px-8 text-center">
             <div className="flex items-center justify-center gap-3 mb-8">
               <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
               <span style={{ color: 'rgba(255,255,255,0.60)', fontSize: 10, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase' }}>
@@ -259,37 +259,68 @@ const Home: React.FC = () => {
 
             <h1 className="text-white font-bold leading-[1.08] mb-20 drop-shadow-xl">
               <span className="sm:hidden block text-[2rem] font-sans tracking-tight">
-                Partez à la rencontre de nos{" "}
-                <span style={{ borderBottom: '2px solid rgba(230,126,34,0.9)', paddingBottom: '2px' }} className="inline-block">
-                  {displayedText}
+              Des séminaires et séjours engagés, à la rencontre de nos{" "}
+                <span
+                  className="inline-block"
+                  style={{
+                    background: 'rgba(255,255,255,0.98)',
+                    borderRadius: '6px',
+                    padding: '3px 2px 2px 4px',
+                    color: '#e67e22',
+                    fontFamily: 'Poppins, sans-serif',
+                    fontStyle: 'italic',
+                    fontWeight: 700,
+                    lineHeight: 'inherit',
+                    fontSize: '0.96em',
+                  }}
+                >
+                  {'\u00A0'}{displayedText}
                   <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s', color: '#e67e22' }}>|</span>
                 </span>
               </span>
               <span className="hidden sm:block">
-                <span className="block font-sans font-bold text-4xl md:text-5xl lg:text-5xl mb-2" style={{ letterSpacing: '-0.01em' }}>
-                  Plongez au cœur des terroirs,
+                <span className="block font-sans font-bold text-4xl md:text-5xl lg:text-5xl mb-0" style={{ letterSpacing: '-0.01em' }}>
+                Séminaires d'entreprise immersifs,{' '}
                 </span>
-                <span className="block font-display text-4xl md:text-5xl lg:text-7xl font-bold italic" style={{ letterSpacing: '-0.02em' }}>
-                  et rencontrez nos{' '}
-                  <span className="relative inline-block" style={{ verticalAlign: 'baseline', color: 'rgb(255, 223, 202)' }}>
-                    {displayedText}
+                <span className="block font-sans text-4xl md:text-5xl lg:text-5xl font-bold italic" style={{ letterSpacing: '-0.02em' }}>
+                 à la rencontre de nos{'\u00A0'}
+                  <span
+                    className="relative inline-block"
+                    style={{
+                      verticalAlign: 'baseline',
+                      marginLeft: '0.18em',
+                      background: 'rgba(255,255,255,0.98)',
+                      borderRadius: '12px',
+                      padding: '4px 3px 3px 5px',
+                      color: '#e67e22',
+                      fontFamily: 'Poppins, sans-serif',
+                      fontStyle: 'italic',
+                      fontWeight: 700,
+                      lineHeight: 'inherit',
+                      fontSize: '0.96em',
+                    }}
+                  >
+                    {'\u00A0'}{displayedText}
                     <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s' }}>|</span>
                   </span>
                 </span>
               </span>
             </h1>
           <h1 className="sr-only">
-            Séminaire immersif chez des producteurs du terroir français – Terrago
+            Des séminaires immersifs chez des producteurs du terroir français – Terrago
           </h1>
 
-            <p className="hidden sm:block text-sm max-w-md mx-auto mb-10 leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
-              Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français.
-            </p>
+            <p
+              className="hidden sm:block text-sm max-w-xl mx-auto mb-10 leading-relaxed"
+              style={{ color: 'rgba(255,255,255,0.72)', fontWeight: 500 }}
+            >
+            Team buildings, séminaires, ateliers et séjours immersifs au cœur des oliveraies, vignobles, fromageries et maraîchages français.
+             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
               <Link
                 href="/seminaires-entreprise"
-                className="text-white border border-white/100 hover:border-white/70 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/10 rounded-full"
+                className="text-white border border-white/100 hover:border-white/90 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 bg-transparent hover:bg-white/15 hover:backdrop-blur-[1px] rounded-full"
               >
                 Séminaires d'entreprise
               </Link>
@@ -309,7 +340,14 @@ const Home: React.FC = () => {
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
             <button
               onClick={() => document.getElementById('notre-vision')?.scrollIntoView({ behavior: 'smooth' })}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8 }}
+              style={{
+                background: 'rgba(255,255,255,0.22)',
+                border: '1px solid rgba(255,255,255,0.35)',
+                borderRadius: '9999px',
+                cursor: 'pointer',
+                padding: 8,
+                backdropFilter: 'blur(4px)',
+              }}
               aria-label="Voir la suite"
               className="scroll-arrow-home"
             >

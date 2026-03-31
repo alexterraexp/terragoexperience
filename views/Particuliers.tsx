@@ -430,8 +430,8 @@ const Particuliers: React.FC = () => {
             </div>
             <ScrollAnimate delay={150}>
               <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-                <span className="font-sans text-4xl sm:text-4xl">Parlons de</span>
-                <span className="font-display not-italic text-5xl sm:text-5xl lg:text-5xl"> votre séjour.</span>
+                <span className="font-sans text-4xl sm:text-4xl">Parlons de votre </span>
+                <span className="font-display italic text-5xl sm:text-5xl lg:text-5xl">séjour.</span>
               </h2>
             </ScrollAnimate>
             <p className="mt-6" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.75 }}>

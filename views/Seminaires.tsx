@@ -787,7 +787,7 @@ const Seminaires: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
             <Link
               href="/seminaires-entreprise/offres"
-              className="text-white border border-white/100 hover:border-white/70 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/25 rounded-full"
+              className="text-white border border-white/100 hover:border-white/90 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 bg-transparent hover:bg-white/15 hover:backdrop-blur-sm rounded-full"
             >
               Découvrir nos offres séminaires
             </Link>
