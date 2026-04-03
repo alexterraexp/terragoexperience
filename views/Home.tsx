@@ -408,7 +408,7 @@ const Home: React.FC = () => {
 
             <div className="relative">
               <div style={{ borderRadius: '24px', overflow: 'hidden', aspectRatio: '4/5' }} className="shadow-2xl">
-                <img src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/olives-recoltes.png" alt="Récolte des olives en oliveraie – Terrago" className="w-full h-full object-cover" />
+                <img src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/olivesrecoltes.JPG" alt="Immersion vendange terroir français – Terrago" className="w-full h-full object-cover" />
               </div>
               <div style={{
                 position: 'absolute', bottom: -20, right: -20,
