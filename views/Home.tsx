@@ -208,9 +208,9 @@ const HOME_ROTATING_METIERS = [
 const HERO_IMAGES = [
   { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/lavandepaysage.png', alt: 'Paysage de lavande en Provence – Terrago' },
   { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/olives-recoltes.png', alt: 'Récolte des olives en oliveraie – Terrago' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/maraichage.png', alt: 'Maraîchage et légumes de saison – Terrago' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/3.png', alt: 'Maraîchage et légumes de saison – Terrago' },
   { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/ostreiculteurs.png', alt: 'Ostréiculture et parcs à huîtres – Terrago' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/nature-table.png', alt: 'Table et partage autour du terroir – Terrago' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/degustation-spirit.jpg', alt: 'Table et dégustation chez un vigneron– Terrago' },
   { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/fromage-chevre.png', alt: 'Fromage de chèvre artisanal – Terrago' },
 ] as const;
 
