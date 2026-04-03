@@ -199,54 +199,95 @@ const ProducerStack: React.FC = () => {
   );
 };
 
+const HOME_ROTATING_METIERS = [
+  'producteurs.', 'éleveurs.', 'artisans.', 'vignerons.', 'fromagers.',
+  'maraîchers.', 'apiculteurs.', 'ostréiculteurs.', 'paysans.', 'brasseurs.',
+  'distillateurs.', 'arboriculteurs.', 'oléiculteurs.', 'saliculteurs.',
+] as const;
+
+const HERO_IMAGES = [
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/lavandepaysage.png', alt: 'Paysage de lavande en Provence – Terrago' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/olives-recoltes.png', alt: 'Récolte des olives en oliveraie – Terrago' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/maraichage.png', alt: 'Maraîchage et légumes de saison – Terrago' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/ostreiculteurs.png', alt: 'Ostréiculture et parcs à huîtres – Terrago' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/nature-table.png', alt: 'Table et partage autour du terroir – Terrago' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/fromage-chevre.png', alt: 'Fromage de chèvre artisanal – Terrago' },
+] as const;
+
 /* ─────────────────────────────────────────────
    HOME
 ───────────────────────────────────────────── */
 const Home: React.FC = () => {
-  const rotatingTexts = [
-    'producteurs.', 'éleveurs.', 'artisans.', 'vignerons.', 'fromagers.',
-    'maraîchers.', 'apiculteurs.', 'ostréiculteurs.', 'paysans.', 'brasseurs.',
-    'distillateurs.', 'arboriculteurs.', 'oléiculteurs.', 'saliculteurs.',
-  ];
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [heroImageIndex, setHeroImageIndex] = useState(0);
 
   useEffect(() => {
-    const currentText = rotatingTexts[currentTextIndex];
-    setDisplayedText('');
-    setIsTyping(true);
-    let charIndex = 0;
-    const typingInterval = setInterval(() => {
-      if (charIndex < currentText.length) {
-        setDisplayedText(currentText.slice(0, charIndex + 1));
-        charIndex++;
-      } else {
-        setIsTyping(false);
-        clearInterval(typingInterval);
+    const id = window.setInterval(() => {
+      setHeroImageIndex((i) => (i + 1) % HERO_IMAGES.length);
+    }, 10_000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const currentText = HOME_ROTATING_METIERS[currentTextIndex];
+    let cancelled = false;
+    const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+    const runCycle = async () => {
+      setDisplayedText('');
+      setIsTyping(true);
+      for (let i = 1; i <= currentText.length; i++) {
+        if (cancelled) return;
+        setDisplayedText(currentText.slice(0, i));
+        await sleep(160);
       }
-    }, 160);
-    return () => clearInterval(typingInterval);
-  }, [currentTextIndex]);
+      if (cancelled) return;
+      setIsTyping(false);
+      await sleep(2200);
+      if (cancelled) return;
+      setIsTyping(true);
+      for (let i = currentText.length - 1; i >= 0; i--) {
+        if (cancelled) return;
+        setDisplayedText(currentText.slice(0, i));
+        await sleep(75);
+      }
+      if (cancelled) return;
+      setDisplayedText('');
+      setIsTyping(false);
+      await sleep(350);
+      if (cancelled) return;
+      setCurrentTextIndex((prev) => (prev + 1) % HOME_ROTATING_METIERS.length);
+    };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTextIndex((prev) => (prev + 1) % rotatingTexts.length);
-    }, 4500);
-    return () => clearInterval(interval);
-  }, [rotatingTexts.length]);
+    void runCycle();
+    return () => {
+      cancelled = true;
+    };
+  }, [currentTextIndex]);
 
   return (
     <div className="overflow-x-hidden bg-beige-bg">
 
       {/* ── HERO ── */}
       <section className="relative w-full">
-        <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center group">
-          <div
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-[14s] group-hover:scale-[1.03]"
-            style={{ backgroundImage: 'url("https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/oliveraie.JPG")' }}
-          />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.10) 60%, rgba(0,0,0,0.20) 100%)' }} />
+        <div className="relative min-h-screen w-full overflow-hidden flex items-start sm:items-center justify-center pt-32 sm:pt-0">
+          {HERO_IMAGES.map((img, i) => (
+            <div
+              key={img.src}
+              className="absolute inset-0 bg-cover bg-center pointer-events-none"
+              style={{
+                backgroundImage: `url("${img.src}")`,
+                opacity: i === heroImageIndex ? 1 : 0,
+                zIndex: i === heroImageIndex ? 1 : 0,
+                transition: 'opacity 900ms ease-out',
+              }}
+              aria-hidden={i !== heroImageIndex}
+            />
+          ))}
+          <span className="sr-only">{HERO_IMAGES[heroImageIndex]?.alt}</span>
+          <div className="absolute inset-0 z-[2]" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.09) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.28) 100%)' }} />
 
           <div className="relative z-10 w-full max-w-5xl mx-auto px-3 sm:px-5 lg:px-8 text-center">
             <div className="flex items-center justify-center gap-3 mb-8">
@@ -257,8 +298,8 @@ const Home: React.FC = () => {
               <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
             </div>
 
-            <h1 className="text-white font-bold leading-[1.08] mb-20 drop-shadow-xl">
-              <span className="sm:hidden block text-[2rem] font-sans tracking-tight">
+            <h1 className="text-white font-bold leading-[1.18] mb-20 drop-shadow-xl">
+              <span className="sm:hidden block text-[2rem] font-sans tracking-tight leading-[1.24]">
               Des séminaires et séjours engagés, à la rencontre de nos{" "}
                 <span
                   className="inline-block"
@@ -278,11 +319,11 @@ const Home: React.FC = () => {
                   <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s', color: '#e67e22' }}>|</span>
                 </span>
               </span>
-              <span className="hidden sm:block">
-                <span className="block font-sans font-bold text-4xl md:text-5xl lg:text-5xl mb-0" style={{ letterSpacing: '-0.01em' }}>
+              <span className="hidden sm:block space-y-2">
+                <span className="block font-sans font-bold text-4xl md:text-5xl lg:text-5xl leading-[1.15]" style={{ letterSpacing: '-0.01em' }}>
                 Séminaires d'entreprise immersifs,{' '}
                 </span>
-                <span className="block font-sans text-4xl md:text-5xl lg:text-5xl font-bold italic" style={{ letterSpacing: '-0.02em' }}>
+                <span className="block font-sans text-4xl md:text-5xl lg:text-5xl font-bold italic leading-[1.15]" style={{ letterSpacing: '-0.02em' }}>
                  à la rencontre de nos{'\u00A0'}
                   <span
                     className="relative inline-block"
@@ -336,33 +377,27 @@ const Home: React.FC = () => {
             </div>
           </div>
 
-          {/* Flèche scroll (comme page Séjours entre amis) */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
-            <button
-              onClick={() => document.getElementById('notre-vision')?.scrollIntoView({ behavior: 'smooth' })}
-              style={{
-                background: 'rgba(255,255,255,0.22)',
-                border: '1px solid rgba(255,255,255,0.35)',
-                borderRadius: '9999px',
-                cursor: 'pointer',
-                padding: 8,
-                backdropFilter: 'blur(4px)',
-              }}
-              aria-label="Voir la suite"
-              className="scroll-arrow-home"
-            >
-              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 10L13 17L20 10" stroke="rgba(255,255,255,0.9)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
+          <div
+            className="absolute z-20 flex items-center gap-2.5 bottom-8 sm:bottom-10 right-4 sm:right-6 lg:right-8"
+            role="tablist"
+            aria-label="Images du bandeau d’accueil"
+          >
+            {HERO_IMAGES.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                role="tab"
+                aria-selected={i === heroImageIndex}
+                aria-label={`Image ${i + 1} sur ${HERO_IMAGES.length}`}
+                onClick={() => setHeroImageIndex(i)}
+                className={`shrink-0 rounded-full p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent transition-[width,background-color,border-color,opacity] duration-300 ease-out ${
+                  i === heroImageIndex
+                    ? 'h-2 w-8 bg-white border-2 border-white'
+                    : 'h-2 w-2 bg-transparent border-2 border-white opacity-90 hover:opacity-100'
+                }`}
+              />
+            ))}
           </div>
-          <style>{`
-            @keyframes scrollBounceHome {
-              0%, 100% { transform: translateY(0); opacity: 0.5; }
-              50% { transform: translateY(6px); opacity: 1; }
-            }
-            .scroll-arrow-home { animation: scrollBounceHome 2.2s ease-in-out infinite; }
-          `}</style>
         </div>
       </section>
 
@@ -373,7 +408,7 @@ const Home: React.FC = () => {
 
             <div className="relative">
               <div style={{ borderRadius: '24px', overflow: 'hidden', aspectRatio: '4/5' }} className="shadow-2xl">
-                <img src="/images/general/vendange.png" alt="Immersion vendange terroir français – Terrago" className="w-full h-full object-cover" />
+                <img src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/olivesrecoltes.JPG" alt="Immersion vendange terroir français – Terrago" className="w-full h-full object-cover" />
               </div>
               <div style={{
                 position: 'absolute', bottom: -20, right: -20,

@@ -269,7 +269,6 @@ export default async function BlogArticlePage(
   }
 
   const headings = post.content ? extractH2Headings(post.content) : [];
-  const titleShort = post.title.length > 42 ? post.title.slice(0, 42) + '…' : post.title;
 
   return (
     <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', color: '#1a2e1a', minHeight: '100vh' }}>
@@ -295,6 +294,30 @@ export default async function BlogArticlePage(
             grid-template-columns: 1fr;
           }
           .col-right { order: 3; }
+        }
+        .blog-hero-back {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4em;
+          background: rgba(0,0,0,0.55);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          border-radius: 9999px;
+          padding: 5px 14px;
+          font-family: 'Poppins', sans-serif;
+          font-size: 10px;
+          font-weight: 700;
+          color: #fff;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          text-decoration: none;
+          flex-shrink: 0;
+          border: 1px solid rgba(255,255,255,0.12);
+          transition: background 0.2s ease, border-color 0.2s ease;
+        }
+        .blog-hero-back:hover {
+          background: rgba(255,255,255,0.14);
+          border-color: rgba(255,255,255,0.28);
         }
       `}</style>
 
@@ -329,10 +352,10 @@ export default async function BlogArticlePage(
           </h1>
         </div>
 
-        {/* Badge + Breadcrumb */}
+        {/* Badge + retour (pilule alignée sur les badges du blog) */}
         <div style={{
           position: 'absolute', bottom: 24, left: 'clamp(1.5rem, 4vw, 3rem)', zIndex: 3,
-          display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 16,
+          display: 'flex', flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 12,
         }}>
           {/* Badge */}
           <div style={{
@@ -347,23 +370,10 @@ export default async function BlogArticlePage(
             {post.category?.toUpperCase() ?? 'SÉMINAIRES'}&nbsp;·&nbsp;{post.reading_time ?? '7 MIN'}
           </div>
 
-          {/* Breadcrumb */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Link href="/blog" style={{
-              fontFamily: "'Poppins', sans-serif", fontWeight: 700,
-              color: '#fff', textDecoration: 'underline', textUnderlineOffset: 3, fontSize: 13,
-            }}>
-              Blog
-            </Link>
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13 }}>›</span>
-            <span style={{ color: 'rgba(255,255,255,0.7)', fontWeight: 400, fontSize: 13 }}>
-              {post.category ?? 'Article'}
-            </span>
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13 }}>›</span>
-            <span style={{ color: 'rgba(255,255,255,0.7)', fontWeight: 400, fontSize: 13 }}>
-              {titleShort}
-            </span>
-          </div>
+          <Link href="/blog" className="blog-hero-back">
+            <span aria-hidden style={{ fontSize: 11, letterSpacing: 0, opacity: 0.92 }}>←</span>
+            Retour au blog
+          </Link>
         </div>
       </div>
 
@@ -405,8 +415,9 @@ export default async function BlogArticlePage(
 
             <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(26,46,26,0.08)' }}>
               <Link href="/blog" style={{
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: 12, textTransform: 'uppercase' as const,
-                letterSpacing: '0.15em', color: '#1a2e1a',
+                letterSpacing: '0.12em', color: '#1a2e1a',
                 textDecoration: 'none', fontWeight: 700,
               }}>
                 ← Retour au blog
@@ -421,7 +432,7 @@ export default async function BlogArticlePage(
               border: '1px solid rgba(26,46,26,0.08)', overflow: 'hidden',
             }}>
               <img
-                src="https://images.unsplash.com/photo-1604256792183-5d179890f31b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/potager-chateau-menthon.webp"
                 alt="Terroir"
                 style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }}
               />

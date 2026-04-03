@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import type { ReactNode, CSSProperties } from 'react';
 import { Sprout, Ham, Speech, Presentation, Wifi, House, Bike, Users, PartyPopper } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -217,38 +218,116 @@ const CustomSelect: React.FC<{
 }> = ({ value, onChange, options, placeholder }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [menuBox, setMenuBox] = useState<{ top?: number; bottom?: number; left: number; width: number; maxHeight: number } | null>(null);
   const selectedLabel = options.find(o => o.value === value)?.label ?? '';
 
+  const updateMenuPosition = useCallback(() => {
+    const btn = buttonRef.current;
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const gutter = 6;
+    const maxList = Math.min(320, window.innerHeight * 0.7);
+    const spaceBelow = window.innerHeight - rect.bottom - gutter;
+    const spaceAbove = rect.top - gutter;
+    const openUp = spaceBelow < 140 && spaceAbove > spaceBelow;
+    const pad = 12;
+    if (openUp) {
+      setMenuBox({
+        bottom: window.innerHeight - rect.top + gutter,
+        left: rect.left,
+        width: rect.width,
+        maxHeight: Math.min(maxList, Math.max(80, spaceAbove - pad)),
+      });
+    } else {
+      setMenuBox({
+        top: rect.bottom + gutter,
+        left: rect.left,
+        width: rect.width,
+        maxHeight: Math.min(maxList, Math.max(80, spaceBelow - pad)),
+      });
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!open) {
+      setMenuBox(null);
+      return;
+    }
+    updateMenuPosition();
+  }, [open, updateMenuPosition]);
+
   useEffect(() => {
-    const handler = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    if (!open) return;
+    const onMove = () => updateMenuPosition();
+    window.addEventListener('resize', onMove);
+    window.addEventListener('scroll', onMove, true);
+    return () => {
+      window.removeEventListener('resize', onMove);
+      window.removeEventListener('scroll', onMove, true);
+    };
+  }, [open, updateMenuPosition]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const t = e.target as Node;
+      if (ref.current?.contains(t) || menuRef.current?.contains(t)) return;
+      setOpen(false);
+    };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  const menuShared: CSSProperties = {
+    position: 'fixed',
+    left: menuBox?.left ?? 0,
+    width: menuBox?.width ?? 0,
+    maxHeight: menuBox?.maxHeight ?? 320,
+    zIndex: 10050,
+    background: '#fff',
+    borderRadius: 18,
+    border: '1px solid rgba(10,44,52,0.1)',
+    boxShadow: '0 8px 32px rgba(26,46,26,0.12)',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+  };
+
+  const menuEl = open && menuBox && typeof document !== 'undefined' && (
+    <div
+      ref={menuRef}
+      style={{
+        ...menuBox,
+        ...menuShared,
+        top: menuBox.top,
+        bottom: menuBox.bottom,
+      }}
+    >
+      <button type="button" onClick={() => { onChange(''); setOpen(false); }} style={{ width: '100%', padding: '11px 16px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: 13, color: '#b0a89e', fontFamily: 'inherit', borderBottom: '1px solid rgba(10,44,52,0.05)', flexShrink: 0 }}>— Choisir un produit —</button>
+      <div style={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
+        {options.map(opt => (
+          <button key={opt.value} type="button" onClick={() => { onChange(opt.value); setOpen(false); }}
+            style={{ width: '100%', padding: '11px 16px', background: opt.value === value ? 'rgba(26,46,26,0.04)' : 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: 14, color: opt.value === value ? '#1a2e1a' : '#4a4540', fontWeight: opt.value === value ? 700 : 400, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 10, transition: 'background 0.12s ease' }}>
+            {opt.value === value
+              ? <span style={{ width: 16, height: 16, borderRadius: '50%', background: '#1a2e1a', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4.2 7.5L8 3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+              : <span style={{ width: 16, flexShrink: 0 }} />}
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div ref={ref} style={{ position: 'relative' }}>
-      <button type="button" onClick={() => setOpen(v => !v)} style={{ ...inputStyle, display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', textAlign: 'left', border: `1px solid ${open ? '#1a2e1a' : 'rgba(10,44,52,0.08)'}`, boxShadow: open ? '0 0 0 3px rgba(26,46,26,0.08)' : 'none' }}>
+      <button ref={buttonRef} type="button" onClick={() => setOpen(v => !v)} style={{ ...inputStyle, display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', textAlign: 'left', border: `1px solid ${open ? '#1a2e1a' : 'rgba(10,44,52,0.08)'}`, boxShadow: open ? '0 0 0 3px rgba(26,46,26,0.08)' : 'none' }}>
         <span style={{ color: value ? '#1a2e1a' : '#b0a89e', fontSize: 14, fontWeight: value ? 500 : 400 }}>{value ? selectedLabel : (placeholder ?? '— Choisir —')}</span>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease', flexShrink: 0, marginLeft: 8 }}>
           <path d="M2.5 4.5L6 8L9.5 4.5" stroke="#1a2e1a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      {open && (
-        <div style={{ position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0, zIndex: 100, background: '#fff', borderRadius: 18, border: '1px solid rgba(10,44,52,0.1)', boxShadow: '0 8px 32px rgba(26,46,26,0.12)', overflow: 'hidden', maxHeight: 'min(320px, 70vh)', display: 'flex', flexDirection: 'column' }}>
-          <button type="button" onClick={() => { onChange(''); setOpen(false); }} style={{ width: '100%', padding: '11px 16px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: 13, color: '#b0a89e', fontFamily: 'inherit', borderBottom: '1px solid rgba(10,44,52,0.05)', flexShrink: 0 }}>— Choisir un produit —</button>
-          <div style={{ overflowY: 'auto', flex: 1 }}>
-            {options.map(opt => (
-              <button key={opt.value} type="button" onClick={() => { onChange(opt.value); setOpen(false); }}
-                style={{ width: '100%', padding: '11px 16px', background: opt.value === value ? 'rgba(26,46,26,0.04)' : 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: 14, color: opt.value === value ? '#1a2e1a' : '#4a4540', fontWeight: opt.value === value ? 700 : 400, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 10, transition: 'background 0.12s ease' }}>
-                {opt.value === value
-                  ? <span style={{ width: 16, height: 16, borderRadius: '50%', background: '#1a2e1a', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4.2 7.5L8 3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-                  : <span style={{ width: 16, flexShrink: 0 }} />}
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {menuEl && createPortal(menuEl, document.body)}
     </div>
   );
 };

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import ReactGA from 'react-ga4';
+import { GA_MEASUREMENT_ID } from '../lib/analytics';
 
 type Step = 1 | 2;
 
@@ -32,7 +33,13 @@ const CookieBanner: React.FC = () => {
 
   const applyConsent = (s: boolean, m: boolean, p: boolean) => {
     window.localStorage.setItem('cookie_consent', JSON.stringify({ stat: s, mktg: m, pref: p }));
-    if (s) ReactGA.initialize('G-SMMG33EENP');
+    if (s) {
+      ReactGA.initialize(GA_MEASUREMENT_ID);
+      ReactGA.send({
+        hitType: 'pageview',
+        page: window.location.pathname + window.location.search,
+      });
+    }
   };
 
   const handleAcceptAll = () => {
