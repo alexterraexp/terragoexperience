@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import ScrollAnimate from '../components/ScrollAnimate';
 
@@ -274,14 +275,18 @@ const Home: React.FC = () => {
       <section className="relative w-full">
         <div className="relative min-h-screen w-full overflow-hidden flex items-start sm:items-center justify-center pt-32 sm:pt-0">
           {HERO_IMAGES.map((img, i) => (
-            <div
+            <Image
               key={img.src}
-              className="absolute inset-0 bg-cover bg-center pointer-events-none"
+              src={img.src}
+              alt=""
+              fill
+              sizes="100vw"
+              priority={i === 0}
+              loading={i <= 2 ? 'eager' : 'lazy'}
+              className="object-cover pointer-events-none transition-opacity duration-[900ms] ease-out"
               style={{
-                backgroundImage: `url("${img.src}")`,
                 opacity: i === heroImageIndex ? 1 : 0,
                 zIndex: i === heroImageIndex ? 1 : 0,
-                transition: 'opacity 900ms ease-out',
               }}
               aria-hidden={i !== heroImageIndex}
             />
