@@ -391,17 +391,10 @@ const ProducerDetailPage: React.FC = () => {
                   {/* Séparateur */}
                   <div style={{ borderTop: '1px solid rgba(26,46,26,0.08)', margin: '16px 0' }} />
 
-                  {/* Prix */}
+                  {/* Tarif — identique pour chaque format (1j / 2j / sur mesure) */}
                   <div style={{ marginBottom: 16 }}>
-                    <div style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#b0a89e', marginBottom: 4 }}>Tarif indicatif</div>
-                    {activeSemFormat === 'mesure' ? (
-                      <div style={{ fontSize: 18, fontWeight: 700, color: '#1e291a' }}>{semFmt.prix}</div>
-                    ) : (
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
-                        <span style={{ fontSize: 32, fontWeight: 800, color: '#1e291a' }}>{semFmt.prix}</span>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: '#7a7060' }}>/pers.</span>
-                      </div>
-                    )}
+                    <div style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#b0a89e', marginBottom: 4 }}>Tarif sur demande</div>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: '#1e291a' }}>Devis personnalisé</div>
                   </div>
 
                   {/* CTA */}
