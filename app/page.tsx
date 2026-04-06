@@ -2,12 +2,14 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Home from '../views/Home';
 
-export const metadata: Metadata = {
-  title: 'Séminaire immersif chez un producteur – Terrago',
-  description:
-    'Vivez une expérience terroir français unique : séminaires d\'entreprise et séjours immersifs chez des producteurs passionnés. Réservez en quelques clics.',
-  robots: { index: true, follow: true },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Séminaire d'entreprise chez un producteur – TerraGo",
+    description:
+      "TerraGo organise vos séminaires d'entreprise chez des vignerons, maraîchers et fromagers français. Immersion terroir, cohésion d'équipe, engagement RSE. Devis en 48h.",
+    robots: { index: true, follow: true },
+  };
+}
 
 export default function HomePage() {
   return (

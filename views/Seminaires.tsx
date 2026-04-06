@@ -6,6 +6,13 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import ScrollAnimate from '../components/ScrollAnimate';
 import { CollapsibleDateRangePicker } from '../components/CollapsibleDateRangePicker';
 import { VilleDepartInput } from '../components/VilleDepartInput';
+import {
+  heroIntroParagraphOnImageClass,
+  heroIntroParagraphOnImageStyle,
+  heroPrimaryOutlineButtonClass,
+  heroSecondaryGhostLinkClass,
+  heroSecondaryGhostLinkStyle,
+} from '../components/heroSectionStyles';
 
 // ─── Hero images ──────────────────────────────────────────────────────────────
 
@@ -22,17 +29,18 @@ const heroImages = [
 type UniversData = {
   id: string; label: string; badge: string;
   description: string; activites: string[]; saison: string; couleur: string;
+  cardTitle: string; cardImage: string; producerImage?: string; universes: string[];
 };
 
 const UNIVERS_DATA: Record<string, UniversData> = {
-  cognac:   { id: 'cognac',   label: 'AUTOUR DU COGNAC',            badge: "COGNAC • 40 MIN D'ANGOULÊME TGV",       description: "Des vignes aux alambics de cuivre, vivez la magie de la double distillation dans les chais centenaires de la Charente.", activites: ['Participation aux vendanges', 'Fabrication de son propre pineau', 'Visite des chais et alambics', 'Golf entre les vignes'], saison: "Toute l'année", couleur: 'rgb(92,42,9)' },
-  olive:    { id: 'olive',    label: "AUTOUR DE L'OLIVE",           badge: "VALENSOLE • 45 MIN D'AIX EN PROVENCE TGV", description: "Sous les oliviers centenaires de Provence, découvrez comment naît une huile d'exception, entre lavande et soleil.", activites: ['Apprentissage et récolte des olives', 'Fabrication de son huile', 'Récolte de lavandes fines', "Distillation de son parfum d'ambiance"], saison: 'Octobre – Décembre', couleur: 'rgb(72,107,9)' },
-  noix:     { id: 'noix',     label: "AUTOUR DE LA NOIX",           badge: "Romans-sur-Isère • 15 MIN De VALENCE TGV", description: "Parmi les noyers centenaires, apprenez la récolte et la fabrication d'une huile de noix artisanale d'une finesse rare.", activites: ['Apprentissage et récolte des noix', 'Fabrication de son huile/vin de noix', 'Repas typique en pleine nature', 'Session Trail dans un cadre magnifique'], saison: 'Septembre – Novembre', couleur: 'rgb(161,68,7)' },
-  truffe:   { id: 'truffe',   label: "AUTOUR DE LA TRUFFE",         badge: "CHINON • 1H DE TOURS TGV",               description: "Partez à la découverte du champignon le plus mystérieux de France avec un trufficulteur passionné au cœur du Périgord.", activites: ['Cavage et découverte de la truffe', 'Atelier cuisine autour de la truffe', 'Ferme florale et potager', 'Dégustation de produits truffés'], saison: 'Décembre – Mars', couleur: 'rgb(104,102,42)' },
-  fromage:  { id: 'fromage',  label: "AUTOUR DU FROMAGE DE CHÈVRE", badge: "1H D'AIX-EN-PROVENCE TGV",               description: "Vivez une journée complète dans une ferme caprine : soins aux bêtes, fabrication de son propre fromage et dégustation en plein air.", activites: ['Soins aux chèvres', 'Fabrication du fromage', 'Dégustation à la ferme', 'Visite de cave'], saison: "Toute l'année", couleur: 'rgb(177,146,7)' },
-  vin:      { id: 'vin',      label: "AUTOUR DU VIN AOC VENTOUX",   badge: "Bédoin • 1H D'AVIGNON TGV",              description: "Les mains dans la terre, entre vignes et ciel provençal, vivez l'aventure viticole au pied du Mont Ventoux.", activites: ['Les mains dans la terre', 'Activité autour de la vigne', 'Soirée soleil et guinguette', 'Excursion vélo au Mont Ventoux'], saison: 'Avril – Octobre', couleur: 'rgb(106,13,13)' },
-  piment:   { id: 'piment',   label: "AUTOUR DU PIMENT",            badge: "Souraïde • 25 MIN DE BAYONNE TGV",      description: "Dans les terres basques, découvrez le cycle complet du piment d'Espelette : de la cueillette à la fabrication de votre propre poudre et confiture de piment.", activites: ['Récolte des piments rouges', 'Fabrication de sa propre poudre de piment', 'Atelier confiture & conserves', 'Initiation à la pelote basque'], saison: 'Septembre – Octobre', couleur: 'rgb(180,40,20)' },
-  noisette: { id: 'noisette', label: "AUTOUR DE LA NOISETTE",       badge: "Gien • 1h30 de Paris",          description: "Parmi les noisetiers, vivez la récolte et découvrez comment naîssent les différents produits à base de noisettes.", activites: ['Récolte des noisettes', 'Fabrication de son huile de noisette', 'Atelier pâtisserie autour de la noisette', 'Yoga en pleine nature'], saison: 'Septembre – Novembre', couleur: 'rgb(120,80,30)' },
+  cognac:   { id: 'cognac',   label: 'AUTOUR DU COGNAC',            badge: "COGNAC • 40 MIN D'ANGOULÊME TGV",       description: "Des vignes aux alambics de cuivre, vivez la magie de la double distillation dans les chais centenaires de la Charente.", activites: ['Participation aux vendanges', 'Fabrication de son propre pineau', 'Visite des chais et alambics', 'Golf entre les vignes'], saison: "Toute l'année", couleur: 'rgb(92,42,9)', cardTitle: 'Cognac & Pineau', cardImage: "https://images.unsplash.com/photo-1671572953796-4c05a6ac5fa1?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", producerImage: '/images/producteurs/cognacJF.png', universes: ['le cognac'] },
+  olive:    { id: 'olive',    label: "AUTOUR DE L'OLIVE",           badge: "VALENSOLE • 45 MIN D'AIX EN PROVENCE TGV", description: "Sous les oliviers centenaires de Provence, découvrez comment naît une huile d'exception, entre lavande et soleil.", activites: ['Apprentissage et récolte des olives', 'Fabrication de son huile', 'Récolte de lavandes fines', "Distillation de son parfum d'ambiance"], saison: 'Octobre – Décembre', couleur: 'rgb(72,107,9)', cardTitle: 'Olives & lavande', cardImage: "https://images.unsplash.com/photo-1663178405985-25074d8e72f4?q=80&w=1026&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO1.jpg", universes: ['les olives', 'la lavande'] },
+  noix:     { id: 'noix',     label: "AUTOUR DE LA NOIX",           badge: "Romans-sur-Isère • 15 MIN De VALENCE TGV", description: "Parmi les noyers centenaires, apprenez la récolte et la fabrication d'une huile de noix artisanale d'une finesse rare.", activites: ['Apprentissage et récolte des noix', 'Fabrication de son huile/vin de noix', 'Repas typique en pleine nature', 'Session Trail dans un cadre magnifique'], saison: 'Septembre – Novembre', couleur: 'rgb(161,68,7)', cardTitle: 'Noix & compagnie', cardImage: "https://images.unsplash.com/photo-1728147370558-0b71818d240e?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", producerImage: '/images/producteurs/noixsabinemarie.jpeg', universes: ['les noix'] },
+  truffe:   { id: 'truffe',   label: "AUTOUR DE LA TRUFFE",         badge: "CHINON • 1H DE TOURS TGV",               description: "Partez à la découverte du champignon le plus mystérieux de France avec un trufficulteur passionné au cœur du Périgord.", activites: ['Cavage et découverte de la truffe', 'Atelier cuisine autour de la truffe', 'Ferme florale et potager', 'Dégustation de produits truffés'], saison: 'Décembre – Mars', couleur: 'rgb(104,102,42)', cardTitle: 'Truffe & terroir', cardImage: "https://images.unsplash.com/photo-1589208310452-7cf38ba4d109?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/truffechinon/truffe-richard-chinon.webp", universes: ['la truffe'] },
+  fromage:  { id: 'fromage',  label: "AUTOUR DU FROMAGE DE CHÈVRE", badge: "1H D'AIX-EN-PROVENCE TGV",               description: "Vivez une journée complète dans une ferme caprine : soins aux bêtes, fabrication de son propre fromage et dégustation en plein air.", activites: ['Soins aux chèvres', 'Fabrication du fromage', 'Dégustation à la ferme', 'Visite de cave'], saison: "Toute l'année", couleur: 'rgb(177,146,7)', cardTitle: 'Chèvres & fromage', cardImage: "https://images.unsplash.com/photo-1630440886325-ccbd65b70d29?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", producerImage: '/images/producteurs/chevre-bebe.jpg', universes: ['le fromage de chèvre'] },
+  vin:      { id: 'vin',      label: "AUTOUR DU VIN AOC VENTOUX",   badge: "Bédoin • 1H D'AVIGNON TGV",              description: "Les mains dans la terre, entre vignes et ciel provençal, vivez l'aventure viticole au pied du Mont Ventoux.", activites: ['Les mains dans la terre', 'Activité autour de la vigne', 'Soirée soleil et guinguette', 'Excursion vélo au Mont Ventoux'], saison: 'Avril – Octobre', couleur: 'rgb(106,13,13)', cardTitle: 'Vin & Ventoux', cardImage: "https://images.unsplash.com/photo-1767034232356-1874e4a36cd7?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", producerImage: '/images/producteurs/vincombeaumas.png', universes: ['le vin'] },
+  piment:   { id: 'piment',   label: "AUTOUR DU PIMENT",            badge: "Souraïde • 25 MIN DE BAYONNE TGV",      description: "Dans les terres basques, découvrez le cycle complet du piment d'Espelette : de la cueillette à la fabrication de votre propre poudre et confiture de piment.", activites: ['Récolte des piments rouges', 'Fabrication de sa propre poudre de piment', 'Atelier confiture & conserves', 'Initiation à la pelote basque'], saison: 'Septembre – Octobre', couleur: 'rgb(180,40,20)', cardTitle: 'Piments & Pays Basque', cardImage: "https://images.unsplash.com/photo-1720420866056-07fe15991f16?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png", universes: ['les piments'] },
+  noisette: { id: 'noisette', label: "AUTOUR DE LA NOISETTE",       badge: "Gien • 1h30 de Paris",          description: "Parmi les noisetiers, vivez la récolte et découvrez comment naîssent les différents produits à base de noisettes.", activites: ['Récolte des noisettes', 'Fabrication de son huile de noisette', 'Atelier pâtisserie autour de la noisette', 'Yoga en pleine nature'], saison: 'Septembre – Novembre', couleur: 'rgb(120,80,30)', cardTitle: 'Noisette & fruits à coque', cardImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/VERGERS.jpg", producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png", universes: ['les noisettes'] },
 };
 
 const UNIVERS_TO_FILTER: Record<string, string> = {
@@ -728,16 +736,13 @@ const Seminaires: React.FC = () => {
     }
   };
 
-  const exampleCards = [
-    { image: "https://images.unsplash.com/photo-1671572953796-4c05a6ac5fa1?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Cognac & Pineau", desc: "Proche de Cognac", tags: ["Participation aux vendanges", "Fabrication de son propre pineau", "Golf entre les vignes"], producerImage: "/images/producteurs/cognacJF.png", universes: ["le cognac"], universId: "cognac", boldLabel: "AUTOUR DU COGNAC" },
-    { image: "https://images.unsplash.com/photo-1663178405985-25074d8e72f4?q=80&w=1026&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Olives & lavande", desc: "Proche d'Aix-en-Provence", tags: ["Apprentissage et récolte des olives", "Fabrication de son huile", "Récolte de lavandes fines", "Distillation de son parfum d'ambiance"], producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO1.jpg", universes: ["les olives", "la lavande"], universId: "olive", boldLabel: "AUTOUR DE L'OLIVE" },
-    { image: "https://images.unsplash.com/photo-1728147370558-0b71818d240e?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Noix & compagnie", desc: "Proche de Valence", tags: ["Apprentissage et récolte des noix", "Fabrication de son huile/vin de noix", "Repas en pleine nature", "Récolte de lavande fine"], producerImage: "/images/producteurs/noixsabinemarie.jpeg", universes: ["les noix"], universId: "noix", boldLabel: "AUTOUR DE LA NOIX" },
-    { image: "https://images.unsplash.com/photo-1589208310452-7cf38ba4d109?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Truffe & terroir", desc: "Proche de Tours", tags: ["Cavage et découverte de la truffe", "Atelier cuisine", "Ferme florale et potager"], producerImage: "/images/producteurs/truffeprod.png", universes: ["la truffe"], universId: "truffe", boldLabel: "AUTOUR DE LA TRUFFE" },
-    { image: "https://images.unsplash.com/photo-1630440886325-ccbd65b70d29?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Chèvres & fromage", desc: "Proche d'Aix-en-Provence", tags: ["Soins aux chèvres", "Fabrication de son propre fromage", "Dégustation à la ferme", "Visite de cave"], producerImage: "/images/producteurs/chevre-bebe.jpg", universes: ["le fromage de chèvre"], universId: "fromage", boldLabel: "AUTOUR DU FROMAGE" },
-    { image: "https://images.unsplash.com/photo-1767034232356-1874e4a36cd7?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Vin & Ventoux", desc: "Proche de Valence", tags: ["Les mains dans la terre", "Activité autour de la vigne", "Soirée soleil et guinguette", "Excursion vélo au Mont Ventoux"], producerImage: "/images/producteurs/vincombeaumas.png", universes: ["le vin"], universId: "vin", boldLabel: "AUTOUR DU VIN" },
-    { image: "https://images.unsplash.com/photo-1720420866056-07fe15991f16?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", title: "Piments & Pays Basque", desc: "Proche de Biarrtiz", tags: ["Récolte des piments rouges", "Fabrication de sa propre corde de piments", "Atelier confiture & conserves", "Dégustation de spécialités basques"], producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png", universes: ["les piments"], universId: "piment", boldLabel: "AUTOUR DU PIMENT" },
-    { image: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/VERGERS.jpg", title: "Noisette & fruits à coque", desc: "Proche de Orléans", tags: ["Récolte des noisettes", "Fabrication de son huile de noisette", "Atelier pâtisserie autour de la noisette", "Yoga en pleine nature"], producerImage: "https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png", universes: ["les noisettes"], universId: "noisette", boldLabel: "AUTOUR DE LA NOISETTE" },
-  ];
+  const exampleCards = Object.values(UNIVERS_DATA).map(universe => ({
+    image: universe.cardImage,
+    title: universe.cardTitle,
+    producerImage: universe.producerImage,
+    universes: universe.universes,
+    universId: universe.id,
+  }));
   const FRUITS_A_COQUE    = ['les noix', 'les noisettes', 'les noix de pécan', 'les amandes'];
   const VINS_SPIRITUEUX   = ['le vin', 'le cognac'];
   const filteredCards = selectedUniverse
@@ -768,9 +773,12 @@ const Seminaires: React.FC = () => {
 
           <h1 className="text-white font-bold leading-[1.06] mb-12 sm:mb-7 drop-shadow-lg" style={{ letterSpacing: '-0.01em' }}>
             <span className="block font-display italic text-5xl md:text-5xl lg:text-6xl mb-1">Optez pour des séminaires</span>
-            <span className="block font-sans font-bold text-5xl md:text-4xl lg:text-5xl" style={{ letterSpacing: '-0.01em' }}>
-              plus{' '}
-              <span style={{ color: 'rgb(255,223,202)' }}>
+            <span
+              className="flex flex-wrap justify-center items-baseline gap-x-1.5 max-sm:gap-x-1 font-sans font-bold text-5xl max-sm:text-4xl md:text-4xl lg:text-5xl max-sm:leading-snug"
+              style={{ letterSpacing: '-0.01em' }}
+            >
+              <span className="shrink-0">plus</span>
+              <span className="text-[rgb(255,223,202)] min-w-0 text-center">
                 {displayedText}
                 <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s' }}>|</span>
               </span>
@@ -780,21 +788,24 @@ const Seminaires: React.FC = () => {
             Séminaire au vert &amp; nature engagé chez des producteurs français
           </h1>
 
-          <p className="hidden sm:block text-sm max-w-sm mx-auto mb-10 leading-relaxed" style={{ color: 'rgba(255,255,255,0.50)', fontStyle: 'italic' }}>
+          <p
+            className={`hidden sm:block italic ${heroIntroParagraphOnImageClass}`}
+            style={heroIntroParagraphOnImageStyle}
+          >
             Moins de slides. Plus de sens.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
             <Link
               href="/seminaires-entreprise/offres"
-              className="text-white border border-white/100 hover:border-white/90 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 bg-transparent hover:bg-white/15 hover:backdrop-blur-sm rounded-full"
+              className={heroPrimaryOutlineButtonClass}
             >
               Découvrir nos offres séminaires
             </Link>
             <button
               onClick={() => openModal()}
-              className="text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 px-4 py-3"
-              style={{ color: 'rgba(255, 255, 255, 0.8)', background: 'none', border: 'none', cursor: 'pointer' }}
+              className={`${heroSecondaryGhostLinkClass} bg-transparent border-none cursor-pointer`}
+              style={heroSecondaryGhostLinkStyle}
               onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)')}
             >
@@ -843,7 +854,7 @@ const Seminaires: React.FC = () => {
               <span className="font-display italic text-5xl sm:text-5xl lg:text-6xl"> 5 étoiles.</span>
             </h2>
           </ScrollAnimate>
-          <p className="mt-4 max-w-2xl" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.75 }}>
+          <p className="mt-4 max-w-4xl" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.75 }}>
             Nos "5 étoiles" ne se mesurent pas au luxe, mais aux liens humains, au contact de la terre et à l'engagement des producteurs. Des expériences sincères qui renforcent la cohésion et laissent une trace durable.
           </p>
         </div>
@@ -1055,7 +1066,7 @@ const Seminaires: React.FC = () => {
               }}
             >
               {filteredCards.length > 0 ? filteredCards.map(card => (
-                <div key={`${card.title}-${card.desc}`} className="flex-shrink-0" style={{ width: cardWidthPx }}>
+                <div key={card.universId} className="flex-shrink-0" style={{ width: cardWidthPx }}>
                   <UniverseCard {...card} onOpenModal={() => openUniversModal(card.universId)} />
                 </div>
               )) : (
@@ -1148,7 +1159,7 @@ const Seminaires: React.FC = () => {
                   <div style={{ width: 20, height: 1, background: '#e67e22' }} />
                   <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Univers</span>
                 </div>
-                <h3 className="font-sans font-bold not-italic text-primary leading-tight mb-1" style={{ fontSize: 'clamp(22px,4vw,28px)', fontFamily: "'Poppins', sans-serif" }}>{exampleCards.find(c => c.universId === selectedUniversModal.id)?.title}</h3>
+                <h3 className="font-sans font-bold not-italic text-primary leading-tight mb-1" style={{ fontSize: 'clamp(22px,4vw,28px)', fontFamily: "'Poppins', sans-serif" }}>{card?.title}</h3>
                 <p style={{ fontSize: 16, color: '#7a7060', lineHeight: 1.75, marginBottom: 26 }}>{selectedUniversModal.description}</p>
                 <div style={{ marginBottom: 28 }}>
                   <span style={{ display: 'block', fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', color: '#b8ad9e', textTransform: 'uppercase', marginBottom: 12 }}>Exemple d'activités</span>
@@ -1204,7 +1215,7 @@ const UniverseCard = ({ image, title, onOpenModal }: any) => (
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
       <div className="relative flex flex-col justify-end flex-1 px-5 pb-6 pt-20">
         <h3
-          className="font-sans font-bold not-italic leading-tight mb-3 inline-block w-fit rounded-full px-4 py-2.5 transition-all duration-300 border-[3px] border-transparent group-hover:border-white/70 text-white group-hover:text-white/90"
+          className="font-sans font-bold not-italic leading-tight mb-3 inline-block w-fit rounded-full px-4 py-2.5 transition-all duration-300 border-[3px] border-transparent group-hover:border-white text-white group-hover:text-white"
           style={{ fontSize: 'clamp(16px,2.2vw,20px)', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}
         >
           {title}

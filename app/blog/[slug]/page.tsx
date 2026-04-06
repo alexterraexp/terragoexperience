@@ -378,7 +378,7 @@ export default async function BlogArticlePage(
       </div>
 
       {/* ── BODY ── */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '3rem clamp(1.5rem, 4vw, 3rem) 5rem' }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '3rem clamp(1.5rem, 4vw, 3rem) 5rem' }}>
         <div className="article-grid">
 
           {/* ── COL GAUCHE ── */}
@@ -404,7 +404,7 @@ export default async function BlogArticlePage(
           </aside>
 
           {/* ── COL CENTRE ── */}
-          <main style={{ minWidth: 0, maxWidth: 720 }}>
+          <main style={{ minWidth: 0, maxWidth: 900 }}>
             {post.content
               ? <MarkdownRenderer content={post.content} />
               : (

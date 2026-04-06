@@ -3,10 +3,79 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import ScrollAnimate from '../components/ScrollAnimate';
+import {
+  heroIntroParagraphOnImageClass,
+  heroIntroParagraphOnImageStyle,
+  heroPrimaryOutlineButtonClass,
+  heroSecondaryGhostLinkClass,
+  heroSecondaryGhostLinkStyle,
+} from '../components/heroSectionStyles';
+
+/** Bandeau gris clair à gauche : phrase en Poppins, blanc, −90° (lecture bas → haut), défilement vertical. */
+const TERROIR_TICKER_LINE = '100% TERROIR FRANÇAIS';
+
+const TerroirLeftTicker: React.FC = () => {
+  const blockCount = 18;
+  const block = (key: string) => (
+    <div
+      key={key}
+      className="relative flex h-[200px] w-full shrink-0 items-center justify-center px-0.5"
+    >
+      <span
+        className="whitespace-nowrap text-center font-bold uppercase text-white"
+        style={{
+          fontFamily: 'Poppins, system-ui, sans-serif',
+          fontSize: 12.5,
+          letterSpacing: '0.1em',
+          transform: 'rotate(-90deg)',
+          transformOrigin: 'center center',
+          textShadow: '0 1px 3px rgba(0,0,0,0.25)',
+        }}
+      >
+        {TERROIR_TICKER_LINE}
+      </span>
+      <div
+        className="pointer-events-none absolute bottom-0 left-1 right-1 h-px bg-gradient-to-r from-transparent via-white/75 to-transparent"
+        aria-hidden
+      />
+    </div>
+  );
+  const blocks = Array.from({ length: blockCount }, (_, i) => block(`a-${i}`));
+  return (
+    <>
+      <style>{`
+        @keyframes notre-vision-terroir-ticker-up {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(-50%); }
+        }
+        .notre-vision-terroir-ticker-track {
+          animation: notre-vision-terroir-ticker-up 22s linear infinite;
+        }
+      `}</style>
+      <div
+        className="pointer-events-none absolute inset-y-0 left-2 z-10 w-[3rem] overflow-hidden rounded-l-sm border-r border-white/25 bg-white/35 backdrop-blur-[2px] sm:left-2.5 sm:w-[3.25rem]"
+        aria-hidden
+      >
+        <div className="relative flex h-full w-full justify-center overflow-hidden">
+          <div className="notre-vision-terroir-ticker-track flex w-full flex-col items-stretch">
+            {blocks}
+            {Array.from({ length: blockCount }, (_, i) => block(`b-${i}`))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
 /* ─────────────────────────────────────────────
    PRODUCER STACK
 ───────────────────────────────────────────── */
+/** Section Rencontres — cartes producteurs (dimensions réduites, centrées). */
+const PRODUCER_CARD_W = 300;
+const PRODUCER_CARD_H = 400;
+/** Espace entre le bas de l’image et la rangée de pastilles */
+const PRODUCER_DOTS_MARGIN_TOP = 12;
+
 const ProducerStack: React.FC = () => {
   const producers = [
     { name: 'Jean-François', job: 'Cognac & Pineau', image: '/images/producteurs/cognacJF.png', alt: 'Jean-François, producteur cognac et pineau – Terrago' },
@@ -54,31 +123,45 @@ const ProducerStack: React.FC = () => {
     touchStartY.current = e.touches[0].clientY;
   };
 
+  const swipeHandledRef = useRef(false);
+
   const handleTouchEnd = (e: React.TouchEvent) => {
+    swipeHandledRef.current = false;
     const deltaX = e.changedTouches[0].clientX - touchStartX.current;
     const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
     if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > deltaY) {
+      swipeHandledRef.current = true;
       goNext();
     }
   };
 
+  const handleCardClick = () => {
+    if (swipeHandledRef.current) {
+      swipeHandledRef.current = false;
+      return;
+    }
+    goNext();
+  };
+
   return (
     <div
-      className="relative flex items-center justify-center w-full"
-      style={{ height: '560px' }}
+      className="relative flex flex-col items-center justify-center w-full"
       onMouseEnter={() => { if (!isTouchDevice.current) setHovered(true); }}
       onMouseLeave={() => { if (!isTouchDevice.current) setHovered(false); }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="relative w-[360px] mx-auto lg:w-full lg:mx-0" style={{ height: '560px' }}>
+      <div
+        className="relative mx-auto shrink-0 overflow-visible"
+        style={{ width: PRODUCER_CARD_W, height: PRODUCER_CARD_H }}
+      >
       <style>{`
         @keyframes sendToBack {
   0%   { transform: translateX(0px)  translateY(0px)  rotate(0deg)  scale(1);    opacity: 1; z-index: 20; }
-  100% { transform: translateX(60px) translateY(40px) rotate(8deg)  scale(0.7);  opacity: 0; z-index: 16; }
+  100% { transform: translateX(50px) translateY(34px) rotate(8deg)  scale(0.7);  opacity: 0; z-index: 16; }
 }
 @keyframes comeForward {
-  0%   { transform: translateX(18px)  translateY(20px) rotate(6deg)   scale(0.96); transform-origin: bottom center; }
+  0%   { transform: translateX(15px)  translateY(17px) rotate(6deg)   scale(0.96); transform-origin: bottom center; }
   60%  { transform: translateX(-3px)  translateY(-4px) rotate(-1deg)  scale(1.01); transform-origin: bottom center; }
   100% { transform: translateX(0px)   translateY(0px)  rotate(0deg)   scale(1);    transform-origin: bottom center; }
 }
@@ -107,7 +190,7 @@ const ProducerStack: React.FC = () => {
 
         const staticTransform = isActive && !isExiting
           ? 'translateX(0px) translateY(0px) rotate(0deg) scale(1)'
-          : `translateX(${behind * 18}px) translateY(${behind * -4}px) rotate(${behind * 6}deg) scale(${1 - behind * 0.04})`;
+          : `translateX(${behind * 15}px) translateY(${behind * -3}px) rotate(${behind * 5}deg) scale(${1 - behind * 0.04})`;
  
         const hiddenOnMobile = behind > 0 && !isExiting && !isPromoting;
         return (
@@ -116,8 +199,8 @@ const ProducerStack: React.FC = () => {
             className={`${isExiting ? 'card-send-back' : isPromoting ? 'card-come-fwd' : ''} ${hiddenOnMobile ? 'producer-card-hidden-mobile' : ''}`}
             style={{
               position: 'absolute',
-              width: '360px',
-              height: '480px',
+              width: PRODUCER_CARD_W,
+              height: PRODUCER_CARD_H,
               borderRadius: '20px',
               overflow: 'hidden',
               transformOrigin: 'bottom center',
@@ -129,7 +212,7 @@ const ProducerStack: React.FC = () => {
               transform: isExiting || isPromoting ? undefined : staticTransform,
               transition: isExiting || isPromoting ? 'none' : 'transform 0.5s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s ease',
             }}
-            onClick={isActive ? () => { if (!isTouchDevice.current) goNext(); } : undefined}
+            onClick={isActive ? handleCardClick : undefined}
           >
             <img
               src={person.image}
@@ -179,10 +262,20 @@ const ProducerStack: React.FC = () => {
         );
       })}
 
-      <div style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6, zIndex: 30 }}>
+      </div>
+      <div
+        className="flex shrink-0 justify-center gap-1.5"
+        style={{ marginTop: PRODUCER_DOTS_MARGIN_TOP, zIndex: 30 }}
+        role="tablist"
+        aria-label="Producteurs"
+      >
         {producers.map((_, i) => (
           <button
             key={i}
+            type="button"
+            role="tab"
+            aria-selected={i === activeIndex}
+            aria-label={`Producteur ${i + 1} sur ${producers.length}`}
             onClick={() => goTo(i)}
             style={{
               width: i === activeIndex ? 24 : 6, height: 6,
@@ -193,7 +286,6 @@ const ProducerStack: React.FC = () => {
             }}
           />
         ))}
-      </div>
       </div>
     </div>
   );
@@ -222,6 +314,24 @@ const Home: React.FC = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [heroImageIndex, setHeroImageIndex] = useState(0);
+  const heroTouchStartX = useRef(0);
+  const heroTouchStartY = useRef(0);
+
+  const handleHeroTouchStart = (e: React.TouchEvent) => {
+    heroTouchStartX.current = e.touches[0].clientX;
+    heroTouchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleHeroTouchEnd = (e: React.TouchEvent) => {
+    const deltaX = e.changedTouches[0].clientX - heroTouchStartX.current;
+    const deltaY = Math.abs(e.changedTouches[0].clientY - heroTouchStartY.current);
+    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) <= deltaY) return;
+    if (deltaX < 0) {
+      setHeroImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    } else {
+      setHeroImageIndex((prev) => (prev - 1 + HERO_IMAGES.length) % HERO_IMAGES.length);
+    }
+  };
 
   useEffect(() => {
     const currentText = HOME_ROTATING_METIERS[currentTextIndex];
@@ -265,7 +375,11 @@ const Home: React.FC = () => {
 
       {/* ── HERO ── */}
       <section className="relative w-full">
-        <div className="relative min-h-screen w-full overflow-hidden flex items-start sm:items-center justify-center pt-32 sm:pt-0">
+        <div
+          className="relative min-h-screen w-full overflow-hidden flex items-start sm:items-center justify-center pt-32 sm:pt-0"
+          onTouchStart={handleHeroTouchStart}
+          onTouchEnd={handleHeroTouchEnd}
+        >
           {HERO_IMAGES.map((img, i) => (
             <img
               key={img.src}
@@ -294,11 +408,12 @@ const Home: React.FC = () => {
               <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
             </div>
 
-            <h1 className="text-white font-bold leading-[1.18] mb-20 drop-shadow-xl">
+            <h1 className="text-white font-bold leading-[1.18] mb-12 drop-shadow-xl">
               <span className="sm:hidden block text-[2rem] font-sans tracking-tight leading-[1.24]">
-              Des séminaires et séjours engagés, à la rencontre de nos{" "}
+                Des séminaires et séjours engagés, à la rencontre de nos
+                <br />
                 <span
-                  className="inline-block"
+                  className="inline-block mt-2"
                   style={{
                     background: 'rgba(255,255,255,0.98)',
                     borderRadius: '6px',
@@ -348,8 +463,8 @@ const Home: React.FC = () => {
           </h1>
 
             <p
-              className="hidden sm:block text-sm max-w-xl mx-auto mb-10 leading-relaxed"
-              style={{ color: 'rgba(255,255,255,0.72)', fontWeight: 500 }}
+              className={`hidden sm:block ${heroIntroParagraphOnImageClass}`}
+              style={heroIntroParagraphOnImageStyle}
             >
             Team buildings, séminaires, ateliers et séjours immersifs au cœur des oliveraies, vignobles, fromageries et maraîchages français.
              </p>
@@ -357,14 +472,14 @@ const Home: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
               <Link
                 href="/seminaires-entreprise"
-                className="text-white border border-white/100 hover:border-white/90 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 bg-transparent hover:bg-white/15 hover:backdrop-blur-[1px] rounded-full"
+                className={heroPrimaryOutlineButtonClass}
               >
                 Séminaires d'entreprise
               </Link>
               <Link
                 href="/entre-amis"
-                className="text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 px-4 py-3"
-                style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                className={heroSecondaryGhostLinkClass}
+                style={heroSecondaryGhostLinkStyle}
                 onMouseEnter={e => (e.currentTarget.style.color = 'rgb(255, 255, 255)')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)')}
               >
@@ -398,51 +513,52 @@ const Home: React.FC = () => {
       </section>
 
       {/* ── NOTRE VISION ── */}
-      <section className="bg-white" style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="notre-vision">
+      <section
+        className="bg-white overflow-x-hidden overflow-y-visible"
+        style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }}
+        id="notre-vision"
+      >
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-
-            <div className="relative">
-              <div style={{ borderRadius: '24px', overflow: 'hidden', aspectRatio: '4/5' }} className="shadow-2xl">
-                <img src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/olivesrecoltes.JPG" alt="Immersion vendange terroir français – Terrago" className="w-full h-full object-cover" />
-              </div>
-              <div style={{
-                position: 'absolute', bottom: -20, right: -20,
-                background: '#e67e22', color: 'white',
-                borderRadius: '16px', padding: '16px 20px',
-                boxShadow: '0 12px 40px rgba(230,126,34,0.25)',
-                textAlign: 'center',
-              }}>
-                <p className="font-display italic font-bold leading-none" style={{ fontSize: 26 }}>100%</p>
-                <p style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.22em', fontWeight: 700, marginTop: 6 }}>Terroir français</p>
+          <div className="flex flex-col items-center lg:items-start lg:flex-row lg:gap-12 xl:gap-14">
+            {/* Image : ~35–38 % du bloc, ratio 4/5, bandeau texte défilant à gauche */}
+            <div
+              className="relative order-1 aspect-[4/5] w-full max-w-[min(380px,88vw)] shrink-0 overflow-visible mx-auto lg:mx-0
+                         lg:w-[min(38%,420px)] lg:max-w-[400px] lg:flex-shrink-0"
+            >
+              <div className="relative h-full w-full overflow-hidden rounded-[20px] shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
+                <img
+                  src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/olivesrecoltes.JPG"
+                  alt="Immersion vendange terroir français – Terrago"
+                  className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+                />
+                <TerroirLeftTicker />
               </div>
             </div>
 
-            <div>
-              <div className="flex items-center gap-3 mb-7">
-                <div style={{ width: 20, height: 1, background: '#e67e22' }} />
-                <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Notre vision</span>
+            <div className="order-2 w-full max-w-full flex-1 min-w-0 pt-12 lg:pt-1 flex flex-col justify-start">
+              <div className="flex items-center gap-3 mb-5">
+              <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+              <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Notre vision</span>
               </div>
-              <ScrollAnimate delay={100}>
-                <h2 className="font-bold text-primary leading-[1.06] mb-7" style={{ letterSpacing: '-0.01em' }}>
-                  <span className=" font-sans text-4xl sm:text-5xl">Une envie simple :</span>
-                  <span className=" font-display italic text-5xl sm:text-5xl lg:text-6xl"> vivre le terroir pour de vrai.</span>
-                </h2>
-              </ScrollAnimate>
-              <div className="space-y-4" style={{ color: '#7a7060', fontSize: 15, lineHeight: 1.75 }}>
-                <p>Terrago est né d'une envie simple : permettre à chacun de vivre des expériences authentiques, humaines et enrichissantes au plus près de celles et ceux qui font le terroir.</p>
-                <p>Nous croyons que les plus beaux moments se vivent en groupe, dans des lieux vrais, en partageant des savoir-faire, du temps et des histoires.</p>
-                <p>Qu'il s'agisse d'un séminaire au vert, d'un séjour entre amis ou d'une expérience immersive à la journée, Terrago crée des rencontres qui reconnectent à l'essentiel.</p>
-              </div>
-              <Link
-                href="/seminaires-entreprise"
-                className="inline-block mt-9 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300"
-                style={{ color: '#1a2e1a', borderBottom: '1.5px solid #1a2e1a', paddingBottom: 3 }}
-                onMouseEnter={e => { e.currentTarget.style.color = '#e67e22'; e.currentTarget.style.borderBottomColor = '#e67e22'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = '#1a2e1a'; e.currentTarget.style.borderBottomColor = '#1a2e1a'; }}
-              >
+            <ScrollAnimate delay={100}>
+              <h2 className="font-bold text-primary leading-[1.08] mb-6 lg:mb-7" style={{ letterSpacing: '-0.01em' }}>
+                <span className=" font-sans text-4xl sm:text-5xl">Une envie simple :</span>
+                <span className=" font-display italic text-5xl sm:text-5xl lg:text-6xl"> vivre le terroir pour de vrai.</span>
+              </h2>
+            </ScrollAnimate>
+            <div className="space-y-3.5 max-w-[min(36rem,100%)] lg:max-w-[min(38rem,100%)]" style={{ color: '#7a7060', fontSize: 15, lineHeight: 1.75 }}>
+              <p>Terrago est né d'une envie simple : permettre à chacun de vivre des expériences authentiques, humaines et enrichissantes au plus près de celles et ceux qui font le terroir.</p>
+              <p>Nous croyons que les plus beaux moments se vivent en groupe, dans des lieux vrais, en partageant des savoir-faire, du temps et des histoires.</p>
+              <p>Qu'il s'agisse d'un séminaire au vert, d'un séjour entre amis ou d'une expérience immersive à la journée, Terrago crée des rencontres qui reconnectent à l'essentiel.</p>
+            </div>
+            <Link
+              href="/seminaires-entreprise"
+              className="inline mt-9 text-sm tracking-[0.08em] font-bold text-[#1a2e1a] transition-colors duration-300 hover:text-[#e67e22]"
+            >
+              <span className="border-b-[1.5px] border-current pb-[3px]">
                 Découvrir nos séminaires d'entreprise →
-              </Link>
+              </span>
+            </Link>
             </div>
           </div>
         </div>
@@ -535,7 +651,7 @@ const Home: React.FC = () => {
       {/* ── RENCONTRES ── */}
       <section className="bg-white" style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="rencontres">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center ">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             <div>
               <div className="flex items-center gap-3 mb-7">
                 <div style={{ width: 20, height: 1, background: '#e67e22' }} />
@@ -563,7 +679,11 @@ const Home: React.FC = () => {
                 ))}
               </div>
             </div>
-            <ProducerStack />
+            <div className="flex w-full justify-center">
+              <ScrollAnimate delay={120} direction="left" className="flex justify-center w-full">
+                <ProducerStack />
+              </ScrollAnimate>
+            </div>
           </div>
         </div>
       </section>
@@ -621,15 +741,15 @@ const Home: React.FC = () => {
             <div className="order-3 flex flex-col sm:flex-row gap-4">
               <Link
                 href="/seminaires-entreprise"
-                className="text-white border border-white/25 hover:border-white/60 px-7 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/5 rounded-full text-center"
+                className="text-white border border-white/25 hover:border-white/60 px-9 py-4 text-sm tracking-[0.08em] font-bold transition-all duration-300 hover:bg-white/5 rounded-full text-center"
               >
                 Nos séminaires
               </Link>
               <Link
                 href="/entre-amis"
-                className="text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 px-4 py-3 text-center"
+                className="text-sm tracking-[0.08em] font-bold transition-all duration-300 px-6 py-4 text-center"
                 style={{ color: 'rgba(255,255,255,0.30)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.65)')}
+                onMouseEnter={e => (e.currentTarget.style.color = 'rgb(255, 255, 255)')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.30)')}
               >
                 Séjours entre amis →
@@ -672,8 +792,8 @@ const Home: React.FC = () => {
               />
               <button
                 type="submit"
-                className="px-7 py-4 text-white font-bold uppercase transition-all duration-300"
-                style={{ background: '#1a2e1a', borderRadius: '9999px', fontSize: 9, letterSpacing: '0.22em' }}
+                className="px-9 py-4 text-white font-bold transition-all duration-300"
+                style={{ background: '#1a2e1a', borderRadius: '9999px', fontSize: 14, letterSpacing: '0.06em' }}
                 onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.background = '#e67e22')}
                 onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = '#1a2e1a')}
               >

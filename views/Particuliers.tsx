@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import ScrollAnimate from '../components/ScrollAnimate';
+import { heroIntroParagraphOnLightClass } from '../components/heroSectionStyles';
 
 const CONTACT_EMAIL = 'terragoexperiences@gmail.com';
 
@@ -175,6 +176,35 @@ const Particuliers: React.FC = () => {
         @media (max-width: 600px) {
           .part-grid-2 { grid-template-columns: 1fr !important; }
         }
+        .part-type-chips {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .part-type-chips > button {
+          width: auto;
+          max-width: 100%;
+          padding: 6px 14px;
+          box-sizing: border-box;
+        }
+        @media (max-width: 600px) {
+          .part-type-chips {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            align-items: stretch;
+          }
+          .part-type-chips > button {
+            width: 100%;
+            max-width: none;
+            min-width: 0;
+            min-height: 4rem;
+            padding: 10px 8px;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.35;
+          }
+        }
       `}</style>
 
       {/* ── SECTION 1 : HEADER ── */}
@@ -281,7 +311,7 @@ const Particuliers: React.FC = () => {
             Séjour immersif terroir entre amis – Expériences chez des producteurs français
           </h1>
 
-          <p style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.75 }} className="max-w-2xl mx-auto">
+          <p className={heroIntroParagraphOnLightClass} style={{ color: '#9a9080' }}>
             Vous souhaitez vivre un séjour immersif unique au cœur du terroir français, entre amis ou en famille ? Remplissez le formulaire ci-dessous : nous vous recontacterons pour vous proposer nos premières pépites.
           </p>
 
@@ -442,7 +472,7 @@ const Particuliers: React.FC = () => {
           <ScrollAnimate delay={200}>
             {submitSuccess ? (
               <div
-                className="max-w-xl mx-auto text-center"
+                className="w-full max-w-xl mx-auto lg:max-w-5xl xl:max-w-6xl text-center"
                 style={{ background: '#faf8f5', border: '1px solid rgba(26,46,26,0.07)', borderRadius: 24, padding: '48px 32px' }}
               >
                 <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 8px 30px rgba(26,46,26,0.25)' }}>
@@ -456,7 +486,7 @@ const Particuliers: React.FC = () => {
             ) : (
               <form
                 onSubmit={handleSubmit}
-                className="max-w-xl mx-auto"
+                className="w-full max-w-xl mx-auto lg:max-w-5xl xl:max-w-6xl"
                 style={{ background: '#ffffff', border: '1px solid rgba(26,46,26,0.06)', borderRadius: 24, padding: 'clamp(24px, 4vw, 40px)' }}
               >
                 {submitError && (
@@ -466,18 +496,17 @@ const Particuliers: React.FC = () => {
                   </div>
                 )}
 
-                {/* Nom / Prénom */}
-                <div className="part-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+                {/* Ligne 1–2 : identité + contact — 2×2 sur tablette, 4 colonnes sur desktop */}
+                <div
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-4"
+                  style={{ marginBottom: 14 }}
+                >
                   <FieldBlock label="Nom" required>
                     <input className="part-i" placeholder="Dupont" value={nom} onChange={e => setNom(e.target.value)} required />
                   </FieldBlock>
                   <FieldBlock label="Prénom" required>
                     <input className="part-i" placeholder="Jean" value={prenom} onChange={e => setPrenom(e.target.value)} required />
                   </FieldBlock>
-                </div>
-
-                {/* Email / Téléphone */}
-                <div className="part-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
                   <FieldBlock label="Email" required>
                     <input className="part-i" type="email" placeholder="votre@email.fr" value={email} onChange={e => setEmail(e.target.value)} required />
                   </FieldBlock>
@@ -486,11 +515,71 @@ const Particuliers: React.FC = () => {
                   </FieldBlock>
                 </div>
 
-                {/* Période */}
-                <div style={{ marginBottom: 14 }}>
-                  <FieldBlock label="Période ou date souhaitée">
-                    <input className="part-i" placeholder="Ex. semaine du 15 août, ou dates précises" value={periode} onChange={e => setPeriode(e.target.value)} />
-                  </FieldBlock>
+                {/* Période + participants — côte à côte sur large écran pour remplir la largeur */}
+                <div
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-x-5 gap-y-4"
+                  style={{ marginBottom: 14 }}
+                >
+                  <div className="lg:col-span-8">
+                    <FieldBlock label="Période ou date souhaitée">
+                      <input className="part-i" placeholder="Ex. semaine du 15 août, ou dates précises" value={periode} onChange={e => setPeriode(e.target.value)} />
+                    </FieldBlock>
+                  </div>
+                  <div className="lg:col-span-4">
+                    <FieldBlock label="Nombre de personnes">
+                      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                        <button
+                          type="button"
+                          onClick={() => setParticipantsCount((n) => Math.max(1, n - 1))}
+                          aria-label="Diminuer le nombre de personnes"
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 12,
+                            background: '#fff',
+                            border: '1.5px solid rgba(10,44,52,0.12)',
+                            cursor: 'pointer',
+                            fontFamily: 'inherit',
+                            color: '#1a2e1a',
+                            fontSize: 18,
+                            fontWeight: 700,
+                            lineHeight: 1,
+                            flexShrink: 0,
+                          }}
+                        >
+                          -
+                        </button>
+                        <input
+                          className="part-i"
+                          value={participantsCount}
+                          readOnly
+                          aria-label="Nombre de personnes"
+                          style={{ textAlign: 'center', flex: 1, minWidth: 0 }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setParticipantsCount((n) => Math.min(50, n + 1))}
+                          aria-label="Augmenter le nombre de personnes"
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 12,
+                            background: '#fff',
+                            border: '1.5px solid rgba(10,44,52,0.12)',
+                            cursor: 'pointer',
+                            fontFamily: 'inherit',
+                            color: '#1a2e1a',
+                            fontSize: 18,
+                            fontWeight: 700,
+                            lineHeight: 1,
+                            flexShrink: 0,
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </FieldBlock>
+                  </div>
                 </div>
 
                 {/* Ville de départ + trajet */}
@@ -608,68 +697,12 @@ const Particuliers: React.FC = () => {
                   </FieldBlock>
                 </div>
 
-                {/* Participants (libre) */}
-                <div style={{ marginBottom: 14 }}>
-                  <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', display: 'block', marginBottom: 10 }}>
-                    Nombre de personnes
-                  </label>
-                  <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <button
-                      type="button"
-                      onClick={() => setParticipantsCount((n) => Math.max(1, n - 1))}
-                      aria-label="Diminuer le nombre de personnes"
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 12,
-                        background: '#fff',
-                        border: '1.5px solid rgba(10,44,52,0.12)',
-                        cursor: 'pointer',
-                        fontFamily: 'inherit',
-                        color: '#1a2e1a',
-                        fontSize: 18,
-                        fontWeight: 700,
-                        lineHeight: 1,
-                      }}
-                    >
-                      -
-                    </button>
-                    <input
-                      className="part-i"
-                      value={participantsCount}
-                      readOnly
-                      aria-label="Nombre de personnes"
-                      style={{ textAlign: 'center', flex: 1 }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setParticipantsCount((n) => Math.min(50, n + 1))}
-                      aria-label="Augmenter le nombre de personnes"
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 12,
-                        background: '#fff',
-                        border: '1.5px solid rgba(10,44,52,0.12)',
-                        cursor: 'pointer',
-                        fontFamily: 'inherit',
-                        color: '#1a2e1a',
-                        fontSize: 18,
-                        fontWeight: 700,
-                        lineHeight: 1,
-                      }}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
                 {/* Type de séjours */}
                 <div style={{ marginBottom: 14 }}>
                   <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', display: 'block', marginBottom: 10 }}>
                     Type de séjour/ week-end
                   </label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  <div className="part-type-chips">
                     {TYPE_SEJOURS_OPTIONS.map(opt => {
                       const active = typeSejour === opt.label;
                       return (
@@ -678,7 +711,6 @@ const Particuliers: React.FC = () => {
                           type="button"
                           onClick={() => setTypeSejour(active ? '' : opt.label)}
                           style={{
-                            padding: '6px 14px',
                             borderRadius: 9999,
                             fontFamily: 'inherit',
                             border: `1.5px solid ${active ? '#1a2e1a' : 'rgba(10,44,52,0.1)'}`,
@@ -691,6 +723,7 @@ const Particuliers: React.FC = () => {
                             cursor: 'pointer',
                             display: 'inline-flex',
                             alignItems: 'center',
+                            justifyContent: 'center',
                             gap: 5,
                             boxShadow: active ? '0 2px 10px rgba(26,46,26,0.15)' : 'none',
                             transition: 'all .15s ease',
@@ -711,7 +744,7 @@ const Particuliers: React.FC = () => {
                       className="part-i"
                       rows={4}
                       style={{ resize: 'none', lineHeight: 1.6 }}
-                      placeholder="Type de logement, éléments importants, activités ''fun'' etc"
+                      placeholder="Type de logement, prix envisagé, éléments importants, activités ''fun'' etc"
                       value={precisions}
                       onChange={e => setPrecisions(e.target.value)}
                     />

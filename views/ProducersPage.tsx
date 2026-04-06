@@ -11,6 +11,12 @@ import {
   mapSupabaseRowToFull,
   fullToProducer,
 } from '../lib/producerTypes';
+import {
+  heroIntroParagraphOnImageClass,
+  heroIntroParagraphOnImageStyle,
+  heroPrimaryOutlineButtonMutedHoverClass,
+  heroSecondaryGhostLinkClass,
+} from '../components/heroSectionStyles';
 
 const FILTERS = ['Tous', 'Truffes', 'Olives', 'Fruits à coque', 'Piments', 'Vins & Spiritueux', 'Huîtres', 'Fromage', 'Maraîchage', 'Élevages', 'Brasserie'];
 
@@ -335,14 +341,14 @@ const ProducersPage: React.FC = () => {
             <p className="sr-only">
               Terrago sélectionne des producteurs engagés dans toute la France pour accueillir des groupes en séminaire au vert, team building terroir et séjour immersif. Vignerons, trufficulteurs, oléiculteurs, éleveurs, fromagers — en Provence, Nouvelle-Aquitaine, Occitanie et au-delà.
             </p>
-            <p className="text-white/80 text-ml max-w-xl mx-auto mb-10 leading-relaxed">
+            <p className={heroIntroParagraphOnImageClass} style={heroIntroParagraphOnImageStyle}>
               Des producteurs, éleveurs, vignerons et artisans soigneusement sélectionnés pour accueillir vos groupes en séminaire nature ou en séjour immersif terroir.
             </p>
             <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/seminaires-entreprise" className="text-white border border-white/100 hover:border-white/70 px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-bold transition-all duration-300 hover:bg-white/10 rounded-full">
+              <Link href="/seminaires-entreprise" className={heroPrimaryOutlineButtonMutedHoverClass}>
                 Nos séminaires d'entreprise
               </Link>
-              <Link href="/recommander-un-producteur" className="text-white/90 hover:text-white text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300">
+              <Link href="/recommander-un-producteur" className={`${heroSecondaryGhostLinkClass} text-white/90 hover:text-white`}>
                 Recommander un producteur →
               </Link>
             </div>

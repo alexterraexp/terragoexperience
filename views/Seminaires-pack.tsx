@@ -430,6 +430,36 @@ function ImageCarousel({ images, titre, region, bestseller, resetKey }: { images
   );
 }
 
+/** Plage affichée sur les cartes liste : priorité au champ participants du format sur-mesure. */
+function participantsRangeForOfferCard(s: Seminaire): string {
+  const raw = (s.formats.mesure?.participants ?? '').trim();
+  const fallback = (Object.values(s.formats)[0]?.participants ?? '').trim();
+  const t = raw || fallback;
+  if (!t) return '';
+
+  const range = t.match(/(\d+)\s*(?:à|a|-|–|—)\s*(\d+)/i);
+  if (range) return `De ${range[1]} à ${range[2]} pers.`;
+
+  const des = t.match(/dès\s*(\d+)/i);
+  const jusqu = t.match(/jusqu['\u2019]?\s*à\s*(\d+)/i);
+  if (des && jusqu) return `De ${des[1]} à ${jusqu[1]} pers.`;
+
+  const nums = t.match(/\d+/g);
+  if (nums && nums.length >= 2) {
+    const a = parseInt(nums[0], 10);
+    const b = parseInt(nums[1], 10);
+    const lo = Math.min(a, b);
+    const hi = Math.max(a, b);
+    if (lo !== hi) return `De ${lo} à ${hi} pers.`;
+  }
+
+  if (des) return `Dès ${des[1]} pers.`;
+  if (jusqu) return `Jusqu'à ${jusqu[1]} pers.`;
+  if (nums?.length === 1) return `Jusqu'à ${nums[0]} pers.`;
+
+  return t;
+}
+
 // ─── SeminaireCard ───────────────────────────────────────────────────────────
 
 function SeminaireCard({ s, activeFormat, isActive, onSelect, onDevis }: {
@@ -487,15 +517,9 @@ function SeminaireCard({ s, activeFormat, isActive, onSelect, onDevis }: {
             <div className="sem-pack-card-sub" style={{ fontSize: 11, color: '#9a9080', fontStyle: 'italic', marginBottom: 8 }}>{fmt!.sous_titre}</div>
             <div className="sem-pack-card-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, minWidth: 0 }}>
               <div style={{ minWidth: 0, overflow: 'hidden' }}>
-                {activeFormat === 'mesure' ? (
-                  <span style={{ fontSize: 11, fontWeight: 700, color: '#1a2e1a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>{fmt!.prix}</span>
-                ) : (
-                  <span className="sem-pack-card-price" style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'nowrap', gap: 4 }}>
-                    <span className="sem-pack-price-from" style={{ fontSize: 9, fontWeight: 600, color: '#9a9080', whiteSpace: 'nowrap' }}>À partir de</span>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: '#1a2e1a', whiteSpace: 'nowrap' }}>{fmt!.prix}</span>
-                    <span style={{ fontSize: 9, fontWeight: 600, color: '#9a9080', whiteSpace: 'nowrap' }}>/pers.</span>
-                  </span>
-                )}
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#5c5348', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
+                  {participantsRangeForOfferCard(s)}
+                </span>
               </div>
               <button onClick={e => { e.stopPropagation(); onSelect(); }}
                 className="sem-pack-card-btn"
@@ -696,6 +720,8 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
   const fmt = s.formats[activeFormat] ?? Object.values(s.formats)[0];
   if (!fmt) return null;
 
+  const tarifAffiche = s.formats.mesure?.prix ?? fmt.prix;
+
   const mainImage   = s.images[0] ?? '';
   const smallImages = s.images.slice(1, 3);
   const hasSmall    = smallImages.length > 0;
@@ -881,20 +907,13 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
 
           <div className="sem-price-col">
             <div style={{ background: '#fff', borderRadius: 20, border: '1px solid rgba(26,46,26,0.1)', padding: '24px', boxShadow: '0 4px 28px rgba(26,46,26,0.09)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 20, flexWrap: activeFormat === 'mesure' ? 'wrap' : 'nowrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
                 <div>
-                  <div style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#b0a89e', marginBottom: 4 }}>Tarif indicatif</div>
-                  {activeFormat === 'mesure' ? (
-                    <div style={{ fontSize: 18, fontWeight: 700, color: '#1a2e1a', lineHeight: 1.2 }}>{fmt.prix}</div>
-                  ) : (
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 3, lineHeight: 1 }}>
-                      <span style={{ fontSize: 32, fontWeight: 800, color: '#1a2e1a' }}>{fmt.prix}</span>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: '#7a7060' }}>/pers.</span>
-                    </div>
-                  )}
+                  <div style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#b0a89e', marginBottom: 4 }}>Tarif sur demande</div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: '#1a2e1a', lineHeight: 1.2 }}>{tarifAffiche}</div>
                 </div>
                 <button onClick={onDevis}
-                  style={{ flexShrink: 0, background: '#1a2e1a', color: '#fff', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', padding: '14px 20px', borderRadius: 9999, border: 'none', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6, ...(activeFormat === 'mesure' ? { width: '100%', justifyContent: 'center' } : {}) }}>
+                  style={{ flexShrink: 0, background: '#1a2e1a', color: '#fff', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', padding: '14px 20px', borderRadius: 9999, border: 'none', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6, width: '100%', justifyContent: 'center' }}>
                   Demander un devis
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
                 </button>

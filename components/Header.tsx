@@ -26,7 +26,7 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   {
     label: "Séminaires d'entreprise",
-    path: '/entreprises',
+    path: '/seminaires-entreprise',
     dropdown: [
       { label: 'Séminaires engagés',   description: 'Du sens, du vrai, et du vivant',            path: '/seminaires-entreprise', emoji: '🌿' },
       { label: 'Nos offres de séminaires', description: 'À la journée, sur 2 jours, ou sur mesure',  path: '/seminaires-entreprise/offres',           emoji: '📦' },
@@ -233,7 +233,6 @@ const Header: React.FC = () => {
   // Pages avec héro plein écran où le header doit être transparent en haut de page
   const hasHeroTransparent = (
     pathname === '/' ||
-    pathname === '/entreprises' ||
     pathname === '/demande-seminaire' ||
     pathname === '/seminaires-entreprise' ||
     pathname === '/partenaires' ||
@@ -254,7 +253,7 @@ const Header: React.FC = () => {
     isOpen
       ? 'text-[#D4751A] after:scale-x-100'
       : (isHeroTransparent
-          ? 'text-white hover:text-white/90 after:scale-x-0 hover:after:scale-x-100 after:bg-white'
+          ? 'text-white hover:text-white after:scale-x-0 hover:after:scale-x-100 after:bg-white'
           : 'text-[#1C2318] hover:text-[#D4751A] after:scale-x-0 hover:after:scale-x-100'),
   ].join(' ');
 
@@ -266,7 +265,7 @@ const Header: React.FC = () => {
           'fixed top-0 w-full z-[80] h-[84px] font-sans',
           'border-b transition-all duration-300',
           isScrolled
-            ? 'bg-white/80 backdrop-blur-[18px] border-transparent shadow-[0_4px_32px_rgba(28,35,24,0.08)]'
+            ? 'bg-white/80 lg:bg-white/95 backdrop-blur-[18px] border-transparent shadow-[0_4px_32px_rgba(28,35,24,0.08)]'
             : isHeroTransparent
               ? 'bg-transparent border-transparent shadow-none'
               : 'bg-white border-black/[0.08]',
@@ -293,8 +292,8 @@ const Header: React.FC = () => {
           {/* Nav desktop */}
           <nav className="hidden lg:flex items-center gap-0 ml-auto mr-8 flex-nowrap">
             {NAV_ITEMS.map((nav) => {
-              const isActive = nav.path === '/entreprises'
-                ? (pathname === '/entreprises' || pathname === '/demande-seminaire' || pathname === '/seminaires-entreprise')
+              const isActive = nav.path === '/seminaires-entreprise'
+                ? (pathname === '/demande-seminaire' || pathname === '/seminaires-entreprise')
                 : pathname === nav.path;
               const isOpen   = openDropdown === nav.label;
               return (
