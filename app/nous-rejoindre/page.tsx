@@ -3,9 +3,9 @@ import { Suspense } from 'react';
 import Host from '../../views/Host';
 
 export const metadata: Metadata = {
-  title: 'Valorisez votre exploitation – Terrago',
+  title: 'Valorisez votre exploitation – TerraGo',
   description:
-    'Producteur, ouvrez votre exploitation à des groupes et générez un revenu complémentaire grâce au tourisme responsable. Rejoignez le réseau Terrago.',
+    'Producteur, ouvrez votre exploitation à des groupes et générez un revenu complémentaire grâce au tourisme responsable. Rejoignez le réseau TerraGo.',
   robots: { index: true, follow: true },
 };
 

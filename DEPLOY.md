@@ -1,6 +1,6 @@
-# 🚀 Guide de Déploiement Automatique - Terrago
+# 🚀 Guide de Déploiement Automatique - TerraGo
 
-Ce guide vous explique comment configurer le déploiement automatique de votre site Terrago sur Hostinger via GitHub.
+Ce guide vous explique comment configurer le déploiement automatique de votre site TerraGo sur Hostinger via GitHub.
 
 ## 📋 Prérequis
 
@@ -27,7 +27,7 @@ Ouvrez le terminal dans Cursor et exécutez :
 cd "/Users/alex/Downloads/terroir-d'exception (1)"
 git init
 git add .
-git commit -m "Initial commit - Terrago website"
+git commit -m "Initial commit - TerraGo website"
 git branch -M main
 git remote add origin https://github.com/VOTRE_USERNAME/VOTRE_REPO.git
 git push -u origin main

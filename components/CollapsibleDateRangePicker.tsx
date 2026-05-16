@@ -119,7 +119,7 @@ export function CollapsibleDateRangePicker({
         style={{
           width: '100%',
           background: '#faf8f5',
-          border: '1px solid rgba(10,44,52,.08)',
+          border: '1px solid rgba(11, 44, 52,.08)',
           borderRadius: 12,
           padding: '12px 16px',
           fontFamily: 'inherit',
@@ -132,7 +132,7 @@ export function CollapsibleDateRangePicker({
         <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', marginBottom: 3 }}>
           Date d&apos;arrivée
         </div>
-        <div style={{ fontSize: 12, fontWeight: 600, color: startDate ? '#1a2e1a' : '#c4bdb4' }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: startDate ? '#0b2c34' : '#c4bdb4' }}>
           {startDate ? fmtDisplay(startDate) : 'Choisir…'}
         </div>
       </button>
@@ -145,7 +145,7 @@ export function CollapsibleDateRangePicker({
         style={{
           width: '100%',
           background: '#faf8f5',
-          border: '1px solid rgba(10,44,52,.08)',
+          border: '1px solid rgba(11, 44, 52,.08)',
           borderRadius: 12,
           padding: '12px 16px',
           fontFamily: 'inherit',
@@ -158,7 +158,7 @@ export function CollapsibleDateRangePicker({
         <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', marginBottom: 3 }}>
           Date de départ
         </div>
-        <div style={{ fontSize: 12, fontWeight: 600, color: endDate ? '#1a2e1a' : '#c4bdb4' }}>{endDate ? fmtDisplay(endDate) : 'Choisir…'}</div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: endDate ? '#0b2c34' : '#c4bdb4' }}>{endDate ? fmtDisplay(endDate) : 'Choisir…'}</div>
       </button>
     </div>
   );
@@ -171,7 +171,7 @@ export function CollapsibleDateRangePicker({
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {collapseCalendar && triggerRow}
 
-      <div style={{ background: '#faf8f5', borderRadius: 16, border: '1px solid rgba(10,44,52,0.08)', overflow: 'hidden' }}>
+      <div style={{ background: '#faf8f5', borderRadius: 16, border: '1px solid rgba(11, 44, 52,0.08)', overflow: 'hidden' }}>
         {collapseCalendar && (
           <div
             style={{
@@ -179,11 +179,11 @@ export function CollapsibleDateRangePicker({
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '10px 16px',
-              borderBottom: '1px solid rgba(10,44,52,0.06)',
+              borderBottom: '1px solid rgba(11, 44, 52,0.06)',
               background: '#fff',
             }}
           >
-            <span style={{ fontSize: 11, fontWeight: 700, color: '#1a2e1a' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#0b2c34' }}>
               {selecting === 'start' ? "Date d'arrivée" : 'Date de départ'}
             </span>
             <button
@@ -208,7 +208,7 @@ export function CollapsibleDateRangePicker({
         )}
 
         {!collapseCalendar && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid rgba(11, 44, 52,0.06)' }}>
             {[
               { label: 'Arrivée', val: startDate, key: 'start' as const },
               { label: 'Départ', val: endDate, key: 'end' as const },
@@ -221,11 +221,11 @@ export function CollapsibleDateRangePicker({
                   padding: '12px 16px',
                   background: selecting === key ? '#fff' : 'transparent',
                   border: 'none',
-                  borderBottom: `2px solid ${selecting === key ? '#1a2e1a' : 'transparent'}`,
+                  borderBottom: `2px solid ${selecting === key ? '#0b2c34' : 'transparent'}`,
                   cursor: 'pointer',
                   textAlign: 'left',
                   transition: 'all .15s ease',
-                  borderRight: key === 'start' ? '1px solid rgba(10,44,52,0.06)' : 'none',
+                  borderRight: key === 'start' ? '1px solid rgba(11, 44, 52,0.06)' : 'none',
                 }}
               >
                 <div
@@ -240,7 +240,7 @@ export function CollapsibleDateRangePicker({
                 >
                   {label}
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: val ? '#1a2e1a' : '#c4bdb4' }}>{val ? fmtDisplay(val) : 'Choisir...'}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: val ? '#0b2c34' : '#c4bdb4' }}>{val ? fmtDisplay(val) : 'Choisir...'}</div>
               </button>
             ))}
           </div>
@@ -255,25 +255,25 @@ export function CollapsibleDateRangePicker({
               height: 28,
               borderRadius: '50%',
               border: 'none',
-              background: 'rgba(10,44,52,0.06)',
+              background: 'rgba(11, 44, 52,0.06)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#1a2e1a',
+              color: '#0b2c34',
               fontSize: 12,
               transition: 'background .15s',
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.background = 'rgba(10,44,52,0.12)';
+              e.currentTarget.style.background = 'rgba(11, 44, 52,0.12)';
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = 'rgba(10,44,52,0.06)';
+              e.currentTarget.style.background = 'rgba(11, 44, 52,0.06)';
             }}
           >
             ‹
           </button>
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#1a2e1a', textTransform: 'capitalize', letterSpacing: '0.05em' }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: '#0b2c34', textTransform: 'capitalize', letterSpacing: '0.05em' }}>
             {MONTHS_FR[viewMonth]} {viewYear}
           </span>
           <button
@@ -284,20 +284,20 @@ export function CollapsibleDateRangePicker({
               height: 28,
               borderRadius: '50%',
               border: 'none',
-              background: 'rgba(10,44,52,0.06)',
+              background: 'rgba(11, 44, 52,0.06)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#1a2e1a',
+              color: '#0b2c34',
               fontSize: 12,
               transition: 'background .15s',
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.background = 'rgba(10,44,52,0.12)';
+              e.currentTarget.style.background = 'rgba(11, 44, 52,0.12)';
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = 'rgba(10,44,52,0.06)';
+              e.currentTarget.style.background = 'rgba(11, 44, 52,0.06)';
             }}
           >
             ›
@@ -335,13 +335,13 @@ export function CollapsibleDateRangePicker({
                   border: isToday && !start && !end ? '1.5px solid rgba(230,126,34,0.4)' : 'none',
                   background:
                     start || end
-                      ? '#1a2e1a'
+                      ? '#0b2c34'
                       : inRange
-                        ? 'rgba(26,46,26,0.08)'
+                        ? 'rgba(11, 44, 52,0.08)'
                         : isHover && !past
-                          ? 'rgba(26,46,26,0.18)'
+                          ? 'rgba(11, 44, 52,0.18)'
                           : 'transparent',
-                  color: start || end ? '#fff' : past ? '#d5cfc7' : '#1a2e1a',
+                  color: start || end ? '#fff' : past ? '#d5cfc7' : '#0b2c34',
                   fontSize: 11,
                   fontWeight: start || end ? 700 : isToday ? 700 : 400,
                   cursor: past ? 'not-allowed' : 'pointer',
@@ -357,7 +357,7 @@ export function CollapsibleDateRangePicker({
           })}
         </div>
 
-        <div style={{ padding: '8px 16px 12px', borderTop: '1px solid rgba(10,44,52,0.05)', display: 'flex', alignItems: 'center', gap: 6 }}>
+        <div style={{ padding: '8px 16px 12px', borderTop: '1px solid rgba(11, 44, 52,0.05)', display: 'flex', alignItems: 'center', gap: 6 }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', flexShrink: 0 }} />
           <span style={{ fontSize: 9, color: '#b0a89e', fontWeight: 600, letterSpacing: '0.08em' }}>
             {selecting === 'start' ? "Sélectionnez la date d'arrivée" : 'Sélectionnez la date de départ'}

@@ -106,7 +106,7 @@ const RecommendProducer: React.FC = () => {
       formData.message || '—',
       '',
       '---',
-      'Envoyé depuis le formulaire Recommander un producteur - Terrago'
+      'Envoyé depuis le formulaire Recommander un producteur - TerraGo'
     ].join('\n');
 
     try {
@@ -159,20 +159,20 @@ const RecommendProducer: React.FC = () => {
         .rec-i {
           width: 100%;
           background: #faf8f5;
-          border: 1px solid rgba(10,44,52,.08);
+          border: 1px solid rgba(11, 44, 52,.08);
           border-radius: 12px;
           padding: 12px 16px;
           font-family: inherit;
           font-size: 13px;
-          color: #1a2e1a;
+          color: #0b2c34;
           outline: none;
           transition: all .18s ease;
           box-sizing: border-box;
         }
         .rec-i:focus {
-          border-color: #1a2e1a;
+          border-color: #0b2c34;
           background: #fff;
-          box-shadow: 0 0 0 3px rgba(26,46,26,.06);
+          box-shadow: 0 0 0 3px rgba(11, 44, 52,.06);
         }
         .rec-i::placeholder { color: #c4bdb4; }
 
@@ -304,31 +304,31 @@ const RecommendProducer: React.FC = () => {
           }}>
             <div style={{ width: 8, height: 8, background: '#e67e22', borderRadius: '50%', flexShrink: 0, animation: 'recPulse 2s infinite' }} />
             <span style={{ fontSize: 11, color: '#7a6e62' }}>
-              On a hâte de <strong style={{ color: '#1a2e1a' }}>découvrir vos pépites !</strong>
+              On a hâte de <strong style={{ color: '#0b2c34' }}>découvrir vos pépites !</strong>
             </span>
           </div>
 
           {submitSuccess ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 30px rgba(26,46,26,0.2)' }}>
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#0b2c34', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 30px rgba(11, 44, 52,0.2)' }}>
                 <svg width="24" height="24" viewBox="0 0 34 34" fill="none">
                   <path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <h2 className="font-display not-italic font-bold text-primary" style={{ fontSize: 22 }}>Recommandation envoyée !</h2>
               <p style={{ fontSize: 13, color: '#7a6e62', lineHeight: 1.7 }}>
-                Merci pour votre coup de pouce. On contactera <strong>{formData.producerName || 'ce producteur'}</strong> dans les prochains jours pour lui présenter Terrago.
+                Merci pour votre coup de pouce. On contactera <strong>{formData.producerName || 'ce producteur'}</strong> dans les prochains jours pour lui présenter TerraGo.
               </p>
               <button
                 onClick={() => setSubmitSuccess(false)}
                 style={{
                   background: 'none', border: 'none', fontFamily: 'inherit',
                   fontSize: 10, fontWeight: 700, letterSpacing: '0.15em',
-                  textTransform: 'uppercase', color: '#1a2e1a', cursor: 'pointer',
+                  textTransform: 'uppercase', color: '#0b2c34', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', gap: 6, padding: 0,
                 }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#e67e22')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#1a2e1a')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#0b2c34')}
               >
                 Envoyer une autre recommandation
                 <span className="material-symbols-outlined" style={{ fontSize: 16 }}>arrow_forward</span>
@@ -398,7 +398,7 @@ const RecommendProducer: React.FC = () => {
                 style={{
                   marginTop: 6,
                   width: '100%', padding: '14px 28px', borderRadius: 9999,
-                  background: '#1a2e1a', color: '#fff', border: 'none',
+                  background: '#0b2c34', color: '#fff', border: 'none',
                   fontFamily: 'inherit', fontSize: 10, fontWeight: 700,
                   letterSpacing: '0.15em', textTransform: 'uppercase',
                   cursor: isSubmitting ? 'not-allowed' : 'pointer',
@@ -406,8 +406,8 @@ const RecommendProducer: React.FC = () => {
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                   transition: 'background .2s ease',
                 }}
-                onMouseOver={e => { if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = '#2b3e24'; }}
-                onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background = '#1a2e1a'; }}
+                onMouseOver={e => { if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = '#081f26'; }}
+                onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background = '#0b2c34'; }}
               >
                 {isSubmitting ? (
                   <>
@@ -425,7 +425,7 @@ const RecommendProducer: React.FC = () => {
               </button>
 
               <p style={{ fontSize: 9, color: '#b0a89e', lineHeight: 1.7, textAlign: 'center' }}>
-                En envoyant ce formulaire, vous acceptez que Terrago utilise ces informations pour contacter le producteur recommandé. Nous ne revendons pas vos données.
+                En envoyant ce formulaire, vous acceptez que TerraGo utilise ces informations pour contacter le producteur recommandé. Nous ne revendons pas vos données.
               </p>
             </form>
           )}

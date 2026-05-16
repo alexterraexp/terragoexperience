@@ -15,12 +15,12 @@ export async function notifyTeam(params: {
   replyTo?: string;
 }): Promise<{ ok: true } | { ok: false; message: string }> {
   if (!process.env.RESEND_API_KEY) {
-    console.error('[Terrago] RESEND_API_KEY manquant — notifyTeam');
+    console.error('[TerraGo] RESEND_API_KEY manquant — notifyTeam');
     return { ok: false, message: 'Service de notification indisponible.' };
   }
   const to = process.env.NOTIFY_EMAIL;
   if (!to) {
-    console.warn('[Terrago] NOTIFY_EMAIL non défini — notifyTeam');
+    console.warn('[TerraGo] NOTIFY_EMAIL non défini — notifyTeam');
     return { ok: false, message: 'Service de notification indisponible.' };
   }
   try {

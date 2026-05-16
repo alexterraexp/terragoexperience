@@ -19,7 +19,7 @@ const PLACEHOLDER_KEY =
 
 if (!isSupabaseConfigured && process.env.NODE_ENV === 'development') {
   console.warn(
-    '[Terrago] NEXT_PUBLIC_SUPABASE_URL ou NEXT_PUBLIC_SUPABASE_ANON_KEY est manquant — définissez-les dans .env.local. Les requêtes Supabase échoueront tant que ce n’est pas fait.'
+    '[TerraGo] NEXT_PUBLIC_SUPABASE_URL ou NEXT_PUBLIC_SUPABASE_ANON_KEY est manquant — définissez-les dans .env.local. Les requêtes Supabase échoueront tant que ce n’est pas fait.'
   );
 }
 

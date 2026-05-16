@@ -3,9 +3,9 @@ import { Suspense } from 'react';
 import ProducersPage from '../../views/ProducersPage';
 
 export const metadata: Metadata = {
-  title: 'Partenaires agrotourisme & accueil de groupes – Terrago',
+  title: 'Partenaires agrotourisme & accueil de groupes – TerraGo',
   description:
-    'Découvrez les producteurs partenaires Terrago, prêts à accueillir des groupes d\'entreprise pour des expériences agrotouristiques authentiques en France.',
+    'Découvrez les producteurs partenaires TerraGo, prêts à accueillir des groupes d\'entreprise pour des expériences agrotouristiques authentiques en France.',
   robots: { index: true, follow: true },
 };
 

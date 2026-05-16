@@ -45,7 +45,7 @@ const NAV_ITEMS: NavItem[] = [
     path: '/partenaires',
     dropdown: [
       { label: 'Nos producteurs partenaires', description: 'Engagés pour produire bien et bon', path: '/partenaires',               emoji: '🌾' },
-      { label: 'Devenir partenaire',           description: 'Rejoindre le réseau Terrago',      path: '/nous-rejoindre',            emoji: '🤝' },
+      { label: 'Devenir partenaire',           description: 'Rejoindre le réseau TerraGo',      path: '/nous-rejoindre',            emoji: '🤝' },
       { label: 'Recommander un producteur',    description: 'Suggérer une pépite du terroir',   path: '/recommander-un-producteur', emoji: '⭐' },
     ],
   },
@@ -54,7 +54,7 @@ const NAV_ITEMS: NavItem[] = [
     path: '/a-propos',
     dropdown: [
       { label: 'Mission et engagements', description: "Notre raison d'être", path: '/mission-engagements', emoji: '🎯' },
-      { label: 'Qui sommes-nous',        description: "L'équipe Terrago",    path: '#equipe', targetPath: '/mission-engagements', emoji: '👋' },
+      { label: 'Qui sommes-nous',        description: "L'équipe TerraGo",    path: '#equipe', targetPath: '/mission-engagements', emoji: '👋' },
     ],
   },
 ];
@@ -76,7 +76,7 @@ const AccordionSection: React.FC<{
         onClick={onToggle}
         className="w-full flex items-center justify-between px-6 py-6 bg-transparent border-none cursor-pointer group min-h-[68px]"
       >
-        <span className="font-sans text-[17px] font-semibold text-[#1C2318] group-hover:text-[#D4751A] transition-colors duration-150 text-left leading-snug">
+        <span className="font-sans text-[17px] font-semibold text-[#0b2c34] group-hover:text-[#D4751A] transition-colors duration-150 text-left leading-snug">
           {nav.label}
         </span>
 
@@ -87,7 +87,7 @@ const AccordionSection: React.FC<{
             'transition-all duration-300',
             isOpen
               ? 'border-[#D4751A] bg-[#D4751A] text-white rotate-45'
-              : 'border-[#1C2318]/20 bg-transparent text-[#1C2318] group-hover:border-[#D4751A] group-hover:text-[#D4751A]',
+              : 'border-[#0b2c34]/20 bg-transparent text-[#0b2c34] group-hover:border-[#D4751A] group-hover:text-[#D4751A]',
           ].join(' ')}
         >
           <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
@@ -117,7 +117,7 @@ const AccordionSection: React.FC<{
                   </span>
                 )}
 <div className="flex-1 min-w-0">
-                  <div className="font-sans text-[15px] font-semibold text-[#1C2318]/50 leading-snug">
+                  <div className="font-sans text-[15px] font-semibold text-[#0b2c34]/50 leading-snug">
                     {item.label}
                   </div>
                   {item.description && (
@@ -142,7 +142,7 @@ const AccordionSection: React.FC<{
                   </span>
                 )}
                 <div className="flex-1 min-w-0">
-                  <div className="font-sans text-[15px] font-semibold text-[#1C2318] group-hover:text-[#D4751A] transition-colors duration-150 leading-snug">
+                  <div className="font-sans text-[15px] font-semibold text-[#0b2c34] group-hover:text-[#D4751A] transition-colors duration-150 leading-snug">
                     {item.label}
                   </div>
                   {item.description && (
@@ -231,6 +231,9 @@ const Header: React.FC = () => {
   };
 
   // Pages avec héro plein écran où le header doit être transparent en haut de page
+  const isSeminaireDetailPage =
+    /^\/seminaires\/offres\/[^/]+$/.test(pathname ?? '') ||
+    /^\/seminaires-entreprise\/offres\/[^/]+$/.test(pathname ?? '');
   const hasHeroTransparent = (
     pathname === '/' ||
     pathname === '/demande-seminaire' ||
@@ -254,7 +257,7 @@ const Header: React.FC = () => {
       ? 'text-[#D4751A] after:scale-x-100'
       : (isHeroTransparent
           ? 'text-white hover:text-white after:scale-x-0 hover:after:scale-x-100 after:bg-white'
-          : 'text-[#1C2318] hover:text-[#D4751A] after:scale-x-0 hover:after:scale-x-100'),
+          : 'text-[#0b2c34] hover:text-[#D4751A] after:scale-x-0 hover:after:scale-x-100'),
   ].join(' ');
 
   return (
@@ -264,24 +267,36 @@ const Header: React.FC = () => {
         className={[
           'fixed top-0 w-full z-[80] h-[84px] font-sans',
           'border-b transition-all duration-300',
-          isScrolled
-            ? 'bg-white/80 lg:bg-white/95 backdrop-blur-[18px] border-transparent shadow-[0_4px_32px_rgba(28,35,24,0.08)]'
-            : isHeroTransparent
-              ? 'bg-transparent border-transparent shadow-none'
-              : 'bg-white border-black/[0.08]',
+          isSeminaireDetailPage &&
+            'max-lg:h-0 max-lg:border-0 max-lg:bg-transparent max-lg:shadow-none max-lg:pointer-events-none max-lg:overflow-visible',
+          isSeminaireDetailPage
+            ? isScrolled
+              ? 'lg:bg-white/95 lg:backdrop-blur-[18px] lg:border-transparent lg:shadow-[0_4px_32px_rgba(28,35,24,0.08)]'
+              : 'lg:bg-white lg:border-black/[0.08] lg:shadow-none'
+            : isScrolled
+              ? 'bg-white/80 lg:bg-white/95 backdrop-blur-[18px] border-transparent shadow-[0_4px_32px_rgba(28,35,24,0.08)]'
+              : isHeroTransparent
+                ? 'bg-transparent border-transparent shadow-none'
+                : 'bg-white border-black/[0.08]',
         ].join(' ')}
       >
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12 h-full flex items-center justify-between gap-4">
+        <div className={[
+          'max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12 h-full flex items-center justify-between gap-4',
+          isSeminaireDetailPage && 'max-lg:h-0 max-lg:p-0 max-lg:overflow-visible',
+        ].join(' ')}>
 
           {/* Logo */}
             <Link
               href="/"
-              className="flex items-center group shrink-0"
+              className={[
+                'flex items-center group shrink-0',
+                isSeminaireDetailPage && 'max-lg:hidden',
+              ].filter(Boolean).join(' ')}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
             <img
               src="/logo.png"
-              alt="Terrago"
+              alt="TerraGo"
               className={[
                 'h-[4.5rem] sm:h-[4.75rem] md:h-[5.25rem] lg:h-[96px] w-auto max-h-[95%] object-contain transition-transform duration-300 group-hover:scale-105',
                 isHeroTransparent ? 'brightness-0 invert' : '',
@@ -319,17 +334,23 @@ const Header: React.FC = () => {
           </nav>
 
           {/* CTA + hamburger */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className={[
+            'flex items-center gap-3 shrink-0',
+            isSeminaireDetailPage &&
+              'max-lg:fixed max-lg:top-[calc(12px+env(safe-area-inset-top,0px))] max-lg:right-[max(16px,env(safe-area-inset-right,0px))] max-lg:z-[85] max-lg:pointer-events-auto',
+          ].filter(Boolean).join(' ')}
+          >
             <Link
               href="/demande-seminaire?openModal=true"
               className={[
                 'hidden sm:inline-flex items-center gap-2 rounded-full',
+                isSeminaireDetailPage && 'max-lg:!hidden',
                 'px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5',
                 'font-sans text-[9px] font-bold uppercase tracking-[0.08em]',
                 'transition-all duration-200 hover:-translate-y-px whitespace-nowrap shrink-0',
                 isHeroTransparent
-                  ? 'bg-white/90 text-[#1C2318] hover:bg-white'
-                  : 'bg-[#1C2318] text-white hover:bg-[#3A4F32]',
+                  ? 'bg-white/90 text-[#0b2c34] hover:bg-white'
+                  : 'bg-[#0b2c34] text-white hover:bg-[#081f26]',
               ].join(' ')}
             >
               <span className="w-[7px] h-[7px] bg-[#D4751A] rounded-full inline-block flex-shrink-0" />
@@ -340,7 +361,12 @@ const Header: React.FC = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label={isMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
               aria-expanded={isMenuOpen}
-              className="lg:hidden size-10 flex items-center justify-center text-[#1C2318] rounded-xl bg-neutral-100 border border-black/5 active:scale-90 transition-transform"
+              className={[
+                'lg:hidden flex items-center justify-center active:scale-90 transition-transform',
+                isSeminaireDetailPage
+                  ? 'max-lg:size-11 max-lg:rounded-full max-lg:bg-black/40 max-lg:backdrop-blur-md max-lg:border max-lg:border-white/25 max-lg:text-white'
+                  : 'size-10 rounded-xl bg-neutral-100 border border-black/5 text-[#0b2c34]',
+              ].join(' ')}
             >
               <span className="material-symbols-outlined text-2xl">
                 {isMenuOpen ? 'close' : 'menu'}
@@ -378,7 +404,7 @@ const Header: React.FC = () => {
                       key={item.label}
                       className="flex items-center justify-between gap-3 px-4 py-[11px] rounded-xl w-full font-sans cursor-default"
                     >
-                      <span className="font-sans text-[13.5px] font-semibold text-[#1C2318]/50 whitespace-nowrap">
+                      <span className="font-sans text-[13.5px] font-semibold text-[#0b2c34]/50 whitespace-nowrap">
                         {item.label}
                       </span>
                       <span className="px-6 py-1 rounded-full bg-[#D4751A] text-white text-[8px] font-bold uppercase tracking-wide flex-shrink-0">
@@ -394,7 +420,7 @@ const Header: React.FC = () => {
                         font-sans border-none bg-transparent cursor-pointer
                         transition-colors duration-150 group"
                     >
-                      <span className="font-sans text-[13.5px] font-semibold text-[#1C2318] group-hover:text-[#D4751A] transition-colors duration-150 whitespace-nowrap">
+                      <span className="font-sans text-[13.5px] font-semibold text-[#0b2c34] group-hover:text-[#D4751A] transition-colors duration-150 whitespace-nowrap">
                         {item.label}
                       </span>
                       <span className="text-[#D4751A] text-sm opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150">
@@ -428,13 +454,13 @@ const Header: React.FC = () => {
 
             {/* Header du panel */}
             <div className="flex-shrink-0 flex items-center justify-between px-6 h-[84px] border-b border-black/[0.07]">
-              <span className="font-sans font-semibold text-[13px] uppercase tracking-[0.22em] text-[#1C2318]">
+              <span className="font-sans font-semibold text-[13px] uppercase tracking-[0.22em] text-[#0b2c34]">
                 Menu
               </span>
               <button
                 onClick={() => setIsMenuOpen(false)}
                 aria-label="Fermer le menu"
-                className="flex items-center gap-2 text-[#1C2318] hover:text-[#D4751A] transition-colors duration-150"
+                className="flex items-center gap-2 text-[#0b2c34] hover:text-[#D4751A] transition-colors duration-150"
               >
                 <span className="font-sans text-[12px] font-semibold uppercase tracking-[0.14em]">Fermer</span>
                 <span className="text-base leading-none">✕</span>
@@ -472,7 +498,7 @@ const Header: React.FC = () => {
                   router.push('/demande-seminaire?openModal=true');
                 }}
                 className="flex items-center justify-center gap-1.5 w-full
-                  bg-[#1C2318] text-white rounded-lg py-2.5
+                  bg-[#0b2c34] text-white rounded-lg py-2.5
                   font-sans text-[10px] font-extrabold uppercase tracking-[0.14em]
                   transition-all duration-200 hover:bg-[#D4751A] active:scale-95"
               >

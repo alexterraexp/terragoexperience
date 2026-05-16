@@ -88,7 +88,7 @@ export function VilleDepartInput({ value, onChange, placeholder = 'Ex. Paris, Ly
             padding: '6px 0',
             listStyle: 'none',
             background: '#fff',
-            border: '1px solid rgba(10,44,52,0.1)',
+            border: '1px solid rgba(11, 44, 52,0.1)',
             borderRadius: 12,
             boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
             maxHeight: 220,
@@ -115,7 +115,7 @@ export function VilleDepartInput({ value, onChange, placeholder = 'Ex. Paris, Ly
                   fontFamily: 'inherit',
                   fontSize: 13,
                   fontWeight: 600,
-                  color: '#1a2e1a',
+                  color: '#0b2c34',
                   cursor: 'pointer',
                 }}
               >

@@ -1,4 +1,4 @@
-# 🚀 Guide de Démarrage - Terrago
+# 🚀 Guide de Démarrage - TerraGo
 
 Ce guide vous explique comment lancer votre site web pour la première fois dans Cursor.
 

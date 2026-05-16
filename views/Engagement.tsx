@@ -39,7 +39,7 @@ const VALEURS = [
     icon: 'workspace_premium',
     title: 'Le savoir-faire',
     badge: 'FRANÇAIS',
-    color: '#1e291a',
+    color: '#0b2c34',
     image: 'https://images.unsplash.com/photo-1594928357228-3075ba0e4674?q=80&w=1293&auto=format&fit=crop&ixlib=rb-4.1.0',
     text: "Transmettre des gestes ancestraux, préserver des techniques rares, honorer ceux qui consacrent leur vie à l'excellence d'un produit. Le savoir-faire français est un patrimoine vivant — nous le célébrons.",
   },
@@ -47,7 +47,7 @@ const VALEURS = [
     icon: 'nature',
     title: 'La nature',
     badge: 'ET VOTRE SANTÉ',
-    color: '#5a7a2e',
+    color: '#1a6b7a',
     image: 'https://images.unsplash.com/photo-1720420865912-2bbd6bfa1e85?q=80&w=3131&auto=format&fit=crop&ixlib=rb-4.1.0',
     text: "Reconnecter chacun au vivant, aux saisons, aux sols. Comprendre d'où vient ce qu'on mange, respirer autrement, poser les mains sur la terre. La nature n'est pas un décor — c'est notre fondation.",
   },
@@ -55,13 +55,13 @@ const VALEURS = [
 
 const TEMOIGNAGES = [
   {
-    text: "Je suis venu pour un séminaire, je suis reparti avec de la boue sur mes baskets neuves et un immense respect pour ceux qui nous nourrissent. Mes chaussures boudent, mais mon cœur est ravi. Terrago, c’est du vrai.",
+    text: "Je suis venu pour un séminaire, je suis reparti avec de la boue sur mes baskets neuves et un immense respect pour ceux qui nous nourrissent. Mes chaussures boudent, mais mon cœur est ravi. TerraGo, c’est du vrai.",
     author: "********",
     role: "Consultant informatique",
     initial: "S",
   },
   {
-    text: "Je pensais faire une petite balade, je me suis retrouvé au cœur du réacteur agricole. On sent que l'équipe Terrago y met tout son cœur (et beaucoup d'énergie). C'est sincère, c'est brut, c'est génial.",
+    text: "Je pensais faire une petite balade, je me suis retrouvé au cœur du réacteur agricole. On sent que l'équipe TerraGo y met tout son cœur (et beaucoup d'énergie). C'est sincère, c'est brut, c'est génial.",
     author: "********",
     role: "Développeur informatique",
     initial: "T",
@@ -86,15 +86,16 @@ const EQUIPE = [
     role: 'Co-fondateur',
     bio: "Ingénieur des Mines passé par les stratégies de décarbonation, Jérôme a fini par choisir le terrain, le vrai. Aujourd'hui, il met sa rigueur au service du vivant pour que chaque immersion soutienne concrètement nos producteurs. Son moteur ? Réconcilier le monde d'où il vient avec la terre qui nous nourrit.",
     initials: 'JP',
-    color: '#1e291a',
+    color: '#0b2c34',
     linkedin: 'https://www.linkedin.com/in/jeromepeyronengineer/',
   },
   {
     name: "Alex Soulard",
     role: 'Co-fondateur',
-    bio: "Prof le jour et mordu d'événementiel sportif le reste du temps, Alex vit pour l'aventure et les rencontres. Amoureux des bons produits et des grands espaces, il adore par-dessus tout partager un bout de terroir avec ceux qu'il croise. Avec Terrago, il crée ces liens simples et authentiques qui font du bien à tout le monde.",
+    bio: "Professeur le jour et passionné d'événementiel le reste du temps, Alex aime créer des expériences humaines et authentiques. Amoureux du terroir, des grands espaces et des rencontres sincères, il imagine avec TerraGo des moments de partage à la découverte de producteurs engagés et de territoires vivants.",
     initials: 'AS',
     color: '#f78d00',
+    image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/alex.png',
     linkedin: 'https://www.linkedin.com/in/alexsoulard-ev/',
   },
 ];
@@ -162,17 +163,17 @@ const Engagement: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <ScrollAnimate>
               <span className="inline-block px-3 py-1 bg-[#f78d00] text-white font-bold tracking-[0.3em] uppercase text-[9px] rounded-full mb-6">Notre mission</span>
-              <h2 className="text-3xl sm:text-5xl font-bold text-[#1e291a] leading-tight mb-6">
+              <h2 className="text-3xl sm:text-5xl font-bold text-[#0b2c34] leading-tight mb-6">
                 <span className="font-sans not-italic text-3xl sm:text-5xl">Reconnecter </span>
                 <span className="font-display italic text-4xl sm:text-6xl">l'humain à la terre.</span>
               </h2>
               <p className="text-gray-600 text-base leading-relaxed mb-6">
-                Dans un monde qui s'accélère, Terrago ouvre des parenthèses. Des moments où l'on pose les mains sur la terre, où l'on écoute les producteurs parler de leurs sols, où l'on comprend que derrière chaque produit, il y a une vie, un engagement, une passion.
+                Dans un monde qui s'accélère, TerraGo ouvre des parenthèses. Des moments où l'on pose les mains sur la terre, où l'on écoute les producteurs parler de leurs sols, où l'on comprend que derrière chaque produit, il y a une vie, un engagement, une passion.
               </p>
               <p className="text-gray-600 text-base leading-relaxed mb-8">
                 Notre mission : créer des ponts durables entre ceux qui produisent et ceux qui consomment, à travers des expériences immersives qui laissent une trace.
               </p>
-              <Link href="/seminaires-entreprise" className="inline-block bg-[#1e291a] text-white px-8 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#f78d00] transition-all duration-300">
+              <Link href="/seminaires-entreprise" className="inline-block bg-[#0b2c34] text-white px-8 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#f78d00] transition-all duration-300">
                 Découvrir nos séminaires d'entreprise →
               </Link>
             </ScrollAnimate>
@@ -193,7 +194,7 @@ const Engagement: React.FC = () => {
                     </div>
                     <div>
                       <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Producteurs sélectionnés</div>
-                      <div className="text-sm font-bold text-[#1e291a]">Pour leur authenticité</div>
+                      <div className="text-sm font-bold text-[#0b2c34]">Pour leur authenticité</div>
                     </div>
                   </div>
                 </div>
@@ -209,8 +210,8 @@ const Engagement: React.FC = () => {
           <ScrollAnimate>
             <div className="text-center mb-16">
               <span className="inline-block px-3 py-1 bg-[#f78d00] text-white font-bold tracking-[0.3em] uppercase text-[9px] rounded-full mb-6">Notre engagement</span>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#1e291a] leading-tight">
-                <span className="font-sans not-italic text-3xl sm:text-4xl">Chez Terrago, nous avons une </span>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0b2c34] leading-tight">
+                <span className="font-sans not-italic text-3xl sm:text-4xl">Chez TerraGo, nous avons une </span>
                 <span className="font-display italic text-5xl sm:text-5xl">boussole.</span>
               </h2>
               <p className="text-gray-500 text-base mt-4 max-w-xl mx-auto">Pas pour trouver le nord, mais pour garder le cap sur ce qui compte vraiment.</p>
@@ -269,11 +270,11 @@ const Engagement: React.FC = () => {
           <ScrollAnimate>
             <div className="text-center mb-16">
               <span className="inline-block px-3 py-1 bg-[#f78d00] text-white font-bold tracking-[0.3em] uppercase text-[9px] rounded-full mb-6">L'équipe</span>
-              <h2 className="text-4xl sm:text-5xl font-bold text-[#1e291a] leading-tight">
+              <h2 className="text-4xl sm:text-5xl font-bold text-[#0b2c34] leading-tight">
                 <span className="font-sans not-italic text-4xl sm:text-5xl">Des humains </span>
                 <span className="font-display italic text-5xl sm:text-6xl">passionnés.</span>
               </h2>
-              <p className="text-gray-500 text-base mt-4 max-w-xl mx-auto">Terrago c'est avant tout une équipe qui croit profondément que les meilleures expériences naissent de vraies rencontres.</p>
+              <p className="text-gray-500 text-base mt-4 max-w-xl mx-auto">TerraGo c'est avant tout une équipe qui croit profondément que les meilleures expériences naissent de vraies rencontres.</p>
             </div>
           </ScrollAnimate>
 
@@ -293,12 +294,20 @@ const Engagement: React.FC = () => {
                     </a>
                   ) : null}
                   <div
-                    className="w-20 h-20 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-5 shadow-lg"
-                    style={{ background: m.color }}
+                    className="w-20 h-20 rounded-full mx-auto mb-5 shadow-lg overflow-hidden flex items-center justify-center"
+                    style={{ background: m.image ? undefined : m.color }}
                   >
-                    {m.initials}
+                    {m.image ? (
+                      <img
+                        src={m.image}
+                        alt={m.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-white text-2xl font-bold">{m.initials}</span>
+                    )}
                   </div>
-                  <h3 className="text-lg font-bold text-[#1e291a] mb-1 font-sans not-italic">{m.name}</h3>
+                  <h3 className="text-lg font-bold text-[#0b2c34] mb-1 font-sans not-italic">{m.name}</h3>
                   <p className="text-[10px] font-bold text-[#f78d00] uppercase tracking-wider mb-4">{m.role}</p>
                   <p className="text-gray-500 text-sm leading-relaxed">{m.bio}</p>
                 </div>
@@ -314,7 +323,7 @@ const Engagement: React.FC = () => {
           <ScrollAnimate>
             <div className="text-center mb-16">
               <span className="inline-block px-3 py-1 bg-[#f78d00] text-white font-bold tracking-[0.3em] uppercase text-[9px] rounded-full mb-6">Témoignages</span>
-              <h2 className="text-4xl sm:text-5xl font-bold text-[#1e291a] leading-tight">
+              <h2 className="text-4xl sm:text-5xl font-bold text-[#0b2c34] leading-tight">
                 <span className="font-sans not-italic text-3xl sm:text-4xl">Ils ont vécu </span>
                 <span className="font-display italic text-4xl sm:text-5xl">l'expérience.</span>
               </h2>
@@ -332,11 +341,11 @@ const Engagement: React.FC = () => {
                   </div>
                   <p className="text-gray-600 text-sm leading-relaxed italic flex-1 mb-6">"{t.text}"</p>
                   <div className="flex items-center gap-3 mt-auto pt-5 border-t border-black/5">
-                    <div className="w-10 h-10 rounded-full bg-[#1e291a] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[#0b2c34] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                       {t.initial}
                     </div>
                     <div>
-                      <div className="text-sm font-bold text-[#1e291a]">{t.author}</div>
+                      <div className="text-sm font-bold text-[#0b2c34]">{t.author}</div>
                       <div className="text-[10px] text-gray-400">{t.role}</div>
                     </div>
                   </div>
@@ -352,7 +361,7 @@ const Engagement: React.FC = () => {
         <div className="max-w-5xl mx-auto">
           <ScrollAnimate>
             <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-[#1e291a]">
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#0b2c34]">
                 <span className="font-sans not-italic text-3xl sm:text-4xl">Envie d'aller </span>
                 <span className="font-display italic text-4xl sm:text-5xl">plus loin ?</span>
               </h2>
@@ -366,7 +375,7 @@ const Engagement: React.FC = () => {
                   alt="Séminaires entreprise"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1e291a]/90 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0b2c34]/90 to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="text-[9px] font-bold text-[#f78d00] uppercase tracking-wider mb-1">Pour les entreprises</div>
                   <h3 className="text-white text-xl font-bold">Séminaires d'entreprise →</h3>
@@ -380,7 +389,7 @@ const Engagement: React.FC = () => {
                   alt="Producteurs partenaires"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1e291a]/90 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0b2c34]/90 to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="text-[9px] font-bold text-[#f9c06a] uppercase tracking-wider mb-1">Nos partenaires</div>
                   <h3 className="text-white text-xl font-bold">Producteurs partenaires →</h3>
@@ -397,7 +406,7 @@ const Engagement: React.FC = () => {
           <ScrollAnimate>
             <div
               className="relative rounded-3xl overflow-hidden text-center py-20 px-8"
-              style={{ background: 'linear-gradient(135deg, #1e291a 0%, #2d4a2d 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #0b2c34 0%, #0f4a58 100%)' }}
             >
               <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
               <div className="relative z-10">

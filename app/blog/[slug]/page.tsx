@@ -71,13 +71,13 @@ export async function generateMetadata(
     .eq('slug', slug)
     .single();
 
-  if (!data) return { title: 'Article introuvable – Terrago' };
+  if (!data) return { title: 'Article introuvable – TerraGo' };
 
   return {
-    title: `${data.title} – Terrago`,
+    title: `${data.title} – TerraGo`,
     description: data.description ?? undefined,
     openGraph: {
-      title: `${data.title} – Terrago`,
+      title: `${data.title} – TerraGo`,
       description: data.description ?? undefined,
       images: data.cover_url ? [data.cover_url] : [],
       type: 'article',
@@ -117,7 +117,7 @@ function NotFoundPage() {
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: 'italic', fontWeight: 600,
           fontSize: 'clamp(1.5rem, 4vw, 2rem)',
-          color: '#1a2e1a', lineHeight: 1.3, margin: '0 0 1rem',
+          color: '#0b2c34', lineHeight: 1.3, margin: '0 0 1rem',
         }}>
           Ooooh, cet article semble avoir disparu dans les sillons...
         </h1>
@@ -129,7 +129,7 @@ function NotFoundPage() {
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href="/blog" style={{
             display: 'inline-block', padding: '13px 28px', borderRadius: 9999,
-            background: '#1a2e1a', color: '#fff',
+            background: '#0b2c34', color: '#fff',
             fontFamily: "'Poppins', sans-serif", fontSize: 12, fontWeight: 700,
             letterSpacing: '0.08em', textTransform: 'uppercase' as const,
             textDecoration: 'none',
@@ -163,8 +163,8 @@ function MarkdownRenderer({ content }: { content: string }) {
             id={slugify(String(children))}
             style={{
               fontFamily: "'Poppins', sans-serif", fontWeight: 700,
-              fontSize: '1.6rem', color: '#1a2e1a',
-              borderBottom: '1px solid rgba(26,46,26,0.08)',
+              fontSize: '1.6rem', color: '#0b2c34',
+              borderBottom: '1px solid rgba(11, 44, 52,0.08)',
               paddingBottom: '0.5rem',
               marginTop: '3rem', marginBottom: '1rem', lineHeight: 1.3,
             }}
@@ -175,7 +175,7 @@ function MarkdownRenderer({ content }: { content: string }) {
         h3: ({ children }) => (
           <h3 style={{
             fontFamily: "'Poppins', sans-serif", fontWeight: 700,
-            fontSize: '1.2rem', color: '#1a2e1a',
+            fontSize: '1.2rem', color: '#0b2c34',
             marginTop: '2rem', marginBottom: '0.75rem', lineHeight: 1.35,
           }}>
             {children}
@@ -187,7 +187,7 @@ function MarkdownRenderer({ content }: { content: string }) {
           </p>
         ),
         strong: ({ children }) => (
-          <strong style={{ color: '#1a2e1a' }}>{children}</strong>
+          <strong style={{ color: '#0b2c34' }}>{children}</strong>
         ),
         a: ({ href, children }) => (
           <a href={href} style={{ color: '#e67e22', textDecoration: 'underline' }}>
@@ -233,7 +233,7 @@ function MarkdownRenderer({ content }: { content: string }) {
                 padding: '4px 12px',
                 fontSize: 10,
                 fontWeight: 600,
-                color: '#1a2e1a',
+                color: '#0b2c34',
                 letterSpacing: '0.06em',
                 display: 'block',
               }}>
@@ -271,7 +271,7 @@ export default async function BlogArticlePage(
   const headings = post.content ? extractH2Headings(post.content) : [];
 
   return (
-    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', color: '#1a2e1a', minHeight: '100vh' }}>
+    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', color: '#0b2c34', minHeight: '100vh' }}>
 
       {/* Responsive helpers */}
       <style>{`
@@ -386,19 +386,19 @@ export default async function BlogArticlePage(
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '1.5rem' }}>
               <img
                 src={DEFAULT_AVATAR}
-                alt="Terrago"
-                style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(26,46,26,0.1)' }}
+                alt="TerraGo"
+                style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(11, 44, 52,0.1)' }}
               />
               <div>
                 <div style={{ fontSize: 11, color: '#9a9080', marginBottom: 2 }}>Écrit par</div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#1a2e1a' }}>Terrago</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#0b2c34' }}>TerraGo</div>
                 <div style={{ fontSize: 11, color: '#9a9080' }}>
                   {formatDate(post.published_at ?? post.created_at)}
                 </div>
               </div>
             </div>
 
-            <div style={{ height: 1, background: 'rgba(26,46,26,0.08)', marginBottom: '1.5rem' }} />
+            <div style={{ height: 1, background: 'rgba(11, 44, 52,0.08)', marginBottom: '1.5rem' }} />
 
             {headings.length > 0 && <TableOfContents headings={headings} />}
           </aside>
@@ -413,11 +413,11 @@ export default async function BlogArticlePage(
                 </p>
               )}
 
-            <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(26,46,26,0.08)' }}>
+            <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(11, 44, 52,0.08)' }}>
               <Link href="/blog" style={{
                 fontFamily: "'Poppins', sans-serif",
                 fontSize: 12, textTransform: 'uppercase' as const,
-                letterSpacing: '0.12em', color: '#1a2e1a',
+                letterSpacing: '0.12em', color: '#0b2c34',
                 textDecoration: 'none', fontWeight: 700,
               }}>
                 ← Retour au blog
@@ -429,7 +429,7 @@ export default async function BlogArticlePage(
           <aside className="col-right" style={{ position: 'sticky', top: 100 }}>
             <div style={{
               background: '#fff', borderRadius: 20,
-              border: '1px solid rgba(26,46,26,0.08)', overflow: 'hidden',
+              border: '1px solid rgba(11, 44, 52,0.08)', overflow: 'hidden',
             }}>
               <img
                 src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/potager-chateau-menthon.webp"
@@ -439,7 +439,7 @@ export default async function BlogArticlePage(
               <div style={{ padding: 24 }}>
                 <h3 style={{
                   fontFamily: "'Poppins', sans-serif", fontWeight: 700,
-                  color: '#1a2e1a', fontSize: '1rem', lineHeight: 1.4, margin: '0 0 10px',
+                  color: '#0b2c34', fontSize: '1rem', lineHeight: 1.4, margin: '0 0 10px',
                 }}>
                   Organisez votre séminaire au vert
                 </h3>
@@ -448,7 +448,7 @@ export default async function BlogArticlePage(
                 </p>
                 <Link href="/seminaires-entreprise/offres" style={{
                   display: 'block', padding: '13px 0', borderRadius: 12,
-                  background: '#1a2e1a', color: '#fff',
+                  background: '#0b2c34', color: '#fff',
                   fontFamily: "'Poppins', sans-serif", fontSize: 12, fontWeight: 700,
                   letterSpacing: '0.08em', textTransform: 'uppercase' as const,
                   textAlign: 'center' as const, textDecoration: 'none',

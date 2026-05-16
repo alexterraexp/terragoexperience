@@ -5,10 +5,10 @@ import BlogCards from './BlogCards';
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
-  title: 'Blog séminaires & terroir – Terrago',
+  title: 'Blog séminaires & terroir – TerraGo',
   description: 'Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français.',
   openGraph: {
-    title: 'Blog séminaires & terroir – Terrago',
+    title: 'Blog séminaires & terroir – TerraGo',
     description: 'Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français.',
     url: 'https://terragoexperiences.fr/blog',
     type: 'website',
@@ -73,7 +73,7 @@ export default async function BlogPage() {
   const soonPosts = soonFromDB.slice(0, 3);
 
   return (
-    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', color: '#1a2e1a', minHeight: '100vh' }}>
+    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', color: '#0b2c34', minHeight: '100vh' }}>
 
       {/* ── HERO ── */}
       <div style={{ position: 'relative', height: '72vh', minHeight: 480, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden' }}>
@@ -101,10 +101,10 @@ export default async function BlogPage() {
         {/* ── SECTION HEAD ── */}
         <div style={{ textAlign: 'center', paddingTop: '2.5rem', marginBottom: '1.5rem' }}>
           <h2 style={{ margin: '0 0 .75rem', lineHeight: 1.15 }}>
-            <span style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700, fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', color: '#1a2e1a' }}>
+            <span style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700, fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', color: '#0b2c34' }}>
               Articles{' '}
             </span>
-            <em style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 600, fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#1a2e1a' }}>
+            <em style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 600, fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#0b2c34' }}>
               à la Une
             </em>
           </h2>
@@ -117,7 +117,7 @@ export default async function BlogPage() {
 
         {/* ── NEWSLETTER ── */}
         <div style={{
-          background: '#1a2e1a', borderRadius: 24,
+          background: '#0b2c34', borderRadius: 24,
           padding: 'clamp(2.5rem, 5vw, 4rem) clamp(2rem, 5vw, 5rem)',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           gap: '2rem', flexWrap: 'wrap' as const, marginBottom: 'clamp(1.5rem, 3vw, 2.5rem)',

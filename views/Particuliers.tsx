@@ -141,20 +141,20 @@ const Particuliers: React.FC = () => {
         .part-i {
           width: 100%;
           background: #faf8f5;
-          border: 1px solid rgba(10,44,52,.08);
+          border: 1px solid rgba(11, 44, 52,.08);
           border-radius: 12px;
           padding: 12px 16px;
           font-family: inherit;
           font-size: 13px;
-          color: #1a2e1a;
+          color: #0b2c34;
           outline: none;
           transition: all .18s ease;
           box-sizing: border-box;
         }
         .part-i:focus {
-          border-color: #1a2e1a;
+          border-color: #0b2c34;
           background: #fff;
-          box-shadow: 0 0 0 3px rgba(26,46,26,.06);
+          box-shadow: 0 0 0 3px rgba(11, 44, 52,.06);
         }
         .part-i::placeholder { color: #c4bdb4; }
         @keyframes partSpin { to { transform: rotate(360deg); } }
@@ -226,14 +226,14 @@ const Particuliers: React.FC = () => {
 
 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
   <div style={{ width: 215, height: 180, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
-    <img src="https://images.unsplash.com/photo-1682996055064-599bec77fc62?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Séjour groupe terroir – Terrago" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+    <img src="https://images.unsplash.com/photo-1682996055064-599bec77fc62?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Séjour groupe terroir – TerraGo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
   </div>
 </div>
 
 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
   {[
-    { src: 'https://images.unsplash.com/photo-1767034243078-c6d0dde763d8?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Expérience gastronomique terroir – Terrago' },
-    { src: 'https://images.unsplash.com/photo-1765966879544-cadc5b2af695?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Immersion nature en groupe – Terrago' },
+    { src: 'https://images.unsplash.com/photo-1767034243078-c6d0dde763d8?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Expérience gastronomique terroir – TerraGo' },
+    { src: 'https://images.unsplash.com/photo-1765966879544-cadc5b2af695?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Immersion nature en groupe – TerraGo' },
   ].map(({ src, alt }, i) => (
     <div key={i} style={{ width: 155, height: 170, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
       <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -243,9 +243,9 @@ const Particuliers: React.FC = () => {
 
 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
   {[
-    { src: 'https://images.unsplash.com/photo-1600265360126-aac005b63361?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Copains et terroir, et producteurs France – Terrago' },
-    { src: 'https://images.unsplash.com/photo-1770453572726-f51592710ca6?q=80&w=2669&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Séjour immersif entre amis – Terrago' },
-    { src: 'https://images.unsplash.com/photo-1666955546775-f39d76308be7?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Expérience unique chez un artisan – Terrago' },
+    { src: 'https://images.unsplash.com/photo-1600265360126-aac005b63361?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Copains et terroir, et producteurs France – TerraGo' },
+    { src: 'https://images.unsplash.com/photo-1770453572726-f51592710ca6?q=80&w=2669&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Séjour immersif entre amis – TerraGo' },
+    { src: 'https://images.unsplash.com/photo-1666955546775-f39d76308be7?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Expérience unique chez un artisan – TerraGo' },
   ].map(({ src, alt }, i) => (
     <div key={i} style={{ width: 155, height: 170, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
       <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -259,14 +259,14 @@ const Particuliers: React.FC = () => {
 
 <div style={{ display: 'flex', justifyContent: 'flex-start', gap: 12 }}>
   <div style={{ width: 215, height: 180, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
-    <img src="https://images.unsplash.com/photo-1640957301215-f665baf6ed1d?q=80&w=1289&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Séjour terroir entre amis France – Terrago" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+    <img src="https://images.unsplash.com/photo-1640957301215-f665baf6ed1d?q=80&w=1289&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Séjour terroir entre amis France – TerraGo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
   </div>
 </div>
 
 <div style={{ display: 'flex', justifyContent: 'flex-start', gap: 12 }}>
   {[
-    { src: 'https://images.unsplash.com/photo-1656711695100-d6e39ddd6cb5?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Expérience immersive chez un producteur – Terrago' },
-    { src: 'https://images.unsplash.com/photo-1662960501707-1892f9b540f5?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Découverte du terroir en groupe – Terrago' },
+    { src: 'https://images.unsplash.com/photo-1656711695100-d6e39ddd6cb5?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Expérience immersive chez un producteur – TerraGo' },
+    { src: 'https://images.unsplash.com/photo-1662960501707-1892f9b540f5?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Découverte du terroir en groupe – TerraGo' },
   ].map(({ src, alt }, i) => (
     <div key={i} style={{ width: 155, height: 170, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
       <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -276,9 +276,9 @@ const Particuliers: React.FC = () => {
 
 <div style={{ display: 'flex', justifyContent: 'flex-start', gap: 12 }}>
   {[
-    { src: 'https://images.unsplash.com/photo-1604300721398-3f58fdf81780?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Activité nature entre amis – Terrago' },
-    { src: 'https://images.unsplash.com/photo-1650964794396-9b9efaccd585?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Séjour authentique terroir français – Terrago' },
-    { src: 'https://images.unsplash.com/photo-1610055885401-dba0225da39b?q=80&w=2274&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Week-end chez un producteur – Terrago' },
+    { src: 'https://images.unsplash.com/photo-1604300721398-3f58fdf81780?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Activité nature entre amis – TerraGo' },
+    { src: 'https://images.unsplash.com/photo-1650964794396-9b9efaccd585?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Séjour authentique terroir français – TerraGo' },
+    { src: 'https://images.unsplash.com/photo-1610055885401-dba0225da39b?q=80&w=2274&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Week-end chez un producteur – TerraGo' },
   ].map(({ src, alt }, i) => (
     <div key={i} style={{ width: 155, height: 170, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
       <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -326,7 +326,7 @@ const Particuliers: React.FC = () => {
             className="scroll-arrow"
           >
             <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M6 10L13 17L20 10" stroke="#1a2e1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M6 10L13 17L20 10" stroke="#0b2c34" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </div>
@@ -366,15 +366,15 @@ const Particuliers: React.FC = () => {
   <div className="w-full px-6 sm:px-8 lg:px-12">
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-screen-2xl mx-auto">
       {[
-        { icon: 'nature_people', label: 'Rencontres authentiques', text: 'Partez à la rencontre de producteurs passionnés qui vous ouvrent les portes de leur monde avec sincérité.', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/comte-producteur.jpg', alt: 'Rencontre authentique chez un producteur terroir – Terrago' },
-        { icon: 'eco', label: 'Les mains dans la terre', text: 'Récolter, fabriquer, goûter… Des activités vraies, au rythme des saisons et des savoir-faire locaux.', image: 'https://images.unsplash.com/photo-1635804368737-4f1db7422422?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Activité mains dans la terre séjour terroir – Terrago' },
-        { icon: 'restaurant', label: 'Repas du terroir', text: 'Des repas pensés autour des producteurs locaux. Chaque assiette raconte une histoire.', image: 'https://images.unsplash.com/photo-1604343934765-09774522a921?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Repas gastronomique terroir local – Terrago' },
-        { icon: 'key', label: 'Clé en main', text: 'Logement, activités, repas, transport… Une logistique invisible pour une expérience inoubliable.', image: 'https://images.unsplash.com/photo-1590692161886-cd6bcbcef687?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Séjour clé en main entre amis France – Terrago' },
+        { icon: 'nature_people', label: 'Rencontres authentiques', text: 'Partez à la rencontre de producteurs passionnés qui vous ouvrent les portes de leur monde avec sincérité.', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/comte-producteur.jpg', alt: 'Rencontre authentique chez un producteur terroir – TerraGo' },
+        { icon: 'eco', label: 'Les mains dans la terre', text: 'Récolter, fabriquer, goûter… Des activités vraies, au rythme des saisons et des savoir-faire locaux.', image: 'https://images.unsplash.com/photo-1635804368737-4f1db7422422?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Activité mains dans la terre séjour terroir – TerraGo' },
+        { icon: 'restaurant', label: 'Repas du terroir', text: 'Des repas pensés autour des producteurs locaux. Chaque assiette raconte une histoire.', image: 'https://images.unsplash.com/photo-1604343934765-09774522a921?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Repas gastronomique terroir local – TerraGo' },
+        { icon: 'key', label: 'Clé en main', text: 'Logement, activités, repas, transport… Une logistique invisible pour une expérience inoubliable.', image: 'https://images.unsplash.com/photo-1590692161886-cd6bcbcef687?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Séjour clé en main entre amis France – TerraGo' },
       ].map(item => (
         <div
           key={item.icon}
           className="group relative flex flex-col justify-end overflow-hidden rounded-[20px] cursor-pointer transition-all duration-300 min-h-[280px] sm:min-h-[320px]"
-          style={{ border: '1px solid rgba(26,46,26,0.07)' }}
+          style={{ border: '1px solid rgba(11, 44, 52,0.07)' }}
         >
           {/* Image de fond Unsplash */}
           <img
@@ -395,7 +395,7 @@ const Particuliers: React.FC = () => {
           <div className="relative z-10 flex flex-col items-center text-center p-6 pb-8 opacity-100 transition-opacity duration-300 group-hover:opacity-0 group-hover:z-0 pointer-events-none">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center mb-4 flex-shrink-0 shadow-lg"
-              style={{ background: 'rgba(255,255,255,0.95)', color: '#1a2e1a' }}
+              style={{ background: 'rgba(255,255,255,0.95)', color: '#0b2c34' }}
             >
               <span className="material-symbols-outlined text-2xl">{item.icon}</span>
             </div>
@@ -435,7 +435,7 @@ const Particuliers: React.FC = () => {
             className="scroll-arrow"
           >
             <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M6 10L13 17L20 10" stroke="#1a2e1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M6 10L13 17L20 10" stroke="#0b2c34" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </div>
@@ -473,9 +473,9 @@ const Particuliers: React.FC = () => {
             {submitSuccess ? (
               <div
                 className="w-full max-w-xl mx-auto lg:max-w-5xl xl:max-w-6xl text-center"
-                style={{ background: '#faf8f5', border: '1px solid rgba(26,46,26,0.07)', borderRadius: 24, padding: '48px 32px' }}
+                style={{ background: '#faf8f5', border: '1px solid rgba(11, 44, 52,0.07)', borderRadius: 24, padding: '48px 32px' }}
               >
-                <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 8px 30px rgba(26,46,26,0.25)' }}>
+                <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#0b2c34', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 8px 30px rgba(11, 44, 52,0.25)' }}>
                   <svg width="28" height="28" viewBox="0 0 34 34" fill="none">
                     <path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -487,7 +487,7 @@ const Particuliers: React.FC = () => {
               <form
                 onSubmit={handleSubmit}
                 className="w-full max-w-xl mx-auto lg:max-w-5xl xl:max-w-6xl"
-                style={{ background: '#ffffff', border: '1px solid rgba(26,46,26,0.06)', borderRadius: 24, padding: 'clamp(24px, 4vw, 40px)' }}
+                style={{ background: '#ffffff', border: '1px solid rgba(11, 44, 52,0.06)', borderRadius: 24, padding: 'clamp(24px, 4vw, 40px)' }}
               >
                 {submitError && (
                   <div style={{ background: 'rgba(230,126,34,0.07)', border: '1px solid rgba(230,126,34,0.2)', borderRadius: 12, padding: '10px 16px', marginBottom: 20, display: 'flex', gap: 10, alignItems: 'center' }}>
@@ -537,10 +537,10 @@ const Particuliers: React.FC = () => {
                             height: 40,
                             borderRadius: 12,
                             background: '#fff',
-                            border: '1.5px solid rgba(10,44,52,0.12)',
+                            border: '1.5px solid rgba(11, 44, 52,0.12)',
                             cursor: 'pointer',
                             fontFamily: 'inherit',
-                            color: '#1a2e1a',
+                            color: '#0b2c34',
                             fontSize: 18,
                             fontWeight: 700,
                             lineHeight: 1,
@@ -565,10 +565,10 @@ const Particuliers: React.FC = () => {
                             height: 40,
                             borderRadius: 12,
                             background: '#fff',
-                            border: '1.5px solid rgba(10,44,52,0.12)',
+                            border: '1.5px solid rgba(11, 44, 52,0.12)',
                             cursor: 'pointer',
                             fontFamily: 'inherit',
-                            color: '#1a2e1a',
+                            color: '#0b2c34',
                             fontSize: 18,
                             fontWeight: 700,
                             lineHeight: 1,
@@ -604,7 +604,7 @@ const Particuliers: React.FC = () => {
                             right: 0,
                             top: 'calc(100% + 6px)',
                             background: '#fff',
-                            border: '1px solid rgba(10,44,52,0.10)',
+                            border: '1px solid rgba(11, 44, 52,0.10)',
                             borderRadius: 14,
                             boxShadow: '0 18px 60px rgba(0,0,0,0.10)',
                             zIndex: 50,
@@ -629,7 +629,7 @@ const Particuliers: React.FC = () => {
                                 cursor: 'pointer',
                                 fontFamily: 'inherit',
                                 fontSize: 13,
-                                color: '#1a2e1a',
+                                color: '#0b2c34',
                               }}
                             >
                               {s.place_name}
@@ -655,10 +655,10 @@ const Particuliers: React.FC = () => {
                           height: 40,
                           borderRadius: 12,
                           background: '#fff',
-                          border: '1.5px solid rgba(10,44,52,0.12)',
+                          border: '1.5px solid rgba(11, 44, 52,0.12)',
                           cursor: 'pointer',
                           fontFamily: 'inherit',
-                          color: '#1a2e1a',
+                          color: '#0b2c34',
                           fontSize: 18,
                           fontWeight: 700,
                           lineHeight: 1,
@@ -682,10 +682,10 @@ const Particuliers: React.FC = () => {
                           height: 40,
                           borderRadius: 12,
                           background: '#fff',
-                          border: '1.5px solid rgba(10,44,52,0.12)',
+                          border: '1.5px solid rgba(11, 44, 52,0.12)',
                           cursor: 'pointer',
                           fontFamily: 'inherit',
-                          color: '#1a2e1a',
+                          color: '#0b2c34',
                           fontSize: 18,
                           fontWeight: 700,
                           lineHeight: 1,
@@ -713,8 +713,8 @@ const Particuliers: React.FC = () => {
                           style={{
                             borderRadius: 9999,
                             fontFamily: 'inherit',
-                            border: `1.5px solid ${active ? '#1a2e1a' : 'rgba(10,44,52,0.1)'}`,
-                            background: active ? '#1a2e1a' : '#fff',
+                            border: `1.5px solid ${active ? '#0b2c34' : 'rgba(11, 44, 52,0.1)'}`,
+                            background: active ? '#0b2c34' : '#fff',
                             color: active ? '#fff' : '#6b7280',
                             fontSize: 10,
                             fontWeight: 700,
@@ -725,7 +725,7 @@ const Particuliers: React.FC = () => {
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: 5,
-                            boxShadow: active ? '0 2px 10px rgba(26,46,26,0.15)' : 'none',
+                            boxShadow: active ? '0 2px 10px rgba(11, 44, 52,0.15)' : 'none',
                             transition: 'all .15s ease',
                           }}
                         >
@@ -757,7 +757,7 @@ const Particuliers: React.FC = () => {
                   disabled={isSubmitting}
                   style={{
                     width: '100%', padding: '14px 28px', borderRadius: 9999,
-                    background: '#1a2e1a', color: '#fff', border: 'none',
+                    background: '#0b2c34', color: '#fff', border: 'none',
                     fontFamily: 'inherit', fontSize: 10, fontWeight: 700,
                     letterSpacing: '0.15em', textTransform: 'uppercase',
                     cursor: isSubmitting ? 'not-allowed' : 'pointer',
@@ -765,8 +765,8 @@ const Particuliers: React.FC = () => {
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                     transition: 'background .2s ease',
                   }}
-                  onMouseOver={e => { if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = '#2b3e24'; }}
-                  onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background = '#1a2e1a'; }}
+                  onMouseOver={e => { if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = '#081f26'; }}
+                  onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background = '#0b2c34'; }}
                 >
                   {isSubmitting ? (
                     <>
@@ -796,9 +796,9 @@ const Particuliers: React.FC = () => {
           </p>
           <Link
             href="/seminaires-entreprise"
-            style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#1a2e1a', display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'color .2s' }}
+            style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#0b2c34', display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'color .2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = '#e67e22')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#1a2e1a')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#0b2c34')}
           >
             Découvrir nos séminaires
             <span className="material-symbols-outlined" style={{ fontSize: 16 }}>arrow_forward</span>

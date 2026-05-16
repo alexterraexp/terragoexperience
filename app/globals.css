@@ -32,13 +32,13 @@ h1, h2, h3, .font-display {
 
 /* Gradients premium */
 .gradient-primary {
-  background: linear-gradient(135deg, #2D3A27 0%, #1a2416 100%);
+  background: linear-gradient(135deg, #0b2c34 0%, #061a1f 100%);
 }
 .gradient-orange {
   background: linear-gradient(135deg, #f78d00 0%, #d67a00 100%);
 }
 .gradient-premium {
-  background: linear-gradient(135deg, #2D3A27 0%, #f78d00 50%, #2D3A27 100%);
+  background: linear-gradient(135deg, #0b2c34 0%, #f78d00 50%, #0b2c34 100%);
   background-size: 200% 200%;
   animation: gradient-shift 8s ease infinite;
 }
@@ -55,7 +55,7 @@ h1, h2, h3, .font-display {
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 .glass-dark {
-  background: rgba(45, 58, 39, 0.8);
+  background: rgba(11, 44, 52, 0.8);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -63,10 +63,10 @@ h1, h2, h3, .font-display {
 
 /* Shadows premium */
 .shadow-premium {
-  box-shadow: 0 20px 60px rgba(45, 58, 39, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 60px rgba(11, 44, 52, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 .shadow-premium-hover {
-  box-shadow: 0 30px 80px rgba(45, 58, 39, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 80px rgba(11, 44, 52, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 .shadow-orange-glow {
   box-shadow: 0 10px 40px rgba(247, 141, 0, 0.3), 0 0 0 1px rgba(247, 141, 0, 0.1);
@@ -169,24 +169,24 @@ h1, h2, h3, .font-display {
 
 /* Select */
 select, select.custom-select {
-  color: #2D3A27 !important;
+  color: #0b2c34 !important;
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
   background-color: #FAF9F6 !important;
-  -webkit-text-fill-color: #2D3A27 !important;
+  -webkit-text-fill-color: #0b2c34 !important;
 }
 select:not([multiple]) { background-image: none !important; }
 select option, select.custom-select option {
-  color: #2D3A27 !important;
+  color: #0b2c34 !important;
   background-color: #FAF9F6 !important;
-  -webkit-text-fill-color: #2D3A27 !important;
+  -webkit-text-fill-color: #0b2c34 !important;
 }
 select:focus, select.custom-select:focus {
   outline: none !important;
-  color: #2D3A27 !important;
+  color: #0b2c34 !important;
   background-color: #FFFFFF !important;
-  -webkit-text-fill-color: #2D3A27 !important;
+  -webkit-text-fill-color: #0b2c34 !important;
 }
 
 input:focus {

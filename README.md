@@ -1,6 +1,6 @@
-# 🌾 Terrago - L'immersion au cœur du terroir français
+# 🌾 TerraGo - L'immersion au cœur du terroir français
 
-Site web de Terrago, plateforme d'expériences authentiques dans les terroirs français.
+Site web de TerraGo, plateforme d'expériences authentiques dans les terroirs français.
 
 ## 🚀 Démarrage rapide
 
@@ -73,4 +73,4 @@ Chaque push sur la branche `main` déclenche automatiquement un déploiement sur
 
 ## 📄 Licence
 
-Propriétaire - Terrago
+Propriétaire - TerraGo

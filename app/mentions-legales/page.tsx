@@ -3,8 +3,8 @@ import { Suspense } from 'react';
 import MentionsLegales from '../../views/MentionsLegales';
 
 export const metadata: Metadata = {
-  title: 'Mentions légales – Terrago',
-  description: 'Mentions légales de la plateforme Terrago.',
+  title: 'Mentions légales – TerraGo',
+  description: 'Mentions légales de la plateforme TerraGo.',
   robots: { index: false, follow: false },
 };
 

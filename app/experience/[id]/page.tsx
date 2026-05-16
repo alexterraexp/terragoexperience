@@ -3,7 +3,7 @@ import { ALL_EXPERIENCES } from '../../../constants';
 import ExperienceClientWrapper from './ClientWrapper';
 
 export const metadata: Metadata = {
-  title: "Détail de l'expérience – Terrago",
+  title: "Détail de l'expérience – TerraGo",
   description:
     'Consultez le programme, le lieu et les disponibilités de cette expérience immersive chez un producteur français. Réservez directement en ligne.',
   robots: { index: true, follow: true },

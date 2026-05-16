@@ -5,7 +5,7 @@ import { getMapboxPublicToken } from '@/lib/mapbox-public';
 import SeminaireDetailWrapper from './ClientWrapper';
 
 export const metadata: Metadata = {
-  title: 'Séminaire producteur – Terrago',
+  title: 'Séminaire producteur – TerraGo',
   description:
     'Découvrez cette offre séminaire packagée chez un producteur du terroir : programme, formats et tarifs. Demandez votre devis personnalisé.',
   robots: { index: true, follow: true },

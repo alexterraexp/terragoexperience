@@ -24,13 +24,13 @@ const CustomSelect: React.FC<{ value: string; onChange: (v: string) => void; pla
         onClick={() => setOpen(o => !o)}
         style={{
           width: '100%', background: open ? '#fff' : '#faf8f5',
-          border: `1px solid ${open ? '#1a2e1a' : 'rgba(10,44,52,.08)'}`,
+          border: `1px solid ${open ? '#0b2c34' : 'rgba(11, 44, 52,.08)'}`,
           borderRadius: open ? '12px 12px 0 0' : 12,
           padding: '12px 40px 12px 16px',
           fontFamily: 'inherit', fontSize: 13,
-          color: value ? '#1a2e1a' : '#c4bdb4',
+          color: value ? '#0b2c34' : '#c4bdb4',
           cursor: 'pointer', boxSizing: 'border-box',
-          boxShadow: open ? '0 0 0 3px rgba(26,46,26,.06)' : 'none',
+          boxShadow: open ? '0 0 0 3px rgba(11, 44, 52,.06)' : 'none',
           transition: 'all .18s ease',
         }}
       >
@@ -51,9 +51,9 @@ const CustomSelect: React.FC<{ value: string; onChange: (v: string) => void; pla
         <div style={{
           position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50,
           background: '#fff',
-          border: '1px solid rgba(26,46,26,0.12)', borderTop: '1px solid rgba(26,46,26,0.05)',
+          border: '1px solid rgba(11, 44, 52,0.12)', borderTop: '1px solid rgba(11, 44, 52,0.05)',
           borderRadius: '0 0 12px 12px',
-          boxShadow: '0 8px 24px rgba(26,46,26,0.1)',
+          boxShadow: '0 8px 24px rgba(11, 44, 52,0.1)',
           maxHeight: 220, overflowY: 'auto',
         }}>
           {options.map((opt, i) => (
@@ -63,16 +63,16 @@ const CustomSelect: React.FC<{ value: string; onChange: (v: string) => void; pla
               style={{
                 padding: '10px 16px',
                 fontSize: 13, fontFamily: 'inherit',
-                color: value === opt ? '#1a2e1a' : '#7a7060',
+                color: value === opt ? '#0b2c34' : '#7a7060',
                 fontWeight: value === opt ? 700 : 400,
-                background: value === opt ? 'rgba(26,46,26,0.04)' : 'transparent',
+                background: value === opt ? 'rgba(11, 44, 52,0.04)' : 'transparent',
                 cursor: 'pointer',
-                borderBottom: i < options.length - 1 ? '1px solid rgba(26,46,26,0.04)' : 'none',
+                borderBottom: i < options.length - 1 ? '1px solid rgba(11, 44, 52,0.04)' : 'none',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 transition: 'background .12s ease',
               }}
-              onMouseEnter={e => { if (value !== opt) (e.currentTarget as HTMLDivElement).style.background = 'rgba(26,46,26,0.03)'; }}
-              onMouseLeave={e => { if (value !== opt) (e.currentTarget as HTMLDivElement).style.background = value === opt ? 'rgba(26,46,26,0.04)' : 'transparent'; }}
+              onMouseEnter={e => { if (value !== opt) (e.currentTarget as HTMLDivElement).style.background = 'rgba(11, 44, 52,0.03)'; }}
+              onMouseLeave={e => { if (value !== opt) (e.currentTarget as HTMLDivElement).style.background = value === opt ? 'rgba(11, 44, 52,0.04)' : 'transparent'; }}
             >
               {opt}
               {value === opt && (
@@ -119,12 +119,12 @@ const TabButton: React.FC<{ label: string; isActive: boolean; onClick: () => voi
 const BenefitItem: React.FC<{ icon: string; title: string; points: string[] }> = ({ icon, title, points }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-      <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(26,46,26,0.06)', color: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(11, 44, 52,0.06)', color: '#0b2c34', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
         <span className="material-symbols-outlined" style={{ fontSize: 16 }}>{icon}</span>
       </div>
       <h3
         className="font-sans"
-        style={{ fontSize: 13, fontWeight: 700, color: '#1a2e1a', margin: 0, letterSpacing: '-0.01em' }}
+        style={{ fontSize: 13, fontWeight: 700, color: '#0b2c34', margin: 0, letterSpacing: '-0.01em' }}
       >
         {title}
       </h3>
@@ -169,14 +169,14 @@ const CenterMedallion: React.FC = () => (
           width: 48, height: 48, borderRadius: '50%',
           background: '#fff',
           border: '1px solid rgba(230,126,34,0.15)',
-          boxShadow: '0 4px 24px rgba(26,46,26,0.12), 0 0 0 1px rgba(255,255,255,0.8)',
+          boxShadow: '0 4px 24px rgba(11, 44, 52,0.12), 0 0 0 1px rgba(255,255,255,0.8)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             {/* Stylized leaf / terroir glyph */}
-            <path d="M12 3C12 3 5 7 5 13C5 16.866 8.134 20 12 20C15.866 20 19 16.866 19 13C19 7 12 3 12 3Z" fill="rgba(26,46,26,0.08)" stroke="#1a2e1a" strokeWidth="1.2" strokeLinejoin="round"/>
+            <path d="M12 3C12 3 5 7 5 13C5 16.866 8.134 20 12 20C15.866 20 19 16.866 19 13C19 7 12 3 12 3Z" fill="rgba(11, 44, 52,0.08)" stroke="#0b2c34" strokeWidth="1.2" strokeLinejoin="round"/>
             <path d="M12 20V10" stroke="#e67e22" strokeWidth="1.2" strokeLinecap="round"/>
-            <path d="M12 14C12 14 9 12 9 9.5" stroke="#1a2e1a" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+            <path d="M12 14C12 14 9 12 9 9.5" stroke="#0b2c34" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
           </svg>
         </div>
       </div>
@@ -233,18 +233,18 @@ const Host: React.FC = () => {
       <style>{`
         .host-i {
           width: 100%; background: #faf8f5;
-          border: 1px solid rgba(10,44,52,.08); border-radius: 12px;
-          padding: 12px 16px; font-family: inherit; font-size: 13px; color: #1a2e1a;
+          border: 1px solid rgba(11, 44, 52,.08); border-radius: 12px;
+          padding: 12px 16px; font-family: inherit; font-size: 13px; color: #0b2c34;
           outline: none; transition: all .18s ease; box-sizing: border-box;
           appearance: none; -webkit-appearance: none;
         }
-        .host-i:focus { border-color: #1a2e1a; background: #fff; box-shadow: 0 0 0 3px rgba(26,46,26,.06); }
+        .host-i:focus { border-color: #0b2c34; background: #fff; box-shadow: 0 0 0 3px rgba(11, 44, 52,.06); }
         .host-i::placeholder { color: #c4bdb4; }
-        .host-i option { color: #1a2e1a; background: #fff; }
+        .host-i option { color: #0b2c34; background: #fff; }
         .host-i option[value=""] { color: #c4bdb4; }
         select.host-i:invalid,
         select.host-i.placeholder { color: #c4bdb4; }
-        select.host-i { color: #1a2e1a; }
+        select.host-i { color: #0b2c34; }
         select.host-i.is-placeholder { color: #c4bdb4; }
         @keyframes hostSpin { to { transform: rotate(360deg); } }
         @keyframes medallionPulse {
@@ -275,13 +275,13 @@ const Host: React.FC = () => {
           left: 60%;
           top: 0; bottom: 0;
           width: 1px;
-          background: rgba(26,46,26,0.06);
+          background: rgba(11, 44, 52,0.06);
           pointer-events: none;
         }
         @media (max-width: 960px) {
           .host-split { grid-template-columns: 1fr; }
           .host-split::after { display: none; }
-          .host-right { border-top: 1px solid rgba(26,46,26,0.06); }
+          .host-right { border-top: 1px solid rgba(11, 44, 52,0.06); }
           .host-left, .host-right { padding-left: clamp(1.5rem, 4vw, 3rem) !important; padding-right: clamp(1.5rem, 4vw, 3rem) !important; }
           .host-medallion { display: none !important; }
         }
@@ -301,7 +301,7 @@ const Host: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
             <div style={{ width: 20, height: 1, background: '#e67e22' }} />
             <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>
-              Programme Partenaires — Terrago
+              Programme Partenaires — TerraGo
             </span>
           </div>
 
@@ -311,10 +311,10 @@ const Host: React.FC = () => {
 </h1>
 
           <p style={{ color: '#9a9080', fontSize: 13, lineHeight: 1.75, marginBottom: 40, maxWidth: 520 }}>
-            Rejoignez le réseau Terrago, dédié au tourisme du terroir français. Accueillez du public, transmettez votre passion et votre savoir-faire, en toute liberté.
+            Rejoignez le réseau TerraGo, dédié au tourisme du terroir français. Accueillez du public, transmettez votre passion et votre savoir-faire, en toute liberté.
           </p>
 
-          <div style={{ borderBottom: '1px solid rgba(26,46,26,0.07)', display: 'flex', gap: 28, marginBottom: 36 }}>
+          <div style={{ borderBottom: '1px solid rgba(11, 44, 52,0.07)', display: 'flex', gap: 28, marginBottom: 36 }}>
             <TabButton label="Bénéfices" isActive={activeTab === 'benefices'} onClick={() => setActiveTab('benefices')} />
             <TabButton label="Processus" isActive={activeTab === 'processus'} onClick={() => setActiveTab('processus')} />
           </div>
@@ -330,7 +330,7 @@ const Host: React.FC = () => {
 
           {activeTab === 'processus' && (
             <div style={{ maxWidth: 560 }}>
-              <p style={{ fontSize: 12, fontStyle: 'italic', color: '#b0a89e', lineHeight: 1.75, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid rgba(26,46,26,0.06)' }}>
+              <p style={{ fontSize: 12, fontStyle: 'italic', color: '#b0a89e', lineHeight: 1.75, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid rgba(11, 44, 52,0.06)' }}>
                 Notre processus garantit l'excellence du réseau. Nous vous accompagnons de l'audit initial à la gestion de votre première expérience.
               </p>
               {[
@@ -340,7 +340,7 @@ const Host: React.FC = () => {
                 "Nous amenons des clients sur votre domaine pour découvrir vos produits et savoir-faire.",
                 "Vous faites pleinement partie du réseau et en devenez un ambassadeur."
               ].map((text, i, arr) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '14px 0', borderBottom: i < arr.length - 1 ? '1px solid rgba(26,46,26,0.05)' : 'none' }}>
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '14px 0', borderBottom: i < arr.length - 1 ? '1px solid rgba(11, 44, 52,0.05)' : 'none' }}>
                   <div style={{ flexShrink: 0, width: 26, height: 26, borderRadius: '50%', background: 'linear-gradient(135deg, #e67e22, #f5a352)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 10, fontWeight: 700, boxShadow: '0 2px 8px rgba(230,126,34,0.25)' }}>
                     {i + 1}
                   </div>
@@ -355,11 +355,11 @@ const Host: React.FC = () => {
         <div className="host-medallion" style={{ position: 'absolute', left: '60%', top: '50%', transform: 'translate(-50%, -50%)', zIndex: 10, pointerEvents: 'none' }}>
           <div style={{ width: 88, height: 88, borderRadius: '50%', border: '1px solid rgba(230,126,34,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'medallionPulse 3s ease-in-out infinite' }}>
             <div style={{ width: 68, height: 68, borderRadius: '50%', border: '1px solid rgba(230,126,34,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ width: 46, height: 46, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 20px rgba(26,46,26,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(26,46,26,0.06)' }}>
+              <div style={{ width: 46, height: 46, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 20px rgba(11, 44, 52,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(11, 44, 52,0.06)' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 3C12 3 5 7 5 13C5 16.866 8.134 20 12 20C15.866 20 19 16.866 19 13C19 7 12 3 12 3Z" fill="rgba(26,46,26,0.07)" stroke="#1a2e1a" strokeWidth="1.2" strokeLinejoin="round"/>
+                  <path d="M12 3C12 3 5 7 5 13C5 16.866 8.134 20 12 20C15.866 20 19 16.866 19 13C19 7 12 3 12 3Z" fill="rgba(11, 44, 52,0.07)" stroke="#0b2c34" strokeWidth="1.2" strokeLinejoin="round"/>
                   <path d="M12 20V10" stroke="#e67e22" strokeWidth="1.3" strokeLinecap="round"/>
-                  <path d="M12 14C12 14 9.5 12.5 9 10" stroke="#1a2e1a" strokeWidth="1" strokeLinecap="round" opacity="0.35"/>
+                  <path d="M12 14C12 14 9.5 12.5 9 10" stroke="#0b2c34" strokeWidth="1" strokeLinecap="round" opacity="0.35"/>
                 </svg>
               </div>
             </div>
@@ -396,7 +396,7 @@ const Host: React.FC = () => {
 
           {submitSuccess ? (
             <div>
-              <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, boxShadow: '0 8px 30px rgba(26,46,26,0.2)' }}>
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#0b2c34', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, boxShadow: '0 8px 30px rgba(11, 44, 52,0.2)' }}>
                 <svg width="24" height="24" viewBox="0 0 34 34" fill="none">
                   <path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -406,9 +406,9 @@ const Host: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSubmitSuccess(false)}
-                style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#1a2e1a', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, padding: 0, transition: 'color .2s' }}
+                style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#0b2c34', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, padding: 0, transition: 'color .2s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#e67e22')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#1a2e1a')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#0b2c34')}
               >
                 Envoyer une autre candidature
                 <span className="material-symbols-outlined" style={{ fontSize: 16 }}>arrow_forward</span>
@@ -453,15 +453,15 @@ const Host: React.FC = () => {
                 disabled={isSubmitting}
                 style={{
                   marginTop: 6, width: '100%', padding: '14px 28px', borderRadius: 9999,
-                  background: '#1a2e1a', color: '#fff', border: 'none',
+                  background: '#0b2c34', color: '#fff', border: 'none',
                   fontFamily: 'inherit', fontSize: 10, fontWeight: 700,
                   letterSpacing: '0.15em', textTransform: 'uppercase',
                   cursor: isSubmitting ? 'not-allowed' : 'pointer', opacity: isSubmitting ? 0.7 : 1,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                   transition: 'background .2s ease',
                 }}
-                onMouseOver={e => { if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = '#2b3e24'; }}
-                onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background = '#1a2e1a'; }}
+                onMouseOver={e => { if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = '#081f26'; }}
+                onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background = '#0b2c34'; }}
               >
                 {isSubmitting ? (
                   <>
@@ -485,7 +485,7 @@ const Host: React.FC = () => {
           )}
 
           {/* Social proof */}
-          <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid rgba(26,46,26,0.05)' }}>
+          <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid rgba(11, 44, 52,0.05)' }}>
             <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#d4cec8', textAlign: 'center', marginBottom: 14 }}>
               Ils nous font confiance
             </p>

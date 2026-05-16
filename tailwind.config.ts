@@ -9,13 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#2D3A27',
+        primary: '#0b2c34',
         clay: '#f78d00',
         gold: '#f78d00',
         orange: '#f78d00',
         'beige-bg': '#FAF9F6',
         'background-light': '#FFFFFF',
-        'background-dark': '#1A1F18',
+        'background-dark': '#061a1f',
       },
       fontFamily: {
         display: ['Cormorant Garamond', 'serif'],

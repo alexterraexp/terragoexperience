@@ -3,9 +3,9 @@ import { Suspense } from 'react';
 import RecommendProducer from '../../views/RecommendProducer';
 
 export const metadata: Metadata = {
-  title: 'Recommander un producteur du terroir – Terrago',
+  title: 'Recommander un producteur du terroir – TerraGo',
   description:
-    'Vous connaissez un producteur passionné ? Recommandez-le à Terrago pour intégrer notre réseau de partenaires agrotouristiques en France.',
+    'Vous connaissez un producteur passionné ? Recommandez-le à TerraGo pour intégrer notre réseau de partenaires agrotouristiques en France.',
   robots: { index: true, follow: true },
 };
 

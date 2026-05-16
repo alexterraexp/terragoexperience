@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       if (!email || !validEmail(email)) {
         return NextResponse.json({ success: false, message: 'Adresse e-mail invalide.' }, { status: 400 });
       }
-      subject = 'Demande plaquette offres 2026 — Terrago';
+      subject = 'Demande plaquette offres 2026 — TerraGo';
       text = `Demande plaquette.\nEmail : ${email}`;
       replyTo = email;
       break;
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
       const message = str(body.message);
 
       text = [
-        'Nouvelle demande de séminaire — Terrago (domaines)',
+        'Nouvelle demande de séminaire — TerraGo (domaines)',
         '',
         '=== INFORMATIONS CLIENT ===',
         `Prénom : ${prenom}`,
@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
       const message = str(body.message);
 
       text = [
-        'Nouvelle demande de séminaire — Terrago (sur mesure)',
+        'Nouvelle demande de séminaire — TerraGo (sur mesure)',
         '',
         '=== INFORMATIONS CLIENT ===',
         `Prénom : ${prenom} | Nom : ${nom}`,

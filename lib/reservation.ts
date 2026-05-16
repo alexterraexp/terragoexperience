@@ -156,7 +156,7 @@ export async function processReservation(
       console.error('Erreur Supabase (demandes_organiser_seminaire) :', supabaseError);
       if (!supabaseAdmin && process.env.NODE_ENV === 'development') {
         console.warn(
-          '[Terrago] Définissez SUPABASE_SERVICE_ROLE_KEY sur le serveur pour les insertions (la clé anon est souvent bloquée par RLS).',
+          '[TerraGo] Définissez SUPABASE_SERVICE_ROLE_KEY sur le serveur pour les insertions (la clé anon est souvent bloquée par RLS).',
         );
       }
       return {

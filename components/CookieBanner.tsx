@@ -103,7 +103,7 @@ const CookieBanner: React.FC = () => {
         .ck-scroll::-webkit-scrollbar { display: none; }
         .ck-scroll { scrollbar-width: none; }
         .ck-row-btn { transition: background .15s; }
-        .ck-row-btn:hover { background: rgba(26,46,26,0.04) !important; }
+        .ck-row-btn:hover { background: rgba(11, 44, 52,0.04) !important; }
         .ck-track { transition: background .2s; }
         .ck-thumb { transition: left .2s; }
       `}</style>
@@ -136,7 +136,7 @@ const CookieBanner: React.FC = () => {
             <div style={{ padding: '32px 36px 28px' }}>
               {/* Title */}
               <p style={{
-                fontWeight:700, fontSize:20, color:'#1a2e1a',
+                fontWeight:700, fontSize:20, color:'#0b2c34',
                 margin:'0 0 16px', lineHeight:1.3,
               }}>
                 Nous utilisons des cookies 🍪
@@ -147,7 +147,7 @@ const CookieBanner: React.FC = () => {
                 fontSize:14, color:'#4a5568', lineHeight:1.75,
                 margin:'0 0 28px',
               }}>
-                Nous utilisons les propres cookies de Terrago et ceux de tiers pour assurer
+                Nous utilisons les propres cookies de TerraGo et ceux de tiers pour assurer
                 le bon fonctionnement de ce site Web. Si vous cliquez sur le bouton
                 "Tout accepter" ci-dessous, nous utiliserons également des statistiques
                 et des cookies à des fins marketing.{' '}
@@ -170,7 +170,7 @@ const CookieBanner: React.FC = () => {
                   href="#"
                   onClick={e => { e.preventDefault(); setStep(2); }}
                   style={{
-                    fontSize:13, fontWeight:600, color:'#1a2e1a',
+                    fontSize:13, fontWeight:600, color:'#0b2c34',
                     textDecoration:'underline', textUnderlineOffset:3,
                     cursor:'pointer',
                   }}
@@ -184,7 +184,7 @@ const CookieBanner: React.FC = () => {
                     onClick={handleRefuse}
                     style={{
                       padding:'12px 28px', borderRadius:9999,
-                      background:'#f0ede8', color:'#1a2e1a',
+                      background:'#f0ede8', color:'#0b2c34',
                       border:'none', fontSize:13, fontWeight:600,
                       cursor:'pointer',
                     }}
@@ -195,7 +195,7 @@ const CookieBanner: React.FC = () => {
                     onClick={handleAcceptAll}
                     style={{
                       padding:'12px 28px', borderRadius:9999,
-                      background:'#1a2e1a', color:'#fff',
+                      background:'#0b2c34', color:'#fff',
                       border:'none', fontSize:13, fontWeight:600,
                       cursor:'pointer',
                     }}
@@ -222,7 +222,7 @@ const CookieBanner: React.FC = () => {
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: 700,
                     fontSize: 18,
-                    color: '#1a2e1a',
+                    color: '#0b2c34',
                     margin: '0 0 8px',
                   }}>
                     Centre de préférences de la confidentialité
@@ -259,7 +259,7 @@ const CookieBanner: React.FC = () => {
                   onClick={handleAcceptAll}
                   style={{
                     padding:'12px 24px', borderRadius:9999,
-                    background:'#1a2e1a', color:'#fff',
+                    background:'#0b2c34', color:'#fff',
                     border:'none', fontSize:12, fontWeight:700,
                     letterSpacing:'.06em', cursor:'pointer',
                   }}
@@ -300,7 +300,7 @@ const CookieBanner: React.FC = () => {
                         }}>
                           {expanded === row.label ? '−' : '+'}
                         </span>
-                        <span style={{ fontSize:13, fontWeight:600, color:'#1a2e1a' }}>
+                        <span style={{ fontSize:13, fontWeight:600, color:'#0b2c34' }}>
                           {row.label}
                         </span>
                       </div>
@@ -324,7 +324,7 @@ const CookieBanner: React.FC = () => {
                             className="ck-track"
                             style={{
                               width:46, height:26, borderRadius:13,
-                              background: row.checked ? '#1a2e1a' : '#d1d5db',
+                              background: row.checked ? '#0b2c34' : '#d1d5db',
                               position:'relative',
                             }}
                           >
@@ -366,14 +366,14 @@ const CookieBanner: React.FC = () => {
                 justifyContent:'space-between', flexWrap:'wrap', gap:10,
               }}>
                 <div style={{ fontSize:11, color:'#9ca3af' }}>
-                  Powered by <strong style={{ color:'#1a2e1a' }}>Terrago</strong>
+                  Powered by <strong style={{ color:'#0b2c34' }}>TerraGo</strong>
                 </div>
                 <div style={{ display:'flex', gap:10 }}>
                   <button
                     onClick={handleRefuse}
                     style={{
                       padding:'11px 22px', borderRadius:9999,
-                      background:'#f0ede8', color:'#1a2e1a',
+                      background:'#f0ede8', color:'#0b2c34',
                       border:'none', fontSize:12, fontWeight:700,
                       cursor:'pointer',
                     }}
@@ -384,7 +384,7 @@ const CookieBanner: React.FC = () => {
                     onClick={handleSave}
                     style={{
                       padding:'11px 22px', borderRadius:9999,
-                      background:'#1a2e1a', color:'#fff',
+                      background:'#0b2c34', color:'#fff',
                       border:'none', fontSize:12, fontWeight:700,
                       cursor:'pointer',
                     }}

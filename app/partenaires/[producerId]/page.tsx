@@ -3,9 +3,9 @@ import { supabaseServer as supabase } from '../../../lib/supabase';
 import ProducerClientWrapper from './ClientWrapper';
 
 export const metadata: Metadata = {
-  title: 'Producteur partenaire – Terrago',
+  title: 'Producteur partenaire – TerraGo',
   description:
-    'Rencontrez ce producteur partenaire Terrago et découvrez ses expériences immersives : dégustation, récolte ou atelier au cœur de son exploitation.',
+    'Rencontrez ce producteur partenaire TerraGo et découvrez ses expériences immersives : dégustation, récolte ou atelier au cœur de son exploitation.',
   robots: { index: true, follow: true },
 };
 

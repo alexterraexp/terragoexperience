@@ -8,7 +8,7 @@ const linkStyle: React.CSSProperties = {
 };
 
 const sectionTitle: React.CSSProperties = {
-  fontSize: 15, fontWeight: 700, color: '#1a2e1a', marginBottom: 22, marginTop: 0,
+  fontSize: 15, fontWeight: 700, color: '#0b2c34', marginBottom: 22, marginTop: 0,
 };
 
 const Footer: React.FC = () => {
@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <img
               src="/logo.png"
-              alt="Terrago"
+              alt="TerraGo"
               style={{ height: 140, width: 'auto', alignSelf: 'flex-start' }}
             />
             <p style={{ color: '#6b6355', fontSize: 13, lineHeight: 1.65, margin: 0, maxWidth: 240 }}>
@@ -49,11 +49,11 @@ const Footer: React.FC = () => {
 
             {/* Suivez-nous */}
             <div>
-              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#1a2e1a', margin: '0 0 12px 0' }}>
+              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#0b2c34', margin: '0 0 12px 0' }}>
                 Suivez-nous
               </p>
               <p style={{ fontSize: 11.5, color: '#9a9080', lineHeight: 1.55, margin: '0 0 14px 0', maxWidth: 220 }}>
-                Inspirations, coulisses et belles adresses — suivez l'aventure Terrago.
+                Inspirations, coulisses et belles adresses — suivez l'aventure TerraGo.
               </p>
               <div style={{ display: 'flex', gap: 8 }}>
                 {[
@@ -110,12 +110,12 @@ const Footer: React.FC = () => {
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               padding: '8px 14px', borderRadius: 8,
-              background: 'rgba(26,46,26,0.05)',
-              border: '1px solid rgba(26,46,26,0.08)',
+              background: 'rgba(11, 44, 52,0.05)',
+              border: '1px solid rgba(11, 44, 52,0.08)',
               alignSelf: 'flex-start',
             }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', flexShrink: 0 }} />
-              <span style={{ fontSize: 7.5, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#1a2e1a' }}>
+              <span style={{ fontSize: 7.5, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#0b2c34' }}>
                 100% Français &amp; Authentique
               </span>
             </div>
@@ -136,7 +136,7 @@ const Footer: React.FC = () => {
                   <Link
                     href={item.to}
                     style={linkStyle}
-                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#1a2e1a')}
+                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#0b2c34')}
                     onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
                   >
                     {item.label}
@@ -153,14 +153,14 @@ const Footer: React.FC = () => {
               {[
                 { to: '/nous-rejoindre', label: 'Devenir partenaire' },
                 { to: '/recommander-un-producteur', label: 'Recommander un producteur' },
-                { to: '/blog', label: 'Le blog Terrago' },
+                { to: '/blog', label: 'Le blog TerraGo' },
                 { to: 'mailto:terragoexperiences@gmail.com', label: 'Nous contacter' },
               ].map(item => (
                 <li key={item.to}>
                   <Link
                     href={item.to}
                     style={linkStyle}
-                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#1a2e1a')}
+                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#0b2c34')}
                     onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
                   >
                     {item.label}
@@ -177,7 +177,7 @@ const Footer: React.FC = () => {
               <a
                 href="mailto:terragoexperiences@gmail.com"
                 style={{ display: 'flex', alignItems: 'flex-start', gap: 10, textDecoration: 'none', color: '#7a7060', fontSize: 13, lineHeight: 1.6, transition: 'color .2s' }}
-                onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#1a2e1a')}
+                onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#0b2c34')}
                 onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e67e22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 3 }}>
@@ -205,7 +205,7 @@ const Footer: React.FC = () => {
                   <Link
                     href={item.to}
                     style={linkStyle}
-                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#1a2e1a')}
+                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#0b2c34')}
                     onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
                   >
                     {item.label}
@@ -221,7 +221,7 @@ const Footer: React.FC = () => {
                     fontFamily: 'inherit', textAlign: 'left',
                     transition: 'color .2s',
                   }}
-                  onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.color = '#1a2e1a')}
+                  onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.color = '#0b2c34')}
                   onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.color = '#7a7060')}
                 >
                   Cookies
@@ -234,10 +234,10 @@ const Footer: React.FC = () => {
       </div>
 
       {/* ── Barre basse ── */}
-      <div style={{ borderTop: '1px solid rgba(26,46,26,0.08)', background: '#ffffff' }}>
+      <div style={{ borderTop: '1px solid rgba(11, 44, 52,0.08)', background: '#ffffff' }}>
         <div className="max-w-[1440px] mx-auto px-6 lg:px-20 py-5">
           <p style={{ fontSize: 11, color: '#9a9080', margin: 0, fontWeight: 500, letterSpacing: '0.04em', textAlign: 'center' }}>
-            © 2026 Terrago — Fabriqué avec passion pour nos territoires.
+            © 2026 TerraGo — Fabriqué avec passion pour nos territoires.
           </p>
         </div>
       </div>

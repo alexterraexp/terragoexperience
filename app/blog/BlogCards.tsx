@@ -77,8 +77,8 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
               transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease',
               transform: featuredHovered ? 'translateY(-6px)' : 'translateY(0)',
               boxShadow: featuredHovered
-                ? '0 24px 60px rgba(26,46,26,0.18)'
-                : '0 4px 24px rgba(26,46,26,0.08)',
+                ? '0 24px 60px rgba(11, 44, 52,0.18)'
+                : '0 4px 24px rgba(11, 44, 52,0.08)',
             }}
           >
             <div
@@ -121,9 +121,9 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
                   {featured.title}
                 </h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <img src={DEFAULT_AVATAR} alt="Terrago" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(255,255,255,0.3)' }} />
+                  <img src={DEFAULT_AVATAR} alt="TerraGo" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(255,255,255,0.3)' }} />
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,.9)' }}>Rédigé par Terrago</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,.9)' }}>Rédigé par TerraGo</div>
                     <div style={{ fontSize: 11, color: 'rgba(255,255,255,.65)' }}>{formatDate(featured.published_at)}</div>
                   </div>
                 </div>
@@ -132,8 +132,8 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
           </Link>
 
           {/* Sidebar CTA droite */}
-          <div className="une-sidebar" style={{ padding: '28px 24px', background: '#fff', border: '1px solid rgba(26,46,26,0.08)', borderRadius: 20, boxShadow: '0 4px 24px rgba(26,46,26,0.06)' }}>
-            <h3 className="une-sidebar-title" style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700, color: '#1a2e1a', fontSize: '1.6rem', lineHeight: 1.25, margin: '0 0 16px' }}>
+          <div className="une-sidebar" style={{ padding: '28px 24px', background: '#fff', border: '1px solid rgba(11, 44, 52,0.08)', borderRadius: 20, boxShadow: '0 4px 24px rgba(11, 44, 52,0.06)' }}>
+            <h3 className="une-sidebar-title" style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700, color: '#0b2c34', fontSize: '1.6rem', lineHeight: 1.25, margin: '0 0 16px' }}>
               Prêt pour votre prochain{' '}
               <em style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 600, fontSize: 'clamp(1.6rem, 3vw, 2rem)' }}>séminaire ?</em>
             </h3>
@@ -146,7 +146,7 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
               onMouseLeave={() => setCtaHovered(false)}
               style={{
                 display: 'block', width: '100%', padding: 13, borderRadius: 12,
-                background: ctaHovered ? '#e67e22' : '#1a2e1a', color: '#fff',
+                background: ctaHovered ? '#e67e22' : '#0b2c34', color: '#fff',
                 fontFamily: "'Poppins', sans-serif", fontSize: 12, fontWeight: 700,
                 letterSpacing: '0.08em', textTransform: 'uppercase',
                 textAlign: 'center', textDecoration: 'none',
@@ -169,7 +169,7 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
             <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#9a9080', whiteSpace: 'nowrap' }}>
               Derniers articles
             </span>
-            <div style={{ flex: 1, height: 1, background: 'rgba(26,46,26,0.08)' }} />
+            <div style={{ flex: 1, height: 1, background: 'rgba(11, 44, 52,0.08)' }} />
           </div>
           <div className="latest-grid">
             {latestPosts.map((post, i) => (
@@ -184,11 +184,11 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
                   transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease',
                   transform: hoveredLatest === i ? 'translateY(-6px)' : 'translateY(0)',
                   boxShadow: hoveredLatest === i
-                    ? '0 20px 50px rgba(26,46,26,0.12)'
-                    : '0 2px 16px rgba(26,46,26,0.06)',
+                    ? '0 20px 50px rgba(11, 44, 52,0.12)'
+                    : '0 2px 16px rgba(11, 44, 52,0.06)',
                 }}
               >
-                <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid rgba(26,46,26,0.08)', background: '#fff' }}>
+                <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid rgba(11, 44, 52,0.08)', background: '#fff' }}>
                   <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden' }}>
                     <img
                       src={post.cover_url ?? DEFAULT_COVER}
@@ -212,13 +212,13 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
                     )}
                   </div>
                   <div style={{ padding: '18px 20px 22px' }}>
-                    <h3 style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 600, fontSize: 17, color: '#1a2e1a', lineHeight: 1.45, margin: '0 0 12px' }}>
+                    <h3 style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 600, fontSize: 17, color: '#0b2c34', lineHeight: 1.45, margin: '0 0 12px' }}>
                       {post.title}
                     </h3>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <img src={DEFAULT_AVATAR} alt="Terrago" style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />
+                      <img src={DEFAULT_AVATAR} alt="TerraGo" style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />
                       <div style={{ fontSize: 11, color: '#9a9080' }}>
-                        Terrago &nbsp;·&nbsp; {formatDate(post.published_at)}
+                        TerraGo &nbsp;·&nbsp; {formatDate(post.published_at)}
                         {post.reading_time && <span> &nbsp;·&nbsp; {post.reading_time}</span>}
                       </div>
                     </div>
@@ -238,7 +238,7 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
           <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#9a9080', whiteSpace: 'nowrap' }}>
             Prochainement
           </span>
-          <div style={{ flex: 1, height: 1, background: 'rgba(26,46,26,0.08)' }} />
+          <div style={{ flex: 1, height: 1, background: 'rgba(11, 44, 52,0.08)' }} />
         </div>
 
         {/* Grid 3 colonnes */}
@@ -254,11 +254,11 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
                 transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease',
                 transform: hoveredCard === i ? 'translateY(-6px)' : 'translateY(0)',
                 boxShadow: hoveredCard === i
-                  ? '0 20px 50px rgba(26,46,26,0.12)'
-                  : '0 2px 16px rgba(26,46,26,0.06)',
+                  ? '0 20px 50px rgba(11, 44, 52,0.12)'
+                  : '0 2px 16px rgba(11, 44, 52,0.06)',
               }}
             >
-            <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid rgba(26,46,26,0.08)', background: '#fff' }}>
+            <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid rgba(11, 44, 52,0.08)', background: '#fff' }}>
               {/* Image sans border-radius propre */}
               <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden' }}>
                 <img
@@ -266,13 +266,13 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
                   alt=""
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'saturate(0.5) brightness(0.7)' }}
                 />
-                <div style={{ position: 'absolute', inset: 0, background: 'rgba(26,46,26,0.35)' }} />
+                <div style={{ position: 'absolute', inset: 0, background: 'rgba(11, 44, 52,0.35)' }} />
                 {/* Badge haut gauche */}
                 <div style={{
                   position: 'absolute', top: 14, left: 14,
                   background: 'rgba(250,248,245,0.95)', backdropFilter: 'blur(8px)',
                   borderRadius: 9999, padding: '5px 14px',
-                  fontSize: 10, fontWeight: 700, color: '#1a2e1a',
+                  fontSize: 10, fontWeight: 700, color: '#0b2c34',
                   letterSpacing: '0.18em', textTransform: 'uppercase',
                   display: 'inline-flex', alignItems: 'center', gap: 7,
                 }}>
@@ -289,7 +289,7 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
                   {post.title}
                 </h3>
                 <div style={{ fontSize: 11, color: '#b0a898' }}>
-                  Terrago &nbsp;·&nbsp; {formatDate(post.published_at)}
+                  TerraGo &nbsp;·&nbsp; {formatDate(post.published_at)}
                 </div>
               </div>
             </div>

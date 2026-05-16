@@ -5,7 +5,7 @@ import { getMapboxPublicToken } from '@/lib/mapbox-public';
 import SeminairesPack from '../../../views/Seminaires-pack';
 
 export const metadata: Metadata = {
-  title: 'Séminaire responsable & team building terroir – Terrago',
+  title: 'Séminaire responsable & team building terroir – TerraGo',
   description:
     'Formules clés en main pour un séminaire responsable : journée, 2 jours ou sur mesure chez un producteur du terroir. Cohésion d\'équipe garantie.',
   robots: { index: true, follow: true },

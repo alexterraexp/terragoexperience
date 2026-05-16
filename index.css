@@ -1,8 +1,8 @@
-/* Styles globaux pour Terrago */
+/* Styles globaux pour TerraGo */
 
 /* Gradients premium */
 .gradient-primary {
-  background: linear-gradient(135deg, #2D3A27 0%, #1a2416 100%);
+  background: linear-gradient(135deg, #0b2c34 0%, #061a1f 100%);
 }
 
 .gradient-orange {
@@ -10,7 +10,7 @@
 }
 
 .gradient-premium {
-  background: linear-gradient(135deg, #2D3A27 0%, #f78d00 50%, #2D3A27 100%);
+  background: linear-gradient(135deg, #0b2c34 0%, #f78d00 50%, #0b2c34 100%);
   background-size: 200% 200%;
   animation: gradient-shift 8s ease infinite;
 }
@@ -29,7 +29,7 @@
 }
 
 .glass-dark {
-  background: rgba(45, 58, 39, 0.8);
+  background: rgba(11, 44, 52, 0.8);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -37,11 +37,11 @@
 
 /* Effets de profondeur premium */
 .shadow-premium {
-  box-shadow: 0 20px 60px rgba(45, 58, 39, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 60px rgba(11, 44, 52, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .shadow-premium-hover {
-  box-shadow: 0 30px 80px rgba(45, 58, 39, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 80px rgba(11, 44, 52, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .shadow-orange-glow {
@@ -309,12 +309,12 @@ img {
 /* Styles pour les éléments select - éviter le bleu par défaut */
 select,
 select.custom-select {
-  color: #2D3A27 !important;
+  color: #0b2c34 !important;
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
   background-color: #FAF9F6 !important;
-  -webkit-text-fill-color: #2D3A27 !important;
+  -webkit-text-fill-color: #0b2c34 !important;
 }
 
 select:not([multiple]) {
@@ -323,32 +323,32 @@ select:not([multiple]) {
 
 select option,
 select.custom-select option {
-  color: #2D3A27 !important;
+  color: #0b2c34 !important;
   background-color: #FAF9F6 !important;
   padding: 8px !important;
-  -webkit-text-fill-color: #2D3A27 !important;
+  -webkit-text-fill-color: #0b2c34 !important;
 }
 
 select:focus,
 select.custom-select:focus {
   outline: none !important;
-  color: #2D3A27 !important;
+  color: #0b2c34 !important;
   background-color: #FFFFFF !important;
-  -webkit-text-fill-color: #2D3A27 !important;
+  -webkit-text-fill-color: #0b2c34 !important;
 }
 
 select:focus option,
 select.custom-select:focus option {
-  color: #2D3A27 !important;
+  color: #0b2c34 !important;
   background-color: #FFFFFF !important;
-  -webkit-text-fill-color: #2D3A27 !important;
+  -webkit-text-fill-color: #0b2c34 !important;
 }
 
 select option:checked,
 select.custom-select option:checked {
-  color: #2D3A27 !important;
+  color: #0b2c34 !important;
   background-color: #FAF9F6 !important;
-  -webkit-text-fill-color: #2D3A27 !important;
+  -webkit-text-fill-color: #0b2c34 !important;
 }
 
 select option:hover,
@@ -363,22 +363,22 @@ select:active,
 select:focus,
 select.custom-select:active,
 select.custom-select:focus {
-  color: #2D3A27 !important;
-  -webkit-text-fill-color: #2D3A27 !important;
+  color: #0b2c34 !important;
+  -webkit-text-fill-color: #0b2c34 !important;
 }
 
 /* Styles spécifiques pour Safari/Chrome */
 select::-webkit-select-placeholder,
 select.custom-select::-webkit-select-placeholder {
-  color: #2D3A27 !important;
-  -webkit-text-fill-color: #2D3A27 !important;
+  color: #0b2c34 !important;
+  -webkit-text-fill-color: #0b2c34 !important;
 }
 
 /* Forcer la couleur du texte sélectionné */
 select::-webkit-select-value,
 select.custom-select::-webkit-select-value {
-  color: #2D3A27 !important;
-  -webkit-text-fill-color: #2D3A27 !important;
+  color: #0b2c34 !important;
+  -webkit-text-fill-color: #0b2c34 !important;
 }
 
 input:focus {

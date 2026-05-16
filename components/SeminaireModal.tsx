@@ -33,12 +33,12 @@ const Pill: React.FC<{ active: boolean; onClick: () => void; children: React.Rea
     onClick={onClick}
     style={{
       padding: small ? '5px 12px' : '7px 14px', borderRadius: 9999,
-      border: `1.5px solid ${active ? '#1a2e1a' : 'rgba(10,44,52,0.1)'}`,
-      background: active ? '#1a2e1a' : '#faf8f5',
+      border: `1.5px solid ${active ? '#0b2c34' : 'rgba(11, 44, 52,0.1)'}`,
+      background: active ? '#0b2c34' : '#faf8f5',
       color: active ? '#fff' : '#6b7280',
       fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
       cursor: 'pointer', fontFamily: 'inherit',
-      boxShadow: active ? '0 2px 10px rgba(26,46,26,0.15)' : 'none',
+      boxShadow: active ? '0 2px 10px rgba(11, 44, 52,0.15)' : 'none',
       transition: 'all .15s ease', display: 'inline-flex', alignItems: 'center', gap: 5,
     }}
   >
@@ -52,8 +52,8 @@ const ModeBtn: React.FC<{ active: boolean; onClick: () => void; children: React.
     type="button" onClick={onClick}
     style={{
       padding: '7px 18px', borderRadius: 9999,
-      border: `1.5px solid ${active ? '#1a2e1a' : 'rgba(10,44,52,0.12)'}`,
-      background: active ? '#1a2e1a' : '#fff',
+      border: `1.5px solid ${active ? '#0b2c34' : 'rgba(11, 44, 52,0.12)'}`,
+      background: active ? '#0b2c34' : '#fff',
       color: active ? '#fff' : '#9ca3af',
       fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
       cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s ease',
@@ -62,15 +62,15 @@ const ModeBtn: React.FC<{ active: boolean; onClick: () => void; children: React.
 );
 
 const ToggleCard: React.FC<{ icon: string; label: string; active: boolean; onToggle: () => void; children?: React.ReactNode }> = ({ icon, label, active, onToggle, children }) => (
-  <div style={{ padding: '18px', borderRadius: 16, border: `1.5px solid ${active ? '#1a2e1a' : 'rgba(10,44,52,0.08)'}`, background: active ? 'rgba(26,46,26,0.03)' : '#fff', transition: 'all .2s ease' }}>
+  <div style={{ padding: '18px', borderRadius: 16, border: `1.5px solid ${active ? '#0b2c34' : 'rgba(11, 44, 52,0.08)'}`, background: active ? 'rgba(11, 44, 52,0.03)' : '#fff', transition: 'all .2s ease' }}>
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 20 }}>{icon}</span>
-        <span style={{ fontSize: 10, fontWeight: 700, color: '#1a2e1a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{label}</span>
+        <span style={{ fontSize: 10, fontWeight: 700, color: '#0b2c34', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{label}</span>
       </div>
       <label style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
         <input type="checkbox" checked={active} onChange={onToggle} style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }} />
-        <div style={{ width: 44, height: 24, borderRadius: 12, background: active ? '#1a2e1a' : '#e5e0d8', transition: 'background .2s ease', position: 'relative' }}>
+        <div style={{ width: 44, height: 24, borderRadius: 12, background: active ? '#0b2c34' : '#e5e0d8', transition: 'background .2s ease', position: 'relative' }}>
           <div style={{ position: 'absolute', top: 4, left: active ? 24 : 4, width: 16, height: 16, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.15)', transition: 'left .2s ease' }} />
         </div>
       </label>
@@ -80,9 +80,9 @@ const ToggleCard: React.FC<{ icon: string; label: string; active: boolean; onTog
 );
 
 const RecapRow: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, padding: '9px 0', borderBottom: '1px solid rgba(10,44,52,0.05)' }}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, padding: '9px 0', borderBottom: '1px solid rgba(11, 44, 52,0.05)' }}>
     <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#b0a89e', flexShrink: 0, marginTop: 2 }}>{label}</span>
-    <span style={{ fontSize: 12, fontWeight: 600, color: '#1a2e1a', textAlign: 'right' }}>{value || '—'}</span>
+    <span style={{ fontSize: 12, fontWeight: 600, color: '#0b2c34', textAlign: 'right' }}>{value || '—'}</span>
   </div>
 );
 
@@ -140,8 +140,8 @@ const DateRangePicker: React.FC<{
   const fmtDisplay = (s: string) => s ? new Date(s + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
 
   return (
-    <div style={{ background: '#faf8f5', borderRadius: 16, border: '1px solid rgba(10,44,52,0.08)', overflow: 'hidden' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
+    <div style={{ background: '#faf8f5', borderRadius: 16, border: '1px solid rgba(11, 44, 52,0.08)', overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid rgba(11, 44, 52,0.06)' }}>
         {[
           { label: 'Arrivée', val: startDate, key: 'start' as const },
           { label: 'Départ',  val: endDate,   key: 'end'   as const },
@@ -151,28 +151,28 @@ const DateRangePicker: React.FC<{
             onClick={() => setSelecting(key)}
             style={{
               padding: '12px 16px', background: selecting === key ? '#fff' : 'transparent',
-              border: 'none', borderBottom: `2px solid ${selecting === key ? '#1a2e1a' : 'transparent'}`,
+              border: 'none', borderBottom: `2px solid ${selecting === key ? '#0b2c34' : 'transparent'}`,
               cursor: 'pointer', textAlign: 'left', transition: 'all .15s ease',
-              borderRight: key === 'start' ? '1px solid rgba(10,44,52,0.06)' : 'none',
+              borderRight: key === 'start' ? '1px solid rgba(11, 44, 52,0.06)' : 'none',
             }}
           >
             <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: selecting === key ? '#e67e22' : '#b0a89e', marginBottom: 3 }}>{label}</div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: val ? '#1a2e1a' : '#c4bdb4' }}>{val ? fmtDisplay(val) : 'Choisir...'}</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: val ? '#0b2c34' : '#c4bdb4' }}>{val ? fmtDisplay(val) : 'Choisir...'}</div>
           </button>
         ))}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
-        <button type="button" onClick={prevMonth} style={{ width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'rgba(10,44,52,0.06)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1a2e1a', fontSize: 12, transition: 'background .15s' }}
-          onMouseOver={e => (e.currentTarget.style.background = 'rgba(10,44,52,0.12)')}
-          onMouseOut={e => (e.currentTarget.style.background = 'rgba(10,44,52,0.06)')}
+        <button type="button" onClick={prevMonth} style={{ width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'rgba(11, 44, 52,0.06)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0b2c34', fontSize: 12, transition: 'background .15s' }}
+          onMouseOver={e => (e.currentTarget.style.background = 'rgba(11, 44, 52,0.12)')}
+          onMouseOut={e => (e.currentTarget.style.background = 'rgba(11, 44, 52,0.06)')}
         >‹</button>
-        <span style={{ fontSize: 11, fontWeight: 700, color: '#1a2e1a', textTransform: 'capitalize', letterSpacing: '0.05em' }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: '#0b2c34', textTransform: 'capitalize', letterSpacing: '0.05em' }}>
           {MONTHS_FR[viewMonth]} {viewYear}
         </span>
-        <button type="button" onClick={nextMonth} style={{ width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'rgba(10,44,52,0.06)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1a2e1a', fontSize: 12, transition: 'background .15s' }}
-          onMouseOver={e => (e.currentTarget.style.background = 'rgba(10,44,52,0.12)')}
-          onMouseOut={e => (e.currentTarget.style.background = 'rgba(10,44,52,0.06)')}
+        <button type="button" onClick={nextMonth} style={{ width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'rgba(11, 44, 52,0.06)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0b2c34', fontSize: 12, transition: 'background .15s' }}
+          onMouseOver={e => (e.currentTarget.style.background = 'rgba(11, 44, 52,0.12)')}
+          onMouseOut={e => (e.currentTarget.style.background = 'rgba(11, 44, 52,0.06)')}
         >›</button>
       </div>
 
@@ -197,8 +197,8 @@ const DateRangePicker: React.FC<{
               style={{
                 height: 32, borderRadius: start || end ? 9999 : inRange ? 0 : 9999,
                 border: isToday && !start && !end ? '1.5px solid rgba(230,126,34,0.4)' : 'none',
-                background: start || end ? '#1a2e1a' : inRange ? 'rgba(26,46,26,0.08)' : 'transparent',
-                color: start || end ? '#fff' : past ? '#d5cfc7' : '#1a2e1a',
+                background: start || end ? '#0b2c34' : inRange ? 'rgba(11, 44, 52,0.08)' : 'transparent',
+                color: start || end ? '#fff' : past ? '#d5cfc7' : '#0b2c34',
                 fontSize: 11, fontWeight: start || end ? 700 : isToday ? 700 : 400,
                 cursor: past ? 'not-allowed' : 'pointer',
                 transition: 'all .12s ease',
@@ -211,7 +211,7 @@ const DateRangePicker: React.FC<{
         })}
       </div>
 
-      <div style={{ padding: '8px 16px 12px', borderTop: '1px solid rgba(10,44,52,0.05)', display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div style={{ padding: '8px 16px 12px', borderTop: '1px solid rgba(11, 44, 52,0.05)', display: 'flex', alignItems: 'center', gap: 6 }}>
         <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', flexShrink: 0 }} />
         <span style={{ fontSize: 9, color: '#b0a89e', fontWeight: 600, letterSpacing: '0.08em' }}>
           {selecting === 'start' ? "Sélectionnez la date d'arrivée" : "Sélectionnez la date de départ"}
@@ -370,11 +370,11 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
         .sem-sc::-webkit-scrollbar { display:none } .sem-sc { scrollbar-width:none }
         .sem-i {
           width:100%; background:#faf8f5;
-          border:1px solid rgba(10,44,52,.08); border-radius:12px;
-          padding:12px 16px; font-family:inherit; font-size:13px; color:#1a2e1a;
+          border:1px solid rgba(11, 44, 52,.08); border-radius:12px;
+          padding:12px 16px; font-family:inherit; font-size:13px; color:#0b2c34;
           outline:none; transition:all .18s ease; box-sizing:border-box;
         }
-        .sem-i:focus { border-color:#1a2e1a; background:#fff; box-shadow:0 0 0 3px rgba(26,46,26,.06); }
+        .sem-i:focus { border-color:#0b2c34; background:#fff; box-shadow:0 0 0 3px rgba(11, 44, 52,.06); }
         .sem-i::placeholder { color:#c4bdb4; }
         @media(max-width:600px) {
           .sg2 { grid-template-columns:1fr!important }
@@ -447,7 +447,7 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
               : {
                   width: '100%', maxWidth: 780, maxHeight: '94vh', minHeight: 0,
                   borderRadius: 28,
-                  boxShadow: '0 8px 48px rgba(0,0,0,0.14), 0 0 0 1px rgba(10,44,52,0.05)',
+                  boxShadow: '0 8px 48px rgba(0,0,0,0.14), 0 0 0 1px rgba(11, 44, 52,0.05)',
                 }),
             background: '#fff',
             display: 'flex', flexDirection: 'column', overflow: 'hidden',
@@ -456,7 +456,7 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
           }}
         >
 
-          <div className="sem-header" style={{ padding: '20px 28px 0', background: '#fff', flexShrink: 0, borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
+          <div className="sem-header" style={{ padding: '20px 28px 0', background: '#fff', flexShrink: 0, borderBottom: '1px solid rgba(11, 44, 52,0.06)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 16, height: 1, background: '#e67e22' }} />
@@ -477,8 +477,8 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
                 const idx = i + 1, done = step > idx, active = step === idx;
                 return (
                   <div key={s.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 5 }}>
-                    <div style={{ height: 2, borderRadius: 2, background: done ? '#e67e22' : active ? '#1a2e1a' : 'rgba(10,44,52,0.08)', transition: 'background .4s ease' }} />
-                    <span className="ssl" style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: active ? '#1a2e1a' : done ? '#e67e22' : 'rgba(10,44,52,0.28)', transition: 'color .3s ease' }}>
+                    <div style={{ height: 2, borderRadius: 2, background: done ? '#e67e22' : active ? '#0b2c34' : 'rgba(11, 44, 52,0.08)', transition: 'background .4s ease' }} />
+                    <span className="ssl" style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: active ? '#0b2c34' : done ? '#e67e22' : 'rgba(11, 44, 52,0.28)', transition: 'color .3s ease' }}>
                       {idx}. {s.label}
                     </span>
                   </div>
@@ -497,12 +497,12 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
 
           {ok && (
             <div style={{ position: 'absolute', inset: 0, zIndex: 20, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(4px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 28, animation: 'semFd .3s ease' }}>
-              <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, boxShadow: '0 8px 30px rgba(26,46,26,0.25)' }}>
+              <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#0b2c34', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, boxShadow: '0 8px 30px rgba(11, 44, 52,0.25)' }}>
                 <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
                   <path d="M8 17.5L14 23.5L26 11" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 style={{ fontWeight: 700, fontStyle: 'normal', fontSize: 26, color: '#1a2e1a', margin: '0 0 8px', fontFamily: "'Poppins',sans-serif" }}>Demande envoyée !</h3>
+              <h3 style={{ fontWeight: 700, fontStyle: 'normal', fontSize: 26, color: '#0b2c34', margin: '0 0 8px', fontFamily: "'Poppins',sans-serif" }}>Demande envoyée !</h3>
               <p style={{ color: '#9ca3af', fontSize: 13, margin: 0 }}>Nous vous recontacterons sous 48h.</p>
             </div>
           )}
@@ -510,7 +510,7 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
           <div ref={scrollRef} className="sem-sc sem-body" style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '28px 28px 0' }}>
             <div style={{ opacity: trans ? 0 : 1, transform: trans ? 'translateY(5px)' : 'translateY(0)', transition: 'all .18s ease' }}>
 
-              <h3 style={{ fontFamily: "'Poppins',sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 22, color: '#1a2e1a', margin: '0 0 22px' }}>
+              <h3 style={{ fontFamily: "'Poppins',sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 22, color: '#0b2c34', margin: '0 0 22px' }}>
                 {STEP_TITLE[step]}
               </h3>
 
@@ -560,15 +560,15 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
                             onClick={() => tog(regions, setReg, r.name)}
                             style={{
                               padding: '18px 12px', borderRadius: 20, fontFamily: 'inherit',
-                              border: `1.5px solid ${a ? '#1a2e1a' : 'rgba(10,44,52,0.08)'}`,
-                              background: a ? '#1a2e1a' : '#faf8f5',
+                              border: `1.5px solid ${a ? '#0b2c34' : 'rgba(11, 44, 52,0.08)'}`,
+                              background: a ? '#0b2c34' : '#faf8f5',
                               cursor: 'pointer', textAlign: 'center', transition: 'all .2s ease',
                               transform: a ? 'translateY(-2px)' : 'none',
-                              boxShadow: a ? '0 6px 20px rgba(26,46,26,.16)' : 'none',
+                              boxShadow: a ? '0 6px 20px rgba(11, 44, 52,.16)' : 'none',
                             }}
                           >
                             <div style={{ fontSize: 24, marginBottom: 8 }}>{r.icon}</div>
-                            <div style={{ fontSize: 10, fontWeight: 700, color: a ? '#fff' : '#1a2e1a', lineHeight: 1.3 }}>{r.name}</div>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: a ? '#fff' : '#0b2c34', lineHeight: 1.3 }}>{r.name}</div>
                             {a && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', margin: '8px auto 0' }} />}
                           </button>
                         );
@@ -591,10 +591,10 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
                             onClick={() => tog(terroir, setTer, p.label)}
                             style={{
                               padding: '12px 8px', borderRadius: 16, fontFamily: 'inherit',
-                              border: `1.5px solid ${a ? '#1a2e1a' : 'rgba(10,44,52,0.08)'}`,
-                              background: a ? '#1a2e1a' : '#faf8f5',
+                              border: `1.5px solid ${a ? '#0b2c34' : 'rgba(11, 44, 52,0.08)'}`,
+                              background: a ? '#0b2c34' : '#faf8f5',
                               cursor: 'pointer', textAlign: 'center', transition: 'all .2s ease',
-                              boxShadow: a ? '0 4px 14px rgba(26,46,26,.14)' : 'none',
+                              boxShadow: a ? '0 4px 14px rgba(11, 44, 52,.14)' : 'none',
                               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
                             }}
                           >
@@ -639,7 +639,7 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
                     </div>
                   ))}
                   <p style={{ fontSize: 11, color: '#b0a89e', textAlign: 'center', margin: '4px 0 0' }}>
-                    Tout est correct ? Cliquez sur <strong style={{ color: '#1a2e1a' }}>Envoyer le brief</strong> pour nous le transmettre.
+                    Tout est correct ? Cliquez sur <strong style={{ color: '#0b2c34' }}>Envoyer le brief</strong> pour nous le transmettre.
                   </p>
                 </div>
               )}
@@ -649,28 +649,28 @@ const SeminaireModal: React.FC<SeminaireModalProps> = ({ isOpen, onClose }) => {
 
           <div
             className="sem-footer"
-            style={{ padding: '14px 28px', borderTop: '1px solid rgba(10,44,52,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexShrink: 0, background: '#fff', flexWrap: 'wrap' }}
+            style={{ padding: '14px 28px', borderTop: '1px solid rgba(11, 44, 52,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexShrink: 0, background: '#fff', flexWrap: 'wrap' }}
           >
             <button
               onClick={goPrev} disabled={step === 1}
               style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: step === 1 ? 'default' : 'pointer', color: step === 1 ? 'transparent' : '#9ca3af', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', padding: '8px 0', transition: 'color .2s ease' }}
-              onMouseOver={e => { if (step > 1) e.currentTarget.style.color = '#1a2e1a'; }}
+              onMouseOver={e => { if (step > 1) e.currentTarget.style.color = '#0b2c34'; }}
               onMouseOut={e => { if (step > 1) e.currentTarget.style.color = '#9ca3af'; }}
             >← Précédent</button>
 
             <div style={{ display: 'flex', gap: 10 }}>
               <button
                 onClick={handleClose}
-                style={{ padding: '10px 20px', borderRadius: 9999, border: '1.5px solid rgba(10,44,52,0.1)', background: '#faf8f5', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9ca3af', cursor: 'pointer', transition: 'all .15s ease' }}
-                onMouseOver={e => { e.currentTarget.style.borderColor = '#1a2e1a'; e.currentTarget.style.color = '#1a2e1a'; }}
-                onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(10,44,52,0.1)'; e.currentTarget.style.color = '#9ca3af'; }}
+                style={{ padding: '10px 20px', borderRadius: 9999, border: '1.5px solid rgba(11, 44, 52,0.1)', background: '#faf8f5', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9ca3af', cursor: 'pointer', transition: 'all .15s ease' }}
+                onMouseOver={e => { e.currentTarget.style.borderColor = '#0b2c34'; e.currentTarget.style.color = '#0b2c34'; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(11, 44, 52,0.1)'; e.currentTarget.style.color = '#9ca3af'; }}
               >Annuler</button>
 
               <button
                 onClick={step < 4 ? goNext : handleSubmit} disabled={busy}
-                style={{ padding: '10px 28px', borderRadius: 9999, background: '#1a2e1a', color: '#fff', border: 'none', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: busy ? 'not-allowed' : 'pointer', opacity: busy ? 0.7 : 1, display: 'flex', alignItems: 'center', gap: 8, transition: 'background .2s ease', minWidth: 170 }}
-                onMouseOver={e => { if (!busy) e.currentTarget.style.background = '#2b3e24'; }}
-                onMouseOut={e => { e.currentTarget.style.background = '#1a2e1a'; }}
+                style={{ padding: '10px 28px', borderRadius: 9999, background: '#0b2c34', color: '#fff', border: 'none', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: busy ? 'not-allowed' : 'pointer', opacity: busy ? 0.7 : 1, display: 'flex', alignItems: 'center', gap: 8, transition: 'background .2s ease', minWidth: 170 }}
+                onMouseOver={e => { if (!busy) e.currentTarget.style.background = '#081f26'; }}
+                onMouseOut={e => { e.currentTarget.style.background = '#0b2c34'; }}
               >
                 {busy ? (
                   <><span style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'semSp .7s linear infinite', display: 'inline-block' }} />Envoi…</>

@@ -7,7 +7,6 @@ import ScrollAnimate from '../components/ScrollAnimate';
 import { CollapsibleDateRangePicker } from '../components/CollapsibleDateRangePicker';
 import { VilleDepartInput } from '../components/VilleDepartInput';
 import {
-  heroIntroParagraphOnImageClass,
   heroIntroParagraphOnImageStyle,
   heroPrimaryOutlineButtonClass,
   heroSecondaryGhostLinkClass,
@@ -72,12 +71,12 @@ const Pill: React.FC<{ active: boolean; onClick: () => void; children: React.Rea
     onClick={onClick}
     style={{
       padding: small ? '5px 12px' : '7px 14px', borderRadius: 9999,
-      border: `1.5px solid ${active ? '#1a2e1a' : 'rgba(10,44,52,0.1)'}`,
-      background: active ? '#1a2e1a' : '#faf8f5',
+      border: `1.5px solid ${active ? '#0b2c34' : 'rgba(11, 44, 52,0.1)'}`,
+      background: active ? '#0b2c34' : '#faf8f5',
       color: active ? '#fff' : '#6b7280',
       fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
       cursor: 'pointer', fontFamily: 'inherit',
-      boxShadow: active ? '0 2px 10px rgba(26,46,26,0.15)' : 'none',
+      boxShadow: active ? '0 2px 10px rgba(11, 44, 52,0.15)' : 'none',
       transition: 'all .15s ease', display: 'inline-flex', alignItems: 'center', gap: 5,
     }}
   >
@@ -87,15 +86,15 @@ const Pill: React.FC<{ active: boolean; onClick: () => void; children: React.Rea
 );
 
 const ToggleCard: React.FC<{ icon: string; label: string; active: boolean; onToggle: () => void; children?: React.ReactNode }> = ({ icon, label, active, onToggle, children }) => (
-  <div style={{ padding: '18px', borderRadius: 16, border: `1.5px solid ${active ? '#1a2e1a' : 'rgba(10,44,52,0.08)'}`, background: active ? 'rgba(26,46,26,0.03)' : '#fff', transition: 'all .2s ease' }}>
+  <div style={{ padding: '18px', borderRadius: 16, border: `1.5px solid ${active ? '#0b2c34' : 'rgba(11, 44, 52,0.08)'}`, background: active ? 'rgba(11, 44, 52,0.03)' : '#fff', transition: 'all .2s ease' }}>
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 20 }}>{icon}</span>
-        <span style={{ fontSize: 10, fontWeight: 700, color: '#1a2e1a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{label}</span>
+        <span style={{ fontSize: 10, fontWeight: 700, color: '#0b2c34', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{label}</span>
       </div>
       <label style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
         <input type="checkbox" checked={active} onChange={onToggle} style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }} />
-        <div style={{ width: 44, height: 24, borderRadius: 12, background: active ? '#1a2e1a' : '#e5e0d8', transition: 'background .2s ease', position: 'relative' }}>
+        <div style={{ width: 44, height: 24, borderRadius: 12, background: active ? '#0b2c34' : '#e5e0d8', transition: 'background .2s ease', position: 'relative' }}>
           <div style={{ position: 'absolute', top: 4, left: active ? 24 : 4, width: 16, height: 16, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.15)', transition: 'left .2s ease' }} />
         </div>
       </label>
@@ -105,9 +104,9 @@ const ToggleCard: React.FC<{ icon: string; label: string; active: boolean; onTog
 );
 
 const RecapRow: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, padding: '9px 0', borderBottom: '1px solid rgba(10,44,52,0.05)' }}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, padding: '9px 0', borderBottom: '1px solid rgba(11, 44, 52,0.05)' }}>
     <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#b0a89e', flexShrink: 0, marginTop: 2 }}>{label}</span>
-    <span style={{ fontSize: 12, fontWeight: 600, color: '#1a2e1a', textAlign: 'right' }}>{value || '—'}</span>
+    <span style={{ fontSize: 12, fontWeight: 600, color: '#0b2c34', textAlign: 'right' }}>{value || '—'}</span>
   </div>
 );
 
@@ -262,11 +261,11 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
         .sem-sc::-webkit-scrollbar { display:none } .sem-sc { scrollbar-width:none }
         .sem-i {
           width:100%; background:#faf8f5;
-          border:1px solid rgba(10,44,52,.08); border-radius:12px;
-          padding:12px 16px; font-family:inherit; font-size:13px; color:#1a2e1a;
+          border:1px solid rgba(11, 44, 52,.08); border-radius:12px;
+          padding:12px 16px; font-family:inherit; font-size:13px; color:#0b2c34;
           outline:none; transition:all .18s ease; box-sizing:border-box;
         }
-        .sem-i:focus { border-color:#1a2e1a; background:#fff; box-shadow:0 0 0 3px rgba(26,46,26,.06); }
+        .sem-i:focus { border-color:#0b2c34; background:#fff; box-shadow:0 0 0 3px rgba(11, 44, 52,.06); }
         .sem-i::placeholder { color:#c4bdb4; }
         @media (min-width: 601px) {
           .sem-step3-toggle-grid {
@@ -329,7 +328,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
               : {
                   width: '100%', maxWidth: 1000, maxHeight: '96vh', minHeight: 0,
                   borderRadius: 28,
-                  boxShadow: '0 8px 48px rgba(0,0,0,0.14), 0 0 0 1px rgba(10,44,52,0.05)',
+                  boxShadow: '0 8px 48px rgba(0,0,0,0.14), 0 0 0 1px rgba(11, 44, 52,0.05)',
                 }),
             background: '#fff',
             display: 'flex', flexDirection: 'column', overflow: 'hidden',
@@ -337,7 +336,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
             fontFamily: "'Poppins',sans-serif",
           }}
         >
-          <div className="sem-header" style={{ padding: '20px 28px 0', background: '#fff', flexShrink: 0, borderBottom: '1px solid rgba(10,44,52,0.06)' }}>
+          <div className="sem-header" style={{ padding: '20px 28px 0', background: '#fff', flexShrink: 0, borderBottom: '1px solid rgba(11, 44, 52,0.06)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 16, height: 1, background: '#e67e22' }} />
@@ -358,8 +357,8 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                 const idx = i + 1, done = step > idx, active = step === idx;
                 return (
                   <div key={s.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 5 }}>
-                    <div style={{ height: 2, borderRadius: 2, background: done ? '#e67e22' : active ? '#1a2e1a' : 'rgba(10,44,52,0.08)', transition: 'background .4s ease' }} />
-                    <span className="ssl" style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: active ? '#1a2e1a' : done ? '#e67e22' : 'rgba(10,44,52,0.28)', transition: 'color .3s ease' }}>
+                    <div style={{ height: 2, borderRadius: 2, background: done ? '#e67e22' : active ? '#0b2c34' : 'rgba(11, 44, 52,0.08)', transition: 'background .4s ease' }} />
+                    <span className="ssl" style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: active ? '#0b2c34' : done ? '#e67e22' : 'rgba(11, 44, 52,0.28)', transition: 'color .3s ease' }}>
                       {idx}. {s.label}
                     </span>
                   </div>
@@ -409,7 +408,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                     width: '40px',
                     height: '40px',
                     borderRadius: '50%',
-                    background: '#2D3B1F',
+                    background: '#0b2c34',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -419,14 +418,14 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
                     <path
                       d="M5 13l4 4L19 7"
-                      stroke="#8AAA7A"
+                      stroke="#5a9aaa"
                       strokeWidth="2.2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                   </svg>
                 </div>
-                <p style={{ fontSize: '15px', fontWeight: 600, color: '#1A2810', margin: '0 0 6px', lineHeight: 1.4 }}>
+                <p style={{ fontSize: '15px', fontWeight: 600, color: '#0b2c34', margin: '0 0 6px', lineHeight: 1.4 }}>
                   C'est noté, merci !
                 </p>
                 <p style={{ fontSize: '13px', color: '#6B6460', margin: 0, lineHeight: 1.6 }}>
@@ -443,7 +442,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
           <div ref={scrollRef} className="sem-sc sem-body" style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '28px 28px 0' }}>
             <div style={{ opacity: trans ? 0 : 1, transform: trans ? 'translateY(5px)' : 'translateY(0)', transition: 'all .18s ease' }}>
 
-              <h3 style={{ fontFamily: "'Poppins',sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 22, color: '#1a2e1a', margin: '0 0 22px' }}>
+              <h3 style={{ fontFamily: "'Poppins',sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 22, color: '#0b2c34', margin: '0 0 22px' }}>
                 {STEP_TITLE[step]}
               </h3>
 
@@ -483,22 +482,22 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                         type="button"
                         onClick={() => setMaxTrajetH(h => Math.max(1, h - 1))}
                         style={{
-                          width: 40, height: 40, borderRadius: '50%', border: '1px solid rgba(10,44,52,0.12)', background: '#faf8f5',
-                          cursor: 'pointer', fontSize: 20, fontWeight: 700, color: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'inherit',
+                          width: 40, height: 40, borderRadius: '50%', border: '1px solid rgba(11, 44, 52,0.12)', background: '#faf8f5',
+                          cursor: 'pointer', fontSize: 20, fontWeight: 700, color: '#0b2c34', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'inherit',
                         }}
                         aria-label="Diminuer le temps de trajet"
                       >
                         −
                       </button>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: '#1a2e1a', minWidth: 120, textAlign: 'center' }}>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: '#0b2c34', minWidth: 120, textAlign: 'center' }}>
                         {maxTrajetH} heure{maxTrajetH > 1 ? 's' : ''}
                       </span>
                       <button
                         type="button"
                         onClick={() => setMaxTrajetH(h => Math.min(8, h + 1))}
                         style={{
-                          width: 40, height: 40, borderRadius: '50%', border: '1px solid rgba(10,44,52,0.12)', background: '#faf8f5',
-                          cursor: 'pointer', fontSize: 20, fontWeight: 700, color: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'inherit',
+                          width: 40, height: 40, borderRadius: '50%', border: '1px solid rgba(11, 44, 52,0.12)', background: '#faf8f5',
+                          cursor: 'pointer', fontSize: 20, fontWeight: 700, color: '#0b2c34', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'inherit',
                         }}
                         aria-label="Augmenter le temps de trajet"
                       >
@@ -527,10 +526,10 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                       <span
                         style={{
                           padding: '7px 14px', borderRadius: 9999,
-                          border: '1.5px solid #1a2e1a', background: '#1a2e1a', color: '#fff',
+                          border: '1.5px solid #0b2c34', background: '#0b2c34', color: '#fff',
                           fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
                           fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 5, cursor: 'default',
-                          boxShadow: '0 2px 10px rgba(26,46,26,0.15)',
+                          boxShadow: '0 2px 10px rgba(11, 44, 52,0.15)',
                           flexShrink: 0,
                         }}
                       >
@@ -573,7 +572,7 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
                     </div>
                   ))}
                   <p style={{ fontSize: 11, color: '#b0a89e', textAlign: 'center', margin: '4px 0 0' }}>
-                    Tout est correct ? Cliquez sur <strong style={{ color: '#1a2e1a' }}>Envoyer le brief</strong> pour nous le transmettre.
+                    Tout est correct ? Cliquez sur <strong style={{ color: '#0b2c34' }}>Envoyer le brief</strong> pour nous le transmettre.
                   </p>
                 </div>
               )}
@@ -583,28 +582,28 @@ const SeminaireModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ is
 
           <div
             className="sem-footer"
-            style={{ padding: '14px 28px', borderTop: '1px solid rgba(10,44,52,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexShrink: 0, background: '#fff', flexWrap: 'wrap' }}
+            style={{ padding: '14px 28px', borderTop: '1px solid rgba(11, 44, 52,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexShrink: 0, background: '#fff', flexWrap: 'wrap' }}
           >
             <button
               onClick={goPrev} disabled={step === 1}
               style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: step === 1 ? 'default' : 'pointer', color: step === 1 ? 'transparent' : '#9ca3af', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', padding: '8px 0', transition: 'color .2s ease' }}
-              onMouseOver={e => { if (step > 1) e.currentTarget.style.color = '#1a2e1a'; }}
+              onMouseOver={e => { if (step > 1) e.currentTarget.style.color = '#0b2c34'; }}
               onMouseOut={e => { if (step > 1) e.currentTarget.style.color = '#9ca3af'; }}
             >← Précédent</button>
 
             <div style={{ display: 'flex', gap: 10 }}>
               <button
                 onClick={handleClose}
-                style={{ padding: '10px 20px', borderRadius: 9999, border: '1.5px solid rgba(10,44,52,0.1)', background: '#faf8f5', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9ca3af', cursor: 'pointer', transition: 'all .15s ease' }}
-                onMouseOver={e => { e.currentTarget.style.borderColor = '#1a2e1a'; e.currentTarget.style.color = '#1a2e1a'; }}
-                onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(10,44,52,0.1)'; e.currentTarget.style.color = '#9ca3af'; }}
+                style={{ padding: '10px 20px', borderRadius: 9999, border: '1.5px solid rgba(11, 44, 52,0.1)', background: '#faf8f5', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9ca3af', cursor: 'pointer', transition: 'all .15s ease' }}
+                onMouseOver={e => { e.currentTarget.style.borderColor = '#0b2c34'; e.currentTarget.style.color = '#0b2c34'; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(11, 44, 52,0.1)'; e.currentTarget.style.color = '#9ca3af'; }}
               >Annuler</button>
 
               <button
                 onClick={step < 4 ? goNext : handleSubmit} disabled={busy}
-                style={{ padding: '10px 28px', borderRadius: 9999, background: '#1a2e1a', color: '#fff', border: 'none', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: busy ? 'not-allowed' : 'pointer', opacity: busy ? 0.7 : 1, display: 'flex', alignItems: 'center', gap: 8, transition: 'background .2s ease', minWidth: 170 }}
-                onMouseOver={e => { if (!busy) e.currentTarget.style.background = '#2b3e24'; }}
-                onMouseOut={e => { e.currentTarget.style.background = '#1a2e1a'; }}
+                style={{ padding: '10px 28px', borderRadius: 9999, background: '#0b2c34', color: '#fff', border: 'none', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: busy ? 'not-allowed' : 'pointer', opacity: busy ? 0.7 : 1, display: 'flex', alignItems: 'center', gap: 8, transition: 'background .2s ease', minWidth: 170 }}
+                onMouseOver={e => { if (!busy) e.currentTarget.style.background = '#081f26'; }}
+                onMouseOut={e => { e.currentTarget.style.background = '#0b2c34'; }}
               >
                 {busy ? (
                   <><span style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'semSp .7s linear infinite', display: 'inline-block' }} />Envoi…</>
@@ -695,16 +694,6 @@ const Seminaires: React.FC = () => {
     }
   }, [searchParams, router, pathname]);
 
-  const rotatingTexts = ['humains', 'simples', 'inspirants', 'captivants', 'authentiques', 'engagés', 'gourmands', 'durables', 'sensoriels'];
-  const [currentTextIndex, setCurrentTextIndex] = useState(0);
-  const [displayedText, setDisplayedText] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  useEffect(() => {
-    const txt = rotatingTexts[currentTextIndex]; setDisplayedText(''); setIsTyping(true); let i = 0;
-    const id = setInterval(() => { if (i < txt.length) { setDisplayedText(txt.slice(0, ++i)); } else { setIsTyping(false); clearInterval(id); } }, 50);
-    return () => clearInterval(id);
-  }, [currentTextIndex]);
-  useEffect(() => { const id = setInterval(() => setCurrentTextIndex(p => (p + 1) % rotatingTexts.length), 3000); return () => clearInterval(id); }, [rotatingTexts.length]);
   useEffect(() => { heroImages.forEach(src => { const img = new Image(); img.src = src; }); }, []);
   useEffect(() => { const id = setInterval(() => setCurrentImageIndex(p => (p + 1) % heroImages.length), 3000); return () => clearInterval(id); }, []);
 
@@ -764,35 +753,31 @@ const Seminaires: React.FC = () => {
         ))}
         <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.32) 60%, rgba(0,0,0,0.55) 100%)' }} />
 
-        <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+        <div className="relative z-10 w-full max-w-5xl mx-auto px-5 sm:px-7 lg:px-10 text-center">
           <div className="flex items-center justify-center gap-3 mb-10 sm:mb-7">
             <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
-            <span style={{ color: 'rgba(255,255,255,0.60)', fontSize: 10, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase' }}>Immersion & Cohésion</span>
+            <span style={{ color: 'rgba(255,255,255,0.60)', fontSize: 10, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase' }}>séminaire & immersion</span>
             <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
           </div>
 
-          <h1 className="text-white font-bold leading-[1.06] mb-12 sm:mb-7 drop-shadow-lg" style={{ letterSpacing: '-0.01em' }}>
-            <span className="block font-display italic text-5xl md:text-5xl lg:text-6xl mb-1">Optez pour des séminaires</span>
-            <span
-              className="flex flex-wrap justify-center items-baseline gap-x-1.5 max-sm:gap-x-1 font-sans font-bold text-5xl max-sm:text-4xl md:text-4xl lg:text-5xl max-sm:leading-snug"
-              style={{ letterSpacing: '-0.01em' }}
-            >
-              <span className="shrink-0">plus</span>
-              <span className="text-[rgb(255,223,202)] min-w-0 text-center">
-                {displayedText}
-                <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s' }}>|</span>
-              </span>
+          <h1
+            className="text-white font-bold leading-[1.06] mb-5 sm:mb-4 drop-shadow-lg max-w-3xl mx-auto"
+            style={{ letterSpacing: '-0.01em' }}
+          >
+            <span className="font-sans font-bold not-italic text-4xl md:text-4xl lg:text-5xl">
+              Séminaire au vert, à la ferme{' '}
             </span>
-          </h1>
-          <h1 className="sr-only">
-            Séminaire au vert &amp; nature engagé chez des producteurs français
+            <span className="font-display font-bold italic text-5xl md:text-5xl lg:text-6xl">
+              ou en pleine nature.
+            </span>
           </h1>
 
           <p
-            className={`hidden sm:block italic ${heroIntroParagraphOnImageClass}`}
+            className="hidden sm:block italic text-sm md:text-base mx-auto mb-8 sm:mb-9 leading-relaxed max-w-4xl text-center"
             style={heroIntroParagraphOnImageStyle}
           >
-            Moins de slides. Plus de sens.
+            TerraGo imagine des séminaires au vert et expériences immersives à la rencontre de producteurs engagés
+            pour reconnecter chacun au vivant, et créer des souvenirs forts.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
@@ -870,7 +855,7 @@ const Seminaires: React.FC = () => {
               <div
                 key={item.title}
                 className="group relative flex flex-col justify-end overflow-hidden rounded-[22px] cursor-pointer transition-all duration-300 min-h-[260px] sm:min-h-[300px]"
-                style={{ border: '1px solid rgba(26,46,26,0.07)', boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}
+                style={{ border: '1px solid rgba(11, 44, 52,0.07)', boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}
               >
                 <img
                   src={item.image}
@@ -886,7 +871,7 @@ const Seminaires: React.FC = () => {
                   style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)' }}
                 />
                 <div className="relative z-10 flex flex-col items-center text-center p-6 pb-8 opacity-100 transition-opacity duration-300 group-hover:opacity-0 group-hover:z-0 pointer-events-none">
-                  <div className="w-11 h-11 rounded-full flex items-center justify-center mb-4 flex-shrink-0 shadow-lg" style={{ background: 'rgba(255,255,255,0.95)', color: '#1a2e1a' }}>
+                  <div className="w-11 h-11 rounded-full flex items-center justify-center mb-4 flex-shrink-0 shadow-lg" style={{ background: 'rgba(255,255,255,0.95)', color: '#0b2c34' }}>
                     <span className="material-symbols-outlined" style={{ fontSize: 22 }}>{item.icon}</span>
                   </div>
                   <h3 className="font-sans font-bold text-white drop-shadow-md" style={{ fontSize: 15, fontWeight: 500 }}>{item.title}</h3>
@@ -917,7 +902,7 @@ const Seminaires: React.FC = () => {
             </div>
             <ScrollAnimate delay={200}>
               <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-              <span className="font-sans text-4xl sm:text-5xl">Chaque séminaire au vert</span>
+              <span className="font-sans text-4xl sm:text-5xl">Ce que chaque séminaire au vert</span>
               <span className="font-display italic text-5xl sm:text-5xl lg:text-6xl"> vous garantit.</span>
               </h2>
             </ScrollAnimate>
@@ -936,19 +921,19 @@ const Seminaires: React.FC = () => {
               <div
                 key={item.icon}
                 className="group flex items-start gap-5 transition-all duration-300 cursor-pointer"
-                style={{ background: '#fff', border: '1px solid rgba(26,46,26,0.07)', borderRadius: '20px', padding: '28px 32px' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.18)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.07)'; }}
+                style={{ background: '#fff', border: '1px solid rgba(11, 44, 52,0.07)', borderRadius: '20px', padding: '28px 32px' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(11, 44, 52,0.18)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(11, 44, 52,0.07)'; }}
               >
                 <div
                   className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300"
-                  style={{ background: 'rgba(26,46,26,0.06)', color: '#1a2e1a' }}
+                  style={{ background: 'rgba(11, 44, 52,0.06)', color: '#0b2c34' }}
                   ref={el => {
                     if (!el) return;
                     const parent = el.closest('.group');
                     if (!parent) return;
                     parent.addEventListener('mouseenter', () => { el.style.color = '#e67e22'; });
-                    parent.addEventListener('mouseleave', () => { el.style.color = '#1a2e1a'; });
+                    parent.addEventListener('mouseleave', () => { el.style.color = '#0b2c34'; });
                   }}
                 >
                   <span className="material-symbols-outlined text-xl">{item.icon}</span>
@@ -964,7 +949,7 @@ const Seminaires: React.FC = () => {
       </section>
 
       {/* ── FORMATS ── */}
-      <section style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)', backgroundColor: '#0d1a0d' }}>
+      <section style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)', backgroundColor: '#061a1f' }}>
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="mb-14">
             <div className="flex items-center gap-3 mb-6">
@@ -974,15 +959,15 @@ const Seminaires: React.FC = () => {
             <ScrollAnimate delay={200}>
               <h2 className="font-bold text-white leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
               <span className="font-sans text-4xl sm:text-5xl">Des formats de séminaire engagé</span>
-              <span className="font-display italic text-5xl sm:text-5xl lg:text-6xl"> adaptés à chaque équipe.</span>
+              <span className="font-display italic text-5xl sm:text-5xl lg:text-6xl"> adaptés à vos besoins.</span>
               </h2>
             </ScrollAnimate>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { icon: 'calendar_today', tag: 'Format court',    label: 'À la journée', text: 'Un format concentré pour (re)mettre du sens dans une journée hors du bureau, au contact direct du terroir.',                                  duration: '1 jour',     people: 'dès 6 pers.' },
-              { icon: 'event',          tag: 'Format immersif', label: 'Sur 2 jours',  text: 'Deux jours pour alterner temps de travail, immersion dans les exploitations et moments de cohésion en équipe.',                               duration: '2 jours',    people: 'dès 6 pers.' },
-              { icon: 'design_services',tag: 'Format plus',     label: 'Sur mesure',   text: 'Un séminaire entièrement construit avec vous : rythme, intensité, thématique, et producteurs partenaires.',                                    duration: 'Durée libre', people: 'tout effectif' },
+              { icon: 'diversity_3', tag: 'Découverte & cohésion', label: 'Décompresser ensemble', text: 'Sortir du bureau, renforcer la cohésion, vivre une expérience mémorable au contact des terroirs et du vivant.', duration: 'Formats de 1 à 3 jours', people: 'dès 8 pers.' },
+              { icon: 'eco', tag: 'Sensibilisation RSE', label: 'Cultiver une vision durable', text: 'Comprendre les enjeux agri & environnementaux en terrain réel, avec une approche concrète au contact des nos producteurs.', duration: 'Formats de 1 à 3 jours', people: 'dès 8 pers.' },
+              { icon: 'lightbulb', tag: 'Inspiration & formation', label: "S'inspirer de celles et ceux qui agissent", text: "Des producteurs engagés comme miroir d'entreprise — leur résilience, leurs choix, leur sens du travail bien fait.", duration: 'Format sur mesure', people: 'tout effectif' },
             ].map(item => (
               <div
                 key={item.label}
@@ -995,7 +980,7 @@ const Seminaires: React.FC = () => {
                   <span className="material-symbols-outlined text-xl">{item.icon}</span>
                 </div>
                 <div>
-                  <div style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.22em', color: '#e67e22', marginBottom: 6 }}>{item.tag}</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#e67e22', marginBottom: 6 }}>{item.tag}</div>
                   <h3 className="font-sans font-bold text-white" style={{ fontSize: 16, marginBottom: 8 }}>{item.label}</h3>
                   <p style={{ color: 'rgba(255,255,255,0.40)', fontSize: 13, lineHeight: 1.75 }}>{item.text}</p>
                 </div>
@@ -1020,8 +1005,8 @@ const Seminaires: React.FC = () => {
               </div>
               <ScrollAnimate delay={150}>
                 <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-              <span className="font-sans text-4xl sm:text-5xl">Nos univers terroir</span>
-              <span className="font-display italic text-5xl sm:text-5xl lg:text-6xl"> en France.</span>
+              <span className="font-sans text-4xl sm:text-5xl">Séminaire nature en France :</span>
+              <span className="font-display italic text-5xl sm:text-5xl lg:text-6xl"> nos univers.</span>
             </h2>
           </ScrollAnimate>
           <p className="mt-4 max-w-2xl" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.75 }}>
@@ -1029,10 +1014,10 @@ const Seminaires: React.FC = () => {
           </p>
             </div>
             <div className="hidden sm:flex gap-3">
-              <button type="button" onClick={() => scrollExamples('left')} className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300" style={{ background: '#fff', border: '1px solid rgba(26,46,26,0.12)', color: '#1a2e1a' }} onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#1a2e1a'; (e.currentTarget as HTMLButtonElement).style.color = '#fff'; }} onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff'; (e.currentTarget as HTMLButtonElement).style.color = '#1a2e1a'; }}>
+              <button type="button" onClick={() => scrollExamples('left')} className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300" style={{ background: '#fff', border: '1px solid rgba(11, 44, 52,0.12)', color: '#0b2c34' }} onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#0b2c34'; (e.currentTarget as HTMLButtonElement).style.color = '#fff'; }} onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff'; (e.currentTarget as HTMLButtonElement).style.color = '#0b2c34'; }}>
                 <span className="material-symbols-outlined text-xl">chevron_left</span>
               </button>
-              <button type="button" onClick={() => scrollExamples('right')} className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300" style={{ background: '#fff', border: '1px solid rgba(26,46,26,0.12)', color: '#1a2e1a' }} onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#1a2e1a'; (e.currentTarget as HTMLButtonElement).style.color = '#fff'; }} onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff'; (e.currentTarget as HTMLButtonElement).style.color = '#1a2e1a'; }}>
+              <button type="button" onClick={() => scrollExamples('right')} className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300" style={{ background: '#fff', border: '1px solid rgba(11, 44, 52,0.12)', color: '#0b2c34' }} onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#0b2c34'; (e.currentTarget as HTMLButtonElement).style.color = '#fff'; }} onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff'; (e.currentTarget as HTMLButtonElement).style.color = '#0b2c34'; }}>
                 <span className="material-symbols-outlined text-xl">chevron_right</span>
               </button>
             </div>
@@ -1044,7 +1029,7 @@ const Seminaires: React.FC = () => {
               <button
                 key={product} onClick={() => setSelectedUniverse(selectedUniverse === product ? null : product)}
                 className="transition-all duration-300"
-                style={{ padding: '6px 16px', borderRadius: 9999, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', border: `1.5px solid ${selectedUniverse === product ? '#e67e22' : 'rgba(26,46,26,0.12)'}`, background: selectedUniverse === product ? '#e67e22' : 'transparent', color: selectedUniverse === product ? '#fff' : '#7a7060', cursor: 'pointer' }}
+                style={{ padding: '6px 16px', borderRadius: 9999, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', border: `1.5px solid ${selectedUniverse === product ? '#e67e22' : 'rgba(11, 44, 52,0.12)'}`, background: selectedUniverse === product ? '#e67e22' : 'transparent', color: selectedUniverse === product ? '#fff' : '#7a7060', cursor: 'pointer' }}
               >{product}</button>
             ))}
           </div>
@@ -1101,11 +1086,11 @@ const Seminaires: React.FC = () => {
           </p>
 
           {plaquetteSuccess ? (
-            <div style={{ background: 'rgba(26,46,26,0.06)', borderRadius: '9999px', padding: '14px 28px', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#1a2e1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ background: 'rgba(11, 44, 52,0.06)', borderRadius: '9999px', padding: '14px 28px', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#0b2c34', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="material-symbols-outlined text-white" style={{ fontSize: 14 }}>check</span>
               </div>
-              <p style={{ color: '#1a2e1a', fontWeight: 700, fontSize: 12, margin: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Envoyée sous 24h !</p>
+              <p style={{ color: '#0b2c34', fontWeight: 700, fontSize: 12, margin: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Envoyée sous 24h !</p>
             </div>
           ) : (
             <form onSubmit={handlePlaquetteSubmit} className="w-full">
@@ -1114,14 +1099,14 @@ const Seminaires: React.FC = () => {
                   type="email" required placeholder="jeveuxlaplaquette@email.fr"
                   value={plaquetteEmail} onChange={e => { setPlaquetteEmail(e.target.value); setPlaquetteEmailError(''); }}
                   className="flex-1 bg-white px-6 py-4 focus:outline-none transition-all"
-                  style={{ border: `1px solid ${plaquetteEmailError ? '#e67e22' : 'rgba(26,46,26,0.09)'}`, borderRadius: '9999px', color: '#1a2e1a', fontSize: 13 }}
+                  style={{ border: `1px solid ${plaquetteEmailError ? '#e67e22' : 'rgba(11, 44, 52,0.09)'}`, borderRadius: '9999px', color: '#0b2c34', fontSize: 13 }}
                 />
                 <button
                   type="submit" disabled={plaquetteSubmitting}
                   className="px-7 py-4 text-white font-bold uppercase transition-all duration-300"
-                  style={{ background: '#1a2e1a', borderRadius: '9999px', fontSize: 9, letterSpacing: '0.22em', opacity: plaquetteSubmitting ? 0.7 : 1 }}
+                  style={{ background: '#0b2c34', borderRadius: '9999px', fontSize: 9, letterSpacing: '0.22em', opacity: plaquetteSubmitting ? 0.7 : 1 }}
                   onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.background = '#e67e22')}
-                  onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = '#1a2e1a')}
+                  onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = '#0b2c34')}
                 >
                   {plaquetteSubmitting ? '…' : 'Recevoir'}
                 </button>
@@ -1140,12 +1125,12 @@ const Seminaires: React.FC = () => {
         const card = exampleCards.find(c => c.universId === selectedUniversModal.id);
         return (
           <div onClick={closeUniversModal} style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(10,20,10,0.78)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', opacity: isUniversModalClosing ? 0 : 1, transition: 'opacity 0.25s ease' }}>
-            <div onClick={e => e.stopPropagation()} className="bg-white univers-modal-box" style={{ borderRadius: 24, maxWidth: 620, width: '100%', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.25)', transform: isUniversModalClosing ? 'translateY(20px) scale(0.97)' : 'translateY(0) scale(1)', transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', maxHeight: '90vh', overflowY: 'auto', border: '1px solid rgba(26,46,26,0.08)' }}>
+            <div onClick={e => e.stopPropagation()} className="bg-white univers-modal-box" style={{ borderRadius: 24, maxWidth: 620, width: '100%', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.25)', transform: isUniversModalClosing ? 'translateY(20px) scale(0.97)' : 'translateY(0) scale(1)', transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', maxHeight: '90vh', overflowY: 'auto', border: '1px solid rgba(11, 44, 52,0.08)' }}>
               {/* Header avec image univers + producteur — hauteur réduite */}
               <div style={{ position: 'relative', paddingTop: '34%', overflow: 'visible' }}>
                 <img src={card?.image ?? ''} alt={selectedUniversModal.label} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                 <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${selectedUniversModal.couleur}99 0%, transparent 50%)` }} />
-                <button onClick={closeUniversModal} className="flex items-center justify-center" style={{ position: 'absolute', top: 16, right: 16, width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(26,46,26,0.08)', cursor: 'pointer', color: '#1a2e1a', fontSize: 20, fontWeight: 400 }}>×</button>
+                <button onClick={closeUniversModal} className="flex items-center justify-center" style={{ position: 'absolute', top: 16, right: 16, width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(11, 44, 52,0.08)', cursor: 'pointer', color: '#0b2c34', fontSize: 20, fontWeight: 400 }}>×</button>
                 <div style={{ position: 'absolute', top: 16, left: 16, padding: '6px 14px', borderRadius: 9999, background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', fontSize: 9, fontWeight: 700, color: '#fff', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{selectedUniversModal.badge}</div>
                 {card?.producerImage && (
                   <div style={{ position: 'absolute', left: '50%', bottom: -56, transform: 'translateX(-50%)', width: 130, height: 130, borderRadius: '50%', overflow: 'hidden', border: '5px solid #fff', boxShadow: '0 12px 40px rgba(0,0,0,0.2)' }}>
@@ -1165,7 +1150,7 @@ const Seminaires: React.FC = () => {
                   <span style={{ display: 'block', fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', color: '#b8ad9e', textTransform: 'uppercase', marginBottom: 12 }}>Exemple d'activités</span>
                   <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {selectedUniversModal.activites.map(a => (
-                      <li key={a} className="flex items-start gap-3" style={{ fontSize: 15, color: '#1a2e1a', lineHeight: 1.55 }}>
+                      <li key={a} className="flex items-start gap-3" style={{ fontSize: 15, color: '#0b2c34', lineHeight: 1.55 }}>
                         <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', flexShrink: 0, marginTop: 7 }} />{a}
                       </li>
                     ))}
@@ -1175,9 +1160,9 @@ const Seminaires: React.FC = () => {
                   <button
                     onClick={() => { closeUniversModal(); openModal(); }}
                     className="py-4 rounded-full font-bold uppercase transition-colors duration-300"
-                    style={{ width: '92%', maxWidth: 380, background: '#1a2e1a', color: '#fff', border: 'none', fontSize: 10, letterSpacing: '0.15em', cursor: 'pointer' }}
+                    style={{ width: '92%', maxWidth: 380, background: '#0b2c34', color: '#fff', border: 'none', fontSize: 10, letterSpacing: '0.15em', cursor: 'pointer' }}
                     onMouseEnter={e => { e.currentTarget.style.background = '#e67e22'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = '#1a2e1a'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = '#0b2c34'; }}
                   >
                     Demander un devis pour cet univers →
                   </button>
@@ -1205,10 +1190,10 @@ const Seminaires: React.FC = () => {
 const UniverseCard = ({ image, title, onOpenModal }: any) => (
   <div
     className="group relative bg-white transition-all duration-500 flex flex-col cursor-pointer overflow-hidden"
-    style={{ height: 480, borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.07)', border: '1px solid rgba(26,46,26,0.06)' }}
+    style={{ height: 480, borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.07)', border: '1px solid rgba(11, 44, 52,0.06)' }}
     onClick={onOpenModal}
-    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 40px rgba(0,0,0,0.13)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.12)'; }}
-    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 4px 20px rgba(0,0,0,0.07)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(26,46,26,0.06)'; }}
+    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 40px rgba(0,0,0,0.13)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(11, 44, 52,0.12)'; }}
+    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 4px 20px rgba(0,0,0,0.07)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(11, 44, 52,0.06)'; }}
   >
     <div className="relative flex-1 flex flex-col overflow-hidden" style={{ borderRadius: '20px' }}>
       <img src={image} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={title} />

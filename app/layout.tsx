@@ -7,16 +7,16 @@ import CookieBanner from '../components/CookieBanner';
 import GoogleAnalytics from '../components/GoogleAnalytics';
 
 export const metadata: Metadata = {
-  title: "Terrago - L'immersion au cœur du terroir français",
+  title: "TerraGo - L'immersion au cœur du terroir français",
   description:
     'Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français.',
   metadataBase: new URL('https://terragoexperiences.fr'),
   openGraph: {
-    title: "Terrago - L'immersion au cœur du terroir français",
+    title: "TerraGo - L'immersion au cœur du terroir français",
     description:
       'Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français.',
     url: 'https://terragoexperiences.fr',
-    siteName: 'Terrago',
+    siteName: 'TerraGo',
     locale: 'fr_FR',
     type: 'website',
   },
@@ -57,7 +57,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         />
         <link rel="icon" type="image/png" href="/logo.png" />
       </head>
-      <body className="bg-beige-bg text-[#1A1F18]">
+      <body className="bg-beige-bg text-primary">
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-WMZSP69F"

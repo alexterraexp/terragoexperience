@@ -3,8 +3,8 @@ import { Suspense } from 'react';
 import Auth from '../../views/Auth';
 
 export const metadata: Metadata = {
-  title: 'Connexion – Terrago',
-  description: 'Connectez-vous à votre espace Terrago.',
+  title: 'Connexion – TerraGo',
+  description: 'Connectez-vous à votre espace TerraGo.',
   robots: { index: false, follow: false },
 };
 

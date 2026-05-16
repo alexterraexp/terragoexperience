@@ -11,62 +11,6 @@ import {
   heroSecondaryGhostLinkStyle,
 } from '../components/heroSectionStyles';
 
-/** Bandeau gris clair à gauche : phrase en Poppins, blanc, −90° (lecture bas → haut), défilement vertical. */
-const TERROIR_TICKER_LINE = '100% TERROIR FRANÇAIS';
-
-const TerroirLeftTicker: React.FC = () => {
-  const blockCount = 18;
-  const block = (key: string) => (
-    <div
-      key={key}
-      className="relative flex h-[200px] w-full shrink-0 items-center justify-center px-0.5"
-    >
-      <span
-        className="whitespace-nowrap text-center font-bold uppercase text-white"
-        style={{
-          fontFamily: 'Poppins, system-ui, sans-serif',
-          fontSize: 12.5,
-          letterSpacing: '0.1em',
-          transform: 'rotate(-90deg)',
-          transformOrigin: 'center center',
-          textShadow: '0 1px 3px rgba(0,0,0,0.25)',
-        }}
-      >
-        {TERROIR_TICKER_LINE}
-      </span>
-      <div
-        className="pointer-events-none absolute bottom-0 left-1 right-1 h-px bg-gradient-to-r from-transparent via-white/75 to-transparent"
-        aria-hidden
-      />
-    </div>
-  );
-  const blocks = Array.from({ length: blockCount }, (_, i) => block(`a-${i}`));
-  return (
-    <>
-      <style>{`
-        @keyframes notre-vision-terroir-ticker-up {
-          0% { transform: translateY(0); }
-          100% { transform: translateY(-50%); }
-        }
-        .notre-vision-terroir-ticker-track {
-          animation: notre-vision-terroir-ticker-up 22s linear infinite;
-        }
-      `}</style>
-      <div
-        className="pointer-events-none absolute inset-y-0 left-2 z-10 w-[3rem] overflow-hidden rounded-l-sm border-r border-white/25 bg-white/35 backdrop-blur-[2px] sm:left-2.5 sm:w-[3.25rem]"
-        aria-hidden
-      >
-        <div className="relative flex h-full w-full justify-center overflow-hidden">
-          <div className="notre-vision-terroir-ticker-track flex w-full flex-col items-stretch">
-            {blocks}
-            {Array.from({ length: blockCount }, (_, i) => block(`b-${i}`))}
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
-
 /* ─────────────────────────────────────────────
    PRODUCER STACK
 ───────────────────────────────────────────── */
@@ -78,12 +22,13 @@ const PRODUCER_DOTS_MARGIN_TOP = 12;
 
 const ProducerStack: React.FC = () => {
   const producers = [
-    { name: 'Jean-François', job: 'Cognac & Pineau', image: '/images/producteurs/cognacJF.png', alt: 'Jean-François, producteur cognac et pineau – Terrago' },
-    { name: 'Paolo', job: 'Olives - Lavande - Fruitiers', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO1.jpg', alt: 'Paolo, producteur olives et lavande Provence – Terrago' },
-    { name: 'Sabine & Marie-Lise', job: 'Noix - Lavande - Olives', image: '/images/producteurs/noixsabinemarie.jpeg', alt: 'Sabine et Marie-Lise, productrices noix et lavande – Terrago' },
-    { name: 'Marie-Sophie & Thomas', job: 'Vins du Ventoux', image: '/images/producteurs/vincombeaumas.png', alt: 'Marie-Sophie et Thomas, vignerons Ventoux – Terrago' },
-    { name: 'Nathalie & Benjamin', job: 'Noisettes - Amandes - Yuzu', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png', alt: 'Nathalie et Benjamin, producteurs noisettes – Terrago' },
-    { name: 'Baptiste', job: 'Piments & Pommes ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png', alt: 'Baptiste, producteur piments Pays Basque – Terrago' },
+    { name: 'Benoît', job: 'Maraîchage & ferme pédagogique', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.jpg', alt: 'Benoît, sémoinaire à la ferme – TerraGo' },
+    { name: 'Jean-François', job: 'Cognac & pineau', image: '/images/producteurs/cognacJF.png', alt: 'Jean-François, producteur cognac et pineau – TerraGo' },
+    { name: 'Paolo', job: 'Olives - Lavande - Fruitiers', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO1.jpg', alt: 'Paolo, producteur olives et lavande Provence – TerraGo' },
+    { name: 'Sabine & Marie-Lise', job: 'Noix - Lavande - Olives', image: '/images/producteurs/noixsabinemarie.jpeg', alt: 'Sabine et Marie-Lise, productrices noix et lavande – TerraGo' },
+    { name: 'Marie-Sophie & Thomas', job: 'Vins du Ventoux', image: '/images/producteurs/vincombeaumas.png', alt: 'Marie-Sophie et Thomas, vignerons Ventoux – TerraGo' },
+    { name: 'Nathalie & Benjamin', job: 'Noisettes - Amandes - Yuzu', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png', alt: 'Nathalie et Benjamin, producteurs noisettes – TerraGo' },
+    { name: 'Baptiste', job: 'Piments & Pommes ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png', alt: 'Baptiste, producteur piments Pays Basque – TerraGo' },
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -252,7 +197,7 @@ const ProducerStack: React.FC = () => {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
                 }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a2e1a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0b2c34" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -292,18 +237,48 @@ const ProducerStack: React.FC = () => {
 };
 
 const HOME_ROTATING_METIERS = [
-  'producteurs.', 'éleveurs.', 'artisans.', 'vignerons.', 'fromagers.',
-  'maraîchers.', 'apiculteurs.', 'ostréiculteurs.', 'paysans.', 'brasseurs.',
-  'distillateurs.', 'arboriculteurs.', 'oléiculteurs.', 'saliculteurs.',
+  'producteurs', 'éleveurs', 'artisans', 'vignerons', 'fromagers',
+  'maraîchers', 'apiculteurs', 'ostréiculteurs', 'paysans', 'brasseurs',
+  'distillateurs', 'oléiculteurs',
 ] as const;
 
+/** Badge métiers défilants — fond primary, texte blanc, léger angle (comme « engagées »). */
+const heroRotatingBadgeBase: React.CSSProperties = {
+  display: 'inline-block',
+  background: '#0b2c34',
+  color: '#fff',
+  fontFamily: 'Poppins, system-ui, sans-serif',
+  fontWeight: 700,
+  fontStyle: 'normal',
+  lineHeight: 1.15,
+  transform: 'rotate(-3.5deg) translateX(0.08em)',
+  transformOrigin: 'center center',
+  boxShadow: '0 3px 14px rgba(0, 0, 0, 0.18)',
+};
+const heroRotatingBadgeMobile: React.CSSProperties = {
+  ...heroRotatingBadgeBase,
+  verticalAlign: 'baseline',
+  marginLeft: '0.06em',
+  borderRadius: 8,
+  padding: '5px 10px 6px 12px',
+  fontSize: '0.96em',
+};
+const heroRotatingBadgeDesktop: React.CSSProperties = {
+  ...heroRotatingBadgeBase,
+  verticalAlign: 'baseline',
+  marginLeft: '0.06em',
+  borderRadius: 12,
+  padding: '6px 14px 7px 16px',
+  fontSize: '0.96em',
+};
+
 const HERO_IMAGES = [
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/lavandepaysage.png', alt: 'Paysage de lavande en Provence – Terrago' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/olives-recoltes.png', alt: 'Récolte des olives en oliveraie – Terrago' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/travail-terre.png', alt: 'Maraîchage et légumes de saison – Terrago' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/ostreiculteurs.png', alt: 'Ostréiculture et parcs à huîtres – Terrago' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/degustation-spirit.jpg', alt: 'Table et dégustation chez un vigneron– Terrago' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/fromage-chevre.png', alt: 'Fromage de chèvre artisanal – Terrago' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/lavandepaysage.png', alt: 'Paysage de lavande en Provence – TerraGo' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/olives-recoltes.png', alt: 'Récolte des olives en oliveraie – TerraGo' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/travail-terre.png', alt: 'Maraîchage et légumes de saison – TerraGo' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/ostreiculteurs.png', alt: 'Ostréiculture et parcs à huîtres – TerraGo' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/degustation-spirit.jpg', alt: 'Table et dégustation chez un vigneron– TerraGo' },
+  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/fromage-chevre.png', alt: 'Fromage de chèvre artisanal – TerraGo' },
 ] as const;
 
 /* ─────────────────────────────────────────────
@@ -410,24 +385,13 @@ const Home: React.FC = () => {
 
             <h1 className="text-white font-bold leading-[1.18] mb-12 drop-shadow-xl">
               <span className="sm:hidden block text-[2rem] font-sans tracking-tight leading-[1.24]">
-                Des séminaires et séjours engagés, à la rencontre de nos
-                <br />
-                <span
-                  className="inline-block mt-2"
-                  style={{
-                    background: 'rgba(255,255,255,0.98)',
-                    borderRadius: '6px',
-                    padding: '3px 2px 2px 4px',
-                    color: '#e67e22',
-                    fontFamily: 'Poppins, sans-serif',
-                    fontStyle: 'italic',
-                    fontWeight: 700,
-                    lineHeight: 'inherit',
-                    fontSize: '0.96em',
-                  }}
-                >
-                  {'\u00A0'}{displayedText}
-                  <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s', color: '#e67e22' }}>|</span>
+                Des séminaires et séjours engagés, à la rencontre de{' '}
+                <span className="whitespace-nowrap">
+                  nos{'\u00A0'}
+                  <span className="inline-block" style={heroRotatingBadgeMobile}>
+                    {displayedText}
+                    <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s' }}>|</span>
+                  </span>
                 </span>
               </span>
               <span className="hidden sm:block space-y-2">
@@ -436,37 +400,22 @@ const Home: React.FC = () => {
                 </span>
                 <span className="block font-sans text-4xl md:text-5xl lg:text-5xl font-bold italic leading-[1.15]" style={{ letterSpacing: '-0.02em' }}>
                  à la rencontre de nos{'\u00A0'}
-                  <span
-                    className="relative inline-block"
-                    style={{
-                      verticalAlign: 'baseline',
-                      marginLeft: '0.18em',
-                      background: 'rgba(255,255,255,0.98)',
-                      borderRadius: '12px',
-                      padding: '4px 3px 3px 5px',
-                      color: '#e67e22',
-                      fontFamily: 'Poppins, sans-serif',
-                      fontStyle: 'italic',
-                      fontWeight: 700,
-                      lineHeight: 'inherit',
-                      fontSize: '0.96em',
-                    }}
-                  >
-                    {'\u00A0'}{displayedText}
+                  <span className="relative inline-block" style={heroRotatingBadgeDesktop}>
+                    {displayedText}
                     <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s' }}>|</span>
                   </span>
                 </span>
               </span>
             </h1>
           <h1 className="sr-only">
-            Des séminaires immersifs chez des producteurs du terroir français – Terrago
+            Des séminaires immersifs chez des producteurs du terroir français – TerraGo
           </h1>
 
             <p
               className={`hidden sm:block ${heroIntroParagraphOnImageClass}`}
               style={heroIntroParagraphOnImageStyle}
             >
-            Team buildings, séminaires, ateliers et séjours immersifs au cœur des oliveraies, vignobles, fromageries et maraîchages français.
+            Team building, séminaires au vert et séminaires RSE à la rencontre de producteurs engagés, au cœur des territoires, les mains dans la terre.
              </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
@@ -520,18 +469,17 @@ const Home: React.FC = () => {
       >
         <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="flex flex-col items-center lg:items-start lg:flex-row lg:gap-12 xl:gap-14">
-            {/* Image : ~35–38 % du bloc, ratio 4/5, bandeau texte défilant à gauche */}
+            {/* Image : ~35–38 % du bloc, ratio 4/5 */}
             <div
-              className="relative order-1 aspect-[4/5] w-full max-w-[min(380px,88vw)] shrink-0 overflow-visible mx-auto lg:mx-0
+              className="relative order-1 aspect-[4/5] w-full max-w-[min(380px,88vw)] shrink-0 mx-auto lg:mx-0
                          lg:w-[min(38%,420px)] lg:max-w-[400px] lg:flex-shrink-0"
             >
               <div className="relative h-full w-full overflow-hidden rounded-[20px] shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
                 <img
                   src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/olivesrecoltes.JPG"
-                  alt="Immersion vendange terroir français – Terrago"
+                  alt="Immersion vendange terroir français – TerraGo"
                   className="absolute inset-0 h-full w-full object-cover pointer-events-none"
                 />
-                <TerroirLeftTicker />
               </div>
             </div>
 
@@ -547,13 +495,13 @@ const Home: React.FC = () => {
               </h2>
             </ScrollAnimate>
             <div className="space-y-3.5 max-w-[min(36rem,100%)] lg:max-w-[min(38rem,100%)]" style={{ color: '#7a7060', fontSize: 15, lineHeight: 1.75 }}>
-              <p>Terrago est né d'une envie simple : permettre à chacun de vivre des expériences authentiques, humaines et enrichissantes au plus près de celles et ceux qui font le terroir.</p>
+              <p>TerraGo est né d'une envie simple : permettre à chacun de vivre des expériences authentiques, humaines et enrichissantes au plus près de celles et ceux qui font le terroir.</p>
               <p>Nous croyons que les plus beaux moments se vivent en groupe, dans des lieux vrais, en partageant des savoir-faire, du temps et des histoires.</p>
-              <p>Qu'il s'agisse d'un séminaire au vert, d'un séjour entre amis ou d'une expérience immersive à la journée, Terrago crée des rencontres qui reconnectent à l'essentiel.</p>
+              <p>Qu'il s'agisse d'un séminaire au vert, d'un séjour entre amis ou d'une expérience immersive à la journée, TerraGo crée des rencontres qui reconnectent à l'essentiel.</p>
             </div>
             <Link
               href="/seminaires-entreprise"
-              className="inline mt-9 text-sm tracking-[0.08em] font-bold text-[#1a2e1a] transition-colors duration-300 hover:text-[#e67e22]"
+              className="inline mt-9 text-sm tracking-[0.08em] font-bold text-[#0b2c34] transition-colors duration-300 hover:text-[#e67e22]"
             >
               <span className="border-b-[1.5px] border-current pb-[3px]">
                 Découvrir nos séminaires d'entreprise →
@@ -588,7 +536,7 @@ const Home: React.FC = () => {
             <Link href="/seminaires-entreprise" className="group relative bg-white overflow-hidden flex flex-col hover:-translate-y-1 transition-all duration-300" style={{ borderRadius: '20px', boxShadow: '0 2px 16px rgba(0,0,0,0.07)' }}>
               <div className="overflow-hidden" style={{ borderRadius: '20px 20px 0 0' }}>
                 <div className="aspect-[4/3]">
-                  <img src="https://images.unsplash.com/photo-1605673349798-5580680c4dea?q=80&w=800&auto=format&fit=crop" alt="Séminaire nature entreprise chez un producteur – Terrago" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <img src="https://images.unsplash.com/photo-1605673349798-5580680c4dea?q=80&w=800&auto=format&fit=crop" alt="Séminaire nature entreprise chez un producteur – TerraGo" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                 </div>
               </div>
               <div className="p-5 flex flex-col flex-1">
@@ -598,9 +546,9 @@ const Home: React.FC = () => {
               </div>
             </Link>
             {[
-              { label: 'Séjours en groupe', sub: 'Entre amis, en famille', img: 'https://images.unsplash.com/photo-1683772769298-b77177c029d8?q=80&w=800&auto=format&fit=crop', alt: 'Séjour immersif terroir entre amis – Terrago' },
-              { label: 'Aventures des terroirs', sub: 'Multi-destinations', img: 'https://images.unsplash.com/photo-1710330336476-d6027e6035cd?q=80&w=800&auto=format&fit=crop', alt: 'Expérience terroir multi-destinations France – Terrago' },
-              { label: 'Immersions à la journée', sub: 'Découvertes express', img: 'https://images.unsplash.com/photo-1753703986564-a2aa6e7c2a05?q=80&w=985&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Immersion journée chez un producteur terroir – Terrago' },
+              { label: 'Séjours en groupe', sub: 'Entre amis, en famille', img: 'https://images.unsplash.com/photo-1683772769298-b77177c029d8?q=80&w=800&auto=format&fit=crop', alt: 'Séjour immersif terroir entre amis – TerraGo' },
+              { label: 'Aventures des terroirs', sub: 'Multi-destinations', img: 'https://images.unsplash.com/photo-1710330336476-d6027e6035cd?q=80&w=800&auto=format&fit=crop', alt: 'Expérience terroir multi-destinations France – TerraGo' },
+              { label: 'Immersions à la journée', sub: 'Découvertes express', img: 'https://images.unsplash.com/photo-1753703986564-a2aa6e7c2a05?q=80&w=985&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Immersion journée chez un producteur terroir – TerraGo' },
             ].map((item) => (
               <div key={item.label} className="relative bg-white overflow-hidden flex flex-col" style={{ borderRadius: '20px', boxShadow: '0 2px 16px rgba(0,0,0,0.06)', opacity: 0.72 }}>
                 <span className="absolute top-3 right-3 z-10 text-white text-[8px] font-bold uppercase tracking-wider px-3 py-1.5" style={{ background: '#e67e22', borderRadius: '9999px' }}>Bientôt</span>
@@ -629,16 +577,16 @@ const Home: React.FC = () => {
               </h2>
             </ScrollAnimate>
             <p className="mt-4 max-w-xl" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
-              Du vin à la truffe, du fromage aux produits de la mer — Terrago développe de réelles expériences humaines dans tous les univers du terroir.
+              Du vin à la truffe, du fromage aux produits de la mer — TerraGo développe de réelles expériences humaines dans tous les univers du terroir.
             </p>
           </div>
 
-          <div className="w-full overflow-hidden py-5" style={{ borderTop: '1px solid rgba(26,46,26,0.07)', borderBottom: '1px solid rgba(26,46,26,0.07)' }}>
+          <div className="w-full overflow-hidden py-5" style={{ borderTop: '1px solid rgba(11, 44, 52,0.07)', borderBottom: '1px solid rgba(11, 44, 52,0.07)' }}>
             <div className="flex w-max animate-marquee-terroir whitespace-nowrap">
               {(() => {
                 const produits = ["Huile d'olive", 'Fromages', 'Maraîchage', 'Truffe', 'Huîtres', 'Élevage', 'Vins', 'Miel', 'Céréales', 'Épices', 'Spiritueux', 'Lavande'];
                 return [...produits, ...produits].map((label, i) => (
-                  <span key={`${label}-${i}`} className="mx-8 font-semibold uppercase" style={{ fontSize: 12, letterSpacing: '0.28em', color: 'rgba(26,46,26,0.30)' }}>
+                  <span key={`${label}-${i}`} className="mx-8 font-semibold uppercase" style={{ fontSize: 12, letterSpacing: '0.28em', color: 'rgba(11, 44, 52,0.30)' }}>
                     {label}
                   </span>
                 ));
@@ -689,7 +637,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* ── ENGAGEMENT ── */}
-      <section className="relative overflow-hidden" style={{ backgroundColor: '#0d1a0d', paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="engagement">
+      <section className="relative overflow-hidden" style={{ backgroundColor: '#061a1f', paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="engagement">
         <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
             {/* Texte (mobile: en premier | desktop: col 1) */}
@@ -705,7 +653,7 @@ const Home: React.FC = () => {
                 </h2>
               </ScrollAnimate>
               <p className="mb-10 max-w-md lg:mb-0" style={{ color: 'rgba(255,255,255,0.40)', fontSize: 14, lineHeight: 1.75 }}>
-                Chez Terrago, chaque décision est prise en pensant à ceux qui font le terroir et à ceux qui viennent le découvrir.
+                Chez TerraGo, chaque décision est prise en pensant à ceux qui font le terroir et à ceux qui viennent le découvrir.
               </p>
             </div>
 
@@ -773,7 +721,7 @@ const Home: React.FC = () => {
             <span className=" font-display italic text-[2.65rem] sm:text-[3rem]"> notre évolution.</span>
           </h2>
           <p className="mb-10" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
-            Laissez-nous votre email, et nous vous enverrons les nouvelles de Terrago.
+            Laissez-nous votre email, et nous vous enverrons les nouvelles de TerraGo.
           </p>
 
           <form className="w-full" onSubmit={(e) => e.preventDefault()}>
@@ -783,9 +731,9 @@ const Home: React.FC = () => {
                 placeholder="Votre adresse email"
                 className="flex-1 bg-white px-6 py-4 focus:outline-none transition-all"
                 style={{
-                  border: '1px solid rgba(26,46,26,0.09)',
+                  border: '1px solid rgba(11, 44, 52,0.09)',
                   borderRadius: '9999px',
-                  color: '#1a2e1a',
+                  color: '#0b2c34',
                   fontSize: 13,
                 }}
                 required
@@ -793,9 +741,9 @@ const Home: React.FC = () => {
               <button
                 type="submit"
                 className="px-9 py-4 text-white font-bold transition-all duration-300"
-                style={{ background: '#1a2e1a', borderRadius: '9999px', fontSize: 14, letterSpacing: '0.06em' }}
+                style={{ background: '#0b2c34', borderRadius: '9999px', fontSize: 14, letterSpacing: '0.06em' }}
                 onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.background = '#e67e22')}
-                onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = '#1a2e1a')}
+                onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = '#0b2c34')}
               >
                 Envoyer
               </button>

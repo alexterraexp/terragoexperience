@@ -66,7 +66,7 @@ const Auth: React.FC = () => {
           </form>
 
           <p className="mt-10 text-center text-[9px] text-gray-300 font-light leading-relaxed">
-            En continuant, vous accédez à votre espace membre Terrago et acceptez nos <span className="underline cursor-pointer hover:text-primary">Conditions</span>.
+            En continuant, vous accédez à votre espace membre TerraGo et acceptez nos <span className="underline cursor-pointer hover:text-primary">Conditions</span>.
           </p>
         </div>
 
@@ -102,7 +102,7 @@ const Auth: React.FC = () => {
         <div className="text-center">
           <p className="text-[9px] text-gray-400 font-bold uppercase tracking-[0.3em] flex items-center justify-center gap-2">
             <span className="material-symbols-outlined text-xs">verified_user</span>
-            Espace Sécurisé • Terrago
+            Espace Sécurisé • TerraGo
           </p>
         </div>
       </div>

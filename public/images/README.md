@@ -1,4 +1,4 @@
-# 📁 Structure des Images - Terrago
+# 📁 Structure des Images - TerraGo
 
 Ce dossier contient toutes les images du site, organisées par catégorie pour faciliter la gestion.
 

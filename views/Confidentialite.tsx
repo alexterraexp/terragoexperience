@@ -21,7 +21,7 @@ const Confidentialite: React.FC = () => {
             <section>
               <h2 className="text-xl font-display font-bold text-primary mb-4 italic">1. Introduction</h2>
               <p>
-                Terrago, édité par Terrago SAS, s'engage à protéger la confidentialité et la sécurité des données personnelles 
+                TerraGo, édité par TerraGo SAS, s'engage à protéger la confidentialité et la sécurité des données personnelles 
                 de ses utilisateurs. Cette politique de confidentialité explique comment nous collectons, utilisons, stockons et protégeons vos informations.
               </p>
             </section>

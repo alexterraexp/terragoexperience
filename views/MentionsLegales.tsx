@@ -21,7 +21,7 @@ const MentionsLegales: React.FC = () => {
             <section>
               <h2 className="text-xl font-display font-bold text-primary mb-4 italic">1. Éditeur du site</h2>
               <p>
-                Le site <strong>Terrago</strong> est édité par Terrago SAS, société par actions simplifiée au capital de 1 000 euros, 
+                Le site <strong>TerraGo</strong> est édité par TerraGo SAS, société par actions simplifiée au capital de 1 000 euros, 
                 immatriculée au RCS de Paris sous le numéro __________, dont le siège social est situé à Annecy, 74000 Annecy, France.
               </p>
             </section>
@@ -29,7 +29,7 @@ const MentionsLegales: React.FC = () => {
             <section>
               <h2 className="text-xl font-display font-bold text-primary mb-4 italic">2. Directeur de publication</h2>
               <p>
-                Le directeur de publication est M. [Nom du Directeur], en qualité de représentant légal de Terrago SAS.
+                Le directeur de publication est M. [Nom du Directeur], en qualité de représentant légal de TerraGo SAS.
               </p>
             </section>
 
@@ -43,7 +43,7 @@ const MentionsLegales: React.FC = () => {
             <section>
               <h2 className="text-xl font-display font-bold text-primary mb-4 italic">4. Propriété intellectuelle</h2>
               <p>
-                L'ensemble des contenus présents sur le site (textes, images, vidéos, logos, etc.) sont la propriété exclusive de Terrago SAS 
+                L'ensemble des contenus présents sur le site (textes, images, vidéos, logos, etc.) sont la propriété exclusive de TerraGo SAS 
                 ou de ses partenaires et sont protégés par les lois françaises et internationales relatives à la propriété intellectuelle.
               </p>
             </section>
@@ -70,7 +70,7 @@ const MentionsLegales: React.FC = () => {
             <section>
               <h2 className="text-xl font-display font-bold text-primary mb-4 italic">7. Responsabilité</h2>
               <p>
-                Terrago SAS s'efforce de fournir des informations exactes et à jour. Cependant, l'entreprise ne peut garantir l'exactitude, 
+                TerraGo SAS s'efforce de fournir des informations exactes et à jour. Cependant, l'entreprise ne peut garantir l'exactitude, 
                 la complétude ou l'actualité des informations diffusées sur le site.
               </p>
             </section>

@@ -131,7 +131,7 @@ const RegionDropdown: React.FC<RegionDropdownProps> = ({ value, onChange }) => {
             background: '#fff',
             border: '1.5px solid #e5e0d8',
             borderRadius: 16,
-            boxShadow: '0 8px 32px rgba(10,44,52,0.12)',
+            boxShadow: '0 8px 32px rgba(11, 44, 52,0.12)',
             overflow: 'hidden',
             zIndex: 9999,
             minWidth: 200,
@@ -153,7 +153,7 @@ const RegionDropdown: React.FC<RegionDropdownProps> = ({ value, onChange }) => {
                   fontWeight: selected ? 700 : 500,
                   fontFamily: 'inherit',
                   background: selected ? 'rgba(247,141,0,0.10)' : 'transparent',
-                  color: selected ? '#f78d00' : '#1e291a',
+                  color: selected ? '#f78d00' : '#0b2c34',
                   border: 'none',
                   cursor: 'pointer',
                   transition: 'background 0.15s',
@@ -193,26 +193,26 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
         background: '#fff',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: hovered ? '0 20px 60px rgba(10,44,52,0.14)' : '0 4px 24px rgba(10,44,52,0.07)',
+        boxShadow: hovered ? '0 20px 60px rgba(11, 44, 52,0.14)' : '0 4px 24px rgba(11, 44, 52,0.07)',
         transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
         transition: 'all 0.35s cubic-bezier(0.34,1.56,0.64,1)',
-        border: '1px solid rgba(10,44,52,0.06)',
+        border: '1px solid rgba(11, 44, 52,0.06)',
       }}
     >
       <div style={{ position: 'relative', height: 200, overflow: 'hidden', flexShrink: 0 }}>
         {producer.cover ? (
           <img
             src={producer.cover}
-            alt={`${producer.name} – ${producer.type} ${producer.location} – Terrago`}
+            alt={`${producer.name} – ${producer.type} ${producer.location} – TerraGo`}
             style={{ width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.06)' : 'scale(1)', transition: 'transform 0.6s ease' }}
           />
         ) : (
-          <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #1e291a, #3a5a2a)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48 }}>
+          <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #0b2c34, #145a6a)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48 }}>
             🌿
           </div>
         )}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,44,52,0.5) 0%, transparent 60%)' }} />
-        <div style={{ position: 'absolute', top: 14, left: 14, background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(8px)', borderRadius: 20, padding: '4px 12px', fontSize: 11, fontWeight: 600, color: '#1e291a', letterSpacing: '0.05em' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(11, 44, 52,0.5) 0%, transparent 60%)' }} />
+        <div style={{ position: 'absolute', top: 14, left: 14, background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(8px)', borderRadius: 20, padding: '4px 12px', fontSize: 11, fontWeight: 600, color: '#0b2c34', letterSpacing: '0.05em' }}>
           {producer.type}
         </div>
         <div style={{ position: 'absolute', bottom: 12, left: 14, fontSize: 11, color: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -229,7 +229,7 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
               🧑‍🌾
             </div>
           )}
-          <div style={{ fontWeight: 700, fontSize: 15, color: '#1e291a', lineHeight: 1.2 }}>{producer.name}</div>
+          <div style={{ fontWeight: 700, fontSize: 15, color: '#0b2c34', lineHeight: 1.2 }}>{producer.name}</div>
         </div>
         <p style={{ fontSize: 12.5, color: '#6b7280', lineHeight: 1.6, marginBottom: 12, fontStyle: 'italic' }}>{producer.highlight}</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
@@ -241,7 +241,7 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
         </div>
         <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #f0ebe4', paddingTop: 12 }}>
           <div style={{ fontSize: 11, color: '#9ca3af' }}>Jusqu'à {producer.capacity} personnes max.</div>
-          <div style={{ background: '#1e291a', color: '#fff', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', padding: '8px 16px', borderRadius: 12, textTransform: 'uppercase' }}>
+          <div style={{ background: '#0b2c34', color: '#fff', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', padding: '8px 16px', borderRadius: 12, textTransform: 'uppercase' }}>
             Découvrir →
           </div>
         </div>
@@ -323,14 +323,14 @@ const ProducersPage: React.FC = () => {
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[14s] group-hover:scale-[1.03]"
             style={{ backgroundImage: 'url("https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/vache2.avif' }}
             role="img"
-            aria-label="Producteurs partenaires agrotourisme terroir français – Terrago"
+            aria-label="Producteurs partenaires agrotourisme terroir français – TerraGo"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 mt-16 sm:mt-24 lg:mt-32 text-center">
             <div className="flex items-center justify-center gap-3 mb-6">
               <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
               <span style={{ color: 'rgba(255,255,255,0.60)', fontSize: 10, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase' }}>
-                Le réseau Terrago
+                Le réseau TerraGo
               </span>
               <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
             </div>
@@ -339,7 +339,7 @@ const ProducersPage: React.FC = () => {
               <span className="font-display italic text-5xl md:text-5xl lg:text-6xl">hôtes agrotourisme.</span>
             </h1>
             <p className="sr-only">
-              Terrago sélectionne des producteurs engagés dans toute la France pour accueillir des groupes en séminaire au vert, team building terroir et séjour immersif. Vignerons, trufficulteurs, oléiculteurs, éleveurs, fromagers — en Provence, Nouvelle-Aquitaine, Occitanie et au-delà.
+              TerraGo sélectionne des producteurs engagés dans toute la France pour accueillir des groupes en séminaire au vert, team building terroir et séjour immersif. Vignerons, trufficulteurs, oléiculteurs, éleveurs, fromagers — en Provence, Nouvelle-Aquitaine, Occitanie et au-delà.
             </p>
             <p className={heroIntroParagraphOnImageClass} style={heroIntroParagraphOnImageStyle}>
               Des producteurs, éleveurs, vignerons et artisans soigneusement sélectionnés pour accueillir vos groupes en séminaire nature ou en séjour immersif terroir.
@@ -374,7 +374,7 @@ const ProducersPage: React.FC = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher un producteur, un produit, une région..."
-              style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 13, color: '#1e291a', fontFamily: 'inherit' }}
+              style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 13, color: '#0b2c34', fontFamily: 'inherit' }}
             />
             {search && (
               <button type="button" onClick={() => setSearch('')} style={{ background: '#e5e0d8', color: '#6b7280', border: 'none', borderRadius: 12, padding: '3px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
@@ -446,7 +446,7 @@ const ProducersPage: React.FC = () => {
 
         {/* Séparateur + gros espace avant bandeau partenaire */}
         <div style={{ marginTop: 96, paddingTop: 48, borderTop: '1px solid #e5e0d8' }}>
-          <div style={{ background: '#1e291a', borderRadius: 24, padding: '48px 64px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
+          <div style={{ background: '#0b2c34', borderRadius: 24, padding: '48px 64px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
           <div>
           <h3 className="text-white leading-snug font-semibold mb-2">
   <span style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 700 }} className="text-2xl md:text-3xl">
@@ -456,7 +456,7 @@ const ProducersPage: React.FC = () => {
     connaissez un talent du terroir ?
   </span>
 </h3>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, margin: 0, lineHeight: 1.6 }}>Rejoignez le réseau Terrago, accueillez des groupes en séminaire engagé ou faites-nous découvrir un producteur exceptionnel du terroir.</p>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, margin: 0, lineHeight: 1.6 }}>Rejoignez le réseau TerraGo, accueillez des groupes en séminaire engagé ou faites-nous découvrir un producteur exceptionnel du terroir.</p>
           </div>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <Link href="/nous-rejoindre" className="bg-[#f78d00] text-white px-5 py-3 rounded-xl text-[11px] font-bold uppercase tracking-[0.1em] no-underline hover:opacity-90 transition-opacity">Devenir partenaire →</Link>

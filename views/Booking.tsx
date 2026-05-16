@@ -171,7 +171,7 @@ const Booking: React.FC = () => {
                     )}
                   </button>
                   <p className="text-[8px] text-gray-300 text-center font-bold uppercase tracking-widest mt-6">
-                    Protégé par cryptage SSL 256-bits • Terrago ne stocke pas vos données bancaires.
+                    Protégé par cryptage SSL 256-bits • TerraGo ne stocke pas vos données bancaires.
                   </p>
                 </div>
               </form>

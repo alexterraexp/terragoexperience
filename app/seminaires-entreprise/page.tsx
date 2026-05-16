@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description:
         'Organisez un séminaire nature et engagé chez un producteur du terroir. Journée, résidentiel ou sur mesure — team building authentique loin des salles de réunion.',
       url: 'https://terragoexperiences.fr/seminaires-entreprise',
-      siteName: 'Terrago',
+      siteName: 'TerraGo',
       locale: 'fr_FR',
       type: 'website',
     },

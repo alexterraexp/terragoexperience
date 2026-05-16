@@ -31,7 +31,7 @@ git init
 git add .
 
 # Premier commit
-git commit -m "Initial commit - Terrago website"
+git commit -m "Initial commit - TerraGo website"
 
 # Renommer la branche en main
 git branch -M main
