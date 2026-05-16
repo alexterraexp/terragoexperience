@@ -1497,7 +1497,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
         {/* ── Titre desktop ── */}
         <div className="sem-detail-title" style={{ marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <h2 style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700, fontStyle: 'italic', fontSize: 'clamp(22px,3vw,32px)', color: '#0b2c34', lineHeight: 1.15, margin: '0 0 6px' }}>
+            <h2 style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700, fontStyle: 'italic', fontSize: 'clamp(26px,3.2vw,38px)', color: '#0b2c34', lineHeight: 1.12, margin: '0 0 6px' }}>
               {fmt.titre}
             </h2>
             <div style={{ fontSize: 13, color: '#9a9080', fontWeight: 500 }}>{s.producteur}</div>

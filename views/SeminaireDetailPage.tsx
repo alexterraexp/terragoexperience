@@ -64,7 +64,7 @@ export default function SeminaireDetailPage() {
   }
 
   return (
-    <div className="sem-detail-page-root" style={{ background: '#faf8f5', minHeight: '100vh', fontFamily: 'inherit' }}>
+    <div className="sem-detail-page-root" style={{ minHeight: '100vh', fontFamily: 'inherit' }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg) } }
         @keyframes semExpandIn { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: translateY(0) } }
@@ -95,7 +95,7 @@ export default function SeminaireDetailPage() {
         /* Bloc format — typographie identique mobile / desktop */
         .sem-detail-format-block.sem-format-ui { margin-bottom: 32px; }
         .sem-detail-mobile-only .sem-format-ui { margin-top: 28px; margin-bottom: 20px; }
-        .sem-detail-mobile-only .sem-detail-producer-ui { margin-top: 8px; margin-bottom: 4px; }
+        .sem-detail-mobile-only .sem-detail-producer-ui { margin-top: 36px; margin-bottom: 4px; }
         .sem-detail-format-block .sem-mobile-format-choice-head { margin-top: 0; }
 
         .sem-format-ui .sem-mobile-format-pills {
@@ -630,10 +630,11 @@ export default function SeminaireDetailPage() {
         }
         .sem-detail-producer-ui .sem-mobile-producer-name {
           font-family: 'Poppins', sans-serif;
-          font-size: 17px;
+          font-size: 14px;
           font-weight: 700;
           color: #0b2c34;
           margin: 0;
+          line-height: 1.3;
         }
         .sem-detail-producer-ui .sem-mobile-producer-bio {
           font-size: 14px;
@@ -743,11 +744,29 @@ export default function SeminaireDetailPage() {
           line-height: 1.6;
         }
 
+        .sem-detail-page-root { background: #faf8f5; }
+
+        .sem-detail-footer-separator { display: none; }
+
         @media (max-width: 768px) {
-          .sem-detail-page-root { background: #fff; }
+          main:has(.sem-detail-page-root) { background: #fff; }
+          .sem-detail-page-root { background: #fff; min-height: auto; }
           .sem-detail-page-inner {
             padding: 0 !important;
             max-width: none !important;
+          }
+          .sem-detail-footer-separator {
+            display: block;
+            width: 100vw;
+            max-width: 100vw;
+            margin: 32px 0 0;
+            margin-left: calc(50% - 50vw);
+            padding: 0;
+            border: none;
+            border-top: 1px solid rgba(11, 44, 52, 0.14);
+            background: transparent;
+            height: 0;
+            box-sizing: border-box;
           }
           .sem-detail-cols { grid-template-columns: 1fr; gap: 0; }
           .sem-price-col { display: none !important; }
@@ -879,7 +898,7 @@ export default function SeminaireDetailPage() {
           }
           .sem-mobile-sheet-header {
             display: block;
-            padding: 24px 0 0;
+            padding: 32px 0 0;
           }
           .sem-mobile-hero-partenaire {
             position: absolute;
@@ -919,11 +938,11 @@ export default function SeminaireDetailPage() {
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
             font-style: italic;
-            font-size: 18px;
+            font-size: 25px;
             color: #0b2c34;
-            line-height: 1.25;
-            margin: 0 0 8px;
-            letter-spacing: -0.01em;
+            line-height: 1.18;
+            margin: 0 0 10px;
+            letter-spacing: -0.02em;
           }
           .sem-mobile-pills {
             display: flex;
@@ -1019,10 +1038,11 @@ export default function SeminaireDetailPage() {
           .sem-mobile-producer-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
           .sem-mobile-producer-name {
             font-family: 'Poppins', sans-serif;
-            font-size: 17px;
+            font-size: 14px;
             font-weight: 700;
             color: #0b2c34;
             margin: 0;
+            line-height: 1.3;
           }
           .sem-mobile-producer-bio { font-size: 14px; color: #6b6358; line-height: 1.7; margin: 0 0 16px; }
           .sem-mobile-producer-experiences-list { gap: 14px; }
@@ -1192,6 +1212,7 @@ export default function SeminaireDetailPage() {
           onDevis={() => setModalOpen(true)}
           onBack={() => router.push(offresListPath)}
         />
+        <div className="sem-detail-footer-separator" aria-hidden />
       </div>
     </div>
   );
