@@ -5,7 +5,6 @@ import { createPortal } from 'react-dom';
 import type { ReactNode, CSSProperties } from 'react';
 import { Sprout, Ham, Speech, Presentation, Wifi, House, Bike, Users, PartyPopper } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { fetchSeminaires } from '../lib/seminaires';
 import type { Seminaire, Format, ProgrammeItem, SeminaireFormatId, SeminaireHebergement } from '../lib/seminaires';
 import { SEMINAIRE_FORMAT_IDS, SEMINAIRE_FORMAT_LABELS } from '../lib/seminaires';
 import { supabase } from '../lib/supabase';
@@ -2266,22 +2265,14 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
 
 // ─── Page principale ──────────────────────────────────────────────────────────
 
-export default function SeminairesPage() {
+export default function SeminairesPage({ initialSeminaires }: { initialSeminaires: Seminaire[] }) {
   const router = useRouter();
-  const [seminaires,    setSeminaires]    = useState<Seminaire[]>([]);
-  const [loading,       setLoading]       = useState(true);
-  const [fetchError,    setFetchError]    = useState<string | null>(null);
+  const [seminaires,    setSeminaires]    = useState<Seminaire[]>(initialSeminaires);
   const [activeId,      setActiveId]      = useState<string | null>(null);
   const [modalOpen,     setModalOpen]     = useState(false);
   const [modalSem,      setModalSem]      = useState<Seminaire | null>(null);
   const [mapExpanded,   setMapExpanded]   = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    fetchSeminaires()
-      .then(data => { setSeminaires(data); setLoading(false); })
-      .catch(err => { setFetchError(err?.message ?? 'Impossible de charger les offres.'); setLoading(false); });
-  }, []);
 
   const filtered = seminaires;
 
@@ -2294,14 +2285,6 @@ export default function SeminairesPage() {
   const openDevis = (s: Seminaire) => { setModalSem(s); setModalOpen(true); };
   const navigateToSlug = (s: Seminaire) => router.push(`/seminaires-entreprise/offres/${s.slug}`);
 
-  if (loading) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#faf8f5' }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ width: 32, height: 32, border: '2px solid rgba(11, 44, 52,0.1)', borderTop: '2px solid #0b2c34', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
-        <p style={{ color: '#b0a89e', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>Chargement…</p>
-      </div>
-    </div>
-  );
 
   return (
     <div style={{ background: '#faf8f5', minHeight: '100vh', fontFamily: 'inherit' }}>
@@ -2426,11 +2409,11 @@ export default function SeminairesPage() {
           <div>
             {filtered.length === 0 ? (
               <div style={{ background: '#fff', borderRadius: 20, border: '1px solid rgba(11, 44, 52,0.08)', padding: '2rem', textAlign: 'center' }}>
-                <div style={{ fontSize: 40, marginBottom: 12 }}>{fetchError ? '⚠️' : '📋'}</div>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
                 <h3 style={{ fontStyle: 'italic', fontSize: 20, fontWeight: 700, color: '#0b2c34', margin: '0 0 8px' }}>
-                  {fetchError ? 'Impossible de charger les offres' : 'Aucune offre pour le moment'}
+                  Aucune offre pour le moment
                 </h3>
-                <p style={{ color: '#9a9080', fontSize: 13, margin: 0 }}>{fetchError || 'Les offres seront bientôt disponibles.'}</p>
+                <p style={{ color: '#9a9080', fontSize: 13, margin: 0 }}>Les offres seront bientôt disponibles.</p>
                 <button onClick={() => setModalOpen(true)} style={{ marginTop: 20, background: '#0b2c34', color: '#fff', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', padding: '10px 18px', borderRadius: 9999, border: 'none', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit' }}>
                   Demander un devis →
                 </button>

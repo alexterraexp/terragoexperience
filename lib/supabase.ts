@@ -28,25 +28,31 @@ const supabaseKey = isSupabaseConfigured ? rawKey : PLACEHOLDER_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-export const supabaseServer = createClient(supabaseUrl, supabaseKey, {
+/** Clé serveur uniquement — jamais de préfixe NEXT_PUBLIC_ */
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+
+const serverKey = serviceRoleKey ?? supabaseKey;
+
+if (isSupabaseConfigured && !serviceRoleKey && process.env.NODE_ENV === 'development') {
+  console.warn(
+    '[TerraGo] SUPABASE_SERVICE_ROLE_KEY est manquant — supabaseServer utilise la clé anon. Définissez-la dans .env.local (serveur uniquement).'
+  );
+}
+
+/**
+ * Client Supabase réservé au serveur (RSC, routes API).
+ * Utilise SUPABASE_SERVICE_ROLE_KEY quand elle est définie (contourne RLS) ;
+ * sinon retombe sur la clé anon pour ne pas casser le dev local.
+ */
+export const supabaseServer = createClient(supabaseUrl, serverKey, {
+  auth: { persistSession: false, autoRefreshToken: false },
   global: {
     fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }),
   },
 });
 
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
-
 /**
- * Client service role : contourne RLS, réservé au serveur (routes API).
- * À utiliser pour les insertions depuis Next.js ; ne jamais exposer la clé au navigateur.
- * Si absent, les écritures retombent sur la clé anon (souvent bloquées par RLS).
+ * Alias explicite quand la service role est configurée (insertions API, etc.).
+ * null si SUPABASE_SERVICE_ROLE_KEY est absente — les appels utilisent alors supabaseServer (anon).
  */
-export const supabaseAdmin =
-  isSupabaseConfigured && serviceRoleKey
-    ? createClient(supabaseUrl, serviceRoleKey, {
-        auth: { persistSession: false, autoRefreshToken: false },
-        global: {
-          fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }),
-        },
-      })
-    : null;
+export const supabaseAdmin = isSupabaseConfigured && serviceRoleKey ? supabaseServer : null;

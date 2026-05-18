@@ -2,7 +2,11 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { MapboxTokenProvider } from '@/components/MapboxTokenProvider';
 import { getMapboxPublicToken } from '@/lib/mapbox-public';
+import { fetchSeminaires } from '@/lib/seminaires';
+import { supabaseServer } from '@/lib/supabase';
 import SeminairesPack from '../../../views/Seminaires-pack';
+
+export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -13,11 +17,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function SeminairesOffresPage() {
+export default async function SeminairesOffresPage() {
+  const initialSeminaires = await fetchSeminaires(supabaseServer);
+
   return (
     <Suspense fallback={null}>
       <MapboxTokenProvider token={getMapboxPublicToken()}>
-        <SeminairesPack />
+        <SeminairesPack initialSeminaires={initialSeminaires} />
       </MapboxTokenProvider>
     </Suspense>
   );

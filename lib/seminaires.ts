@@ -1,3 +1,4 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -98,8 +99,8 @@ export function generateSlug(producteur: string): string {
 
 // ─── Récupération des séminaires depuis Supabase ─────────────────────────────
 
-export async function fetchSeminaires(): Promise<Seminaire[]> {
-  const { data, error } = await supabase
+export async function fetchSeminaires(db: SupabaseClient = supabase): Promise<Seminaire[]> {
+  const { data, error } = await db
     .from('seminaires')
     .select(`*, seminaire_formats (*, seminaire_programme (heure, action, ordre)), seminaire_hebergements (id, nom, type, description, capacite, images, prix_nuit, ordre)`)
     .order('ordre');
