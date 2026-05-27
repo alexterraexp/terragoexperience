@@ -5,7 +5,8 @@ import remarkGfm from 'remark-gfm';
 import { supabaseServer as supabase } from '../../../lib/supabase';
 import TableOfContents from './TableOfContents';
 
-export const dynamic = 'force-static';
+/** Régénère l’article depuis Supabase au plus toutes les 60 s (ISR). */
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const { data } = await supabase

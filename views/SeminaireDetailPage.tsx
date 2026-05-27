@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { fetchSeminaires } from '../lib/seminaires';
 import type { Seminaire } from '../lib/seminaires';
+import SeminaireDetailLoading from '../components/SeminaireDetailLoading';
 import { ExpandedSeminaireView, SeminaireModal } from './Seminaires-pack';
 
 // ─── Page détail d'un séminaire ───────────────────────────────────────────────
@@ -24,28 +25,34 @@ export default function SeminaireDetailPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetchSeminaires().then(data => {
-      const found = data.find(s => s.slug === slug) ?? null;
-      setSeminaire(found);
-      setAllSeminaires(data);
-      setNotFound(!found);
-      if (found && !(activeFormat in found.formats)) {
-        setActiveFormat(Object.keys(found.formats)[0] ?? 'journee');
-      }
-      setLoading(false);
-    });
+    setLoading(true);
+    setNotFound(false);
+    let cancelled = false;
+    fetchSeminaires()
+      .then(data => {
+        if (cancelled) return;
+        const found = data.find(s => s.slug === slug) ?? null;
+        setSeminaire(found);
+        setAllSeminaires(data);
+        setNotFound(!found);
+        if (found && !(activeFormat in found.formats)) {
+          setActiveFormat(Object.keys(found.formats)[0] ?? 'journee');
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setNotFound(true);
+          setLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   if (loading) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#faf8f5' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ width: 32, height: 32, border: '2px solid rgba(11, 44, 52,0.1)', borderTop: '2px solid #0b2c34', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
-          <p style={{ color: '#b0a89e', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>Chargement…</p>
-          <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
-        </div>
-      </div>
-    );
+    return <SeminaireDetailLoading />;
   }
 
   if (notFound || !seminaire) {

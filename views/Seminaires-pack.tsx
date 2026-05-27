@@ -12,6 +12,7 @@ import { mapSupabaseRowToFull, type ProducerFull, type SupabaseProducerRow } fro
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useMapboxPublicToken } from '@/components/MapboxTokenProvider';
+import SeminaireDetailLoading from '@/components/SeminaireDetailLoading';
 import { CollapsibleDateRangePicker } from '@/components/CollapsibleDateRangePicker';
 import { VilleDepartInput } from '@/components/VilleDepartInput';
 
@@ -2272,7 +2273,14 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
   const [modalOpen,     setModalOpen]     = useState(false);
   const [modalSem,      setModalSem]      = useState<Seminaire | null>(null);
   const [mapExpanded,   setMapExpanded]   = useState(false);
+  /** Affiché dès le clic vers une offre (avant que Next n’affiche la page détail). */
+  const [detailNavPending, setDetailNavPending] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const filtered = seminaires;
 
@@ -2283,11 +2291,17 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
   }, []);
 
   const openDevis = (s: Seminaire) => { setModalSem(s); setModalOpen(true); };
-  const navigateToSlug = (s: Seminaire) => router.push(`/seminaires-entreprise/offres/${s.slug}`);
+  const navigateToSlug = (s: Seminaire) => {
+    setDetailNavPending(true);
+    router.push(`/seminaires-entreprise/offres/${s.slug}`);
+  };
 
 
   return (
     <div style={{ background: '#faf8f5', minHeight: '100vh', fontFamily: 'inherit' }}>
+      {mounted &&
+        detailNavPending &&
+        createPortal(<SeminaireDetailLoading variant="overlay" />, document.body)}
       <style>{`
         @keyframes photoSlideInRight { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
         @keyframes photoSlideInLeft  { from{opacity:0;transform:translateX(-30px)} to{opacity:1;transform:translateX(0)} }

@@ -14,29 +14,29 @@ const MentionsLegales: React.FC = () => {
               <span className="text-[10px] font-bold uppercase tracking-widest">Retour à l'accueil</span>
             </Link>
             <h1 className="text-4xl md:text-5xl font-display font-bold text-primary italic mb-4">Mentions Légales</h1>
-            <p className="text-gray-400 text-sm italic">Dernière mise à jour : Février 2026</p>
+            <p className="text-gray-400 text-sm italic">Dernière mise à jour : Mai 2026</p>
           </div>
 
           <div className="space-y-8 text-sm text-gray-600 leading-relaxed">
             <section>
               <h2 className="text-xl font-display font-bold text-primary mb-4 italic">1. Éditeur du site</h2>
               <p>
-                Le site <strong>TerraGo</strong> est édité par TerraGo SAS, société par actions simplifiée au capital de 1 000 euros, 
-                immatriculée au RCS de Paris sous le numéro __________, dont le siège social est situé à Annecy, 74000 Annecy, France.
+                Le site <strong>TerraGo</strong> est édité par TerraGo SAS, société par actions simplifiée au capital de 8 000 euros, 
+                immatriculée au RCS d'Annecy sous le numéro 105 381 743, dont le siège social est situé au 44 Avenue de Champ Fleuri, 74000 Annecy, France.
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-display font-bold text-primary mb-4 italic">2. Directeur de publication</h2>
               <p>
-                Le directeur de publication est M. [Nom du Directeur], en qualité de représentant légal de TerraGo SAS.
+                Le directeur de publication est M. Jérôme Peyron, en qualité de représentant légal de TerraGo SAS.
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-display font-bold text-primary mb-4 italic">3. Hébergement</h2>
               <p>
-                Le site est hébergé par [Nom de l'hébergeur], [Adresse de l'hébergeur].
+                Le site est hébergé par OVH, 2 rue Kellermann, 59100 Roubaix, France.
               </p>
             </section>
 

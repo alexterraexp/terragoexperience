@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { supabaseServer as supabase } from '../../lib/supabase';
 import BlogCards from './BlogCards';
 
-export const dynamic = 'force-static';
+/** Régénère la liste depuis Supabase au plus toutes les 60 s (ISR). */
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Blog séminaires & terroir – TerraGo',
