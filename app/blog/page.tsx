@@ -1,5 +1,11 @@
 import type { Metadata } from 'next';
 import { supabaseServer as supabase } from '../../lib/supabase';
+import {
+  HOME_COLORS,
+  HOME_RADIUS,
+  homeParagraphClass,
+  homeSectionPadding,
+} from '../../components/home/homeStyles';
 import BlogCards from './BlogCards';
 
 /** Régénère la liste depuis Supabase au plus toutes les 60 s (ISR). */
@@ -7,17 +13,17 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Blog séminaires & terroir – TerraGo',
-  description: 'Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français.',
+  description:
+    'Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français.',
   openGraph: {
     title: 'Blog séminaires & terroir – TerraGo',
-    description: 'Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français.',
+    description:
+      'Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français.',
     url: 'https://terragoexperiences.fr/blog',
     type: 'website',
   },
   alternates: { canonical: 'https://terragoexperiences.fr/blog' },
 };
-
-// ── Types ──────────────────────────────────────────────────────────────────────
 
 interface BlogPost {
   id: string;
@@ -33,14 +39,13 @@ interface BlogPost {
   created_at: string;
 }
 
-// ── Fallbacks statiques ────────────────────────────────────────────────────────
+const HERO_IMAGE =
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/ostreiculteur.png';
 
-const DEFAULT_COVER = 'https://images.unsplash.com/photo-1632676162165-bd9f2fad90b2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-
-// ── Page ───────────────────────────────────────────────────────────────────────
+const sectionTitleClass =
+  'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
 
 export default async function BlogPage() {
-  // Article à la une (featured = true)
   const { data: featuredArr } = await supabase
     .from('blog_posts')
     .select('*')
@@ -50,7 +55,6 @@ export default async function BlogPage() {
 
   const featured: BlogPost | null = featuredArr?.[0] ?? null;
 
-  // Derniers articles publiés (published = true, featured = false)
   const { data: latestArr } = await supabase
     .from('blog_posts')
     .select('*')
@@ -61,7 +65,6 @@ export default async function BlogPage() {
 
   const latestPosts: BlogPost[] = latestArr ?? [];
 
-  // Articles bientôt (published = false)
   const { data: soonArr } = await supabase
     .from('blog_posts')
     .select('*')
@@ -69,93 +72,85 @@ export default async function BlogPage() {
     .order('created_at', { ascending: false })
     .limit(3);
 
-  const soonFromDB: BlogPost[] = soonArr ?? [];
-
-  const soonPosts = soonFromDB.slice(0, 3);
+  const soonPosts: BlogPost[] = (soonArr ?? []).slice(0, 3);
 
   return (
-    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', color: '#0b2c34', minHeight: '100vh' }}>
-
-      {/* ── HERO ── */}
-      <div style={{ position: 'relative', height: '72vh', minHeight: 480, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden' }}>
-        <div style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: `url('${DEFAULT_COVER}')`,
-          backgroundSize: 'cover', backgroundPosition: 'center',
-        }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.45) 70%, rgba(0,0,0,0.65) 100%)' }} />
-        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', padding: '0 1.5rem 4rem' }}>
-        <h1 style={{ color: '#fff', lineHeight: 1.1, margin: 0 }}>
-  <span style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700, fontSize: 'clamp(1.2rem, 3vw, 2.2rem)', display: 'inline' }}>
-    Le terroir français,{' '}
-  </span>
-  <em style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 600, fontSize: 'clamp(1.6rem, 5vw, 3.6rem)', display: 'inline' }}>
-    ça se vit de l&apos;intérieur.
-  </em>
-</h1>
+    <div className="min-h-screen overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      {/* ── HERO pleine largeur ── */}
+      <section className="relative flex min-h-[480px] h-[68vh] w-full items-end justify-center overflow-hidden sm:h-[72vh]">
+        <img
+          src={HERO_IMAGE}
+          alt="Ostréiculteur au travail – Journal TerraGo"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.62) 100%)',
+          }}
+        />
+        <div className="relative z-10 mx-auto max-w-4xl px-5 pb-14 text-center sm:px-8 sm:pb-20">
+          <h1 className="font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
+            Le terroir français,
+            <br />
+            <span className="font-bold">ça se vit de l&apos;intérieur.</span>
+          </h1>
         </div>
-      </div>
+      </section>
 
-      {/* ── PAGE WRAP ── */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 clamp(1.5rem, 4vw, 3rem)' }}>
-
-        {/* ── SECTION HEAD ── */}
-        <div style={{ textAlign: 'center', paddingTop: '2.5rem', marginBottom: '1.5rem' }}>
-          <h2 style={{ margin: '0 0 .75rem', lineHeight: 1.15 }}>
-            <span style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700, fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', color: '#0b2c34' }}>
-              Articles{' '}
-            </span>
-            <em style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 600, fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#0b2c34' }}>
-              à la Une
-            </em>
-          </h2>
-          <p style={{ fontSize: 15, color: '#9a9080', maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
-            Conseils, guides et inspirations pour organiser des expériences inoubliables au cœur du terroir français.
-          </p>
-        </div>
-
-        <BlogCards featured={featured} latestPosts={latestPosts} soonPosts={soonPosts} />
-
-        {/* ── NEWSLETTER ── */}
-        <div style={{
-          background: '#0b2c34', borderRadius: 24,
-          padding: 'clamp(2.5rem, 5vw, 4rem) clamp(2rem, 5vw, 5rem)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          gap: '2rem', flexWrap: 'wrap' as const, marginBottom: 'clamp(1.5rem, 3vw, 2.5rem)',
-        }}>
-          <div>
-            <h3 style={{ color: '#fff', fontFamily: "'Poppins', sans-serif", fontWeight: 700, fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', lineHeight: 1.3, margin: '0 0 .5rem' }}>
-              Restez informé de{' '}
-              <em style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontSize: 'clamp(2.2rem, 3.5vw, 2.6rem)' }}>notre évolution.</em>
-            </h3>
-            <p style={{ color: 'rgba(255,255,255,.5)', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
-              Nouveaux articles, nouveaux producteurs — dans votre boîte mail.
+      {/* ── ARTICLES ── */}
+      <section
+        style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
+      >
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="mb-8 text-center sm:mb-10">
+            <h2 className={sectionTitleClass}>
+              Articles <span className="font-bold">à la une.</span>
+            </h2>
+            <p className={`${homeParagraphClass} mx-auto mt-4 max-w-xl text-[15px] text-[#0c1d22]/65 sm:text-[16px]`}>
+              Conseils, guides et inspirations pour organiser des expériences inoubliables au cœur du
+              terroir français.
             </p>
           </div>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const }}>
-            <input
-              type="email"
-              placeholder="votre@email.fr"
-              style={{
-                padding: '12px 20px', borderRadius: 9999,
-                border: '1px solid rgba(255,255,255,.2)', background: 'rgba(255,255,255,.08)',
-                color: '#fff', fontFamily: "'Poppins', sans-serif", fontSize: 13, outline: 'none', width: 240,
-              }}
-            />
-            <button style={{
-              padding: '12px 24px', borderRadius: 9999,
-              background: '#e67e22', color: '#fff', border: 'none',
-              fontFamily: "'Poppins', sans-serif", fontSize: 11, fontWeight: 700,
-              letterSpacing: '0.12em', textTransform: 'uppercase' as const, cursor: 'pointer',
-            }}>
-              S&apos;inscrire
-            </button>
+
+          <BlogCards featured={featured} latestPosts={latestPosts} soonPosts={soonPosts} />
+        </div>
+      </section>
+
+      {/* ── NEWSLETTER ── */}
+      <section style={{ paddingBottom: homeSectionPadding, background: '#ffffff' }}>
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div
+            className="flex flex-col items-start justify-between gap-8 px-6 py-10 sm:flex-row sm:items-center sm:px-10 sm:py-12"
+            style={{ background: HOME_COLORS.primary, borderRadius: HOME_RADIUS }}
+          >
+            <div className="max-w-lg">
+              <h3 className="font-sans text-[28px] font-normal leading-[1.1] tracking-[-0.075em] text-white sm:text-[34px]">
+                Restez informé de <span className="font-bold">notre évolution.</span>
+              </h3>
+              <p className="mt-3 font-sans text-[14px] leading-[1.65] tracking-[-0.04em] text-white/55">
+                Nouveaux articles, nouveaux producteurs — dans votre boîte mail.
+              </p>
+            </div>
+            <form className="flex w-full max-w-md flex-col gap-2 sm:flex-row sm:items-center sm:gap-2.5">
+              <input
+                type="email"
+                placeholder="votre@email.fr"
+                className="w-full flex-1 rounded-full bg-white/10 px-5 py-3 text-[13px] text-white outline-none placeholder:text-white/40 focus:bg-white/15"
+                style={{ border: '1px solid rgba(255,255,255,0.2)' }}
+              />
+              <button
+                type="submit"
+                className="shrink-0 rounded-full px-6 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90"
+                style={{ background: HOME_COLORS.orange }}
+              >
+                S&apos;inscrire
+              </button>
+            </form>
           </div>
         </div>
-
-      </div>{/* /page-wrap */}
-
-
+      </section>
     </div>
   );
 }

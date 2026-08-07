@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 import LazyVideo from '../components/video/LazyVideo';
 import HomeHero from '../components/home/HomeHero';
 import {
@@ -13,6 +14,8 @@ import {
   homeSectionPadding,
   homeSeparatorPadding,
   bottomImageGradientClass,
+  homeCtaOutlineClass,
+  homeCtaOutlineGhostClass,
 } from '../components/home/homeStyles';
 import type { HomeAssetUrls } from '../lib/homeStorage';
 import { HOME_EMOJI, HOME_PRODUCERS, HOME_STEPS, REGION_IMAGES, REGION_TAGS } from '../lib/homeStorage';
@@ -90,47 +93,37 @@ const FaqAccordion: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-1">
       {FAQ_ITEMS.map((item, i) => {
         const isOpen = openIndex === i;
         return (
-          <div
-            key={item.q}
-            className="overflow-hidden transition-colors"
-            style={{
-              borderRadius: HOME_RADIUS,
-              border: '1px solid rgba(12,29,34,0.08)',
-              background: isOpen ? '#f4f4f4' : '#ffffff',
-            }}
-          >
+          <div key={item.q} className="overflow-hidden">
             <button
               type="button"
-              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left sm:gap-4 sm:px-5 sm:py-3.5"
+              className="flex w-full items-center gap-3 py-3.5 text-left transition-colors hover:bg-[rgba(12,29,34,0.02)] sm:gap-4 sm:py-4"
               onClick={() => setOpenIndex(isOpen ? null : i)}
               aria-expanded={isOpen}
             >
-              <span className="font-sans text-[13px] font-semibold leading-[1.3] tracking-[-0.02em] text-[#0c1d22] sm:text-[14px]">
+              <span className="min-w-0 flex-1 font-sans text-[14px] font-bold leading-[1.3] tracking-[-0.03em] text-[#0c1d22] sm:text-[15px]">
                 {item.q}
               </span>
-              <span
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-transform duration-300 sm:h-8 sm:w-8"
+              <ChevronRight
+                size={18}
+                strokeWidth={1.8}
+                aria-hidden
+                className="shrink-0 transition-[transform,color] duration-[220ms] ease-out"
                 style={{
-                  border: `1.5px solid ${HOME_COLORS.primary}`,
-                  transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                  color: isOpen ? HOME_COLORS.orange : 'rgba(12,29,34,0.35)',
+                  transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
                 }}
-              >
-                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke={HOME_COLORS.primary} strokeWidth="2">
-                  <line x1="6" y1="1" x2="6" y2="11" />
-                  <line x1="1" y1="6" x2="11" y2="6" />
-                </svg>
-              </span>
+              />
             </button>
             <div
               className="grid transition-all duration-300"
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`${homeParagraphClass} px-5 pb-4`}>{item.a}</p>
+                <p className={`${homeParagraphClass} pb-4 pr-8`}>{item.a}</p>
               </div>
             </div>
           </div>
@@ -471,7 +464,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
         <div className="mx-auto mt-10 flex max-w-6xl justify-center px-5 sm:mt-12 sm:px-8">
           <Link
             href="/seminaires-entreprise"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-8 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:px-10"
+            className={homeCtaOutlineClass}
           >
             <span aria-hidden>→</span>
             Découvrir nos séminaires
@@ -584,7 +577,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
           <div className="mt-10 flex justify-center sm:mt-12">
             <Link
               href="/experiences"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-8 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:px-10"
+              className={homeCtaOutlineClass}
             >
               <span aria-hidden>→</span>
               Découvrir les expériences TerraGo
@@ -620,12 +613,11 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
             </div>
           </div>
 
-          {/* Emoji mains — à cheval bas vidéo / haut section rencontres, un peu à gauche du bord droit */}
+          {/* Sticker +1 producteur soutenu — à cheval bas vidéo / haut section rencontres */}
           <img
-            src={HOME_EMOJI.mainsDansLaTerre}
-            alt=""
-            aria-hidden
-            className="pointer-events-none absolute bottom-0 right-[6%] z-30 h-32 w-32 translate-y-1/2 object-contain drop-shadow-md sm:right-[10%] sm:h-44 sm:w-44 lg:right-[12%] lg:h-52 lg:w-52"
+            src={HOME_EMOJI.producteurSoutenu}
+            alt="+1 producteur soutenu"
+            className="pointer-events-none absolute bottom-0 right-[6%] z-30 h-32 w-auto translate-y-1/2 rotate-[6deg] object-contain drop-shadow-md sm:right-[10%] sm:h-40 lg:right-[12%] lg:h-48"
           />
         </div>
       </div>
@@ -732,10 +724,10 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
             <div className="order-3 flex justify-center lg:col-start-2 lg:mt-10 lg:justify-start">
               <Link
                 href="/partenaires"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-8 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:px-10"
+                className={homeCtaOutlineClass}
               >
                 <span aria-hidden>→</span>
-                Découvrir nos producteurs
+                Découvrir nos producteurs partenaires
               </Link>
             </div>
           </div>
@@ -743,7 +735,10 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
       </section>
 
       {/* ── RÉGIONS ── */}
-      <section style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#f7f7f7' }}>
+      <section
+        className="relative"
+        style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#f7f7f7' }}
+      >
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <h2 className="mx-auto max-w-3xl text-center font-sans text-[38px] font-normal leading-[1.05] tracking-[-0.075em] text-[#0c1d22] sm:text-[46px] lg:text-[54px]">
             Votre séminaire, <span className="font-bold">partout en France.</span>
@@ -811,7 +806,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
           {REGION_IMAGES.map((region) => (
             <Link
               key={region.name}
-              href="/seminaires-entreprise/offres"
+              href="/seminaire-exemples"
               className="group relative aspect-[3/3.4] w-[62vw] shrink-0 overflow-hidden sm:aspect-[3/4.1] sm:w-[255px] lg:aspect-[3/4.2] lg:w-[280px]"
               style={{ borderRadius: HOME_RADIUS }}
             >
@@ -821,8 +816,13 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.12]"
                 loading="lazy"
               />
-              <div className={bottomImageGradientClass} />
-              <p className="absolute bottom-0 left-0 right-0 p-5 font-sans text-[21px] leading-[1.15] tracking-[-0.06em] text-white sm:p-6 sm:text-[24px]">
+              <div
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-500 group-hover:opacity-0"
+              />
+              <div
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              />
+              <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[24px] leading-[1.12] tracking-[-0.06em] text-white sm:bottom-7 sm:px-6 sm:text-[28px] lg:text-[30px]">
                 <span className="font-normal">Séminaire {region.prep}</span>
                 <br />
                 <span className="font-bold">{region.name}</span>
@@ -841,13 +841,21 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
         <div className="mt-10 flex justify-center sm:mt-12">
           <Link
-            href="/seminaires-entreprise/offres"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-transparent px-8 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:px-10"
+            href="/seminaire-exemples"
+            className={homeCtaOutlineGhostClass}
           >
             <span aria-hidden>→</span>
             Découvrir nos destinations
           </Link>
         </div>
+
+        {/* Sticker chaussures — à cheval régions / étapes, un peu à droite du bord gauche */}
+        <img
+          src={HOME_EMOJI.chaussures}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute bottom-0 left-[14%] z-30 h-40 w-40 translate-y-1/2 rotate-[-8deg] object-contain drop-shadow-md sm:left-[16%] sm:h-52 sm:w-52 lg:left-[18%] lg:h-60 lg:w-60"
+        />
       </section>
 
       {/* ── COMMENT ÇA MARCHE ── */}
@@ -860,14 +868,6 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
         </div>
 
         <div className="relative">
-          {/* Sticker chaussures — déborde en haut à gauche */}
-          <img
-            src={HOME_EMOJI.chaussures}
-            alt=""
-            aria-hidden
-            className="pointer-events-none absolute left-5 top-0 z-30 h-28 w-28 -translate-x-[35%] -translate-y-[62%] rotate-[-8deg] object-contain drop-shadow-md sm:left-8 sm:h-36 sm:w-36 lg:left-12 lg:h-40 lg:w-40"
-          />
-
           {/* Sticker montagne — déborde en bas à droite */}
           <img
             src={HOME_EMOJI.montagne}

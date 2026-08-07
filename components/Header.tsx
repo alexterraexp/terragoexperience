@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useModal } from '../context/ModalContext';
+import { REGION_IMAGES } from '../lib/homeStorage';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -11,6 +12,8 @@ type DropdownItem = {
   label: string;
   description: string;
   path: string;
+  /** Ouvre une modale globale au lieu de naviguer. */
+  modal?: 'partenaire' | 'recommander';
   targetPath?: string;
   emoji?: string;
   comingSoon?: boolean;
@@ -25,35 +28,34 @@ type NavItem = {
   label: string;
   path: string;
   dropdown: DropdownItem[];
+  /** Liens en bas du panneau (ex. Devenir partenaire) */
+  footer?: DropdownItem[];
   /** Mega-menu desktop (colonnes) — le header s’agrandit */
   mega?: {
     sections: MegaSection[];
-    footer?: DropdownItem[];
+    /** Bouton CTA sous la première colonne (ex. Toutes les destinations) */
+    footerCta?: DropdownItem;
   };
 };
 
 // ─── Destinations : régions & lieux ───────────────────────────────────────────
+// Aligné sur « Votre séminaire, partout en France » (REGION_IMAGES).
 
-const DESTINATION_REGIONS: DropdownItem[] = [
-  { label: 'Pays Basque', description: 'Séminaire au Pays Basque', path: '/seminaires-entreprise/offres?region=Pays+Basque' },
-  { label: 'Bretagne',    description: 'Séminaire en Bretagne',    path: '/seminaires-entreprise/offres?region=Bretagne' },
-  { label: 'Auvergne',    description: 'Séminaire en Auvergne',    path: '/seminaires-entreprise/offres?region=Auvergne' },
-  { label: 'Occitanie',   description: 'Séminaire en Occitanie',   path: '/seminaires-entreprise/offres?region=Occitanie' },
-  { label: 'Provence',    description: 'Séminaire en Provence',    path: '/seminaires-entreprise/offres?region=Provence' },
-  { label: 'Bordeaux',    description: 'Séminaire à Bordeaux',     path: '/seminaires-entreprise/offres?region=Bordeaux' },
-  { label: 'Normandie',   description: 'Séminaire en Normandie',   path: '/seminaires-entreprise/offres?region=Normandie' },
-  { label: 'Alsace',      description: 'Séminaire en Alsace',      path: '/seminaires-entreprise/offres?region=Alsace' },
-];
+const DESTINATION_REGIONS: DropdownItem[] = REGION_IMAGES.map((region) => ({
+  label: region.name,
+  description: `Séminaire ${region.prep} ${region.name}`,
+  path: `/seminaire-exemples?region=${encodeURIComponent(region.name)}`,
+}));
 
 const DESTINATION_LIEUX: DropdownItem[] = [
-  { label: 'À la ferme',          description: 'Immersion chez l’exploitant',     path: '/seminaires-entreprise/offres?lieu=ferme' },
-  { label: 'Au vert',             description: 'Respirer, se recentrer',          path: '/seminaires-entreprise/offres?lieu=au-vert' },
-  { label: 'À la campagne',       description: 'Cadre rural authentique',         path: '/seminaires-entreprise/offres?lieu=campagne' },
-  { label: 'Au bord de l’eau',    description: 'Lacs, rivières ou océan',         path: '/seminaires-entreprise/offres?lieu=bord-de-leau' },
-  { label: 'En montagne',         description: 'Altitude et grands espaces',      path: '/seminaires-entreprise/offres?lieu=montagne' },
-  { label: 'Au vignoble',         description: 'Terroirs & dégustations',         path: '/seminaires-entreprise/offres?lieu=vignoble' },
-  { label: 'En pleine nature',    description: 'Forêts et paysages sauvages',     path: '/seminaires-entreprise/offres?lieu=nature' },
-  { label: 'Chez le producteur',  description: 'Savoir-faire et terroir vivant',  path: '/seminaires-entreprise/offres?lieu=producteur' },
+  { label: 'Chez le producteur',           description: 'Savoir-faire et terroir vivant',  path: '/seminaire-exemples?lieu=producteur' },
+  { label: 'Au vignoble',                  description: 'Terroirs & dégustations',         path: '/seminaire-exemples?lieu=vignoble' },
+  { label: 'À la ferme',                   description: 'Immersion chez l’exploitant',     path: '/seminaire-exemples?lieu=ferme' },
+  { label: 'Au bord de l’eau',             description: 'Lacs, rivières ou océan',         path: '/seminaire-exemples?lieu=bord-de-leau' },
+  { label: 'En montagne',                  description: 'Altitude et grands espaces',      path: '/seminaire-exemples?lieu=montagne' },
+  { label: 'En pleine nature',             description: 'Forêts et paysages sauvages',     path: '/seminaire-exemples?lieu=nature' },
+  { label: 'Dans un domaine d’exception',  description: 'Lieux rares et inspirants',       path: '/seminaire-exemples?lieu=domaine' },
+  { label: 'Au cœur des terroirs',         description: 'Immersion locale authentique',    path: '/seminaire-exemples?lieu=terroirs' },
 ];
 
 // ─── Structure du menu ────────────────────────────────────────────────────────
@@ -64,8 +66,8 @@ const NAV_ITEMS: NavItem[] = [
     path: '/seminaires-entreprise',
     dropdown: [
       { label: 'Séminaires d\'entreprise avec TerraGo', description: 'Du sens, du vrai, et du vivant', path: '/seminaires-entreprise', emoji: '🌿' },
-      { label: 'Nos offres de séminaires', description: 'À la journée, sur 2 jours, ou sur mesure', path: '/seminaires-entreprise/offres', emoji: '📦' },
-      { label: 'Nos séminaires réalisés', description: 'Retours d\'expérience sur le terrain', path: '/seminaires-entreprise/realises', emoji: '✨' },
+      { label: 'Nos exemples de séminaire d\'entreprise', description: 'À la journée, sur 2 jours, ou sur mesure', path: '/seminaire-exemples', emoji: '📦' },
+      { label: 'Nos séminaires réalisés', description: 'Retours d\'expérience sur le terrain', path: '#', comingSoon: true, emoji: '✨' },
     ],
   },
   {
@@ -74,20 +76,14 @@ const NAV_ITEMS: NavItem[] = [
     dropdown: [
       ...DESTINATION_REGIONS,
       ...DESTINATION_LIEUX,
-      { label: 'Toutes les destinations',  description: 'Nos producteurs partenaires', path: '/partenaires',               emoji: '🌾' },
-      { label: 'Devenir partenaire',       description: 'Rejoindre le réseau TerraGo', path: '/nous-rejoindre',            emoji: '🤝' },
-      { label: 'Recommander un producteur', description: 'Suggérer une pépite du terroir', path: '/recommander-un-producteur', emoji: '⭐' },
+      { label: 'Toutes les destinations', description: 'Nos producteurs partenaires', path: '/partenaires', emoji: '🌾' },
     ],
     mega: {
       sections: [
         { title: 'En fonction des régions', items: DESTINATION_REGIONS },
         { title: 'En fonction des lieux',   items: DESTINATION_LIEUX },
       ],
-      footer: [
-        { label: 'Toutes les destinations', description: '', path: '/partenaires' },
-        { label: 'Devenir partenaire', description: '', path: '/nous-rejoindre' },
-        { label: 'Recommander un producteur', description: '', path: '/recommander-un-producteur' },
-      ],
+      footerCta: { label: 'Toutes les destinations', description: '', path: '/partenaires' },
     },
   },
   {
@@ -95,18 +91,26 @@ const NAV_ITEMS: NavItem[] = [
     path: '/experiences',
     dropdown: [
       { label: 'Expériences entreprise', description: 'Team building, RSE & événements', path: '/experiences-entreprise', emoji: '✨' },
-      { label: 'Séjours uniques', description: 'On vous écoute !',         path: '/entre-amis/sejours',                     emoji: '💬' },
-      { label: 'Nos offres de séjours',  description: 'Entre amis ou en famille', path: '#', comingSoon: true,               emoji: '🫶' },
+      { label: 'Expériences privées', description: 'Activités et repas authentiques pour particuliers', path: '/experiences-privees', emoji: '🌿' },
+      { label: 'Nos offres de séjours', description: 'Entre amis ou en famille', path: '#', comingSoon: true, emoji: '🫶' },
     ],
   },
   {
     label: 'Notre approche',
     path: '/notre-approche',
-    dropdown: [],
+    dropdown: [
+      { label: 'Notre approche', description: 'La mission et la vision TerraGo', path: '/notre-approche', emoji: '🌱' },
+      { label: 'Notre charte RSE', description: 'Engagements responsables', path: '/notre-approche#rse', emoji: '♻️' },
+      { label: 'Nos producteurs partenaires', description: 'Le réseau TerraGo', path: '/partenaires', emoji: '🌾' },
+    ],
+    footer: [
+      { label: 'Devenir partenaire', description: 'Rejoindre le réseau TerraGo', path: '#', modal: 'partenaire', emoji: '🤝' },
+      { label: 'Recommander un producteur', description: 'Suggérer une pépite du terroir', path: '#', modal: 'recommander', emoji: '⭐' },
+    ],
   },
 ];
 
-// ─── Accordion item ───────────────────────────────────────────────────────────
+// ─── Accordion item (mobile) ──────────────────────────────────────────────────
 
 const AccordionSection: React.FC<{
   nav: NavItem;
@@ -120,16 +124,16 @@ const AccordionSection: React.FC<{
 
   if (!hasDropdown) {
     return (
-      <div className={`${!isLast ? 'border-b border-black/[0.07]' : ''}`}>
+      <div className={!isLast ? 'border-b border-[#0c1d22]/[0.08]' : ''}>
         <button
           type="button"
           onClick={() => onNavigate(nav.path)}
-          className="w-full flex items-center justify-between px-6 py-6 bg-transparent border-none cursor-pointer group min-h-[68px]"
+          className="group flex min-h-[64px] w-full cursor-pointer items-center justify-between border-none bg-transparent px-6 py-5 text-left"
         >
-          <span className="font-sans text-[17px] font-semibold text-[#0b2c34] group-hover:text-[#ec6435] transition-colors duration-150 text-left leading-snug">
+          <span className="font-sans text-[22px] font-normal leading-[1.15] tracking-[-0.05em] text-[#0c1d22] transition-colors duration-150 group-active:text-[#ec6435]">
             {nav.label}
           </span>
-          <span className="text-[#ec6435] text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+          <span className="text-[#ec6435] opacity-0 transition-opacity duration-150 group-active:opacity-100" aria-hidden>
             →
           </span>
         </button>
@@ -138,25 +142,25 @@ const AccordionSection: React.FC<{
   }
 
   return (
-    <div className={`${!isLast ? 'border-b border-black/[0.07]' : ''}`}>
+    <div className={!isLast ? 'border-b border-[#0c1d22]/[0.08]' : ''}>
       <button
+        type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-6 py-6 bg-transparent border-none cursor-pointer group min-h-[68px]"
+        aria-expanded={isOpen}
+        className="group flex min-h-[64px] w-full cursor-pointer items-center justify-between border-none bg-transparent px-6 py-5 text-left"
       >
-        <span className="font-sans text-[17px] font-semibold text-[#0b2c34] group-hover:text-[#ec6435] transition-colors duration-150 text-left leading-snug">
+        <span className="font-sans text-[22px] font-normal leading-[1.15] tracking-[-0.05em] text-[#0c1d22]">
           {nav.label}
         </span>
-
         <span
           className={[
-            'flex-shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center',
-            'transition-all duration-300',
+            'flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all duration-300',
             isOpen
-              ? 'border-[#ec6435] bg-[#ec6435] text-white rotate-45'
-              : 'border-[#0b2c34]/20 bg-transparent text-[#0b2c34] group-hover:border-[#ec6435] group-hover:text-[#ec6435]',
+              ? 'rotate-45 border-[#ec6435] bg-[#ec6435] text-white'
+              : 'border-[#0c1d22]/20 bg-transparent text-[#0c1d22]',
           ].join(' ')}
         >
-          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
             <line x1="5.5" y1="1" x2="5.5" y2="10" />
             <line x1="1" y1="5.5" x2="10" y2="5.5" />
           </svg>
@@ -165,111 +169,124 @@ const AccordionSection: React.FC<{
 
       <div
         className={[
-          'overflow-hidden transition-all duration-300 ease-in-out',
+          'overflow-hidden transition-all duration-300 ease-out',
           isOpen
-            ? (nav.mega ? 'max-h-[1200px] opacity-100' : 'max-h-[400px] opacity-100')
+            ? nav.mega
+              ? 'max-h-[1200px] opacity-100'
+              : 'max-h-[480px] opacity-100'
             : 'max-h-0 opacity-0',
         ].join(' ')}
       >
-        <div className="px-4 pb-3">
+        <div className="px-5 pb-5">
           {nav.mega ? (
             <>
               {nav.mega.sections.map((section) => (
-                <div key={section.title} className="mb-3">
-                  <p className="px-3 pt-2 pb-1.5 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#0b2c34]/40">
+                <div key={section.title} className="mb-4 rounded-[16px] bg-[#f4f4f4] px-2 py-2">
+                  <p className="px-3 pb-1.5 pt-2 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#0c1d22]/40">
                     {section.title}
                   </p>
-                  {section.items.map((item) => (
-                    <button
+                  <div className="grid grid-cols-2 gap-0.5">
+                    {section.items.map((item) => (
+                      <button
+                        key={item.label}
+                        type="button"
+                        onClick={() => onItemClick(item)}
+                        className="cursor-pointer rounded-full border-none bg-transparent px-3 py-2.5 text-left font-sans text-[13px] font-medium tracking-[-0.02em] text-[#0c1d22]/75 transition-colors duration-150 active:bg-white active:text-[#ec6435]"
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <div className="mt-1 flex flex-col gap-0.5">
+                {[
+                  ...(nav.mega.footerCta ? [nav.mega.footerCta] : []),
+                  ...(nav.footer ?? []),
+                ].map((item) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() => onItemClick(item)}
+                    className="group flex w-full cursor-pointer items-center justify-between rounded-full border-none bg-transparent px-3 py-3 text-left transition-colors duration-150 active:bg-[#f4f4f4]"
+                  >
+                    <span className="font-sans text-[14px] font-semibold tracking-[-0.02em] text-[#0c1d22]">
+                      {item.label}
+                    </span>
+                    <span className="text-[#ec6435] transition-transform duration-150 group-active:translate-x-0.5" aria-hidden>
+                      →
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex flex-col gap-0.5 rounded-[16px] bg-[#f4f4f4] p-1.5">
+                {nav.dropdown.map((item) =>
+                  item.comingSoon ? (
+                    <div
                       key={item.label}
-                      onClick={() => onItemClick(item)}
-                      className="group w-full flex items-center gap-3 px-3 py-3 rounded-xl border-none bg-transparent cursor-pointer hover:bg-[#ec6435]/[0.06] transition-colors duration-150 text-left"
+                      className="flex items-center justify-between gap-3 rounded-full px-3.5 py-3.5"
                     >
-                      <div className="flex-1 min-w-0">
-                        <div className="font-sans text-[15px] font-semibold text-[#0b2c34] group-hover:text-[#ec6435] transition-colors duration-150 leading-snug">
+                      <div className="min-w-0 flex-1">
+                        <div className="font-sans text-[14px] font-semibold tracking-[-0.02em] text-[#0c1d22]/40">
                           {item.label}
                         </div>
                         {item.description && (
-                          <div className="font-sans text-[12px] text-[#9ca3af] mt-0.5 leading-snug">
+                          <div className="mt-0.5 font-sans text-[12px] leading-snug tracking-[-0.02em] text-[#0c1d22]/30">
                             {item.description}
                           </div>
                         )}
                       </div>
-                      <span className="text-[#ec6435] text-xs opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 flex-shrink-0">
+                      <span className="shrink-0 rounded-full bg-[#ec6435] px-2.5 py-1 font-sans text-[8px] font-bold uppercase tracking-[0.06em] text-white">
+                        Bientôt
+                      </span>
+                    </div>
+                  ) : (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => onItemClick(item)}
+                      className="group flex w-full cursor-pointer items-start justify-between gap-3 rounded-full border-none bg-transparent px-3.5 py-3.5 text-left transition-colors duration-150 active:bg-white"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="font-sans text-[14px] font-semibold tracking-[-0.02em] text-[#0c1d22] transition-colors duration-150 group-active:text-[#ec6435]">
+                          {item.label}
+                        </div>
+                        {item.description && (
+                          <div className="mt-0.5 font-sans text-[12px] leading-snug tracking-[-0.02em] text-[#0c1d22]/45">
+                            {item.description}
+                          </div>
+                        )}
+                      </div>
+                      <span className="mt-0.5 shrink-0 text-[#ec6435] opacity-0 transition-all duration-150 group-active:opacity-100" aria-hidden>
+                        →
+                      </span>
+                    </button>
+                  ),
+                )}
+              </div>
+              {(nav.footer?.length ?? 0) > 0 && (
+                <div className="mt-1 flex flex-col gap-0.5">
+                  {nav.footer!.map((item) => (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => onItemClick(item)}
+                      className="group flex w-full cursor-pointer items-center justify-between rounded-full border-none bg-transparent px-3 py-3 text-left transition-colors duration-150 active:bg-[#f4f4f4]"
+                    >
+                      <span className="font-sans text-[14px] font-semibold tracking-[-0.02em] text-[#0c1d22]">
+                        {item.label}
+                      </span>
+                      <span className="text-[#ec6435] transition-transform duration-150 group-active:translate-x-0.5" aria-hidden>
                         →
                       </span>
                     </button>
                   ))}
                 </div>
-              ))}
-              {(nav.mega.footer ?? []).map((item) => (
-                <button
-                  key={item.label}
-                  onClick={() => onItemClick(item)}
-                  className="group w-full flex items-center gap-3 px-3 py-3 rounded-xl border-none bg-transparent cursor-pointer hover:bg-[#ec6435]/[0.06] transition-colors duration-150 text-left"
-                >
-                  <div className="font-sans text-[14px] font-semibold text-[#0b2c34]/70 group-hover:text-[#ec6435] transition-colors duration-150">
-                    {item.label}
-                  </div>
-                  <span className="text-[#ec6435] text-xs opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 flex-shrink-0 ml-auto">
-                    →
-                  </span>
-                </button>
-              ))}
+              )}
             </>
-          ) : (
-            nav.dropdown.map((item) =>
-              item.comingSoon ? (
-                <div
-                  key={item.label}
-                  className="w-full flex items-center gap-3 px-3 py-4 rounded-xl min-h-[64px] cursor-default"
-                >
-                  {item.emoji && (
-                    <span className="text-lg w-8 text-center flex-shrink-0 select-none">
-                      {item.emoji}
-                    </span>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-sans text-[15px] font-semibold text-[#0b2c34]/50 leading-snug">
-                      {item.label}
-                    </div>
-                    {item.description && (
-                      <div className="font-sans text-[12px] text-[#9ca3af] mt-0.5 leading-snug">
-                        {item.description}
-                      </div>
-                    )}
-                  </div>
-                  <span className="px-6 py-1 rounded-full bg-[#ec6435] text-white text-[8px] font-bold uppercase tracking-wide flex-shrink-0">
-                    Bientôt
-                  </span>
-                </div>
-              ) : (
-                <button
-                  key={item.label}
-                  onClick={() => onItemClick(item)}
-                  className="group w-full flex items-center gap-3 px-3 py-4 rounded-xl border-none bg-transparent cursor-pointer hover:bg-[#ec6435]/[0.06] transition-colors duration-150 text-left min-h-[64px]"
-                >
-                  {item.emoji && (
-                    <span className="text-lg w-8 text-center flex-shrink-0 select-none">
-                      {item.emoji}
-                    </span>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-sans text-[15px] font-semibold text-[#0b2c34] group-hover:text-[#ec6435] transition-colors duration-150 leading-snug">
-                      {item.label}
-                    </div>
-                    {item.description && (
-                      <div className="font-sans text-[12px] text-[#9ca3af] mt-0.5 leading-snug">
-                        {item.description}
-                      </div>
-                    )}
-                  </div>
-                  <span className="text-[#ec6435] text-xs opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 flex-shrink-0">
-                    →
-                  </span>
-                </button>
-              )
-            )
           )}
         </div>
       </div>
@@ -282,7 +299,7 @@ const AccordionSection: React.FC<{
 const Header: React.FC = () => {
   const pathname  = usePathname();
   const router    = useRouter();
-  const { openModal } = useModal();
+  const { openModal, openPartenaireModal, openRecommanderModal } = useModal();
   const [isMenuOpen,   setIsMenuOpen]   = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpenSection, setMobileOpenSection] = useState<string | null>(null);
@@ -321,6 +338,14 @@ const Header: React.FC = () => {
   const handleItemClick = (item: DropdownItem) => {
     setOpenDropdown(null);
     setIsMenuOpen(false);
+    if (item.modal === 'partenaire') {
+      openPartenaireModal();
+      return;
+    }
+    if (item.modal === 'recommander') {
+      openRecommanderModal();
+      return;
+    }
     if (item.path.startsWith('#')) {
       if (pathname === item.targetPath) {
         document.querySelector(item.path)?.scrollIntoView({ behavior: 'smooth' });
@@ -333,22 +358,26 @@ const Header: React.FC = () => {
   };
 
   const isSeminaireDetailPage =
+    /^\/seminaire-exemples\/[^/]+$/.test(pathname ?? '') ||
     /^\/seminaires\/offres\/[^/]+$/.test(pathname ?? '') ||
     /^\/seminaires-entreprise\/offres\/[^/]+$/.test(pathname ?? '');
 
   const hasHeroTransparent = (
     pathname === '/' ||
     pathname === '/demande-seminaire' ||
-    pathname === '/seminaires-entreprise' ||
-    pathname === '/partenaires' ||
     pathname === '/blog' ||
     pathname.startsWith('/blog/')
   );
   /** Pages à hero image encadrée : header blanc uni, sans séparateur. */
   const isFramedHeroPage =
     pathname === '/notre-approche' ||
+    pathname === '/partenaires' ||
+    pathname === '/seminaires-entreprise' ||
+    pathname === '/seminaire-exemples' ||
+    (pathname?.startsWith('/seminaire-exemples/') ?? false) ||
     pathname === '/experiences-entreprise' ||
-    (pathname?.startsWith('/experiences-entreprise/') ?? false);
+    (pathname?.startsWith('/experiences-entreprise/') ?? false) ||
+    pathname === '/experiences-privees';
   const isHeroTransparent = hasHeroTransparent && !isScrolled;
   const isDark = isHeroTransparent;
 
@@ -361,15 +390,15 @@ const Header: React.FC = () => {
         pathname === '/demande-seminaire' ||
         pathname === '/seminaires-entreprise' ||
         (pathname?.startsWith('/seminaires-entreprise/') ?? false) ||
-        (pathname?.startsWith('/seminaires/') ?? false)
+        (pathname?.startsWith('/seminaires/') ?? false) ||
+        pathname === '/seminaire-exemples' ||
+        (pathname?.startsWith('/seminaire-exemples/') ?? false)
       );
     }
     if (nav.path === '/partenaires') {
       return (
         pathname === '/partenaires' ||
-        (pathname?.startsWith('/partenaires/') ?? false) ||
-        pathname === '/nous-rejoindre' ||
-        pathname === '/recommander-un-producteur'
+        (pathname?.startsWith('/partenaires/') ?? false)
       );
     }
     if (nav.path === '/experiences') {
@@ -378,8 +407,8 @@ const Header: React.FC = () => {
         (pathname?.startsWith('/experience/') ?? false) ||
         pathname === '/experiences-entreprise' ||
         (pathname?.startsWith('/experiences-entreprise/') ?? false) ||
-        pathname === '/entre-amis' ||
-        (pathname?.startsWith('/entre-amis/') ?? false)
+        pathname === '/experiences-privees' ||
+        (pathname?.startsWith('/experiences-privees/') ?? false)
       );
     }
     if (nav.path === '/notre-approche') {
@@ -622,10 +651,10 @@ const Header: React.FC = () => {
                             </button>
                           ))}
                         </div>
-                        {sIdx === 0 && openNav.mega?.footer?.[0] && (
+                        {sIdx === 0 && openNav.mega?.footerCta && (
                           <button
                             type="button"
-                            onClick={() => handleItemClick(openNav.mega!.footer![0])}
+                            onClick={() => handleItemClick(openNav.mega!.footerCta!)}
                             className={[
                               'mt-5 inline-flex items-center gap-1.5 rounded-full px-4 py-2',
                               'font-sans text-[12px] font-semibold tracking-[-0.01em]',
@@ -635,47 +664,13 @@ const Header: React.FC = () => {
                                 : 'bg-[#0c1d22]/[0.06] text-[#0c1d22] hover:bg-[#0c1d22]/[0.1]',
                             ].join(' ')}
                           >
-                            {openNav.mega.footer[0].label}
+                            {openNav.mega.footerCta.label}
                             <span aria-hidden>→</span>
                           </button>
                         )}
                       </div>
                     ))}
                   </div>
-                  {(openNav.mega?.footer?.length ?? 0) > 1 && (
-                    <div
-                      className={[
-                        'flex flex-wrap items-center gap-x-1 gap-y-1 mt-5 pt-4',
-                        isDark ? 'border-t border-white/10' : 'border-t border-black/[0.06]',
-                      ].join(' ')}
-                    >
-                      {openNav.mega!.footer!.slice(1).map((item, fIdx) => (
-                        <React.Fragment key={item.label}>
-                          {fIdx > 0 && (
-                            <span
-                              aria-hidden
-                              className={[
-                                'mx-1 h-3 w-px',
-                                isDark ? 'bg-white/20' : 'bg-[#0c1d22]/15',
-                              ].join(' ')}
-                            />
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => handleItemClick(item)}
-                            className={[
-                              'font-sans text-[12px] font-semibold px-2.5 py-1.5 rounded-lg border-none cursor-pointer transition-colors duration-150',
-                              isDark
-                                ? 'bg-transparent text-white/60 hover:text-white'
-                                : 'bg-transparent text-[#0b2c34]/50 hover:text-[#ec6435]',
-                            ].join(' ')}
-                          >
-                            {item.label}
-                          </button>
-                        </React.Fragment>
-                      ))}
-                    </div>
-                  )}
                 </>
               ) : openNav ? (
                 <div className="flex flex-col gap-1 pt-4 max-w-md">
@@ -733,80 +728,126 @@ const Header: React.FC = () => {
                   )}
                 </div>
               ) : null}
+              {(openNav?.footer?.length ?? 0) > 0 && (
+                <div
+                  className={[
+                    'flex flex-wrap items-center gap-x-1 gap-y-1 mt-5 pt-4',
+                    isDark ? 'border-t border-white/10' : 'border-t border-black/[0.06]',
+                  ].join(' ')}
+                >
+                  {openNav!.footer!.map((item, fIdx) => (
+                    <React.Fragment key={item.label}>
+                      {fIdx > 0 && (
+                        <span
+                          aria-hidden
+                          className={[
+                            'mx-1 h-3 w-px',
+                            isDark ? 'bg-white/20' : 'bg-[#0c1d22]/15',
+                          ].join(' ')}
+                        />
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleItemClick(item)}
+                        className={[
+                          'font-sans text-[12px] font-semibold px-2.5 py-1.5 rounded-lg border-none cursor-pointer transition-colors duration-150',
+                          isDark
+                            ? 'bg-transparent text-white/60 hover:text-white'
+                            : 'bg-transparent text-[#0b2c34]/50 hover:text-[#ec6435]',
+                        ].join(' ')}
+                      >
+                        {item.label}
+                      </button>
+                    </React.Fragment>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </header>
 
-      {/* ══ MENU MOBILE — Accordion ══ */}
+      {/* ══ MENU MOBILE ══ */}
       <div
         className={`fixed inset-0 z-[100] lg:hidden transition-all duration-300 ${
           isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
-        <div className="absolute inset-0 bg-black/20" onClick={() => setIsMenuOpen(false)} />
+        <div
+          className="absolute inset-0 bg-[rgba(12,29,34,0.55)] backdrop-blur-[6px]"
+          onClick={() => setIsMenuOpen(false)}
+        />
 
         <div
           className={`absolute inset-x-0 top-0 bottom-0 transition-transform duration-350 ease-out ${
             isMenuOpen ? 'translate-y-0' : '-translate-y-full'
           }`}
         >
-          <div className="bg-[#faf8f5] h-full max-h-[100dvh] flex flex-col overflow-hidden">
-            <div className="flex-shrink-0 flex items-center justify-between px-6 h-[72px] border-b border-black/[0.07]">
-              <span className="font-sans font-semibold text-[13px] uppercase tracking-[0.22em] text-[#0b2c34]">
-                Menu
-              </span>
+          <div className="flex h-full max-h-[100dvh] flex-col overflow-hidden bg-white font-sans">
+            <div
+              className="flex shrink-0 items-center justify-between border-b border-[#0c1d22]/[0.08] px-5 sm:px-6"
+              style={{ paddingTop: 'env(safe-area-inset-top)', minHeight: 'calc(72px + env(safe-area-inset-top))' }}
+            >
+              <Link
+                href="/"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center"
+                aria-label="TerraGo – Accueil"
+              >
+                <img src="/logo.png" alt="TerraGo" className="h-7 w-auto object-contain" />
+              </Link>
               <button
+                type="button"
                 onClick={() => setIsMenuOpen(false)}
                 aria-label="Fermer le menu"
-                className="flex items-center gap-2 text-[#0b2c34] hover:text-[#ec6435] transition-colors duration-150"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c1d22]/10 text-[#0c1d22] transition-colors duration-150 active:border-[#ec6435] active:text-[#ec6435]"
               >
-                <span className="font-sans text-[12px] font-semibold uppercase tracking-[0.14em]">Fermer</span>
-                <span className="text-base leading-none">✕</span>
+                <svg width="16" height="16" viewBox="0 0 17 17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+                  <path d="M2 2 15 15M15 2 2 15" />
+                </svg>
               </button>
             </div>
 
-            <div className="flex-1 min-h-0 overflow-y-auto">
-              {NAV_ITEMS.map((nav, idx) => (
-                <AccordionSection
-                  key={nav.path}
-                  nav={nav}
-                  isLast={idx === NAV_ITEMS.length - 1}
-                  isOpen={mobileOpenSection === nav.label}
-                  onToggle={() =>
-                    setMobileOpenSection((prev) =>
-                      prev === nav.label ? null : nav.label
-                    )
-                  }
-                  onItemClick={(item) => {
-                    setIsMenuOpen(false);
-                    setMobileOpenSection(null);
-                    handleItemClick(item);
-                  }}
-                  onNavigate={(path) => {
-                    setIsMenuOpen(false);
-                    setMobileOpenSection(null);
-                    router.push(path);
-                  }}
-                />
-              ))}
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+              <nav className="pt-2" aria-label="Navigation mobile">
+                {NAV_ITEMS.map((nav, idx) => (
+                  <AccordionSection
+                    key={nav.path}
+                    nav={nav}
+                    isLast={idx === NAV_ITEMS.length - 1}
+                    isOpen={mobileOpenSection === nav.label}
+                    onToggle={() =>
+                      setMobileOpenSection((prev) =>
+                        prev === nav.label ? null : nav.label,
+                      )
+                    }
+                    onItemClick={(item) => {
+                      setIsMenuOpen(false);
+                      setMobileOpenSection(null);
+                      handleItemClick(item);
+                    }}
+                    onNavigate={(path) => {
+                      setIsMenuOpen(false);
+                      setMobileOpenSection(null);
+                      router.push(path);
+                    }}
+                  />
+                ))}
+              </nav>
             </div>
 
-            <div className="flex-shrink-0 px-5 pb-7 pt-3 border-t border-black/[0.07] bg-[#faf8f5]">
+            <div className="shrink-0 border-t border-[#0c1d22]/[0.08] bg-white px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 sm:px-6">
               <button
                 type="button"
                 onClick={() => {
                   setIsMenuOpen(false);
                   openModal();
                 }}
-                className="flex items-center justify-center gap-1.5 w-full
-                  bg-[#ec6435] text-white rounded-full py-3
-                  font-sans text-[13px] font-semibold tracking-[-0.01em]
-                  transition-all duration-200 hover:bg-[#d9552a] active:scale-95"
+                className="flex w-full items-center justify-center rounded-full bg-[#ec6435] py-3 font-sans text-[13px] font-medium tracking-[-0.03em] text-white transition-colors duration-200 active:bg-[#d9552a]"
               >
                 Organiser votre séminaire
               </button>
-              <p className="text-center text-[8px] sm:text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9ca3af] mt-3">
+              <p className="mt-3 text-center font-sans text-[11px] tracking-[-0.02em] text-[#0c1d22]/40">
                 Fabriqué avec passion pour nos territoires.
               </p>
             </div>

@@ -42,6 +42,7 @@ export type Producer = {
   avatar: string;
   highlight: string;
   price: string;
+  bestseller?: boolean;
 };
 
 export type ProducerFull = Producer & {
@@ -128,6 +129,7 @@ export function mapSupabaseRowToFull(row: SupabaseProducerRow): ProducerFull {
     lng: row.lng ?? undefined,
     couleur: row.couleur ?? undefined,
     seminaireLabel: row.seminaire_label ?? undefined,
+    bestseller: Boolean(row.bestseller),
   };
 }
 
@@ -147,5 +149,6 @@ export function fullToProducer(p: ProducerFull): Producer {
     avatar: p.avatar,
     highlight: p.highlight,
     price: p.price,
+    bestseller: p.bestseller,
   };
 }

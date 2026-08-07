@@ -1,21 +1,11 @@
-import type { Metadata } from 'next';
-import { supabaseServer as supabase } from '../../../lib/supabase';
-import ProducerClientWrapper from './ClientWrapper';
+import { permanentRedirect } from 'next/navigation';
 
-export const metadata: Metadata = {
-  title: 'Producteur partenaire – TerraGo',
-  description:
-    'Rencontrez ce producteur partenaire TerraGo et découvrez ses expériences immersives : dégustation, récolte ou atelier au cœur de son exploitation.',
-  robots: { index: true, follow: true },
-};
-
-export async function generateStaticParams() {
-  const { data } = await supabase
-    .from('producers')
-    .select('id');
-  return (data ?? []).map((p: { id: string }) => ({ producerId: p.id }));
-}
-
-export default function ProducerPage() {
-  return <ProducerClientWrapper />;
+/** Anciennes fiches producteur → liste (détail en modal). */
+export default async function ProducerPage({
+  params,
+}: {
+  params: Promise<{ producerId: string }>;
+}) {
+  const { producerId } = await params;
+  permanentRedirect(`/partenaires?p=${encodeURIComponent(producerId)}`);
 }

@@ -245,7 +245,7 @@ const SeminarDomains: React.FC = () => {
                 <span className="material-symbols-outlined text-orange text-lg">sensors</span>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-primary">Équipé & Connecté</span>
               </div>
-              <button onClick={openModal} className="bg-primary text-white px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-lg hover:bg-black transition-all font-sans">
+              <button onClick={openModal} className="bg-primary text-white px-5 py-2 rounded-2xl text-[9px] font-bold uppercase tracking-widest shadow-lg hover:bg-black transition-all font-sans sm:px-8 sm:py-3 sm:text-[10px]">
                 Organiser mon séminaire
               </button>
             </div>
@@ -621,7 +621,7 @@ const SeminarDomains: React.FC = () => {
                                  <button 
                                   key={type}
                                   onClick={() => toggleSelection(selectedAccTypes, setSelectedAccTypes, type)}
-                                  className={`px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest border transition-all ${selectedAccTypes.includes(type) ? 'bg-orange text-white border-orange shadow-md' : 'bg-white text-gray-400 border-black/5 hover:border-primary/20'}`}
+                                  className={`px-4 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest border transition-all ${selectedAccTypes.includes(type) ? 'bg-orange text-white border-orange shadow-md' : 'bg-white text-gray-400 border-black/5 hover:border-primary/20'}`}
                                  >
                                    {type}
                                  </button>
@@ -650,7 +650,7 @@ const SeminarDomains: React.FC = () => {
                                  <button 
                                   key={opt}
                                   onClick={() => setSelectedTransport(opt)}
-                                  className={`px-3 py-3 rounded-xl text-[9px] font-bold uppercase tracking-widest border transition-all ${selectedTransport === opt ? 'bg-orange text-white border-orange shadow-md' : 'bg-white text-gray-400 border-black/5 hover:border-primary/20'}`}
+                                  className={`px-3 py-3 rounded-full text-[9px] font-bold uppercase tracking-widest border transition-all ${selectedTransport === opt ? 'bg-orange text-white border-orange shadow-md' : 'bg-white text-gray-400 border-black/5 hover:border-primary/20'}`}
                                  >
                                    {opt}
                                  </button>
@@ -688,13 +688,13 @@ const SeminarDomains: React.FC = () => {
                </button>
 
                <div className="flex gap-3 md:gap-4 w-full sm:w-auto">
-                  <button onClick={closeModal} className="flex-1 sm:flex-none px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl border border-black/10 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] font-sans hover:bg-white hover:border-black/20 transition-all active:scale-95 shadow-sm">
+                  <button onClick={closeModal} className="flex-1 sm:flex-none px-6 md:px-8 py-3 md:py-4 rounded-full border border-black/10 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] font-sans hover:bg-white hover:border-black/20 transition-all active:scale-95 shadow-sm">
                     Annuler
                   </button>
                   <button 
                     onClick={currentStep < 3 ? nextStep : handleSubmit}
                     disabled={isSubmitting}
-                    className={`flex-1 sm:flex-none bg-primary text-white px-8 md:px-10 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold uppercase tracking-[0.2em] text-[9px] md:text-[10px] font-sans shadow-xl hover:bg-primary/90 hover:text-white hover:shadow-primary/30 active:bg-primary/90 active:text-white focus:bg-primary/90 focus:text-white focus:outline-none transition-all duration-300 sm:min-w-[180px] active:scale-95 flex items-center justify-center gap-2 ${
+                    className={`flex-1 sm:flex-none bg-primary text-white px-8 md:px-10 py-3 md:py-4 rounded-full font-bold uppercase tracking-[0.2em] text-[9px] md:text-[10px] font-sans shadow-xl hover:bg-primary/90 hover:text-white hover:shadow-primary/30 active:bg-primary/90 active:text-white focus:bg-primary/90 focus:text-white focus:outline-none transition-all duration-300 sm:min-w-[180px] active:scale-95 flex items-center justify-center gap-2 ${
                       isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
                     }`}
                   >

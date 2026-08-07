@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 import { useModal } from '../context/ModalContext';
 import {
   HOME_COLORS,
@@ -14,10 +15,29 @@ import {
   EXPERIENCES_ENTREPRISE,
   EXPERIENCES_ENTREPRISE_ASSETS,
   EXPERIENCES_ENTREPRISE_FAQ,
+  parseTitleEmphasis,
+  stripTitleEmphasis,
   type ExperienceCategory,
   type ExperienceExample,
   type ExperienceEntrepriseSlug,
 } from '../lib/experiencesEntreprise';
+
+/** Titre avec gras uniquement sur les segments `**…**`. */
+const EmphasizedTitle: React.FC<{ title: string }> = ({ title }) => (
+  <>
+    {parseTitleEmphasis(title).map((part, i) =>
+      part.bold ? (
+        <span key={i} className="font-bold">
+          {part.text}
+        </span>
+      ) : (
+        <span key={i} className="font-normal">
+          {part.text}
+        </span>
+      ),
+    )}
+  </>
+);
 
 const ScrollAnimate: React.FC<{
   children: React.ReactNode;
@@ -62,48 +82,37 @@ const FaqAccordion: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-1">
       {EXPERIENCES_ENTREPRISE_FAQ.map((item, i) => {
         const isOpen = openIndex === i;
         return (
-          <div
-            key={item.q}
-            className="border-b"
-            style={{ borderColor: 'rgba(12,29,34,0.12)' }}
-          >
+          <div key={item.q} className="overflow-hidden">
             <button
               type="button"
-              className="flex w-full items-start gap-4 py-4 text-left sm:py-5"
+              className="flex w-full items-center gap-3 py-3.5 text-left transition-colors hover:bg-[rgba(12,29,34,0.02)] sm:gap-4 sm:py-4"
               onClick={() => setOpenIndex(isOpen ? null : i)}
               aria-expanded={isOpen}
             >
-              <span
-                className="mt-2 h-px w-6 shrink-0 sm:w-8"
-                style={{ background: HOME_COLORS.primary }}
-                aria-hidden
-              />
-              <span className="flex-1 font-sans text-[15px] font-medium leading-snug tracking-[-0.04em] text-[#0c1d22] sm:text-[16px]">
+              <span className="min-w-0 flex-1 font-sans text-[14px] font-bold leading-[1.3] tracking-[-0.03em] text-[#0c1d22] sm:text-[15px]">
                 {item.q}
               </span>
-              <span
-                className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-transform duration-300"
+              <ChevronRight
+                size={18}
+                strokeWidth={1.8}
+                aria-hidden
+                className="shrink-0 transition-[transform,color] duration-[220ms] ease-out"
                 style={{
-                  border: `1.5px solid ${HOME_COLORS.primary}`,
-                  transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                  color: isOpen ? HOME_COLORS.orange : 'rgba(12,29,34,0.35)',
+                  transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
                 }}
-              >
-                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke={HOME_COLORS.primary} strokeWidth="2">
-                  <line x1="6" y1="1" x2="6" y2="11" />
-                  <line x1="1" y1="6" x2="11" y2="6" />
-                </svg>
-              </span>
+              />
             </button>
             <div
               className="grid transition-all duration-300"
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`${homeParagraphClass} pb-4 pl-10 pr-2 sm:pl-12`}>{item.a}</p>
+                <p className={`${homeParagraphClass} pb-4 pr-8`}>{item.a}</p>
               </div>
             </div>
           </div>
@@ -130,8 +139,8 @@ const IntroPanel: React.FC<{
     >
       {number}
     </span>
-    <h3 className="font-sans text-[22px] font-bold leading-[1.15] tracking-[-0.05em] text-white sm:text-[26px] lg:text-[28px]">
-      {intro.title}
+    <h3 className="font-sans text-[22px] font-normal leading-[1.15] tracking-[-0.05em] text-white sm:text-[26px] lg:text-[28px]">
+      <EmphasizedTitle title={intro.title} />
     </h3>
     <p className="mt-3 font-sans text-[14px] font-semibold leading-snug tracking-[-0.03em] text-white/95 sm:text-[15px]">
       {intro.teaser}
@@ -163,8 +172,8 @@ const SlideCard: React.FC<{
       className="relative flex min-w-0 flex-1 flex-col justify-center px-6 py-7 sm:px-8 sm:py-8 lg:px-9 lg:py-9"
       style={{ background: accent }}
     >
-      <h3 className="font-sans text-[20px] font-bold leading-[1.15] tracking-[-0.05em] text-white sm:text-[24px] lg:text-[26px]">
-        {example.title}
+      <h3 className="font-sans text-[20px] font-normal leading-[1.15] tracking-[-0.05em] text-white sm:text-[24px] lg:text-[26px]">
+        <EmphasizedTitle title={example.title} />
       </h3>
       <p className="mt-3 font-sans text-[14px] font-semibold leading-snug tracking-[-0.03em] text-white/95 sm:text-[15px]">
         {example.teaser}
@@ -181,6 +190,7 @@ const SlideCard: React.FC<{
  * contenu swipable de l’autre (imageLeft = intro à gauche).
  */
 const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) => {
+  const { openModal } = useModal();
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const isScrollingRef = useRef(false);
@@ -240,7 +250,7 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
         <button
           key={example.id}
           type="button"
-          aria-label={`Exemple ${i + 1} — ${category.sectionTitle}`}
+          aria-label={`Exemple ${i + 1} — ${stripTitleEmphasis(category.sectionTitle)}`}
           onClick={() => goTo(i)}
           className="h-2 rounded-full transition-all duration-300"
           style={{
@@ -316,17 +326,18 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
         </div>
 
         <div className="mt-6 flex justify-center sm:mt-7">
-          <Link
-            href={category.ctaHref}
+          <button
+            type="button"
+            onClick={openModal}
             className={
               category.slug === '2'
-                ? 'inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22] px-8 py-2.5 text-[12px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:px-10'
-                : 'inline-flex items-center justify-center gap-2 rounded-full border border-[#ec6435] px-8 py-2.5 text-[12px] font-bold uppercase tracking-[0.07em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10'
+                ? 'inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:px-10 sm:py-2.5 sm:text-[12px]'
+                : 'inline-flex items-center justify-center gap-2 rounded-full border border-[#ec6435] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[12px]'
             }
           >
             <span aria-hidden>→</span>
             {category.ctaLabel}
-          </Link>
+          </button>
         </div>
       </div>
     </div>
@@ -377,7 +388,7 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
               }}
             />
 
-            <div className="relative z-10 flex h-full flex-col items-center justify-center px-5 py-10 text-center sm:px-10 sm:py-14">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pt-12 text-center sm:px-10 sm:pt-16 lg:pt-20">
               <h1 className="max-w-3xl font-sans text-[clamp(1.85rem,4.8vw,3.4rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
                 Des expériences <span className="font-bold">authentiques,</span>
                 <br />
@@ -390,16 +401,16 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
                 <button
                   type="button"
                   onClick={scrollToExperiences}
-                  className="inline-flex min-w-[240px] items-center justify-center rounded-full border-2 border-[#ec6435] px-7 py-2.5 text-[12px] font-bold uppercase tracking-[0.06em] text-white transition-colors hover:bg-[#ec6435]/15"
+                  className="inline-flex min-w-[180px] items-center justify-center rounded-full border-2 border-[#ec6435] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.06em] text-white transition-colors hover:bg-[#ec6435]/15 sm:min-w-[240px] sm:px-7 sm:py-2.5 sm:text-[12px]"
                 >
                   Découvrir nos expériences
                 </button>
                 <Link
-                  href="/nous-rejoindre"
-                  className="inline-flex min-w-[240px] items-center justify-center rounded-full px-7 py-2.5 text-[12px] font-bold uppercase tracking-[0.06em] text-white transition-colors hover:brightness-110"
+                  href="/seminaires-entreprise"
+                  className="inline-flex min-w-[180px] items-center justify-center rounded-full px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.06em] text-white transition-colors hover:brightness-110 sm:min-w-[240px] sm:px-7 sm:py-2.5 sm:text-[12px]"
                   style={{ background: HOME_COLORS.orange }}
                 >
-                  Je propose mon expérience
+                  Nos séminaires d&apos;entreprise
                 </Link>
               </div>
             </div>
@@ -408,8 +419,19 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
       </section>
 
       {/* ── INTRO ── */}
-      <section style={{ paddingTop: homeSectionPadding, paddingBottom: 'clamp(2.5rem, 5vw, 4rem)', background: '#ffffff' }}>
-        <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
+      <section
+        className="relative"
+        style={{ paddingTop: homeSectionPadding, paddingBottom: 'clamp(2.5rem, 5vw, 4rem)', background: '#ffffff' }}
+      >
+        <img
+          src={EXPERIENCES_ENTREPRISE_ASSETS.etoile}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute left-0 z-0 hidden h-[280px] w-[280px] -translate-x-[46%] -translate-y-[40%] object-contain lg:block xl:h-[340px] xl:w-[340px]"
+          style={{ top: 0 }}
+        />
+
+        <div className="relative z-10 mx-auto max-w-3xl px-5 text-center sm:px-8">
           <ScrollAnimate>
             <h2 className="font-sans text-[28px] font-normal leading-[1.1] tracking-[-0.075em] text-[#0c1d22] sm:text-[36px] lg:text-[42px]">
               Des moments d&apos;entreprise
@@ -441,8 +463,8 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
               <p className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#ec6435]">
                 {category.number.toString().padStart(2, '0')}
               </p>
-              <h3 className="mt-2 font-sans text-[20px] font-bold uppercase leading-[1.15] tracking-[-0.05em] text-[#0c1d22] sm:text-[22px]">
-                {category.detailTitle}
+              <h3 className="mt-2 font-sans text-[20px] font-normal uppercase leading-[1.15] tracking-[-0.05em] text-[#0c1d22] sm:text-[22px]">
+                <EmphasizedTitle title={category.detailTitle} />
               </h3>
               <p className="mt-3 font-sans text-[14px] font-semibold leading-snug tracking-[-0.03em] text-[#0c1d22]">
                 {category.detailLead}
@@ -475,13 +497,13 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
             src={EXPERIENCES_ENTREPRISE_ASSETS.feu}
             alt=""
             aria-hidden
-            className="pointer-events-none absolute -left-1 -top-4 z-20 h-16 w-16 object-contain sm:-left-2 sm:-top-6 sm:h-24 sm:w-24 lg:h-28 lg:w-28"
+            className="pointer-events-none absolute -left-4 -top-10 z-20 h-28 w-28 object-contain sm:-left-8 sm:-top-14 sm:h-40 sm:w-40 lg:-left-12 lg:-top-16 lg:h-52 lg:w-52"
           />
           <img
             src={EXPERIENCES_ENTREPRISE_ASSETS.piment}
             alt=""
             aria-hidden
-            className="pointer-events-none absolute -bottom-4 -right-1 z-20 h-16 w-16 object-contain sm:-bottom-6 sm:-right-2 sm:h-24 sm:w-24 lg:h-28 lg:w-28"
+            className="pointer-events-none absolute -bottom-10 -right-4 z-20 h-28 w-28 object-contain sm:-bottom-14 sm:-right-8 sm:h-40 sm:w-40 lg:-bottom-16 lg:-right-12 lg:h-52 lg:w-52"
           />
 
           <div
@@ -498,7 +520,7 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
             <button
               type="button"
               onClick={openModal}
-              className="mt-8 inline-flex items-center justify-center rounded-full bg-white px-8 py-2.5 text-[12px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:mt-10"
+              className="mt-8 inline-flex items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:mt-10 sm:px-8 sm:py-2.5 sm:text-[12px]"
             >
               Parlons de votre projet
             </button>

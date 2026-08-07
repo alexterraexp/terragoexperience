@@ -10,19 +10,66 @@ import {
 } from '../lib/producerTypes';
 import { fetchSeminaires } from '../lib/seminaires';
 import type { Seminaire } from '../lib/seminaires';
+import { HOME_COLORS, HOME_RADIUS } from '../components/home/homeStyles';
 
-const SectionAccordion: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
-  const [expanded, setExpanded] = useState(false);
+const HOME_ASSETS =
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
+
+const SectionAccordion: React.FC<{ title: string; children: React.ReactNode; defaultExpanded?: boolean }> = ({
+  title,
+  children,
+  defaultExpanded = false,
+}) => {
+  const [expanded, setExpanded] = useState(defaultExpanded);
   return (
-    <div style={{ borderTop: '1px solid rgba(11, 44, 52,0.08)', paddingTop: 14, marginBottom: 40 }}>
+    <div style={{ marginBottom: 28 }}>
       <button
         type="button"
         onClick={() => setExpanded(v => !v)}
-        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 14px', fontFamily: 'inherit' }}
+        style={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: 0,
+          margin: '0 0 12px',
+          fontFamily: 'inherit',
+          textAlign: 'left',
+        }}
       >
-        <span style={{ fontSize: 22, fontWeight: 700, color: '#0b2c34', fontStyle: 'italic', fontFamily: "'Cormorant Garamond', serif" }}>{title}</span>
-        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, borderRadius: '50%', background: 'rgba(11, 44, 52,0.05)', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease', flexShrink: 0 }}>
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2.5 5L7 9.5L11.5 5" stroke="#b0a89e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        <span
+          style={{
+            fontFamily: "'Poppins', sans-serif",
+            fontSize: 15,
+            fontWeight: 700,
+            letterSpacing: '-0.04em',
+            color: HOME_COLORS.primary,
+            margin: 0,
+          }}
+        >
+          {title}
+        </span>
+        <span
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 28,
+            height: 28,
+            borderRadius: '50%',
+            background: 'rgba(12, 29, 34, 0.05)',
+            transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.3s ease',
+            flexShrink: 0,
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+            <path d="M2.5 5L7 9.5L11.5 5" stroke="rgba(12,29,34,0.4)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </span>
       </button>
       <div style={{ maxHeight: expanded ? '2000px' : '0', overflow: 'hidden', transition: 'max-height 0.4s ease' }}>
@@ -158,15 +205,15 @@ const ProducerDetailPage: React.FC = () => {
   }, [producer]);
 
   if (loading || !producer) return (
-    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', minHeight: '100vh' }}>
-      <div style={{ height: 500, background: 'linear-gradient(135deg, #0b2c34, #0f4a58)', animation: 'pulse 1.5s ease-in-out infinite' }} />
+    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#fff', minHeight: '100vh' }}>
+      <div style={{ height: 420, background: HOME_COLORS.gray, animation: 'pulse 1.5s ease-in-out infinite' }} />
     </div>
   );
 
   if (error) return (
-    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', minHeight: '100vh', paddingTop: 120, textAlign: 'center' }}>
+    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#fff', minHeight: '100vh', paddingTop: 120, textAlign: 'center' }}>
       <p style={{ fontSize: 18, color: '#b91c1c', marginBottom: 24 }}>{error}</p>
-      <button type="button" onClick={() => router.push('/partenaires')} style={{ background: '#0b2c34', color: '#fff', padding: '12px 24px', borderRadius: 12, fontWeight: 600, border: 'none', cursor: 'pointer' }}>← Retour</button>
+      <button type="button" onClick={() => router.push('/partenaires')} style={{ background: HOME_COLORS.primary, color: '#fff', padding: '12px 24px', borderRadius: 9999, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>← Retour</button>
     </div>
   );
 
@@ -187,20 +234,20 @@ const ProducerDetailPage: React.FC = () => {
     : null;
 
   return (
-    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', minHeight: '100vh' }}>
+    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#fff', minHeight: '100vh' }}>
 
       <style>{`
         .prod-photo-grid {
-          display: grid; gap: 8px; border-radius: 16px;
+          display: grid; gap: 8px; border-radius: ${HOME_RADIUS};
           overflow: hidden; margin-bottom: 40px; position: relative;
         }
         .prod-photo-grid.has-small {
           grid-template-columns: 1fr 1fr;
-          grid-template-rows: repeat(2, clamp(160px, 18vw, 240px));
+          grid-template-rows: repeat(2, clamp(160px, 18vw, 220px));
         }
         .prod-photo-grid.no-small {
           grid-template-columns: 1fr;
-          grid-template-rows: clamp(300px, 36vw, 460px);
+          grid-template-rows: clamp(300px, 36vw, 440px);
         }
         .prod-photo-main { cursor: pointer; overflow: hidden; }
         .prod-photo-grid.has-small .prod-photo-main { grid-row: 1 / 3; }
@@ -216,34 +263,29 @@ const ProducerDetailPage: React.FC = () => {
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'calc(84px + 2rem) clamp(1rem, 3vw, 2rem) 80px', boxSizing: 'border-box' }}>
 
-        {/* Bouton retour */}
         <button
           type="button"
           onClick={() => router.push('/partenaires')}
-          style={{ marginBottom: 28, background: 'none', border: 'none', color: '#9ca3af', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'inherit', padding: 0 }}
+          style={{
+            marginBottom: 20,
+            background: 'none',
+            border: 'none',
+            color: 'rgba(12,29,34,0.40)',
+            fontSize: 11,
+            fontWeight: 600,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            fontFamily: 'inherit',
+            padding: 0,
+            letterSpacing: '-0.02em',
+          }}
         >
           ← Tous les producteurs
         </button>
 
-        {/* En-tête producteur */}
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-            <span style={{ background: '#f78d00', color: '#fff', fontSize: 10, fontWeight: 700, padding: '4px 12px', borderRadius: 20, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-              {producer.type}
-            </span>
-            {producer.heroBadge && (
-              <span style={{ background: 'rgba(11, 44, 52,0.07)', color: '#0b2c34', fontSize: 10, fontWeight: 600, padding: '4px 12px', borderRadius: 20, border: '1px solid rgba(11, 44, 52,0.1)' }}>
-                {producer.heroBadge}
-              </span>
-            )}
-          </div>
-          <h1 style={{ color: '#0b2c34', fontSize: isMobile ? 26 : 40, fontWeight: 700, fontStyle: 'italic', margin: '0 0 10px', lineHeight: 1.15 }}>
-            {producer.name}
-          </h1>
-          <p style={{ color: '#9ca3af', fontSize: 13, margin: 0 }}>📍 {producer.location} · par {producer.owner}</p>
-        </div>
-
-        {/* Grille de photos style Airbnb */}
+        {/* Grille photos d’abord (comme fiche offre) */}
         <div className={`prod-photo-grid ${hasSmall ? 'has-small' : 'no-small'}`}>
           <div onClick={() => setActiveImg(0)} className="prod-photo-main">
             <img
@@ -269,10 +311,50 @@ const ProducerDetailPage: React.FC = () => {
               />
             </div>
           ))}
+          {producer.bestseller && (
+            <div
+              style={{
+                position: 'absolute',
+                top: 14,
+                right: 14,
+                background: 'rgba(255, 255, 255, 0.42)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                borderRadius: 9999,
+                padding: '5px 12px',
+                fontSize: 10,
+                fontWeight: 700,
+                color: '#fff',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                pointerEvents: 'none',
+                zIndex: 2,
+              }}
+            >
+              Populaire
+            </div>
+          )}
           {allImages.length > 1 && (
             <button
               onClick={() => setActiveImg(0)}
-              style={{ position: 'absolute', bottom: 14, right: 14, background: '#fff', border: '1.5px solid rgba(0,0,0,0.15)', borderRadius: 9999, padding: '8px 16px', fontSize: 12, fontWeight: 700, color: '#0b2c34', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 10px rgba(0,0,0,0.1)', fontFamily: 'inherit' }}
+              style={{
+                position: 'absolute',
+                bottom: 14,
+                right: 14,
+                background: '#fff',
+                border: '1.5px solid rgba(12,29,34,0.12)',
+                borderRadius: 9999,
+                padding: '8px 16px',
+                fontSize: 12,
+                fontWeight: 700,
+                color: HOME_COLORS.primary,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                boxShadow: '0 2px 10px rgba(12,29,34,0.08)',
+                fontFamily: 'inherit',
+              }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
@@ -282,131 +364,317 @@ const ProducerDetailPage: React.FC = () => {
           )}
         </div>
 
+        {/* Intro sous photos */}
+        <header style={{ marginBottom: 32 }}>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.14em',
+              color: HOME_COLORS.orange,
+              marginBottom: 8,
+            }}
+          >
+            {producer.type}
+          </div>
+          <h1
+            style={{
+              color: HOME_COLORS.primary,
+              fontSize: isMobile ? 28 : 40,
+              fontWeight: 700,
+              fontStyle: 'normal',
+              fontFamily: "'Poppins', sans-serif",
+              letterSpacing: '-0.075em',
+              margin: '0 0 10px',
+              lineHeight: 1.08,
+            }}
+          >
+            {producer.name}
+          </h1>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              flexWrap: 'wrap',
+              fontSize: 13,
+              fontWeight: 500,
+              color: 'rgba(12,29,34,0.55)',
+            }}
+          >
+            {producer.owner && <span style={{ fontWeight: 700, color: HOME_COLORS.primary }}>{producer.owner}</span>}
+            {producer.owner && producer.location && (
+              <span aria-hidden style={{ color: 'rgba(12,29,34,0.25)' }}>·</span>
+            )}
+            {producer.location && <span>{producer.location}</span>}
+          </div>
+        </header>
+
         {/* Contenu principal */}
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 440px', gap: isMobile ? 24 : 48, alignItems: 'start' }}>
 
           {/* COLONNE GAUCHE */}
           <div>
-
-            {/* À propos */}
-            <section style={{ marginBottom: 40 }}>
-              <h2 style={{ fontSize: 22, fontWeight: 700, color: '#0b2c34', fontStyle: 'italic', marginBottom: 14 }}>À propos</h2>
-              <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.8, marginBottom: 16 }}>{producer.description}</p>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {producer.tags.map((tag) => (
-                  <span key={tag} style={{ background: 'rgba(247,141,0,0.10)', color: '#f78d00', fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 20 }}>{tag}</span>
-                ))}
-              </div>
+            <section style={{ marginBottom: 28 }}>
+              <h2
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  letterSpacing: '-0.04em',
+                  color: HOME_COLORS.primary,
+                  margin: '0 0 12px',
+                }}
+              >
+                À propos
+              </h2>
+              <p style={{ fontSize: 14, color: 'rgba(12,29,34,0.65)', lineHeight: 1.7, marginBottom: 14 }}>
+                {producer.description}
+              </p>
+              {producer.tags.length > 0 && (
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {producer.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      style={{
+                        background: 'rgba(12,29,34,0.06)',
+                        color: 'rgba(12,29,34,0.60)',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        padding: '5px 10px',
+                        borderRadius: 9999,
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </section>
 
-            {/* Expériences proposées */}
-            <SectionAccordion title="Expériences proposées">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {producer.experiences.map((exp) => (
-                  <div key={exp.id} style={{ background: '#fff', borderRadius: 16, padding: '18px 20px', border: '1px solid #f0ebe4', display: 'flex', alignItems: 'flex-start', gap: 14 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 10, background: '#f5f0ea', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>{exp.icon}</div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 4 }}>
-                        <h3 style={{ fontSize: 12, fontFamily: 'poppins', fontWeight: 600, color: '#0b2c34', margin: 0 }}>{exp.title}</h3>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: '#f78d00' }}>{exp.price}</span>
+            {producer.experiences.length > 0 && (
+              <SectionAccordion title="Expériences proposées" defaultExpanded={false}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {producer.experiences.map((exp) => (
+                    <div
+                      key={exp.id}
+                      style={{
+                        background: '#fff',
+                        borderRadius: 12,
+                        padding: '14px 16px',
+                        border: '1px solid rgba(12,29,34,0.10)',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: 12,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: 10,
+                          background: HOME_COLORS.gray,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: 16,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {exp.icon}
                       </div>
-                      <p style={{ fontSize: 11, color: '#9ca3af', margin: '3px 0 5px' }}>{exp.duration}</p>
-                      <p style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.6, margin: 0 }}>{exp.desc}</p>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 4 }}>
+                          <h3 style={{ fontSize: 13, fontWeight: 700, color: HOME_COLORS.primary, margin: 0, letterSpacing: '-0.03em' }}>
+                            {exp.title}
+                          </h3>
+                          {exp.price && (
+                            <span style={{ fontSize: 12, fontWeight: 700, color: HOME_COLORS.orange }}>{exp.price}</span>
+                          )}
+                        </div>
+                        {exp.duration && (
+                          <p style={{ fontSize: 11, color: 'rgba(12,29,34,0.45)', margin: '3px 0 5px' }}>{exp.duration}</p>
+                        )}
+                        {exp.desc && (
+                          <p style={{ fontSize: 12.5, color: 'rgba(12,29,34,0.60)', lineHeight: 1.55, margin: 0 }}>{exp.desc}</p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </SectionAccordion>
-
+                  ))}
+                </div>
+              </SectionAccordion>
+            )}
           </div>
 
-          {/* COLONNE DROITE — encart séminaire sticky */}
+          {/* COLONNE DROITE — sticky devis */}
           <div style={{ position: isMobile ? 'static' : 'sticky', top: 96, alignSelf: 'start' }}>
             {matchingSeminaire && semFmt ? (
-              <div style={{ background: '#fff', borderRadius: 20, border: '1px solid rgba(11, 44, 52,0.1)', boxShadow: '0 4px 28px rgba(11, 44, 52,0.09)', overflow: 'hidden' }}>
-
-                {/* En-tête */}
-                <div style={{ padding: '20px 24px 0' }}>
-                  <div style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#9ca3af', marginBottom: 6 }}>Votre séminaire</div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: '#0b2c34', lineHeight: 1.2, marginBottom: 4, fontFamily: "'Poppins', sans-serif" }}>
-                    {semFmt.titre}
+              <div
+                style={{
+                  background: HOME_COLORS.gray,
+                  borderRadius: HOME_RADIUS,
+                  border: '1px solid rgba(12,29,34,0.08)',
+                  overflow: 'hidden',
+                  padding: '28px 24px',
+                  minHeight: 420,
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <div style={{ marginBottom: 20 }}>
+                  <div
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.16em',
+                      color: HOME_COLORS.orange,
+                      marginBottom: 10,
+                    }}
+                  >
+                    Tarif sur demande
                   </div>
-                  <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 16 }}>{producer.owner}</div>
+                  <div
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 700,
+                      letterSpacing: '-0.04em',
+                      color: HOME_COLORS.primary,
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    Devis personnalisé
+                  </div>
+                  <img
+                    src={`${HOME_ASSETS}/emoji/picto-devis.png`}
+                    alt=""
+                    aria-hidden
+                    style={{ display: 'block', width: 140, height: 'auto', margin: '20px auto 0' }}
+                  />
+                </div>
 
-                  {/* Format tabs */}
-                  {Object.keys(matchingSeminaire.formats).length > 1 && (
-                    <div style={{ display: 'flex', gap: 0, background: 'rgba(11, 44, 52,0.05)', borderRadius: 9999, padding: '5px', marginBottom: 16 }}>
-                      {FORMATS_ORDER.filter(fKey => fKey in matchingSeminaire.formats).map(fKey => {
-                        const active = activeSemFormat === fKey;
+                {Object.keys(matchingSeminaire.formats).length > 1 && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: 3,
+                      background: 'rgba(12,29,34,0.06)',
+                      borderRadius: 9999,
+                      padding: 3,
+                      marginBottom: 16,
+                    }}
+                  >
+                    {FORMATS_ORDER.filter(fKey => fKey in matchingSeminaire.formats).map(fKey => {
+                      const active = activeSemFormat === fKey;
+                      return (
+                        <button
+                          key={fKey}
+                          type="button"
+                          onClick={() => setActiveSemFormat(fKey)}
+                          style={{
+                            flex: 1,
+                            padding: '8px 10px',
+                            borderRadius: 9999,
+                            border: 'none',
+                            fontFamily: 'inherit',
+                            fontSize: 11,
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            background: active ? '#fff' : 'transparent',
+                            color: active ? HOME_COLORS.primary : 'rgba(12,29,34,0.45)',
+                            boxShadow: active ? '0 1px 4px rgba(12,29,34,0.10)' : 'none',
+                            transition: 'all 0.18s ease',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {FORMATS_LABELS[fKey] ?? fKey}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <div style={{ fontSize: 14, fontWeight: 700, color: HOME_COLORS.primary, marginBottom: 4, letterSpacing: '-0.03em' }}>
+                  {semFmt.titre}
+                </div>
+                <div style={{ fontSize: 12, color: 'rgba(12,29,34,0.50)', marginBottom: 14, lineHeight: 1.45 }}>
+                  {semFmt.sous_titre}
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'rgba(12,29,34,0.55)' }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {semFmt.duree}
+                  </span>
+                  <span style={{ color: 'rgba(12,29,34,0.25)', fontSize: 12 }}>·</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'rgba(12,29,34,0.55)' }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    {semFmt.participants}
+                  </span>
+                </div>
+
+                {semFmt.inclus.length > 0 && (
+                  <div style={{ marginBottom: 18 }}>
+                    <div
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.12em',
+                        color: 'rgba(12,29,34,0.40)',
+                        marginBottom: 10,
+                      }}
+                    >
+                      Inclus dans l&apos;offre
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 12px' }}>
+                      {semFmt.inclus.map(key => {
+                        const amenity = AMENITY_LABELS[key];
+                        if (!amenity) return null;
                         return (
-                          <button key={fKey} onClick={() => setActiveSemFormat(fKey)}
-                            style={{ flex: 1, padding: '9px 12px', borderRadius: 9999, border: 'none', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', cursor: 'pointer', textTransform: 'uppercase' as const, background: active ? '#fff' : 'transparent', color: active ? '#0b2c34' : '#9ca3af', boxShadow: active ? '0 1px 4px rgba(11, 44, 52,0.10)' : 'none', transition: 'all 0.18s ease', whiteSpace: 'nowrap' as const, textAlign: 'center' as const }}>
-                            {FORMATS_LABELS[fKey] ?? fKey}
-                          </button>
+                          <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                            <span style={{ fontSize: 14 }}>{amenity.emoji}</span>
+                            <span style={{ fontSize: 12, color: 'rgba(12,29,34,0.70)', fontWeight: 500 }}>{amenity.label}</span>
+                          </div>
                         );
                       })}
                     </div>
-                  )}
-                </div>
-
-                <div style={{ padding: '0 24px 24px' }}>
-
-                  {/* Titre format */}
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0b2c34', marginBottom: 2 }}>{semFmt.titre}</div>
-                  <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 16 }}>{semFmt.sous_titre}</div>
-
-                  {/* Durée + participants */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#7a7060' }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                      {semFmt.duree}
-                    </span>
-                    <span style={{ color: '#c9c0b6', fontSize: 12 }}>·</span>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#7a7060' }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                      {semFmt.participants}
-                    </span>
                   </div>
+                )}
 
-                  {/* Inclus */}
-                  {semFmt.inclus.length > 0 && (
-                    <div style={{ marginBottom: 16 }}>
-                      <div style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', color: '#b0a89e', marginBottom: 10 }}>Inclus dans l&apos;offre</div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 12px' }}>
-                        {semFmt.inclus.map(key => {
-                          const amenity = AMENITY_LABELS[key];
-                          if (!amenity) return null;
-                          return (
-                            <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                              <span style={{ fontSize: 14 }}>{amenity.emoji}</span>
-                              <span style={{ fontSize: 12, color: '#374151', fontWeight: 500 }}>{amenity.label}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Séparateur */}
-                  <div style={{ borderTop: '1px solid rgba(11, 44, 52,0.08)', margin: '16px 0' }} />
-
-                  {/* Tarif — identique pour chaque format (1j / 2j / sur mesure) */}
-                  <div style={{ marginBottom: 16 }}>
-                    <div style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#b0a89e', marginBottom: 4 }}>Tarif sur demande</div>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: '#0b2c34' }}>Devis personnalisé</div>
+                <div style={{ marginTop: 'auto' }}>
+                  <div style={{ fontSize: 13, color: 'rgba(12,29,34,0.50)', lineHeight: 1.45, marginBottom: 14 }}>
+                    Devis gratuit · Réponse 48h
                   </div>
-
-                  {/* CTA */}
                   <a
-                    href={`/seminaires-entreprise/offres/${matchingSeminaire.slug}`}
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, width: '100%', background: '#0b2c34', color: '#fff', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', padding: '14px', borderRadius: 9999, textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'none', boxSizing: 'border-box' as const, transition: 'background 0.2s' }}
-                    onMouseEnter={e => (e.currentTarget.style.background = '#f78d00')}
-                    onMouseLeave={e => (e.currentTarget.style.background = '#0b2c34')}
+                    href={`/seminaire-exemples/${matchingSeminaire.slug}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                      width: '100%',
+                      background: HOME_COLORS.primary,
+                      color: '#fff',
+                      fontSize: 11,
+                      fontWeight: 700,
+                      letterSpacing: '0.08em',
+                      padding: '14px',
+                      borderRadius: 9999,
+                      textTransform: 'uppercase',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                      textDecoration: 'none',
+                      boxSizing: 'border-box',
+                      transition: 'background 0.2s',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = HOME_COLORS.orange)}
+                    onMouseLeave={e => (e.currentTarget.style.background = HOME_COLORS.primary)}
                   >
                     Voir l&apos;offre complète
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
                   </a>
-                  <div style={{ fontSize: 12, color: '#7a7060', textAlign: 'center', marginTop: 10 }}>Devis gratuit · Réponse 48h</div>
                 </div>
               </div>
             ) : null}
@@ -506,7 +774,7 @@ const ProducerDetailPage: React.FC = () => {
                   disabled={contactSubmitting}
                   onMouseOver={e => (e.currentTarget.style.background = '#f78d00')}
                   onMouseOut={e => (e.currentTarget.style.background = '#0b2c34')}
-                  style={{ width: '100%', background: '#081f26', color: '#fff', border: 'none', borderRadius: 12, padding: '13px', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: contactSubmitting ? 'default' : 'pointer', fontFamily: 'inherit', marginTop: 8, transition: 'background 0.2s', opacity: contactSubmitting ? 0.8 : 1 }}
+                  style={{ width: '100%', background: '#081f26', color: '#fff', border: 'none', borderRadius: 9999, padding: '13px', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: contactSubmitting ? 'default' : 'pointer', fontFamily: 'inherit', marginTop: 8, transition: 'background 0.2s', opacity: contactSubmitting ? 0.8 : 1 }}
                 >
                   {contactSubmitting ? 'Envoi en cours...' : 'Envoyer ma demande'}
                 </button>

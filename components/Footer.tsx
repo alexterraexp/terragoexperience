@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useModal } from '../context/ModalContext';
 import { HOME_COLORS } from './home/homeStyles';
 
 /** Padding interne du contenu footer : sert aussi d'alignement à la barre légale du bas. */
@@ -31,8 +32,8 @@ const NAV_GROUPS = [
     links: [
       { to: '/seminaires-entreprise', label: 'Nos séminaires' },
       { to: '/experiences-entreprise', label: 'Expériences entreprise' },
+      { to: '/experiences-privees', label: 'Expériences privées' },
       { to: '/partenaires', label: 'Nos destinations' },
-      { to: '/experiences', label: 'Nos expériences' },
     ],
   },
   {
@@ -46,7 +47,7 @@ const NAV_GROUPS = [
   {
     title: 'Communauté',
     links: [
-      { to: '/partenaires', label: 'Nos producteurs' },
+      { to: '/partenaires', label: 'Nos producteurs partenaires' },
       { to: '/blog', label: 'Le Journal TerraGo' },
     ],
   },
@@ -103,6 +104,7 @@ const hoverReset = (e: React.MouseEvent<HTMLElement>) => {
 };
 
 const Footer: React.FC = () => {
+  const { openRecommanderModal } = useModal();
   const openCookies = () => {
     window.dispatchEvent(new CustomEvent('openCookieBanner'));
   };
@@ -239,13 +241,17 @@ const Footer: React.FC = () => {
                 />
               </form>
 
-              <Link
-                href="/recommander-un-producteur"
-                className="mt-6 inline-flex items-center gap-3 px-8 py-3.5 text-sm font-bold text-white transition-colors"
+              <button
+                type="button"
+                onClick={openRecommanderModal}
+                className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white transition-colors sm:gap-3 sm:px-8 sm:py-3.5 sm:text-sm"
                 style={{
                   border: '1.5px solid rgba(255,255,255,0.9)',
                   borderRadius: 9999,
                   letterSpacing: '-0.05em',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = HOME_COLORS.orange;
@@ -260,7 +266,7 @@ const Footer: React.FC = () => {
                   <path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 Recommander un producteur
-              </Link>
+              </button>
 
               <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <p className="m-0 text-white" style={{ fontSize: 'clamp(18px, 1.5vw, 22px)', letterSpacing: '-0.05em' }}>

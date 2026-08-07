@@ -3,6 +3,11 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { supabaseServer as supabase } from '../../../lib/supabase';
+import {
+  HOME_COLORS,
+  HOME_RADIUS,
+  homeSectionPadding,
+} from '../../../components/home/homeStyles';
 import TableOfContents from './TableOfContents';
 
 /** Régénère l’article depuis Supabase au plus toutes les 60 s (ISR). */
@@ -46,15 +51,17 @@ function slugify(str: string): string {
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return '';
   return new Date(dateStr).toLocaleDateString('fr-FR', {
-    day: 'numeric', month: 'long', year: 'numeric',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   });
 }
 
 function extractH2Headings(markdown: string): { text: string; id: string }[] {
   return markdown
     .split('\n')
-    .filter(line => /^## /.test(line))
-    .map(line => {
+    .filter((line) => /^## /.test(line))
+    .map((line) => {
       const text = line.replace(/^## /, '').trim();
       return { text, id: slugify(text) };
     });
@@ -62,9 +69,11 @@ function extractH2Headings(markdown: string): { text: string; id: string }[] {
 
 // ── generateMetadata ───────────────────────────────────────────────────────────
 
-export async function generateMetadata(
-  { params }: { params: Promise<{ slug: string }> },
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   const { data } = await supabase
     .from('blog_posts')
@@ -87,64 +96,31 @@ export async function generateMetadata(
   };
 }
 
-// ── Page d'erreur custom ───────────────────────────────────────────────────────
+// ── Page d'erreur ──────────────────────────────────────────────────────────────
 
 function NotFoundPage() {
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#faf8f5',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontFamily: "'Poppins', sans-serif",
-      padding: '2rem',
-    }}>
-      <style>{`
-        @keyframes sway {
-          0%, 100% { transform: rotate(-5deg); }
-          50% { transform: rotate(5deg); }
-        }
-      `}</style>
-      <div style={{ textAlign: 'center', maxWidth: 480 }}>
-        <div style={{
-          fontSize: 120, lineHeight: 1, marginBottom: '1.5rem',
-          display: 'inline-block',
-          animation: 'sway 2s infinite ease-in-out',
-        }}>
-          🌾
-        </div>
-        <h1 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontStyle: 'italic', fontWeight: 600,
-          fontSize: 'clamp(1.5rem, 4vw, 2rem)',
-          color: '#0b2c34', lineHeight: 1.3, margin: '0 0 1rem',
-        }}>
-          Ooooh, cet article semble avoir disparu dans les sillons...
+    <div className="flex min-h-screen items-center justify-center bg-white px-5 font-sans">
+      <div className="max-w-md text-center">
+        <h1 className="font-sans text-[34px] font-normal leading-[1.1] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px]">
+          Cet article semble avoir <span className="font-bold">disparu.</span>
         </h1>
-        <p style={{
-          color: '#9a9080', fontSize: 15, lineHeight: 1.65, margin: '0 0 2rem',
-        }}>
+        <p className="mt-4 font-sans text-[15px] leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/55">
           Pas de panique — le terroir vous attend de l&apos;autre côté.
         </p>
-        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/blog" style={{
-            display: 'inline-block', padding: '13px 28px', borderRadius: 9999,
-            background: '#0b2c34', color: '#fff',
-            fontFamily: "'Poppins', sans-serif", fontSize: 12, fontWeight: 700,
-            letterSpacing: '0.08em', textTransform: 'uppercase' as const,
-            textDecoration: 'none',
-          }}>
-            ← Retourner au blog
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            href="/blog"
+            className="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90"
+            style={{ background: HOME_COLORS.primary }}
+          >
+            ← Retour au journal
           </Link>
-          <Link href="/seminaires-entreprise" style={{
-            display: 'inline-block', padding: '13px 28px',
-            color: '#e67e22',
-            fontFamily: "'Poppins', sans-serif", fontSize: 11, fontWeight: 700,
-            letterSpacing: '0.15em', textTransform: 'uppercase' as const,
-            textDecoration: 'none',
-          }}>
-            Voir nos séminaires →
+          <Link
+            href="/seminaire-exemples"
+            className="inline-flex items-center justify-center rounded-full border border-[#0c1d22] px-6 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white"
+          >
+            Voir nos séminaires
           </Link>
         </div>
       </div>
@@ -162,82 +138,68 @@ function MarkdownRenderer({ content }: { content: string }) {
         h2: ({ children }) => (
           <h2
             id={slugify(String(children))}
-            style={{
-              fontFamily: "'Poppins', sans-serif", fontWeight: 700,
-              fontSize: '1.6rem', color: '#0b2c34',
-              borderBottom: '1px solid rgba(11, 44, 52,0.08)',
-              paddingBottom: '0.5rem',
-              marginTop: '3rem', marginBottom: '1rem', lineHeight: 1.3,
-            }}
+            className="mb-3 mt-10 border-b border-[#0c1d22]/08 pb-2.5 font-sans text-[20px] font-bold leading-[1.25] tracking-[-0.04em] text-[#0c1d22] sm:text-[22px]"
           >
             {children}
           </h2>
         ),
         h3: ({ children }) => (
-          <h3 style={{
-            fontFamily: "'Poppins', sans-serif", fontWeight: 700,
-            fontSize: '1.2rem', color: '#0b2c34',
-            marginTop: '2rem', marginBottom: '0.75rem', lineHeight: 1.35,
-          }}>
+          <h3 className="mb-2.5 mt-7 font-sans text-[16px] font-bold leading-[1.3] tracking-[-0.03em] text-[#0c1d22] sm:text-[17px]">
             {children}
           </h3>
         ),
         p: ({ children }) => (
-          <p style={{ fontSize: 16, lineHeight: 1.85, color: '#374151', margin: '0 0 1.2rem' }}>
+          <p className="mb-4 font-sans text-[15px] font-normal leading-[1.8] tracking-[-0.02em] text-[#0c1d22]/75 sm:text-[16px]">
             {children}
           </p>
         ),
         strong: ({ children }) => (
-          <strong style={{ color: '#0b2c34' }}>{children}</strong>
+          <strong className="font-bold text-[#0c1d22]">{children}</strong>
         ),
         a: ({ href, children }) => (
-          <a href={href} style={{ color: '#e67e22', textDecoration: 'underline' }}>
+          <a
+            href={href}
+            className="underline decoration-[#ec6435]/40 underline-offset-2 transition-colors hover:text-[#ec6435]"
+            style={{ color: HOME_COLORS.orange }}
+          >
             {children}
           </a>
         ),
         ul: ({ children }) => (
-          <ul style={{ paddingLeft: '1.5rem', marginBottom: '1.2rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <ul className="mb-4 flex list-disc flex-col gap-1.5 pl-5 font-sans text-[15px] leading-[1.75] text-[#0c1d22]/75 sm:text-[16px]">
             {children}
           </ul>
         ),
         ol: ({ children }) => (
-          <ol style={{ paddingLeft: '1.5rem', marginBottom: '1.2rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <ol className="mb-4 flex list-decimal flex-col gap-1.5 pl-5 font-sans text-[15px] leading-[1.75] text-[#0c1d22]/75 sm:text-[16px]">
             {children}
           </ol>
         ),
+        li: ({ children }) => <li className="pl-1">{children}</li>,
         blockquote: ({ children }) => (
-          <blockquote style={{
-            borderLeft: '4px solid #e67e22',
-            padding: '1rem 1.5rem',
-            background: '#faf8f5',
-            fontStyle: 'italic',
-            color: '#7a7060',
-            margin: '1.5rem 0',
-            borderRadius: '0 8px 8px 0',
-          }}>
+          <blockquote
+            className="my-6 rounded-r-[16px] border-l-4 py-3.5 pl-5 pr-4 font-sans text-[14px] italic leading-[1.7] tracking-[-0.02em] text-[#0c1d22]/65 sm:text-[15px]"
+            style={{
+              borderColor: HOME_COLORS.orange,
+              background: HOME_COLORS.gray,
+            }}
+          >
             {children}
           </blockquote>
         ),
         img: ({ src, alt }) => (
-          <span style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', margin: '1.5rem 0', display: 'block' }}>
+          <span
+            className="relative my-8 block overflow-hidden"
+            style={{ borderRadius: HOME_RADIUS }}
+          >
             <img
               src={src ?? ''}
               alt={alt ?? ''}
-              style={{ width: '100%', display: 'block', borderRadius: 16 }}
+              className="block w-full"
+              style={{ borderRadius: HOME_RADIUS }}
             />
             {alt && (
-              <span style={{
-                position: 'absolute', bottom: 10, right: 12,
-                background: 'rgba(255,255,255,0.75)',
-                backdropFilter: 'blur(6px)',
-                borderRadius: 9999,
-                padding: '4px 12px',
-                fontSize: 10,
-                fontWeight: 600,
-                color: '#0b2c34',
-                letterSpacing: '0.06em',
-                display: 'block',
-              }}>
+              <span className="absolute bottom-3 right-3 block rounded-full bg-white/80 px-3 py-1 text-[10px] font-semibold tracking-[0.06em] text-[#0c1d22] backdrop-blur-md">
                 © {alt}
               </span>
             )}
@@ -252,11 +214,17 @@ function MarkdownRenderer({ content }: { content: string }) {
 
 // ── Page ───────────────────────────────────────────────────────────────────────
 
-const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+const DEFAULT_COVER =
+  'https://images.unsplash.com/photo-1759833116929-6d06bf8ee16a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
-export default async function BlogArticlePage(
-  { params }: { params: Promise<{ slug: string }> },
-) {
+const CTA_IMAGE =
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/potager-chateau-menthon.webp';
+
+export default async function BlogArticlePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
 
   const { data: post } = await supabase
@@ -270,41 +238,34 @@ export default async function BlogArticlePage(
   }
 
   const headings = post.content ? extractH2Headings(post.content) : [];
+  const cover = post.cover_url ?? DEFAULT_COVER;
 
   return (
-    <div style={{ fontFamily: "'Poppins', sans-serif", background: '#faf8f5', color: '#0b2c34', minHeight: '100vh' }}>
-
-      {/* Responsive helpers */}
+    <div className="min-h-screen overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
       <style>{`
-        .article-grid {
+        .article-layout {
           display: grid;
-          grid-template-columns: 240px 1fr 280px;
-          gap: 3rem;
+          grid-template-columns: 220px minmax(0, 1fr);
+          gap: clamp(2.5rem, 4vw, 4rem);
           align-items: start;
         }
-        .col-left { display: block; }
-        .col-right { display: block; }
-        @media (max-width: 1024px) {
-          .article-grid {
-            grid-template-columns: 1fr 280px;
-          }
-          .col-left { display: none; }
-        }
-        @media (max-width: 767px) {
-          .article-grid {
+        @media (max-width: 1023px) {
+          .article-layout {
             grid-template-columns: 1fr;
           }
-          .col-right { order: 3; }
+          .article-toc {
+            display: none;
+          }
         }
         .blog-hero-back {
           display: inline-flex;
           align-items: center;
           gap: 0.4em;
-          background: rgba(0,0,0,0.55);
+          background: rgba(12, 29, 34, 0.45);
           backdrop-filter: blur(8px);
           -webkit-backdrop-filter: blur(8px);
           border-radius: 9999px;
-          padding: 5px 14px;
+          padding: 6px 14px;
           font-family: 'Poppins', sans-serif;
           font-size: 10px;
           font-weight: 700;
@@ -312,7 +273,6 @@ export default async function BlogArticlePage(
           letter-spacing: 0.12em;
           text-transform: uppercase;
           text-decoration: none;
-          flex-shrink: 0;
           border: 1px solid rgba(255,255,255,0.12);
           transition: background 0.2s ease, border-color 0.2s ease;
         }
@@ -323,146 +283,125 @@ export default async function BlogArticlePage(
       `}</style>
 
       {/* ── HERO ── */}
-      <div style={{
-        position: 'relative', height: '55vh', minHeight: 360,
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: `url('${post.cover_url ?? 'https://images.unsplash.com/photo-1759833116929-6d06bf8ee16a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}')`,
-          backgroundSize: 'cover', backgroundPosition: 'center',
-        }} />
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.75) 100%)',
-        }} />
+      <section className="relative flex min-h-[420px] h-[58vh] w-full items-end overflow-hidden sm:h-[62vh]">
+        <img
+          src={cover}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.72) 100%)',
+          }}
+        />
 
-        {/* Title */}
-        <div style={{
-          position: 'absolute', inset: 0, zIndex: 2,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: '0 clamp(1.5rem, 8vw, 8rem)', textAlign: 'center',
-        }}>
-          <h1 style={{
-            fontFamily: "'Poppins', sans-serif", fontWeight: 700,
-            fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)',
-            color: '#fff', lineHeight: 1.25, margin: 0,
-            textShadow: '0 2px 16px rgba(0,0,0,0.4)',
-          }}>
-            {post.title}
-          </h1>
-        </div>
-
-        {/* Badge + retour (pilule alignée sur les badges du blog) */}
-        <div style={{
-          position: 'absolute', bottom: 24, left: 'clamp(1.5rem, 4vw, 3rem)', zIndex: 3,
-          display: 'flex', flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 12,
-        }}>
-          {/* Badge */}
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)',
-            borderRadius: 9999, padding: '5px 14px',
-            fontSize: 10, fontWeight: 700, color: '#fff',
-            letterSpacing: '0.12em', textTransform: 'uppercase' as const,
-            flexShrink: 0,
-          }}>
-            <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#e67e22', display: 'inline-block' }} />
-            {post.category?.toUpperCase() ?? 'SÉMINAIRES'}&nbsp;·&nbsp;{post.reading_time ?? '7 MIN'}
+        <div className="relative z-10 mx-auto w-full max-w-[1400px] px-5 pb-10 sm:px-8 sm:pb-14">
+          <div className="mb-5">
+            <Link href="/blog" className="blog-hero-back">
+              <span aria-hidden style={{ fontSize: 11, letterSpacing: 0, opacity: 0.92 }}>
+                ←
+              </span>
+              Retour au journal
+            </Link>
           </div>
 
-          <Link href="/blog" className="blog-hero-back">
-            <span aria-hidden style={{ fontSize: 11, letterSpacing: 0, opacity: 0.92 }}>←</span>
-            Retour au blog
-          </Link>
+          <h1 className="max-w-5xl font-sans text-[clamp(1.75rem,4.2vw,3.25rem)] font-bold leading-[1.08] tracking-[-0.075em] text-white">
+            {post.title}
+          </h1>
+
+          <p className="mt-4 font-sans text-[13px] tracking-[-0.02em] text-white/70 sm:text-[14px]">
+            TerraGo
+            {(post.published_at || post.created_at)
+              ? ` · ${formatDate(post.published_at ?? post.created_at)}`
+              : ''}
+            {` · ${post.category ?? 'Séminaires'}`}
+            {post.reading_time ? ` · ${post.reading_time}` : ''}
+          </p>
         </div>
-      </div>
+      </section>
 
       {/* ── BODY ── */}
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '3rem clamp(1.5rem, 4vw, 3rem) 5rem' }}>
-        <div className="article-grid">
-
-          {/* ── COL GAUCHE ── */}
-          <aside className="col-left" style={{ position: 'sticky', top: 100 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '1.5rem' }}>
-              <img
-                src={DEFAULT_AVATAR}
-                alt="TerraGo"
-                style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(11, 44, 52,0.1)' }}
-              />
-              <div>
-                <div style={{ fontSize: 11, color: '#9a9080', marginBottom: 2 }}>Écrit par</div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#0b2c34' }}>TerraGo</div>
-                <div style={{ fontSize: 11, color: '#9a9080' }}>
-                  {formatDate(post.published_at ?? post.created_at)}
-                </div>
-              </div>
-            </div>
-
-            <div style={{ height: 1, background: 'rgba(11, 44, 52,0.08)', marginBottom: '1.5rem' }} />
-
-            {headings.length > 0 && <TableOfContents headings={headings} />}
+      <div
+        className="mx-auto max-w-[1400px] px-5 sm:px-8"
+        style={{
+          paddingTop: 'clamp(2.5rem, 5vw, 4rem)',
+          paddingBottom: homeSectionPadding,
+        }}
+      >
+        <div className="article-layout">
+          {/* Sommaire */}
+          <aside className="article-toc sticky top-28">
+            <p className="mb-4 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#0c1d22]/40">
+              Dans cet article
+            </p>
+            {headings.length > 0 ? (
+              <TableOfContents headings={headings} />
+            ) : (
+              <p className="font-sans text-[13px] text-[#0c1d22]/40">—</p>
+            )}
           </aside>
 
-          {/* ── COL CENTRE ── */}
-          <main style={{ minWidth: 0, maxWidth: 900 }}>
-            {post.content
-              ? <MarkdownRenderer content={post.content} />
-              : (
-                <p style={{ color: '#9a9080', fontStyle: 'italic', fontSize: 15 }}>
-                  Le contenu de cet article arrive bientôt...
-                </p>
-              )}
+          {/* Lecture large */}
+          <main className="min-w-0 max-w-[1100px]">
+            {post.description && (
+              <p className="mb-8 max-w-4xl font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.03em] text-[#0c1d22]/55 sm:text-[16px]">
+                {post.description}
+              </p>
+            )}
 
-            <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(11, 44, 52,0.08)' }}>
-              <Link href="/blog" style={{
-                fontFamily: "'Poppins', sans-serif",
-                fontSize: 12, textTransform: 'uppercase' as const,
-                letterSpacing: '0.12em', color: '#0b2c34',
-                textDecoration: 'none', fontWeight: 700,
-              }}>
-                ← Retour au blog
+            {post.content ? (
+              <MarkdownRenderer content={post.content} />
+            ) : (
+              <p className="font-sans text-[15px] italic text-[#0c1d22]/45">
+                Le contenu de cet article arrive bientôt...
+              </p>
+            )}
+
+            <div className="mt-14 border-t border-[#0c1d22]/08 pt-8">
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 font-sans text-[11px] font-bold uppercase tracking-[0.12em] text-[#0c1d22] transition-colors hover:text-[#ec6435]"
+              >
+                ← Retour au journal
               </Link>
             </div>
           </main>
-
-          {/* ── COL DROITE ── */}
-          <aside className="col-right" style={{ position: 'sticky', top: 100 }}>
-            <div style={{
-              background: '#fff', borderRadius: 20,
-              border: '1px solid rgba(11, 44, 52,0.08)', overflow: 'hidden',
-            }}>
-              <img
-                src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/potager-chateau-menthon.webp"
-                alt="Terroir"
-                style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }}
-              />
-              <div style={{ padding: 24 }}>
-                <h3 style={{
-                  fontFamily: "'Poppins', sans-serif", fontWeight: 700,
-                  color: '#0b2c34', fontSize: '1rem', lineHeight: 1.4, margin: '0 0 10px',
-                }}>
-                  Organisez votre séminaire au vert
-                </h3>
-                <p style={{ fontSize: 13, color: '#9a9080', lineHeight: 1.65, margin: '0 0 20px' }}>
-                  De la sélection du producteur à la logistique — on s&apos;occupe de tout.
-                </p>
-                <Link href="/seminaires-entreprise/offres" style={{
-                  display: 'block', padding: '13px 0', borderRadius: 12,
-                  background: '#0b2c34', color: '#fff',
-                  fontFamily: "'Poppins', sans-serif", fontSize: 12, fontWeight: 700,
-                  letterSpacing: '0.08em', textTransform: 'uppercase' as const,
-                  textAlign: 'center' as const, textDecoration: 'none',
-                }}>
-                  Découvrir nos offres →
-                </Link>
-              </div>
-            </div>
-          </aside>
-
         </div>
       </div>
 
+      {/* ── CTA ── */}
+      <section style={{ paddingBottom: homeSectionPadding, background: '#ffffff' }}>
+        <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
+          <div
+            className="grid overflow-hidden lg:grid-cols-[1.1fr_1fr]"
+            style={{ background: HOME_COLORS.primary, borderRadius: HOME_RADIUS }}
+          >
+            <div className="relative min-h-[220px] lg:min-h-[320px]">
+              <img
+                src={CTA_IMAGE}
+                alt="Séminaire au vert"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+            <div className="flex flex-col justify-center px-7 py-10 sm:px-10 sm:py-12 lg:px-12">
+              <h2 className="font-sans text-[28px] font-normal leading-[1.1] tracking-[-0.075em] text-white sm:text-[34px]">
+                Organisez votre <span className="font-bold">séminaire au vert.</span>
+              </h2>
+              <p className="mt-4 max-w-md font-sans text-[14px] leading-[1.7] tracking-[-0.04em] text-white/60 sm:text-[15px]">
+                De la sélection du producteur à la logistique — on s&apos;occupe de tout.
+              </p>
+              <Link
+                href="/seminaire-exemples"
+                className="mt-8 inline-flex w-fit items-center justify-center rounded-full bg-white px-6 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white"
+              >
+                Découvrir nos offres →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

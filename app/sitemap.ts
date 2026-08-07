@@ -17,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: 'https://terragoexperiences.fr/seminaires-entreprise/offres',
+      url: 'https://terragoexperiences.fr/seminaire-exemples',
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
@@ -29,13 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: 'https://terragoexperiences.fr/entre-amis',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: 'https://terragoexperiences.fr/nous-rejoindre',
+      url: 'https://terragoexperiences.fr/experiences-privees',
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
@@ -75,12 +69,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
-    },
-    {
-      url: 'https://terragoexperiences.fr/recommander-un-producteur',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
     },
   ];
 }

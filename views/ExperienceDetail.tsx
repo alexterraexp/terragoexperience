@@ -213,7 +213,7 @@ const ExperienceDetail: React.FC = () => {
                           <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 ml-1">Créneau disponible</label>
                           <div className="flex flex-wrap gap-2">
                              {timeSlots.map((time) => (
-                                <button key={time} onClick={() => setSelectedTime(time)} className={`px-5 py-2.5 rounded-xl text-[11px] font-bold transition-all border ${selectedTime === time ? 'bg-orange text-white border-orange shadow-xl scale-105' : 'bg-white text-gray-400 border-black/5 hover:border-orange/40 hover:text-orange'}`}>
+                                <button key={time} onClick={() => setSelectedTime(time)} className={`px-5 py-2.5 rounded-full text-[11px] font-bold transition-all border ${selectedTime === time ? 'bg-orange text-white border-orange shadow-xl scale-105' : 'bg-white text-gray-400 border-black/5 hover:border-orange/40 hover:text-orange'}`}>
                                    {time}
                                 </button>
                              ))}
@@ -225,12 +225,12 @@ const ExperienceDetail: React.FC = () => {
                     <div className="space-y-4">
                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 block text-center">Nombre de voyageurs</label>
                        <div className="flex items-center justify-between bg-beige-bg/50 border border-black/5 rounded-2xl px-4 py-2">
-                          <button onClick={() => setGuestCount(Math.max(1, guestCount - 1))} className="size-11 rounded-xl bg-white flex items-center justify-center shadow-sm hover:text-orange transition-all font-bold text-xl active:scale-90">-</button>
+                          <button onClick={() => setGuestCount(Math.max(1, guestCount - 1))} className="size-11 rounded-full bg-white flex items-center justify-center shadow-sm hover:text-orange transition-all font-bold text-xl active:scale-90">-</button>
                           <div className="flex flex-col items-center">
                              <span className="text-sm font-bold text-primary">{guestCount}</span>
                              <span className="text-[8px] font-bold uppercase text-gray-300">Places</span>
                           </div>
-                          <button onClick={() => setGuestCount(Math.min(exp.maxGuests, guestCount + 1))} className="size-11 rounded-xl bg-white flex items-center justify-center shadow-sm hover:text-orange transition-all font-bold text-xl active:scale-90">+</button>
+                          <button onClick={() => setGuestCount(Math.min(exp.maxGuests, guestCount + 1))} className="size-11 rounded-full bg-white flex items-center justify-center shadow-sm hover:text-orange transition-all font-bold text-xl active:scale-90">+</button>
                        </div>
                        {/* Réaffichage du nombre de personnes max */}
                        <p className="text-[9px] font-bold text-gray-300 uppercase tracking-widest text-center italic">

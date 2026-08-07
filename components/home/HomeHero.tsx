@@ -66,7 +66,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc }) => {
           <div className="mt-20 flex flex-col items-center gap-3 sm:mt-24 sm:flex-row sm:gap-5">
             <Link
               href="/seminaires-entreprise"
-              className="rounded-full border-2 border-white px-14 py-2 text-sm font-bold tracking-[0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:min-w-[280px] sm:px-16 sm:text-center"
+              className="rounded-full border-2 border-white px-7 py-1.5 text-xs font-bold tracking-[0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:min-w-[280px] sm:px-16 sm:py-2 sm:text-sm sm:text-center"
               style={{ background: 'rgba(12, 29, 34, 0.1)' }}
             >
               Découvrir nos séminaires
@@ -74,7 +74,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc }) => {
             <button
               type="button"
               onClick={openModal}
-              className="rounded-full bg-white px-14 py-2 text-sm font-bold tracking-[0.02em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:min-w-[280px] sm:px-16 sm:text-center"
+              className="rounded-full bg-white px-7 py-1.5 text-xs font-bold tracking-[0.02em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:min-w-[280px] sm:px-16 sm:py-2 sm:text-sm sm:text-center"
             >
               Organiser votre séminaire
             </button>

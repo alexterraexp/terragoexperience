@@ -1,6 +1,12 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { frenchPlaceKindLabel, matchFrenchPlaces } from '../lib/frenchCities';
+import {
+  MiniDateRangeCalendar,
+  SEMINAIRE_PERIODS,
+  fmtDayShort,
+} from './MiniDateRangeCalendar';
 
 const INK = '#0c1d22';
 const ORANGE = '#ec6435';
@@ -9,9 +15,9 @@ const HOME_BUCKET = 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/
 
 /** Un visuel par écran (index = étape − 1), le 5e accompagnant l'écran de remerciement. */
 const STEP_IMAGES = [
-  `${HOME_BUCKET}/fromage-details.jpg`,
+  `${HOME_BUCKET}/1596142332133-327e2a0ff006.avif`,
   `${HOME_BUCKET}/paysage-huitres.png`,
-  `${HOME_BUCKET}/olives-recoltes.JPG`,
+  `${HOME_BUCKET}/EXPERIENCES IMG/1749544292533-65b0ec299191.avif`,
   `${HOME_BUCKET}/fontaine.png`,
   `${HOME_BUCKET}/champ-ble.avif`,
 ];
@@ -26,119 +32,17 @@ const EVENT_TYPES = [
   'Autre',
 ];
 
-const PERIODS = ['Janvier – Avril', 'Mai – Juillet', 'Août – Octobre', 'Novembre – Décembre'];
+const PERIODS = SEMINAIRE_PERIODS;
 
-const BUDGET_MIN = 5_000;
+const BUDGET_MIN = 2_000;
 const BUDGET_MAX = 100_000;
 const BUDGET_STEP = 500;
 const BUDGET_DEFAULT = 21_500;
 
-const MONTHS_FR = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-const DAYS_FR = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
-
 const eur = (n: number) => `${new Intl.NumberFormat('fr-FR').format(n)} €`;
 
-/** Format local : `toISOString()` décalerait d'un jour en fuseau FR. */
-const toKey = (d: Date) =>
-  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
-const fmtDay = (key: string) =>
-  new Date(`${key}T00:00:00`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-
+const fmtDay = fmtDayShort;
 const fmtFull = (key: string) => new Date(`${key}T00:00:00`).toLocaleDateString('fr-FR');
-
-// ─── Calendrier compact ───────────────────────────────────────────────────────
-
-const MiniCalendar: React.FC<{
-  start: string;
-  end: string;
-  onStart: (d: string) => void;
-  onEnd: (d: string) => void;
-}> = ({ start, end, onStart, onEnd }) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const [viewYear, setViewYear] = useState(today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(today.getMonth());
-  const [hovered, setHovered] = useState<string | null>(null);
-
-  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
-  const offset = firstDay === 0 ? 6 : firstDay - 1;
-  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-
-  const cells: (Date | null)[] = [];
-  for (let i = 0; i < offset; i++) cells.push(null);
-  for (let i = 1; i <= daysInMonth; i++) cells.push(new Date(viewYear, viewMonth, i));
-
-  const shiftMonth = (dir: -1 | 1) => {
-    const next = new Date(viewYear, viewMonth + dir, 1);
-    setViewYear(next.getFullYear());
-    setViewMonth(next.getMonth());
-  };
-
-  const pick = (key: string) => {
-    if (!start || (start && end) || key < start) {
-      onStart(key);
-      onEnd('');
-    } else {
-      onEnd(key);
-    }
-  };
-
-  const rangeEnd = end || (start && hovered && hovered > start ? hovered : '');
-
-  return (
-    <div style={{ marginTop: 10, border: '1px solid rgba(12,29,34,0.10)', borderRadius: 12, padding: '10px 12px 12px', maxWidth: 300 }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-        <button type="button" className="osm-nav" onClick={() => shiftMonth(-1)} aria-label="Mois précédent">‹</button>
-        <span style={{ fontSize: 12, fontWeight: 600, color: INK, letterSpacing: '-0.03em' }}>
-          {MONTHS_FR[viewMonth]} {viewYear}
-        </span>
-        <button type="button" className="osm-nav" onClick={() => shiftMonth(1)} aria-label="Mois suivant">›</button>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)' }}>
-        {DAYS_FR.map((d, i) => (
-          <div key={i} style={{ textAlign: 'center', fontSize: 9, fontWeight: 600, color: '#b3b3b3', padding: '4px 0' }}>{d}</div>
-        ))}
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 1 }} onMouseLeave={() => setHovered(null)}>
-        {cells.map((d, i) => {
-          if (!d) return <div key={i} />;
-          const key = toKey(d);
-          const past = d < today;
-          const isStart = key === start;
-          const isEnd = key === end;
-          const inRange = !!start && !!rangeEnd && key > start && key < rangeEnd;
-          return (
-            <button
-              key={i}
-              type="button"
-              disabled={past}
-              onClick={() => pick(key)}
-              onMouseEnter={() => setHovered(key)}
-              style={{
-                height: 28,
-                border: 'none',
-                borderRadius: isStart || isEnd ? 8 : inRange ? 0 : 8,
-                background: isStart || isEnd ? INK : inRange ? 'rgba(12,29,34,0.07)' : 'transparent',
-                color: isStart || isEnd ? '#fff' : past ? '#d8d8d8' : INK,
-                fontSize: 11,
-                fontWeight: isStart || isEnd ? 600 : 400,
-                fontFamily: 'inherit',
-                cursor: past ? 'not-allowed' : 'pointer',
-                transition: 'background .12s ease',
-              }}
-            >
-              {d.getDate()}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
 
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
@@ -159,6 +63,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [period, setPeriod] = useState('');
   const [lieu, setLieu] = useState('');
+  const [lieuOpen, setLieuOpen] = useState(false);
   const [participants, setParticipants] = useState('');
   const [budget, setBudget] = useState(BUDGET_DEFAULT);
   const [nom, setNom] = useState('');
@@ -166,6 +71,10 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
   const [email, setEmail] = useState('');
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const lieuWrapRef = useRef<HTMLDivElement>(null);
+
+  const lieuSuggestions = useMemo(() => matchFrenchPlaces(lieu, 8), [lieu]);
+  const showLieuSuggestions = lieuOpen && lieuSuggestions.length > 0;
 
   useEffect(() => {
     STEP_IMAGES.forEach((src) => {
@@ -186,6 +95,16 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const onDoc = (e: MouseEvent) => {
+      if (lieuWrapRef.current && !lieuWrapRef.current.contains(e.target as Node)) {
+        setLieuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, []);
+
   const reset = () => {
     setStep(1);
     setErr('');
@@ -195,6 +114,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     setCalendarOpen(false);
     setPeriod('');
     setLieu('');
+    setLieuOpen(false);
     setParticipants('');
     setBudget(BUDGET_DEFAULT);
     setNom('');
@@ -288,7 +208,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
         .osm-input {
           width:100%; box-sizing:border-box; background:#fff;
-          border:1px solid rgba(12,29,34,.14); border-radius:9px;
+          border:1px solid rgba(12,29,34,.14); border-radius:12px;
           padding:11px 14px; font-family:inherit; font-size:13px; color:${INK};
           letter-spacing:-.02em; outline:none; transition:border-color .15s ease, box-shadow .15s ease;
         }
@@ -297,7 +217,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
         .osm-opt {
           width:100%; box-sizing:border-box; background:#fff; cursor:pointer;
-          border:1px solid rgba(12,29,34,.14); border-radius:9px;
+          border:1px solid rgba(12,29,34,.14); border-radius:12px;
           padding:11px 12px; font-family:inherit; font-size:13px; color:#8f8f8f;
           letter-spacing:-.02em; text-align:center; transition:all .15s ease;
         }
@@ -306,7 +226,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
         .osm-pill {
           background:#fff; cursor:pointer; white-space:nowrap;
-          border:1px solid rgba(12,29,34,.14); border-radius:7px;
+          border:1px solid rgba(12,29,34,.14); border-radius:10px;
           padding:7px 13px; font-family:inherit; font-size:11.5px; color:${INK};
           letter-spacing:-.02em; transition:all .15s ease;
         }
@@ -321,12 +241,15 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
         .osm-cta {
           border:none; border-radius:9999px; background:${ORANGE}; color:#fff;
-          font-family:inherit; font-size:15px; letter-spacing:-.03em; font-weight:500;
-          padding:12px 34px; cursor:pointer; transition:background .18s ease, transform .18s ease;
+          font-family:inherit; font-size:13px; letter-spacing:-.03em; font-weight:500;
+          padding:10px 24px; cursor:pointer; transition:background .18s ease, transform .18s ease;
           display:inline-flex; align-items:center; gap:9px;
         }
         .osm-cta:hover { background:#d9552a }
         .osm-cta:disabled { opacity:.65; cursor:not-allowed }
+        @media (min-width: 861px) {
+          .osm-cta { font-size:15px; padding:12px 34px; }
+        }
 
         .osm-back {
           background:none; border:none; padding:0; cursor:pointer; font-family:inherit;
@@ -377,7 +300,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             display: 'flex',
             width: '100%', maxWidth: 940,
             height: 'min(600px, 92vh)',
-            background: '#fff', borderRadius: 14, overflow: 'hidden',
+            background: '#fff', borderRadius: 20, overflow: 'hidden',
             boxShadow: '0 24px 70px rgba(12,29,34,.28)',
             fontFamily: "'Poppins', sans-serif",
             animation: `${closing ? 'osmOut' : 'osmIn'} .28s cubic-bezier(.22,1,.36,1) both`,
@@ -450,11 +373,12 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                         : 'Sélectionnez des dates précises'}
                     </button>
                     {calendarOpen && (
-                      <MiniCalendar
+                      <MiniDateRangeCalendar
                         start={startDate}
                         end={endDate}
                         onStart={(d) => { setStartDate(d); setPeriod(''); setErr(''); }}
                         onEnd={(d) => { setEndDate(d); if (d) setCalendarOpen(false); }}
+                        navClassName="osm-nav"
                       />
                     )}
 
@@ -481,8 +405,8 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                     <h2 className="osm-title" style={{ ...titleStyle, margin: '40px 0 16px' }}>
                       Une idée de <strong style={strong}>lieu ?</strong>
                     </h2>
-                    <div style={{ position: 'relative', maxWidth: 340 }}>
-                      <span style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', display: 'flex', color: '#b3b3b3' }}>
+                    <div ref={lieuWrapRef} style={{ position: 'relative', maxWidth: 340 }}>
+                      <span style={{ position: 'absolute', left: 13, top: 14, display: 'flex', color: '#b3b3b3', zIndex: 1, pointerEvents: 'none' }}>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
                           <circle cx="12" cy="10" r="3" />
@@ -493,8 +417,70 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                         style={{ paddingLeft: 34 }}
                         placeholder="Saisissez le lieu souhaité : ville, région, etc"
                         value={lieu}
-                        onChange={(e) => setLieu(e.target.value)}
+                        autoComplete="off"
+                        aria-autocomplete="list"
+                        aria-expanded={showLieuSuggestions}
+                        onChange={(e) => {
+                          setLieu(e.target.value);
+                          setLieuOpen(true);
+                        }}
+                        onFocus={() => setLieuOpen(true)}
                       />
+                      {showLieuSuggestions && (
+                        <ul
+                          role="listbox"
+                          style={{
+                            position: 'absolute',
+                            left: 0,
+                            right: 0,
+                            top: '100%',
+                            margin: '4px 0 0',
+                            padding: '6px 0',
+                            listStyle: 'none',
+                            background: '#fff',
+                            border: '1px solid rgba(12,29,34,0.12)',
+                            borderRadius: 12,
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+                            maxHeight: 220,
+                            overflowY: 'auto',
+                            zIndex: 40,
+                          }}
+                        >
+                          {lieuSuggestions.map((s) => (
+                            <li key={`${s.kind}-${s.name}`}>
+                              <button
+                                type="button"
+                                role="option"
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => {
+                                  setLieu(s.name);
+                                  setLieuOpen(false);
+                                }}
+                                style={{
+                                  width: '100%',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  gap: 10,
+                                  textAlign: 'left',
+                                  padding: '9px 12px',
+                                  border: 'none',
+                                  background: 'transparent',
+                                  fontFamily: 'inherit',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                <span style={{ fontSize: 13, fontWeight: 600, color: INK, letterSpacing: '-.02em' }}>
+                                  {s.name}
+                                </span>
+                                <span style={{ fontSize: 10, fontWeight: 600, color: '#a5a5a5', letterSpacing: '0.04em', textTransform: 'uppercase', flexShrink: 0 }}>
+                                  {frenchPlaceKindLabel(s.kind)}
+                                </span>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   </>
                 )}

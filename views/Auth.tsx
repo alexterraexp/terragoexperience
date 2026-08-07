@@ -1,9 +1,11 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
+import { useModal } from '../context/ModalContext';
 
 const Auth: React.FC = () => {
+  const { openPartenaireModal } = useModal();
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-beige-bg relative overflow-hidden font-sans pt-40 pb-16">
       {/* Éléments de décoration */}
@@ -84,18 +86,20 @@ const Auth: React.FC = () => {
               </div>
            </div>
            <div className="mt-6 flex flex-col gap-3">
-              <Link 
-                href="/nous-rejoindre" 
-                className="w-full py-3 bg-white border border-primary/20 text-primary text-center rounded-xl text-[9px] font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
+              <button
+                type="button"
+                onClick={openPartenaireModal}
+                className="w-full py-3 bg-white border border-primary/20 text-primary text-center rounded-full text-[9px] font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
               >
                  Accéder à mon espace pro
-              </Link>
-              <Link 
-                href="/nous-rejoindre" 
-                className="text-center text-[8px] font-bold uppercase tracking-widest text-primary/40 hover:text-primary transition-colors py-1"
+              </button>
+              <button
+                type="button"
+                onClick={openPartenaireModal}
+                className="text-center text-[8px] font-bold uppercase tracking-widest text-primary/40 hover:text-primary transition-colors py-1 bg-transparent border-none cursor-pointer"
               >
                  Pas encore partenaire ? Nous rejoindre
-              </Link>
+              </button>
            </div>
         </div>
 

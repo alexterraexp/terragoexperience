@@ -12,12 +12,12 @@ export default function SeminaireDetailLoading({
           position: 'fixed' as const,
           inset: 0,
           zIndex: 10000,
-          background: 'rgba(250, 248, 245, 0.97)',
+          background: 'rgba(255, 255, 255, 0.97)',
           backdropFilter: 'blur(8px)',
         }
       : {
           minHeight: '100vh',
-          background: '#faf8f5',
+          background: '#ffffff',
         };
 
   return (
@@ -34,8 +34,8 @@ export default function SeminaireDetailLoading({
           style={{
             width: 44,
             height: 44,
-            border: '3px solid rgba(11, 44, 52,0.12)',
-            borderTop: '3px solid #0b2c34',
+            border: '3px solid rgba(12, 29, 34,0.12)',
+            borderTop: '3px solid #0c1d22',
             borderRadius: '50%',
             animation: 'semDetailSpin 0.75s linear infinite',
             margin: '0 auto 20px',
@@ -43,7 +43,7 @@ export default function SeminaireDetailLoading({
         />
         <p
           style={{
-            color: '#5c554c',
+            color: 'rgba(12, 29, 34, 0.60)',
             fontSize: 12,
             fontWeight: 600,
             letterSpacing: '0.12em',

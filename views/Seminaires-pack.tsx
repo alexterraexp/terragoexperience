@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import type { ReactNode, CSSProperties } from 'react';
-import { Sprout, Ham, Speech, Presentation, Wifi, House, Bike, Users, PartyPopper } from 'lucide-react';
+import type { CSSProperties } from 'react';
+import { Sprout, Ham, Speech, Presentation, Wifi, House, Bike, Users, PartyPopper, MapPin, ChevronLeft, ChevronRight, Sun, Moon } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { Seminaire, Format, ProgrammeItem, SeminaireFormatId, SeminaireHebergement } from '../lib/seminaires';
 import { SEMINAIRE_FORMAT_IDS, SEMINAIRE_FORMAT_LABELS } from '../lib/seminaires';
@@ -13,27 +14,40 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useMapboxPublicToken } from '@/components/MapboxTokenProvider';
 import SeminaireDetailLoading from '@/components/SeminaireDetailLoading';
-import { CollapsibleDateRangePicker } from '@/components/CollapsibleDateRangePicker';
-import { VilleDepartInput } from '@/components/VilleDepartInput';
+import {
+  MiniDateRangeCalendar,
+  SEMINAIRE_PERIODS,
+  fmtDayShort,
+} from '@/components/MiniDateRangeCalendar';
+import {
+  HOME_COLORS,
+  HOME_RADIUS,
+  bottomImageGradientClass,
+  homeHeroOutlineButtonClass,
+  homeSectionPadding,
+} from '../components/home/homeStyles';
+
+const HOME_ASSETS =
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
+
+const PACK_ASSETS = {
+  hero: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/LOGEMENTS/TRINQUET-PIMENT/trinquet7.jpg',
+  producteurSoutenu: `${HOME_ASSETS}/emoji/producteur-sountenu.png`,
+  sOrange: `${HOME_ASSETS}/emoji/s%20orange.png`,
+  branche: `${HOME_ASSETS}/emoji/emoji-branche.png`,
+  mouton: `${HOME_ASSETS}/emoji/mouton.png`,
+} as const;
+
+const sectionTitleClass =
+  'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
 
 export type { Seminaire, Format, ProgrammeItem };
 
 // ─── Constantes ───────────────────────────────────────────────────────────────
 
-const FORMAT_DETAIL_TINTS = {
-  journee: {
-    tint: '#ffffff',
-    border: 'rgba(11, 44, 52, 0.10)',
-  },
-  residentiel: {
-    tint: '#ffffff',
-    border: 'rgba(11, 44, 52, 0.10)',
-  },
-} as const;
-
 // ─── Carte des équipements / services inclus ─────────────────────────────────
 
-const AMENITY_COLOR = '#e07a30';
+const AMENITY_COLOR = HOME_COLORS.orange;
 
 export const AMENITIES_MAP: Record<string, { label: string; icon: React.ReactNode }> = {
   atelier:              { label: 'Atelier « les mains dans la terre »', icon: <Sprout       size={26} color={AMENITY_COLOR} strokeWidth={1.6} /> },
@@ -46,82 +60,6 @@ export const AMENITIES_MAP: Record<string, { label: string; icon: React.ReactNod
   teambuilding:         { label: 'Activités team-building',             icon: <Users        size={26} color={AMENITY_COLOR} strokeWidth={1.6} /> },
   soiree_theme:         { label: 'Soirée à thème',                      icon: <PartyPopper  size={26} color={AMENITY_COLOR} strokeWidth={1.6} /> },
 };
-
-const STEPS = [{ label: 'Sélection' }, { label: 'Coordonnées' }, { label: 'Dates & lieu' }, { label: 'Logistique' }, { label: 'Récapitulatif' }];
-const ACTIVITY_MAINS_PACK = 'Les mains dans la terre';
-const ACTIVITY_OPTIONS_PACK = ['Activité sportive', 'Cours de cuisine', 'Activité nature', 'Activité jeux'] as const;
-
-// ─── Mailto pré-rempli ────────────────────────────────────────────────────────
-
-const BRIEF_MAIL_HREF = (() => {
-  const subject = 'Brief séminaire – [Nom de votre entreprise]';
-  const body = [
-    'Bonjour,',
-    '',
-    'Je souhaite vous soumettre mon brief pour l\'organisation d\'un séminaire.',
-    '[ Merci de compléter les informations ci-dessous ]',
-    '',
-    '',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '📅  DATES & DURÉE',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '',
-    'Date souhaitée : ',
-    'Durée : ',
-    'Dates alternatives si besoin : ',
-    '',
-    '',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '👥  PARTICIPANTS',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '',
-    'Nombre de participants : ',
-    'Profil des participants : ',
-    '   (ex : direction, équipes commerciales, managers…)',
-    '',
-    '',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '💰  BUDGET',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '',
-    'Budget indicatif par personne : ',
-    '',
-    '',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '🎯  OBJECTIFS',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '',
-    'Objectif principal : ',
-    '   (ex : cohésion d\'équipe, lancement de projet, récompense…)',
-    '',
-    '',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '📋  INFORMATIONS COMPLÉMENTAIRES',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '',
-    'Besoins spécifiques : ',
-    'Questions ou remarques : ',
-    '',
-    '',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '📬  VOS COORDONNÉES',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    '',
-    'Nom & Prénom : ',
-    'Entreprise : ',
-    'Téléphone : ',
-    'Email : ',
-    '',
-    '',
-    'Message supplémentaire : ',
-    '',
-    '',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    'Merci, nous reviendrons vers vous sous 48h.',
-    'L\'équipe TerraGo',
-  ].join('\n');
-  return `mailto:terragoexperiences@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-})();
 
 // ─── Helpers produit ─────────────────────────────────────────────────────────
 
@@ -139,194 +77,6 @@ function getProductEmoji(s: Seminaire): string {
   return '🌿';
 }
 
-// ─── Styles communs ───────────────────────────────────────────────────────────
-
-const inputStyle: CSSProperties = {
-  width: '100%', background: '#faf8f5',
-  border: '1px solid rgba(11, 44, 52,0.08)', borderRadius: 16,
-  padding: '12px 16px', fontFamily: 'inherit', fontSize: 14, color: '#0b2c34',
-  outline: 'none', transition: 'all 0.18s ease', boxSizing: 'border-box',
-};
-
-// ─── FieldBlock ───────────────────────────────────────────────────────────────
-
-const FieldBlock: React.FC<{ label: string; required?: boolean; children: ReactNode }> = ({ label, required, children }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-    <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', display: 'block', marginBottom: 8 }}>
-      {label}{required && <span style={{ color: '#e67e22', marginLeft: 4 }}>*</span>}
-    </label>
-    {children}
-  </div>
-);
-
-// ─── TagBtn ───────────────────────────────────────────────────────────────────
-
-const TagBtn: React.FC<{ active: boolean; onClick: () => void; children: ReactNode; small?: boolean }> = ({ active, onClick, children, small }) => (
-  <button onClick={onClick} style={{
-    padding: small ? '5px 12px' : '7px 14px', borderRadius: 9999,
-    border: `1.5px solid ${active ? '#0b2c34' : 'rgba(11, 44, 52,0.1)'}`,
-    background: active ? '#0b2c34' : '#faf8f5',
-    color: active ? '#fff' : '#7a7060',
-    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
-    cursor: 'pointer', fontFamily: 'inherit',
-    boxShadow: active ? '0 2px 10px rgba(11, 44, 52,0.15)' : 'none',
-    transition: 'all 0.15s ease', display: 'inline-flex', alignItems: 'center', gap: 5,
-  }}>
-    {children}
-  </button>
-);
-
-// ─── ToggleCard ───────────────────────────────────────────────────────────────
-
-const ToggleCard: React.FC<{ icon: ReactNode; label: string; active: boolean; onToggle: () => void; children?: ReactNode }> = ({ icon, label, active, onToggle, children }) => (
-  <div style={{ padding: '18px', borderRadius: 18, border: `1.5px solid ${active ? '#0b2c34' : 'rgba(11, 44, 52,0.08)'}`, background: active ? 'rgba(11, 44, 52,0.03)' : '#faf8f5', transition: 'all 0.2s ease' }}>
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 18 }}>{icon}</span>
-        <span style={{ fontSize: 11, fontWeight: 700, color: '#0b2c34', textTransform: 'uppercase', letterSpacing: '0.12em' }}>{label}</span>
-      </div>
-      <label style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
-        <input type="checkbox" checked={active} onChange={onToggle} style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }} />
-        <div style={{ width: 40, height: 22, background: active ? '#0b2c34' : '#d4cec8', borderRadius: 11, position: 'relative', transition: 'background 0.2s ease' }}>
-          <div style={{ position: 'absolute', top: 3, left: active ? 21 : 3, width: 16, height: 16, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.15)', transition: 'left 0.2s ease' }} />
-        </div>
-      </label>
-    </div>
-    {children}
-  </div>
-);
-
-// ─── CustomSelect ─────────────────────────────────────────────────────────────
-
-const CustomSelect: React.FC<{
-  value: string; onChange: (val: string) => void;
-  options: { value: string; label: string }[]; placeholder?: string;
-}> = ({ value, onChange, options, placeholder }) => {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const [menuBox, setMenuBox] = useState<{ top?: number; bottom?: number; left: number; width: number; maxHeight: number } | null>(null);
-  const selectedLabel = options.find(o => o.value === value)?.label ?? '';
-
-  const updateMenuPosition = useCallback(() => {
-    const btn = buttonRef.current;
-    if (!btn) return;
-    const rect = btn.getBoundingClientRect();
-    const gutter = 6;
-    const maxList = Math.min(320, window.innerHeight * 0.7);
-    const spaceBelow = window.innerHeight - rect.bottom - gutter;
-    const spaceAbove = rect.top - gutter;
-    const openUp = spaceBelow < 140 && spaceAbove > spaceBelow;
-    const pad = 12;
-    if (openUp) {
-      setMenuBox({
-        bottom: window.innerHeight - rect.top + gutter,
-        left: rect.left,
-        width: rect.width,
-        maxHeight: Math.min(maxList, Math.max(80, spaceAbove - pad)),
-      });
-    } else {
-      setMenuBox({
-        top: rect.bottom + gutter,
-        left: rect.left,
-        width: rect.width,
-        maxHeight: Math.min(maxList, Math.max(80, spaceBelow - pad)),
-      });
-    }
-  }, []);
-
-  useLayoutEffect(() => {
-    if (!open) {
-      setMenuBox(null);
-      return;
-    }
-    updateMenuPosition();
-  }, [open, updateMenuPosition]);
-
-  useEffect(() => {
-    if (!open) return;
-    const onMove = () => updateMenuPosition();
-    window.addEventListener('resize', onMove);
-    window.addEventListener('scroll', onMove, true);
-    return () => {
-      window.removeEventListener('resize', onMove);
-      window.removeEventListener('scroll', onMove, true);
-    };
-  }, [open, updateMenuPosition]);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      const t = e.target as Node;
-      if (ref.current?.contains(t) || menuRef.current?.contains(t)) return;
-      setOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  const menuShared: CSSProperties = {
-    position: 'fixed',
-    left: menuBox?.left ?? 0,
-    width: menuBox?.width ?? 0,
-    maxHeight: menuBox?.maxHeight ?? 320,
-    zIndex: 10050,
-    background: '#fff',
-    borderRadius: 18,
-    border: '1px solid rgba(11, 44, 52,0.1)',
-    boxShadow: '0 8px 32px rgba(11, 44, 52,0.12)',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-  };
-
-  const menuEl = open && menuBox && typeof document !== 'undefined' && (
-    <div
-      ref={menuRef}
-      style={{
-        ...menuBox,
-        ...menuShared,
-        top: menuBox.top,
-        bottom: menuBox.bottom,
-      }}
-    >
-      <button type="button" onClick={() => { onChange(''); setOpen(false); }} style={{ width: '100%', padding: '11px 16px', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: 13, color: '#b0a89e', fontFamily: 'inherit', borderBottom: '1px solid rgba(11, 44, 52,0.05)', flexShrink: 0 }}>— Choisir un produit —</button>
-      <div style={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
-        {options.map(opt => (
-          <button key={opt.value} type="button" onClick={() => { onChange(opt.value); setOpen(false); }}
-            style={{ width: '100%', padding: '11px 16px', background: opt.value === value ? 'rgba(11, 44, 52,0.04)' : 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: 14, color: opt.value === value ? '#0b2c34' : '#4a4540', fontWeight: opt.value === value ? 700 : 400, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 10, transition: 'background 0.12s ease' }}>
-            {opt.value === value
-              ? <span style={{ width: 16, height: 16, borderRadius: '50%', background: '#0b2c34', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4.2 7.5L8 3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-              : <span style={{ width: 16, flexShrink: 0 }} />}
-            {opt.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-
-  return (
-    <div ref={ref} style={{ position: 'relative' }}>
-      <button ref={buttonRef} type="button" onClick={() => setOpen(v => !v)} style={{ ...inputStyle, display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', textAlign: 'left', border: `1px solid ${open ? '#0b2c34' : 'rgba(11, 44, 52,0.08)'}`, boxShadow: open ? '0 0 0 3px rgba(11, 44, 52,0.08)' : 'none' }}>
-        <span style={{ color: value ? '#0b2c34' : '#b0a89e', fontSize: 14, fontWeight: value ? 500 : 400 }}>{value ? selectedLabel : (placeholder ?? '— Choisir —')}</span>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease', flexShrink: 0, marginLeft: 8 }}>
-          <path d="M2.5 4.5L6 8L9.5 4.5" stroke="#0b2c34" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-      {menuEl && createPortal(menuEl, document.body)}
-    </div>
-  );
-};
-
-// ─── RecapRow ─────────────────────────────────────────────────────────────────
-
-const RecapRow: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, padding: '10px 0', borderBottom: '1px solid rgba(11, 44, 52,0.05)' }}>
-    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#b0a89e', flexShrink: 0 }}>{label}</span>
-    <span style={{ fontSize: 14, fontWeight: 600, color: '#0b2c34', textAlign: 'right' }}>{value || '—'}</span>
-  </div>
-);
-
 // ─── ProgrammeAccordion ───────────────────────────────────────────────────────
 
 const isDesktop = () => typeof window !== 'undefined' ? window.innerWidth > 768 : true;
@@ -336,19 +86,19 @@ function ProgrammeAccordion({ programme, couleur, triggerKey }: { programme: Pro
   const prev = useRef<any>(null);
   if (prev.current !== triggerKey) { prev.current = triggerKey; setExpanded(isDesktop()); }
   return (
-    <div style={{ borderTop: '1px solid rgba(11, 44, 52,0.06)', paddingTop: 14 }}>
+    <div style={{ borderTop: '1px solid rgba(12, 29, 34,0.06)', paddingTop: 14 }}>
       <button onClick={() => setExpanded(v => !v)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: expanded ? 14 : 0 }}>
-        <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#0b2c34' }}>Exemple de programme</span>
-        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: '50%', background: 'rgba(11, 44, 52,0.05)', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease', flexShrink: 0 }}>
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2.5 5L7 9.5L11.5 5" stroke="#b0a89e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#0c1d22' }}>Exemple de programme</span>
+        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: '50%', background: 'rgba(12, 29, 34,0.05)', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease', flexShrink: 0 }}>
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2.5 5L7 9.5L11.5 5" stroke="rgba(12, 29, 34, 0.40)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </span>
       </button>
       <div style={{ maxHeight: expanded ? '600px' : '0', overflow: 'hidden', transition: 'max-height 0.4s ease' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 4 }}>
           {programme.map((p, i) => (
             <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-              <span style={{ color: '#e67e22', fontSize: 12, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', flexShrink: 0, width: 72, paddingTop: 2 }}>{p.heure}</span>
-              <span style={{ color: '#7a7060', fontSize: 14, lineHeight: 1.65 }}>{p.action}</span>
+              <span style={{ color: '#ec6435', fontSize: 12, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', flexShrink: 0, width: 72, paddingTop: 2 }}>{p.heure}</span>
+              <span style={{ color: 'rgba(12, 29, 34, 0.55)', fontSize: 14, lineHeight: 1.65 }}>{p.action}</span>
             </div>
           ))}
         </div>
@@ -362,14 +112,14 @@ function ProgrammeAccordion({ programme, couleur, triggerKey }: { programme: Pro
 function FormatInclusList({ inclus, layout }: { inclus: string[]; layout: 'stack' | 'grid' }) {
   if (inclus.length === 0) return null;
   return (
-    <div className={`sem-mobile-inclus-grid${layout === 'grid' ? ' sem-mobile-inclus-grid--cols' : ''}`}>
+    <div className={`sem-offer-inclus${layout === 'grid' ? ' sem-offer-inclus--grid' : ''}`}>
       {inclus.map(key => {
         const amenity = AMENITIES_MAP[key];
         if (!amenity) return null;
         return (
-          <div key={key} className="sem-mobile-inclus-item">
-            <span className="sem-mobile-inclus-icon">{amenity.icon}</span>
-            <span>{amenity.label}</span>
+          <div key={key} className="sem-offer-inclus-item">
+            <span className="sem-offer-inclus-icon">{amenity.icon}</span>
+            <span className="sem-offer-inclus-label">{amenity.label}</span>
           </div>
         );
       })}
@@ -515,87 +265,7 @@ function HebergementCard({ hebergement }: { hebergement: SeminaireHebergement })
 }
 
 function HebergementsList({ hebergements }: { hebergements: SeminaireHebergement[] }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
-
-  const updateScrollState = useCallback(() => {
-    const el = trackRef.current;
-    if (!el) return;
-
-    const slides = el.querySelectorAll<HTMLElement>('.sem-hebergements-slide');
-    if (slides.length === 0) return;
-
-    const gap = parseFloat(getComputedStyle(el).gap) || 10;
-    const slideWidth = slides[0].offsetWidth + gap;
-    const idx = Math.round(el.scrollLeft / slideWidth);
-    setActiveIndex(Math.min(Math.max(idx, 0), hebergements.length - 1));
-    setCanScrollPrev(el.scrollLeft > 4);
-    setCanScrollNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-  }, [hebergements.length]);
-
-  useEffect(() => {
-    setActiveIndex(0);
-    setCanScrollPrev(false);
-    setCanScrollNext(false);
-    trackRef.current?.scrollTo({ left: 0, behavior: 'instant' as ScrollBehavior });
-    const id = requestAnimationFrame(updateScrollState);
-    return () => cancelAnimationFrame(id);
-  }, [hebergements, updateScrollState]);
-
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el || hebergements.length <= 1) return;
-
-    el.addEventListener('scroll', updateScrollState, { passive: true });
-    window.addEventListener('resize', updateScrollState);
-    return () => {
-      el.removeEventListener('scroll', updateScrollState);
-      window.removeEventListener('resize', updateScrollState);
-    };
-  }, [hebergements.length, updateScrollState]);
-
-  const scrollBySlide = (dir: -1 | 1) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const slides = el.querySelectorAll<HTMLElement>('.sem-hebergements-slide');
-    if (slides.length === 0) return;
-    const gap = parseFloat(getComputedStyle(el).gap) || 10;
-    const slideWidth = slides[0].offsetWidth + gap;
-    el.scrollBy({ left: dir * slideWidth, behavior: 'smooth' });
-  };
-
-  const scrollToSlide = (index: number) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const slide = el.querySelectorAll<HTMLElement>('.sem-hebergements-slide')[index];
-    slide?.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
-  };
-
-  const handleTrackMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.button !== 0) return;
-    if ((e.target as HTMLElement).closest('button, a, input, textarea, select')) return;
-    const el = trackRef.current;
-    if (!el) return;
-    e.preventDefault();
-    el.style.cursor = 'grabbing';
-    const startX = e.pageX;
-    const scrollLeftStart = el.scrollLeft;
-    const onMove = (ev: MouseEvent) => {
-      ev.preventDefault();
-      el.scrollLeft = scrollLeftStart - (ev.pageX - startX);
-    };
-    const onUp = () => {
-      el.style.cursor = '';
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-      document.removeEventListener('mouseleave', onUp);
-    };
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-    document.addEventListener('mouseleave', onUp);
-  };
+  const [index, setIndex] = useState(0);
 
   if (hebergements.length === 0) {
     return (
@@ -606,76 +276,47 @@ function HebergementsList({ hebergements }: { hebergements: SeminaireHebergement
     );
   }
 
-  if (hebergements.length === 1) {
-    return <HebergementCard hebergement={hebergements[0]} />;
-  }
+  const current = hebergements[Math.min(index, hebergements.length - 1)];
+  const canPrev = index > 0;
+  const canNext = index < hebergements.length - 1;
+  const showNav = hebergements.length > 1;
 
   return (
-    <div className="sem-hebergements-carousel">
-      <div className="sem-hebergements-header">
-        <p className="sem-hebergements-index-label" aria-live="polite">
-          Logement {activeIndex + 1}
-          <span className="sem-hebergements-index-total"> / {hebergements.length}</span>
-        </p>
-        <div className="sem-hebergements-nav-btns">
+    <div className="sem-hebergements-carousel" aria-label="Hébergements disponibles">
+      <div
+        className="sem-hebergements-carousel-slide"
+        key={current.id}
+        role="group"
+        aria-roledescription="slide"
+        aria-label={`Logement ${index + 1} sur ${hebergements.length}`}
+      >
+        <HebergementCard hebergement={current} />
+      </div>
+      {showNav && (
+        <div className="sem-hebergements-carousel-nav">
           <button
             type="button"
-            className="sem-hebergements-nav-btn"
-            onClick={() => scrollBySlide(-1)}
-            disabled={!canScrollPrev}
+            className="sem-hebergements-carousel-arrow"
+            onClick={() => setIndex(i => Math.max(0, i - 1))}
+            disabled={!canPrev}
             aria-label="Logement précédent"
           >
-            <svg viewBox="0 0 12 12" fill="none" aria-hidden><path d="M7.5 2L3.5 6L7.5 10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <ChevronLeft size={20} strokeWidth={2.2} aria-hidden />
           </button>
+          <span className="sem-hebergements-carousel-count" aria-live="polite">
+            {index + 1} / {hebergements.length}
+          </span>
           <button
             type="button"
-            className="sem-hebergements-nav-btn"
-            onClick={() => scrollBySlide(1)}
-            disabled={!canScrollNext}
+            className="sem-hebergements-carousel-arrow"
+            onClick={() => setIndex(i => Math.min(hebergements.length - 1, i + 1))}
+            disabled={!canNext}
             aria-label="Logement suivant"
           >
-            <svg viewBox="0 0 12 12" fill="none" aria-hidden><path d="M4.5 2L8.5 6L4.5 10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <ChevronRight size={20} strokeWidth={2.2} aria-hidden />
           </button>
         </div>
-      </div>
-      <div
-        ref={trackRef}
-        className="sem-hebergements-track"
-        role="list"
-        aria-label="Hébergements disponibles"
-        onMouseDown={handleTrackMouseDown}
-      >
-        {hebergements.map((h, i) => (
-          <div key={h.id} className="sem-hebergements-slide" role="listitem" aria-label={`Logement ${i + 1}`}>
-            <HebergementCard hebergement={h} />
-          </div>
-        ))}
-      </div>
-      <div className="sem-hebergements-dots" aria-hidden>
-        {hebergements.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            className={`sem-hebergements-dot${i === activeIndex ? ' is-active' : ''}`}
-            onClick={() => scrollToSlide(i)}
-            aria-label={`Aller au logement ${i + 1}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function MobileProgrammeList({ programme }: { programme: ProgrammeItem[] }) {
-  if (programme.length === 0) return null;
-  return (
-    <div className="sem-mobile-programme-list">
-      {programme.map((p, i) => (
-        <div key={i} className="sem-mobile-programme-step">
-          <span className="sem-mobile-programme-time">{p.heure}</span>
-          <span className="sem-mobile-programme-action">{p.action}</span>
-        </div>
-      ))}
+      )}
     </div>
   );
 }
@@ -684,51 +325,74 @@ function MobileFormatCapsule({
   title,
   fmt,
   variant,
-  tint,
-  tintBorder,
   showTitle = true,
   hebergements = [],
   layout = 'mobile',
-  couleur = '#e67e22',
   programmeKey = '',
+  embedded = false,
 }: {
   title: string;
   fmt: Format;
   variant: 'jour' | 'residentiel';
-  tint: string;
-  tintBorder: string;
+  tint?: string;
+  tintBorder?: string;
   showTitle?: boolean;
   hebergements?: SeminaireHebergement[];
   layout?: 'mobile' | 'desktop';
   couleur?: string;
   programmeKey?: string;
+  embedded?: boolean;
 }) {
+  const meta = [fmt.duree?.trim(), fmt.participants?.trim()].filter(Boolean).join(' · ');
+
   return (
-    <section
-      className={`sem-mobile-capsule sem-mobile-capsule--${variant}${layout === 'desktop' ? ' sem-detail-format-capsule' : ''}`}
-      style={{ background: tint, borderColor: tintBorder }}
-    >
-      {showTitle && <h2 className="sem-mobile-capsule-title">{title}</h2>}
+    <section className={`sem-offer-format-panel sem-offer-format-panel--${variant}${embedded ? ' is-embedded' : ''}`}>
+      {!embedded && showTitle && <h3 className="sem-offer-format-panel-title">{title}</h3>}
+      {!embedded && meta && <p className="sem-offer-format-meta">{meta}</p>}
 
-      <div className="sem-mobile-capsule-section">
-        <h3>Inclus dans l&apos;offre</h3>
-        <FormatInclusList inclus={fmt.inclus} layout={layout === 'desktop' ? 'grid' : 'stack'} />
-      </div>
-
-      {fmt.programme.length > 0 && (
-        <div className="sem-mobile-capsule-section sem-mobile-capsule-section--collapsible">
-          <MobileCollapsibleSection
-            title="Exemple de programme"
-            contentKey={programmeKey || `${variant}-${fmt.programme.length}`}
-          >
-            <MobileProgrammeList programme={fmt.programme} />
-          </MobileCollapsibleSection>
+      {fmt.inclus.length > 0 && (
+        <div className="sem-offer-format-block">
+          <h4 className="sem-offer-format-h">Inclus dans l&apos;offre</h4>
+          <FormatInclusList inclus={fmt.inclus} layout={layout === 'desktop' ? 'grid' : 'stack'} />
         </div>
       )}
 
-      {variant === 'residentiel' && (
-        <div className="sem-mobile-capsule-section">
-          <h3>Hébergements</h3>
+      {fmt.programme.length > 0 && (
+        <div className="sem-offer-format-block">
+          {variant === 'jour' ? (
+            <>
+              <h4 className="sem-offer-format-h">Exemple de programme</h4>
+              <div className="sem-offer-programme">
+                {fmt.programme.map((p, i) => (
+                  <div key={i} className="sem-offer-programme-step">
+                    <span className="sem-offer-programme-time">{p.heure}</span>
+                    <span className="sem-offer-programme-action">{p.action}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <MobileCollapsibleSection
+              title="Exemple de programme"
+              contentKey={programmeKey || `${variant}-${fmt.programme.length}`}
+              defaultExpanded={false}
+            >
+              <div className="sem-offer-programme">
+                {fmt.programme.map((p, i) => (
+                  <div key={i} className="sem-offer-programme-step">
+                    <span className="sem-offer-programme-time">{p.heure}</span>
+                    <span className="sem-offer-programme-action">{p.action}</span>
+                  </div>
+                ))}
+              </div>
+            </MobileCollapsibleSection>
+          )}
+        </div>
+      )}
+
+      {hebergements.length > 0 && (
+        <div className="sem-offer-format-block">
+          <h4 className="sem-offer-format-h">Hébergements</h4>
           <HebergementsList hebergements={hebergements} />
         </div>
       )}
@@ -738,125 +402,94 @@ function MobileFormatCapsule({
 
 type MobileFormatId = SeminaireFormatId;
 
-function MobileFormatMetaPills({ fmt, formatKey }: { fmt: Format; formatKey: string }) {
-  const participants = fmt.participants?.trim();
-  const duree = fmt.duree?.trim();
-  if (!participants && !duree) return null;
-  return (
-    <div className="sem-mobile-format-pills" key={formatKey}>
-      {participants && <span className="sem-mobile-pill">👥 {participants}</span>}
-      {duree && <span className="sem-mobile-pill">⏱ {duree}</span>}
-    </div>
-  );
-}
-
-function MobileFormatChoiceHeader() {
-  return (
-    <div className="sem-mobile-format-choice-head">
-      <h2 className="sem-mobile-section-title">Choisissez votre format</h2>
-      <p className="sem-mobile-format-choice-lead">
-        Une offre qui s&apos;adapte à vos besoins et à votre effectif.
-      </p>
-    </div>
-  );
-}
-
 function MobileFormatSwitcher({
   fmtJour,
   fmt2j,
   activeId,
   onActiveChange,
-  jourTint,
-  jourBorder,
-  resTint,
-  resBorder,
   hebergements = [],
   layout = 'mobile',
-  couleur = '#e67e22',
   programmeKey = '',
 }: {
   fmtJour?: Format;
   fmt2j?: Format;
   activeId: MobileFormatId;
   onActiveChange: (id: MobileFormatId) => void;
-  jourTint: string;
-  jourBorder: string;
-  resTint: string;
-  resBorder: string;
+  jourTint?: string;
+  jourBorder?: string;
+  resTint?: string;
+  resBorder?: string;
   hebergements?: SeminaireHebergement[];
   layout?: 'mobile' | 'desktop';
   couleur?: string;
   programmeKey?: string;
 }) {
-  const switcherClass = layout === 'desktop'
-    ? 'sem-format-ui sem-detail-format-block sem-mobile-format-switcher'
-    : 'sem-format-ui sem-mobile-format-switcher';
-  const tabs: { id: MobileFormatId; label: string }[] = [];
-  if (fmtJour) tabs.push({ id: 'journee', label: 'Séminaire à la journée' });
-  if (fmt2j) tabs.push({ id: 'residentiel', label: 'Séminaire résidentiel' });
+  const rows: {
+    id: MobileFormatId;
+    title: string;
+    fmt: Format;
+    icon: React.ReactNode;
+  }[] = [];
 
-  if (tabs.length === 0) return null;
-
-  if (tabs.length === 1) {
-    const only = tabs[0].id;
-    const fmt = only === 'journee' ? fmtJour! : fmt2j!;
-    return (
-      <div className={switcherClass}>
-        <MobileFormatChoiceHeader />
-        <MobileFormatMetaPills fmt={fmt} formatKey={only} />
-        <MobileFormatCapsule
-          title={only === 'journee' ? 'Séminaire à la journée' : 'Séminaire résidentiel'}
-          fmt={fmt}
-          variant={only === 'journee' ? 'jour' : 'residentiel'}
-          tint={only === 'journee' ? jourTint : resTint}
-          tintBorder={only === 'journee' ? jourBorder : resBorder}
-          showTitle
-          layout={layout}
-          couleur={couleur}
-          programmeKey={programmeKey}
-          hebergements={hebergements}
-        />
-      </div>
-    );
+  if (fmtJour) {
+    rows.push({
+      id: 'journee',
+      title: 'Séminaire à la journée',
+      fmt: fmtJour,
+      icon: <Sun size={18} strokeWidth={1.7} color={HOME_COLORS.primary} />,
+    });
+  }
+  if (fmt2j) {
+    rows.push({
+      id: 'residentiel',
+      title: 'Séminaire résidentiel',
+      fmt: fmt2j,
+      icon: <Moon size={18} strokeWidth={1.7} color={HOME_COLORS.primary} />,
+    });
   }
 
-  const activeFmt = activeId === 'journee' ? fmtJour : fmt2j;
-  if (!activeFmt) return null;
+  if (rows.length === 0) return null;
 
   return (
-    <div className={switcherClass}>
-      <MobileFormatChoiceHeader />
-      <div className="sem-mobile-format-tabs" role="tablist" aria-label="Format du séminaire">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            type="button"
-            role="tab"
-            aria-selected={activeId === tab.id}
-            className={`sem-mobile-format-tab${activeId === tab.id ? ' is-active' : ''}`}
-            onClick={() => onActiveChange(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
+    <section
+      className={`sem-offer-format sem-infos-pratiques${layout === 'desktop' ? ' sem-offer-format--desktop' : ''}`}
+      aria-labelledby="sem-offer-format-title"
+    >
+      <div className="sem-offer-format-head">
+        <h2 id="sem-offer-format-title" className="sem-infos-pratiques-title sem-offer-format-title">
+          Le format
+        </h2>
+        <p className="sem-offer-format-subtitle">
+          À la journée ou en résidentiel — ouvrez une formule pour voir le détail.
+        </p>
       </div>
-      <MobileFormatMetaPills fmt={activeFmt} formatKey={activeId} />
-      <div role="tabpanel" className="sem-mobile-format-panel">
-        <MobileFormatCapsule
-          key={activeId}
-          title={activeId === 'journee' ? 'Séminaire à la journée' : 'Séminaire résidentiel'}
-          fmt={activeFmt}
-          variant={activeId === 'journee' ? 'jour' : 'residentiel'}
-          tint={activeId === 'journee' ? jourTint : resTint}
-          tintBorder={activeId === 'journee' ? jourBorder : resBorder}
-          showTitle={false}
-          layout={layout}
-          couleur={couleur}
-          programmeKey={programmeKey}
-          hebergements={hebergements}
-        />
+      <div className="sem-infos-pratiques-list">
+        {rows.map(row => {
+          const meta = [row.fmt.duree?.trim(), row.fmt.participants?.trim()].filter(Boolean).join(' · ');
+          return (
+            <InfosPratiquesRow
+              key={row.id}
+              icon={row.icon}
+              title={row.title}
+              subtitle={meta || row.fmt.prix}
+              defaultOpen={activeId === row.id && rows.length === 1}
+              onOpen={() => onActiveChange(row.id)}
+            >
+              <MobileFormatCapsule
+                title={row.title}
+                fmt={row.fmt}
+                variant={row.id === 'journee' ? 'jour' : 'residentiel'}
+                showTitle={false}
+                embedded
+                layout={layout}
+                programmeKey={`${programmeKey}-${row.id}`}
+                hebergements={row.id === 'residentiel' ? hebergements : []}
+              />
+            </InfosPratiquesRow>
+          );
+        })}
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -968,7 +601,7 @@ function ImageCarousel({ images, titre, region, bestseller, resetKey }: { images
       <div key={photoKey} style={{ position: 'absolute', inset: 0, animation: `photoSlideIn${photoDir === 'right' ? 'Right' : 'Left'} 0.45s cubic-bezier(0.22,1,0.36,1) both` }}>
         <img src={currentImg} alt={`${titre} – ${region}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none', userSelect: 'none' }} />
       </div>
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(11, 44, 52,0.65) 0%, transparent 55%)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(12, 29, 34,0.65) 0%, transparent 55%)', pointerEvents: 'none' }} />
       {images.length > 1 && (
         <>
           <button className="sem-img-arrow" onClick={() => goPhoto('prev')} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 28, height: 28, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 2 }}>
@@ -1036,7 +669,7 @@ function primaryFormatIdForSeminaire(s: Seminaire): SeminaireFormatId {
   return (first as SeminaireFormatId) || 'journee';
 }
 
-function SeminaireCard({ s, isActive, onSelect, onDevis }: {
+function SeminaireCard({ s, isActive, onSelect }: {
   s: Seminaire; isActive: boolean;
   onSelect: () => void; onDevis: () => void;
 }) {
@@ -1053,32 +686,43 @@ function SeminaireCard({ s, isActive, onSelect, onDevis }: {
       onMouseEnter={() => { if (!isComing) setHovered(true); }}
       onMouseLeave={() => setHovered(false)}
       style={{
-        borderRadius: 18, overflow: 'hidden',
-        border: `1px solid ${active ? 'rgba(11, 44, 52,0.22)' : 'rgba(11, 44, 52,0.07)'}`,
-        background: '#fff', cursor: isComing ? 'default' : 'pointer',
-        boxShadow: active ? '0 10px 32px rgba(11, 44, 52,0.13)' : '0 1px 4px rgba(11, 44, 52,0.05)',
-        transition: 'all 0.22s ease',
-        transform: active ? 'translateY(-4px)' : 'none',
+        borderRadius: HOME_RADIUS,
+        overflow: 'hidden',
+        border: `1px solid ${active ? 'rgba(12,29,34,0.18)' : 'rgba(12,29,34,0.08)'}`,
+        background: '#fff',
+        cursor: isComing ? 'default' : 'pointer',
+        boxShadow: active ? '0 12px 36px rgba(12,29,34,0.10)' : 'none',
+        transition: 'border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease',
+        transform: active ? 'translateY(-3px)' : 'none',
         opacity: isComing ? 0.72 : 1,
-      }}>
+      }}
+    >
       <div className="sem-pack-card-visual">
         <img
-          src={s.images[0] ?? ''} alt={fmt?.titre ?? s.label}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s ease', transform: hovered ? 'scale(1.06)' : 'scale(1)', filter: isComing ? 'grayscale(35%)' : 'none' }}
+          src={s.images[0] ?? ''}
+          alt={fmt?.titre ?? s.label}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: 'block',
+            transition: 'transform 0.45s ease',
+            transform: hovered ? 'scale(1.04)' : 'scale(1)',
+            filter: isComing ? 'grayscale(35%)' : 'none',
+          }}
         />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(11, 44, 52,0.55) 0%, transparent 50%)', pointerEvents: 'none' }} />
         {hasPartenaire && (
           <img
             src={s.partenaire_logo}
             alt={s.partenaire_nom}
             style={{
               position: 'absolute',
-              top: 8,
-              left: 8,
+              top: 14,
+              left: 14,
               zIndex: 6,
-              height: 24,
+              height: 32,
               width: 'auto',
-              maxWidth: 56,
+              maxWidth: 72,
               objectFit: 'contain',
               display: 'block',
               borderRadius: 8,
@@ -1087,38 +731,169 @@ function SeminaireCard({ s, isActive, onSelect, onDevis }: {
           />
         )}
         {isComing && (
-          <div style={{ position: 'absolute', top: 10, left: hasPartenaire ? 72 : 10, background: 'rgba(255,255,255,0.92)', borderRadius: 9999, padding: '4px 12px', fontSize: 8, fontWeight: 700, color: '#0b2c34', letterSpacing: '0.14em', textTransform: 'uppercase', backdropFilter: 'blur(6px)', border: '1px solid rgba(11, 44, 52,0.10)' }}>🔜 Bientôt</div>
-        )}
-        {!isComing && s.bestseller && (
-          <div style={{ position: 'absolute', top: 10, left: hasPartenaire ? 'auto' : 10, right: hasPartenaire ? 10 : 'auto', background: 'rgba(60,60,60,0.5)', borderRadius: 9999, padding: '3px 10px', fontSize: 8, fontWeight: 700, color: '#fff', letterSpacing: '0.1em', textTransform: 'uppercase', backdropFilter: 'blur(6px)' }}>★ Populaire</div>
-        )}
-        {!isComing && (
-          <div style={{ position: 'absolute', top: 10, right: 10, width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.22)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: hovered ? 1 : 0, transition: 'opacity 0.2s ease' }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-            </svg>
+          <div
+            style={{
+              position: 'absolute',
+              top: 10,
+              left: hasPartenaire ? 88 : 10,
+              background: 'rgba(255,255,255,0.94)',
+              borderRadius: 9999,
+              padding: '3px 9px',
+              fontSize: 8,
+              fontWeight: 700,
+              color: HOME_COLORS.primary,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              border: '1px solid rgba(12,29,34,0.10)',
+            }}
+          >
+            Bientôt
           </div>
         )}
-        <div style={{ position: 'absolute', bottom: 8, left: 10, fontSize: 9, color: 'rgba(255,255,255,0.9)', fontWeight: 600 }}>{s.region}</div>
+        {!isComing && s.bestseller && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 10,
+              background: 'rgba(0, 0, 0, 0.42)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              borderRadius: 9999,
+              padding: '3px 9px',
+              fontSize: 8,
+              fontWeight: 700,
+              color: '#fff',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Populaire
+          </div>
+        )}
       </div>
       <div className="sem-pack-card-body">
-        <div style={{ fontSize: 8, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', color: '#b0a89e', marginBottom: 3 }}>{s.producteur}</div>
-        <div className="sem-pack-card-title" style={{ fontWeight: 700, fontSize: 13, color: '#0b2c34', lineHeight: 1.3, marginBottom: 2 }}>{fmt?.titre ?? s.label}</div>
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.14em',
+            color: HOME_COLORS.orange,
+            marginBottom: 4,
+          }}
+        >
+          {s.producteur}
+        </div>
+        <div
+          className="sem-pack-card-title"
+          style={{
+            fontWeight: 700,
+            fontSize: 14,
+            color: HOME_COLORS.primary,
+            lineHeight: 1.25,
+            letterSpacing: '-0.04em',
+            marginBottom: 4,
+          }}
+        >
+          {fmt?.titre ?? s.label}
+        </div>
         {isComing ? (
-          <div style={{ fontSize: 11, color: '#b0a89e', fontStyle: 'italic', marginTop: 'auto', paddingTop: 8 }}>Disponible prochainement</div>
+          <div
+            style={{
+              fontSize: 12,
+              color: 'rgba(12,29,34,0.45)',
+              marginTop: 'auto',
+              paddingTop: 8,
+            }}
+          >
+            Disponible prochainement
+          </div>
         ) : (
           <>
-            <div className="sem-pack-card-sub" style={{ fontSize: 11, color: '#9a9080', fontStyle: 'italic', marginBottom: 8 }}>{fmt!.sous_titre}</div>
-            <div className="sem-pack-card-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, minWidth: 0 }}>
-              <div style={{ minWidth: 0, overflow: 'hidden' }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#5c5348', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
+            <div
+              className="sem-pack-card-sub"
+              style={{
+                fontSize: 12,
+                color: 'rgba(12,29,34,0.58)',
+                lineHeight: 1.45,
+                marginBottom: 10,
+              }}
+            >
+              {fmt!.sous_titre}
+            </div>
+            <div
+              className="sem-pack-card-row"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 10,
+                minWidth: 0,
+              }}
+            >
+              <div
+                style={{
+                  minWidth: 0,
+                  overflow: 'hidden',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: 'rgba(12,29,34,0.55)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {participantsRangeForOfferCard(s)}
                 </span>
+                <span
+                  aria-hidden
+                  style={{
+                    width: 1,
+                    height: 12,
+                    background: 'rgba(12,29,34,0.18)',
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {s.region}
+                </span>
               </div>
-              <button onClick={e => { e.stopPropagation(); onSelect(); }}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect();
+                }}
                 className="sem-pack-card-btn"
-                style={{ flexShrink: 0, background: '#0b2c34', color: '#fff', fontSize: 9, fontWeight: 700, letterSpacing: '0.06em', padding: '6px 12px', borderRadius: 9999, border: 'none', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
-                En détails →
+                style={{
+                  flexShrink: 0,
+                  background: 'transparent',
+                  color: HOME_COLORS.primary,
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: '0.07em',
+                  padding: '6px 12px',
+                  borderRadius: 9999,
+                  border: `1px solid ${HOME_COLORS.primary}`,
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  transition: 'background 0.18s ease, color 0.18s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = HOME_COLORS.primary;
+                  e.currentTarget.style.color = '#fff';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = HOME_COLORS.primary;
+                }}
+              >
+                En détails
               </button>
             </div>
           </>
@@ -1128,131 +903,6 @@ function SeminaireCard({ s, isActive, onSelect, onDevis }: {
   );
 }
 
-// ─── MapboxMap ────────────────────────────────────────────────────────────────
-
-function MapboxMap({ seminaires, activeId, activeFormat, onSelect, onExpand, expanded }: {
-  seminaires: Seminaire[]; activeId: string | null; activeFormat: string;
-  onSelect: (id: string) => void; onExpand?: () => void; expanded?: boolean;
-}) {
-  const mapboxToken = useMapboxPublicToken();
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef       = useRef<mapboxgl.Map | null>(null);
-  const markersRef   = useRef<{ [id: string]: mapboxgl.Marker }>({});
-  const popupsRef    = useRef<{ [id: string]: mapboxgl.Popup }>({});
-  const [mapReady, setMapReady] = useState(false);
-  const [cardSem, setCardSem] = useState<Seminaire | null>(null);
-
-  useEffect(() => {
-    if (!mapboxToken || !mapContainer.current || mapRef.current) return;
-    mapboxgl.accessToken = mapboxToken;
-    const map = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: [2.5, 46.8], zoom: 4.8,
-      minZoom: 3.5,
-      maxZoom: 12,
-      cooperativeGestures: false,
-      scrollZoom: true,
-      boxZoom: true,
-      doubleClickZoom: true,
-    });
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right');
-    map.once('load', () => setMapReady(true));
-    map.on('click', (e) => {
-      if (!(e.originalEvent.target as HTMLElement).closest('[data-marker]')) setCardSem(null);
-    });
-    mapRef.current = map;
-    return () => { map.remove(); mapRef.current = null; setMapReady(false); };
-  }, [mapboxToken]);
-
-  useEffect(() => {
-    if (!mapReady || !mapRef.current) return;
-    const map = mapRef.current;
-    Object.values(markersRef.current).forEach(m => m.remove());
-    markersRef.current = {};
-    seminaires.forEach(s => {
-      if (s.lat == null || s.lng == null) return;
-      const emoji     = getProductEmoji(s);
-      const isAct     = s.id === activeId;
-      const isComing  = s.comingSoon;
-      const size      = isAct ? 46 : 38;
-      const fs        = isAct ? 22 : 17;
-      const bg        = isComing ? '#e8e4de' : isAct ? s.couleur : '#fff';
-      const shadow    = isComing ? '0 2px 8px rgba(0,0,0,0.10)' : isAct ? `0 4px 18px ${s.couleur}70` : '0 2px 8px rgba(0,0,0,0.20)';
-      const border    = isComing ? '2px dashed #b0a89e' : isAct ? 'none' : '2.5px solid rgba(255,255,255,0.95)';
-      const opacity   = isComing ? '0.75' : '1';
-      const el = document.createElement('div');
-      el.setAttribute('data-marker', s.id);
-      el.innerHTML = `<div style="width:${size}px;height:${size}px;background:${bg};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${fs}px;box-shadow:${shadow};cursor:${isComing ? 'default' : 'pointer'};transition:all 0.2s;border:${border};transform:${isAct ? 'scale(1.12)' : 'scale(1)'};opacity:${opacity};">${emoji}</div>`;
-      const marker = new mapboxgl.Marker({ element: el, anchor: 'center' }).setLngLat([s.lng, s.lat]).addTo(map);
-      if (!isComing) {
-        el.addEventListener('click', (e) => {
-          e.stopPropagation();
-          map.flyTo({ center: [s.lng!, s.lat!], zoom: 6.5, duration: 800, essential: true });
-          setCardSem(prev => prev?.id === s.id ? null : s);
-        });
-      }
-      markersRef.current[s.id] = marker;
-    });
-  }, [mapReady, seminaires, activeFormat, activeId]);
-
-  useEffect(() => {
-    if (!mapRef.current) return;
-    if (!activeId) {
-      mapRef.current.flyTo({ center: [2.5, 46.8], zoom: 4.8, duration: 900, essential: true });
-      return;
-    }
-    const s = seminaires.find(x => x.id === activeId);
-    if (!s || s.lat == null || s.lng == null) return;
-    mapRef.current.flyTo({ center: [s.lng, s.lat], zoom: 7, duration: 900, essential: true });
-  }, [activeId]);
-
-  const cardFmt = cardSem ? primaryFormatForCard(cardSem) : null;
-
-  if (!mapboxToken) {
-    return (
-      <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', width: '100%', height: '100%', background: 'linear-gradient(145deg, #f5f2ec 0%, #ebe6dc 100%)', border: '1px solid rgba(11, 44, 52,0.08)' }}>
-        <div style={{ width: '100%', height: '100%', minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>
-          <p style={{ margin: 0, fontSize: 13, color: '#7a7060', lineHeight: 1.6, maxWidth: 280 }}>
-            La carte des producteurs arrive ici très bientôt. En attendant, choisissez une offre dans la liste à gauche.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', width: '100%', height: '100%' }}>
-      <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
-      {cardSem && cardFmt && (
-        <div style={{ position: 'absolute', bottom: 'max(16px, calc(env(safe-area-inset-bottom, 0px) + 12px))', left: '50%', transform: 'translateX(-50%)', zIndex: 100, width: 'min(230px, calc(100% - 32px))', maxWidth: 'calc(100vw - 32px)', borderRadius: 18, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.22)', background: '#fff', animation: 'fadeInUp 0.18s ease' }}>
-          {(cardSem.images[0] ?? cardSem.image) && (
-            <img src={cardSem.images[0] ?? cardSem.image} alt={cardFmt.titre} style={{ width: '100%', height: 120, objectFit: 'cover', display: 'block' }} />
-          )}
-          <div style={{ padding: '12px 14px' }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: '#b0a89e', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 3 }}>{cardSem.producteur}</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#0b2c34', lineHeight: 1.3, marginBottom: 12 }}>{cardFmt.titre}</div>
-            <button onClick={() => { setCardSem(null); onSelect(cardSem.id); }}
-              style={{ width: '100%', background: '#0b2c34', color: '#fff', border: 'none', borderRadius: 9999, padding: '9px', fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit' }}>
-              En savoir plus →
-            </button>
-          </div>
-          <button onClick={() => setCardSem(null)}
-            style={{ position: 'absolute', top: 8, right: 8, width: 24, height: 24, borderRadius: '50%', background: 'rgba(0,0,0,0.35)', border: 'none', color: '#fff', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>×</button>
-        </div>
-      )}
-      {onExpand && (
-        <button onClick={onExpand} title={expanded ? 'Réduire' : 'Agrandir'}
-          style={{ position: 'absolute', top: 12, left: 12, zIndex: 10, width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(6px)', border: '1px solid rgba(0,0,0,0.1)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}>
-          {expanded
-            ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0b2c34" strokeWidth="2.2" strokeLinecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
-            : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0b2c34" strokeWidth="2.2" strokeLinecap="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-          }
-        </button>
-      )}
-    </div>
-  );
-}
 
 // ─── GalleryLightbox ─────────────────────────────────────────────────────────
 
@@ -1273,20 +923,20 @@ function GalleryLightbox({ images, initialIndex, onClose }: { images: string[]; 
   }, [idx]);
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 2000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#faf8f5' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 2000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#ffffff' }}>
       <button onClick={onClose}
-        style={{ position: 'absolute', top: 20, right: 20, zIndex: 10, width: 44, height: 44, borderRadius: '50%', background: '#fff', border: '1px solid rgba(11, 44, 52,0.12)', color: '#0b2c34', fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 300, boxShadow: '0 2px 10px rgba(11, 44, 52,0.08)' }}>
+        style={{ position: 'absolute', top: 20, right: 20, zIndex: 10, width: 44, height: 44, borderRadius: '50%', background: '#fff', border: '1px solid rgba(12, 29, 34,0.12)', color: '#0c1d22', fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 300, boxShadow: '0 2px 10px rgba(12, 29, 34,0.08)' }}>
         ×
       </button>
-      <div style={{ position: 'absolute', top: 26, left: '50%', transform: 'translateX(-50%)', zIndex: 10, background: '#fff', border: '1px solid rgba(11, 44, 52,0.1)', borderRadius: 9999, padding: '4px 14px', fontSize: 11, color: '#0b2c34', fontWeight: 700, boxShadow: '0 2px 8px rgba(11, 44, 52,0.07)' }}>
+      <div style={{ position: 'absolute', top: 26, left: '50%', transform: 'translateX(-50%)', zIndex: 10, background: '#fff', border: '1px solid rgba(12, 29, 34,0.1)', borderRadius: 9999, padding: '4px 14px', fontSize: 11, color: '#0c1d22', fontWeight: 700, boxShadow: '0 2px 8px rgba(12, 29, 34,0.07)' }}>
         {idx + 1} / {images.length}
       </div>
       <div style={{ position: 'relative', zIndex: 5, width: '100%', maxWidth: '88vw', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 64px' }}>
         <img src={images[idx]} alt="" style={{ maxWidth: '100%', maxHeight: '75vh', borderRadius: 18, objectFit: 'contain', boxShadow: '0 12px 60px rgba(0,0,0,0.25)' }} />
         {images.length > 1 && (
           <>
-            <button onClick={prev} style={{ position: 'absolute', left: 0, width: 48, height: 48, borderRadius: '50%', background: '#fff', border: '1px solid rgba(11, 44, 52,0.12)', color: '#0b2c34', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(11, 44, 52,0.1)' }}>‹</button>
-            <button onClick={next} style={{ position: 'absolute', right: 0, width: 48, height: 48, borderRadius: '50%', background: '#fff', border: '1px solid rgba(11, 44, 52,0.12)', color: '#0b2c34', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(11, 44, 52,0.1)' }}>›</button>
+            <button onClick={prev} style={{ position: 'absolute', left: 0, width: 48, height: 48, borderRadius: '50%', background: '#fff', border: '1px solid rgba(12, 29, 34,0.12)', color: '#0c1d22', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(12, 29, 34,0.1)' }}>‹</button>
+            <button onClick={next} style={{ position: 'absolute', right: 0, width: 48, height: 48, borderRadius: '50%', background: '#fff', border: '1px solid rgba(12, 29, 34,0.12)', color: '#0c1d22', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(12, 29, 34,0.1)' }}>›</button>
           </>
         )}
       </div>
@@ -1294,7 +944,7 @@ function GalleryLightbox({ images, initialIndex, onClose }: { images: string[]; 
         <div style={{ position: 'relative', zIndex: 5, display: 'flex', gap: 8, marginTop: 18, maxWidth: '88vw', overflowX: 'auto', padding: '4px 0' }}>
           {images.map((img, i) => (
             <div key={i} onClick={() => setIdx(i)}
-              style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: `2.5px solid ${i === idx ? '#0b2c34' : 'rgba(11, 44, 52,0.12)'}`, opacity: i === idx ? 1 : 0.55, transition: 'all 0.15s' }}>
+              style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: `2.5px solid ${i === idx ? '#0c1d22' : 'rgba(12, 29, 34,0.12)'}`, opacity: i === idx ? 1 : 0.55, transition: 'all 0.15s' }}>
               <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           ))}
@@ -1326,7 +976,7 @@ function PartenaireEncart({ nom, logo }: { nom: string; logo?: string }) {
           style={{ maxHeight: 88, maxWidth: 260, width: 'auto', height: 'auto', objectFit: 'contain', display: 'block', borderRadius: 20 }}
         />
       )}
-      <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#b0a89e', lineHeight: 1.2 }}>
+      <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(12, 29, 34, 0.40)', lineHeight: 1.2 }}>
         En partenariat avec
       </span>
     </div>
@@ -1337,10 +987,24 @@ function PartenaireEncart({ nom, logo }: { nom: string; logo?: string }) {
 
 const SEM_DETAIL_CARD: React.CSSProperties = {
   background: '#fff',
-  borderRadius: 20,
-  border: '1px solid rgba(11, 44, 52, 0.1)',
+  borderRadius: HOME_RADIUS,
+  border: '1px solid rgba(12, 29, 34, 0.1)',
   padding: '24px',
-  boxShadow: '0 4px 28px rgba(11, 44, 52, 0.09)',
+  boxShadow: '0 4px 28px rgba(12, 29, 34, 0.09)',
+};
+
+/** Panneau devis sticky — fond gris clair, allongé. */
+const SEM_DEVIS_PANEL: React.CSSProperties = {
+  background: HOME_COLORS.gray,
+  borderRadius: HOME_RADIUS,
+  border: '1px solid rgba(12, 29, 34, 0.08)',
+  padding: '40px 28px',
+  minHeight: 420,
+  boxShadow: 'none',
+  color: HOME_COLORS.primary,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
 };
 
 function PartenaireCard({ nom, logo, description, siteWeb }: { nom: string; logo?: string; description?: string; siteWeb?: string }) {
@@ -1355,7 +1019,7 @@ function PartenaireCard({ nom, logo, description, siteWeb }: { nom: string; logo
               style={{ height: 28, width: 'auto', maxWidth: 72, objectFit: 'contain', flexShrink: 0, display: 'block', borderRadius: 8 }}
             />
           )}
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#0b2c34', lineHeight: 1.35, minWidth: 0 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#0c1d22', lineHeight: 1.35, minWidth: 0 }}>
             En partenariat avec {nom}
           </div>
         </div>
@@ -1368,7 +1032,7 @@ function PartenaireCard({ nom, logo, description, siteWeb }: { nom: string; logo
               flexShrink: 0,
               fontSize: 10,
               fontWeight: 600,
-              color: '#e67e22',
+              color: '#ec6435',
               textDecoration: 'none',
               letterSpacing: '0.04em',
               whiteSpace: 'nowrap',
@@ -1381,11 +1045,145 @@ function PartenaireCard({ nom, logo, description, siteWeb }: { nom: string; logo
         )}
       </div>
       {description && (
-        <p style={{ margin: 0, fontSize: 11, color: '#9a9080', lineHeight: 1.55, whiteSpace: 'pre-line' }}>
+        <p style={{ margin: 0, fontSize: 11, color: 'rgba(12, 29, 34, 0.45)', lineHeight: 1.55, whiteSpace: 'pre-line' }}>
           {description}
         </p>
       )}
     </div>
+  );
+}
+
+// ─── Intro éditoriale (inspirée Staycation, DA TerraGo) ───────────────────────
+
+function OfferIntroBlock({
+  title,
+  producteur,
+  region,
+  partenaireSlot,
+}: {
+  title: string;
+  producteur: string;
+  region: string;
+  partenaireSlot?: React.ReactNode;
+}) {
+  return (
+    <header className="sem-offer-intro">
+      <div className="sem-offer-intro-top">
+        <div className="sem-offer-intro-main">
+          <h1 className="sem-offer-title">{title}</h1>
+          <div className="sem-offer-meta">
+            <span className="sem-offer-meta-strong">{producteur}</span>
+            {region && (
+              <>
+                <span className="sem-offer-meta-dot" aria-hidden>·</span>
+                <span>{region}</span>
+              </>
+            )}
+          </div>
+        </div>
+        {partenaireSlot}
+      </div>
+    </header>
+  );
+}
+
+function InfosPratiquesRow({
+  icon,
+  title,
+  subtitle,
+  children,
+  defaultOpen = false,
+  onOpen,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle?: string;
+  children?: React.ReactNode;
+  defaultOpen?: boolean;
+  onOpen?: () => void;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  const expandable = Boolean(children);
+
+  return (
+    <div className={`sem-infos-row${open ? ' is-open' : ''}`}>
+      <button
+        type="button"
+        className="sem-infos-row-trigger"
+        aria-expanded={expandable ? open : undefined}
+        onClick={() => {
+          if (!expandable) {
+            onOpen?.();
+            return;
+          }
+          setOpen(v => {
+            const next = !v;
+            if (next) onOpen?.();
+            return next;
+          });
+        }}
+      >
+        <span className="sem-infos-row-icon" aria-hidden>{icon}</span>
+        <span className="sem-infos-row-text">
+          <span className="sem-infos-row-title">{title}</span>
+          {subtitle && <span className="sem-infos-row-sub">{subtitle}</span>}
+        </span>
+        <ChevronRight size={18} strokeWidth={1.8} className="sem-infos-row-chevron" aria-hidden />
+      </button>
+      {expandable && open && (
+        <div className="sem-infos-row-body">{children}</div>
+      )}
+    </div>
+  );
+}
+
+function InfosPratiquesSection({
+  s,
+  producer,
+}: {
+  s: Seminaire;
+  producer: ProducerFull | null;
+}) {
+  const bio = producer?.description?.trim();
+  const producerName = producer?.name ?? s.producteur;
+
+  return (
+    <section className="sem-infos-pratiques" aria-labelledby="sem-infos-pratiques-title">
+      <h2 id="sem-infos-pratiques-title" className="sem-infos-pratiques-title">Infos pratiques</h2>
+      <div className="sem-infos-pratiques-list">
+        <InfosPratiquesRow
+          icon={<MapPin size={18} strokeWidth={1.7} color={HOME_COLORS.primary} />}
+          title="Localisation"
+          subtitle={[s.region, s.producteur].filter(Boolean).join(' · ')}
+        >
+          <p className="sem-infos-pratiques-copy">
+            Séminaire chez <strong>{s.producteur}</strong>
+            {s.region ? <> — {s.region}</> : null}.
+            Le lieu exact est communiqué après validation du devis.
+          </p>
+        </InfosPratiquesRow>
+
+        <InfosPratiquesRow
+          icon={<Users size={18} strokeWidth={1.7} color={HOME_COLORS.primary} />}
+          title="À propos du producteur"
+          subtitle={producerName}
+        >
+          {producer?.avatar && (
+            <div className="sem-infos-producer-head">
+              <img src={producer.avatar} alt={producerName} className="sem-infos-producer-avatar" />
+              <strong>{producerName}</strong>
+            </div>
+          )}
+          {bio ? (
+            <p className="sem-infos-pratiques-copy">{bio}</p>
+          ) : (
+            <p className="sem-infos-pratiques-copy">
+              Rencontre et immersion avec {producerName}, producteur engagé du réseau TerraGo.
+            </p>
+          )}
+        </InfosPratiquesRow>
+      </div>
+    </section>
   );
 }
 
@@ -1429,7 +1227,6 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
   const mobileActiveFmt =
     (mobileFormatId === 'journee' ? fmtJour : fmt2j) ?? pillFmt;
   const mobileTitle = mobileActiveFmt?.titre ?? s.label;
-  const mobileSousTitre = mobileActiveFmt?.sous_titre?.trim() ?? '';
 
   useEffect(() => {
     let next: MobileFormatId = fmtJour ? 'journee' : 'residentiel';
@@ -1437,11 +1234,6 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
     else if (activeFormat === 'residentiel' && fmt2j) next = 'residentiel';
     setMobileFormatId(next);
   }, [s.id, activeFormat, fmtJour, fmt2j]);
-
-  const jourTint = FORMAT_DETAIL_TINTS.journee.tint;
-  const resTint = FORMAT_DETAIL_TINTS.residentiel.tint;
-  const jourBorder = FORMAT_DETAIL_TINTS.journee.border;
-  const resBorder = FORMAT_DETAIL_TINTS.residentiel.border;
 
   const handleMobileDevis = () => {
     if (mobileFormatId in s.formats) setActiveFormat(mobileFormatId);
@@ -1494,19 +1286,6 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
 
       <div style={{ animation: 'semExpandIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
 
-        {/* ── Titre desktop ── */}
-        <div className="sem-detail-title" style={{ marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <h2 style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700, fontStyle: 'italic', fontSize: 'clamp(26px,3.2vw,38px)', color: '#0b2c34', lineHeight: 1.12, margin: '0 0 6px' }}>
-              {fmt.titre}
-            </h2>
-            <div style={{ fontSize: 13, color: '#9a9080', fontWeight: 500 }}>{s.producteur}</div>
-          </div>
-          {s.partenaire_nom && (
-            <PartenaireEncart nom={s.partenaire_nom} logo={s.partenaire_logo} />
-          )}
-        </div>
-
         {/* ── Carrousel mobile ── */}
         <div
           className="sem-mobile-carousel"
@@ -1553,12 +1332,10 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
             </>
           )}
 
-          {(s.bestseller || s.images.length > 1) && (
+          {s.bestseller && <div className="sem-mobile-bestseller">Populaire</div>}
+          {s.images.length > 1 && (
             <div className="sem-mobile-hero-meta">
-              {s.bestseller && <div className="sem-mobile-bestseller">★ Populaire</div>}
-              {s.images.length > 1 && (
-                <div className="sem-mobile-photo-counter">{mobilePhotoIdx + 1} / {s.images.length}</div>
-              )}
+              <div className="sem-mobile-photo-counter">{mobilePhotoIdx + 1} / {s.images.length}</div>
             </div>
           )}
           {s.partenaire_nom && (
@@ -1586,46 +1363,58 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
             </div>
           ))}
           {s.bestseller && (
-            <div style={{ position: 'absolute', top: 14, left: 14, background: 'rgba(60,60,60,0.5)', borderRadius: 9999, padding: '3px 10px', fontSize: 8, fontWeight: 700, color: '#fff', letterSpacing: '0.1em', textTransform: 'uppercase', pointerEvents: 'none' }}>★ Populaire</div>
+            <div
+              style={{
+                position: 'absolute',
+                top: 14,
+                right: 14,
+                background: 'rgba(255, 255, 255, 0.42)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                borderRadius: 9999,
+                padding: '5px 12px',
+                fontSize: 10,
+                fontWeight: 700,
+                color: '#fff',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                pointerEvents: 'none',
+                zIndex: 2,
+              }}
+            >
+              Populaire
+            </div>
           )}
           {s.images.length > 1 && (
             <button onClick={() => { setGalleryIdx(0); setGalleryOpen(true); }}
-              style={{ position: 'absolute', bottom: 14, right: 14, background: '#fff', border: '1.5px solid rgba(0,0,0,0.15)', borderRadius: 9999, padding: '8px 16px', fontSize: 12, fontWeight: 700, color: '#0b2c34', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 10px rgba(0,0,0,0.1)', fontFamily: 'inherit' }}>
+              style={{ position: 'absolute', bottom: 14, right: 14, background: '#fff', border: '1.5px solid rgba(12,29,34,0.12)', borderRadius: 9999, padding: '8px 16px', fontSize: 12, fontWeight: 700, color: '#0c1d22', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 10px rgba(12,29,34,0.08)', fontFamily: 'inherit' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
               Afficher toutes les photos
             </button>
           )}
         </div>
 
-        {/* Contenu — carte blanche chevauchante sur mobile */}
+        {/* Contenu */}
         <div className="sem-mobile-sheet">
-          <header className="sem-mobile-sheet-header">
-            <h1>{mobileTitle}</h1>
-            <div className="sem-mobile-pills">
-              <span className="sem-mobile-pill">📍 {s.region}</span>
-            </div>
-          </header>
-
+          {/* Intro mobile */}
           <div className="sem-detail-mobile-only">
-            <MobileProducerSection producer={producer} producteurName={s.producteur} />
+            <OfferIntroBlock
+              title={mobileTitle}
+              producteur={s.producteur}
+              region={s.region}
+            />
+            <InfosPratiquesSection
+              s={s}
+              producer={producer}
+            />
             <MobileFormatSwitcher
               fmtJour={fmtJour}
               fmt2j={fmt2j}
               activeId={mobileFormatId}
               onActiveChange={handleMobileFormatChange}
-              jourTint={jourTint}
-              jourBorder={jourBorder}
-              resTint={resTint}
-              resBorder={resBorder}
               hebergements={s.hebergements}
-              couleur={s.couleur}
               programmeKey={`${s.id}-${mobileFormatId}`}
             />
-            {mobileSousTitre && (
-              <p className="sem-mobile-format-quote" key={mobileFormatId}>
-                &ldquo;{mobileSousTitre}&rdquo;
-              </p>
-            )}
             <MobileDevisCta onDevis={handleMobileDevis} />
             {s.partenaire_nom && (
               <div className="sem-mobile-partenaire-wrap">
@@ -1637,16 +1426,24 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
                 />
               </div>
             )}
-            <MiniMap s={s} />
           </div>
 
         <div className="sem-detail-cols sem-detail-desktop-only">
           <div>
-            <div className="sem-detail-intro-desktop">
-              <div style={{ fontSize: 14, color: '#9a9080', fontStyle: 'italic', marginBottom: 4 }}>{fmt.sous_titre}</div>
-              <div style={{ fontSize: 12, color: '#b0a89e', fontWeight: 600, marginBottom: 28 }}>{s.region}</div>
-            </div>
-            <MobileProducerSection producer={producer} producteurName={s.producteur} />
+            <OfferIntroBlock
+              title={fmt.titre}
+              producteur={s.producteur}
+              region={s.region}
+              partenaireSlot={
+                s.partenaire_nom
+                  ? <PartenaireEncart nom={s.partenaire_nom} logo={s.partenaire_logo} />
+                  : undefined
+              }
+            />
+            <InfosPratiquesSection
+              s={s}
+              producer={producer}
+            />
             <MobileFormatSwitcher
               layout="desktop"
               fmtJour={fmtJour}
@@ -1657,44 +1454,70 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
                   : fmtJour ? 'journee' : 'residentiel'
               }
               onActiveChange={id => setActiveFormat(id)}
-              jourTint={FORMAT_DETAIL_TINTS.journee.tint}
-              jourBorder={FORMAT_DETAIL_TINTS.journee.border}
-              resTint={FORMAT_DETAIL_TINTS.residentiel.tint}
-              resBorder={FORMAT_DETAIL_TINTS.residentiel.border}
               hebergements={s.hebergements}
-              couleur={s.couleur}
               programmeKey={`${s.id}-${activeFormat}`}
             />
-
-            <MiniMap s={s} />
           </div>
 
           <div className="sem-price-col">
-            <div style={SEM_DETAIL_CARD}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+            <div style={SEM_DEVIS_PANEL}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 28, flex: 1, justifyContent: 'space-between' }}>
                 <div>
-                  <div style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#b0a89e', marginBottom: 4 }}>Tarif sur demande</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: '#0b2c34', lineHeight: 1.2 }}>{tarifAffiche}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', color: HOME_COLORS.orange, marginBottom: 10 }}>
+                    Tarif sur demande
+                  </div>
+                  <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.04em', color: HOME_COLORS.primary, lineHeight: 1.2 }}>
+                    {tarifAffiche}
+                  </div>
+                  <img
+                    src={`${HOME_ASSETS}/emoji/picto-devis.png`}
+                    alt=""
+                    aria-hidden
+                    style={{ display: 'block', width: 140, height: 'auto', margin: '20px auto 0' }}
+                  />
                 </div>
-                <button onClick={onDevis}
-                  style={{ flexShrink: 0, background: '#0b2c34', color: '#fff', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', padding: '14px 20px', borderRadius: 9999, border: 'none', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6, width: '100%', justifyContent: 'center' }}>
-                  Demander un devis
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-                </button>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginTop: 'auto' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'rgba(12, 29, 34, 0.55)' }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      {fmt.duree}
+                    </span>
+                    <span style={{ color: 'rgba(12, 29, 34, 0.25)', fontSize: 12 }}>·</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'rgba(12, 29, 34, 0.55)' }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                      {fmt.participants}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 13, color: 'rgba(12, 29, 34, 0.50)', lineHeight: 1.45 }}>
+                    Devis gratuit · Réponse 48h
+                  </div>
+                  <button
+                    onClick={onDevis}
+                    style={{
+                      flexShrink: 0,
+                      background: HOME_COLORS.primary,
+                      color: '#fff',
+                      fontSize: 11,
+                      fontWeight: 700,
+                      letterSpacing: '0.1em',
+                      padding: '16px 22px',
+                      borderRadius: 9999,
+                      border: 'none',
+                      textTransform: 'uppercase',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      width: '100%',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    Demander un devis
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                  </button>
+                </div>
               </div>
-              <div style={{ borderTop: '1px solid rgba(11, 44, 52,0.08)', marginBottom: 16 }} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#7a7060' }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  {fmt.duree}
-                </span>
-                <span style={{ color: '#c9c0b6', fontSize: 12 }}>·</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#7a7060' }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                  {fmt.participants}
-                </span>
-              </div>
-              <div style={{ fontSize: 12, color: '#7a7060' }}>Devis gratuit · Réponse 48h</div>
             </div>
             {s.partenaire_nom && (
               <div className="sem-partenaire-aside">
@@ -1715,75 +1538,10 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
   );
 }
 
-// ─── MiniMap ──────────────────────────────────────────────────────────────────
-
-function MiniMap({ s }: { s: Seminaire }) {
-  const mapboxToken = useMapboxPublicToken();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef       = useRef<mapboxgl.Map | null>(null);
-
-  useEffect(() => {
-    if (!mapboxToken || !containerRef.current || mapRef.current || s.lat == null || s.lng == null) return;
-    mapboxgl.accessToken = mapboxToken;
-    const desktop = window.matchMedia('(min-width: 769px)').matches;
-    const map = new mapboxgl.Map({
-      container: containerRef.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: [s.lng, s.lat],
-      zoom: 7,
-      minZoom: 5,
-      maxZoom: 14,
-      interactive: desktop,
-      scrollZoom: desktop,
-      cooperativeGestures: false,
-      attributionControl: false,
-    });
-    map.once('load', () => {
-      const emoji = getProductEmoji(s);
-      const el = document.createElement('div');
-      el.innerHTML = `<div style="width:46px;height:46px;background:${s.couleur};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 18px ${s.couleur}70;border:3px solid #fff;">${emoji}</div>`;
-      new mapboxgl.Marker({ element: el, anchor: 'center' }).setLngLat([s.lng!, s.lat!]).addTo(map);
-      if (desktop) {
-        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
-      }
-    });
-    mapRef.current = map;
-    return () => { map.remove(); mapRef.current = null; };
-  }, [s.id, mapboxToken, s.lat, s.lng, s.couleur]);
-
-  if (s.lat == null || s.lng == null) return null;
-
-  return (
-    <div className="sem-mobile-map-block" style={{ marginTop: 40 }}>
-      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', marginBottom: 14 }}>Localisation</div>
-      <div style={{ fontSize: 15, fontWeight: 700, color: '#0b2c34', marginBottom: 4 }}>{s.region}</div>
-      <div style={{ fontSize: 13, color: '#9a9080', marginBottom: 16 }}>{s.producteur}</div>
-      {mapboxToken ? (
-        <div
-          ref={containerRef}
-          className="sem-mobile-map-canvas"
-          style={{
-            width: '100%',
-            height: 260,
-            borderRadius: 16,
-            overflow: 'hidden',
-            border: '1px solid rgba(11, 44, 52,0.08)',
-            boxShadow: '0 2px 12px rgba(11, 44, 52,0.07)',
-            position: 'relative',
-            zIndex: 0,
-            isolation: 'isolate',
-          }}
-        />
-      ) : (
-        <div style={{ width: '100%', height: 160, borderRadius: 16, border: '1px dashed rgba(11, 44, 52,0.12)', background: '#faf8f5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#9a9080', padding: 16, textAlign: 'center' }}>
-          Carte indisponible pour le moment — la localisation figure ci-dessus.
-        </div>
-      )}
-    </div>
-  );
-}
-
 // ─── SeminaireModal ───────────────────────────────────────────────────────────
+
+const PACK_MODAL_INK = '#0c1d22';
+const PACK_MODAL_ORANGE = '#ec6435';
 
 export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, initialFormatId }: {
   isOpen: boolean; onClose: () => void; seminaires: Seminaire[];
@@ -1791,31 +1549,16 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
 }) {
   const [step, setStep] = useState(1);
   const [closing, setClosing] = useState(false);
-  const [transitioning, setTrans] = useState(false);
   const [submitting, setSubmit] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const [form, setForm] = useState({ prenom: '', nom: '', email: '', entreprise: '', participants: '', message: '' });
+  const [form, setForm] = useState({ prenom: '', nom: '', telephone: '', email: '', entreprise: '', participants: '' });
   const [selectedSeminaireId, setSelectedSeminaireId] = useState<string | null>(null);
   const [selectedFormatId, setSelectedFormatId] = useState<SeminaireFormatId>('journee');
-  const [accTypes, setAccTypes] = useState<string[]>([]);
-  const [transport, setTransport] = useState('');
   const [startDate, setStart] = useState('');
   const [endDate, setEnd] = useState('');
-  const [hebergement, setHeberg] = useState(false);
-  const [withTransport, setWithT] = useState(false);
-  const [villeDepart, setVilleDepart] = useState('');
-  const [distanceHours, setDistanceHours] = useState(3);
-  const [extraActivities, setExtraActivities] = useState<string[]>([]);
+  const [period, setPeriod] = useState('');
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 600);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 600);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
 
   useEffect(() => {
     if (isOpen && initialSeminaire) {
@@ -1841,80 +1584,75 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   const handleClose = () => {
     setClosing(true);
     setTimeout(() => {
-      setClosing(false); setStep(1); setSuccess(false); setError('');
-      setForm({ prenom: '', nom: '', email: '', entreprise: '', participants: '', message: '' });
-      setSelectedSeminaireId(null); setSelectedFormatId('journee'); setAccTypes([]); setTransport('');
-      setStart(''); setEnd(''); setHeberg(false); setWithT(false); setVilleDepart(''); setDistanceHours(3); setExtraActivities([]);
+      setClosing(false); setStep(1); setError('');
+      setForm({ prenom: '', nom: '', telephone: '', email: '', entreprise: '', participants: '' });
+      setSelectedSeminaireId(null); setSelectedFormatId('journee');
+      setStart(''); setEnd(''); setPeriod(''); setCalendarOpen(false);
       onClose();
     }, 280);
   };
 
-  const toggle = (list: string[], setList: (v: string[]) => void, item: string) =>
-    setList(list.includes(item) ? list.filter(i => i !== item) : [...list, item]);
-
-  const selectedSeminaire = seminaires.find(s => s.id === selectedSeminaireId) ?? seminaires[0] ?? null;
+  const selectedSeminaire = seminaires.find(s => s.id === selectedSeminaireId) ?? initialSeminaire ?? seminaires[0] ?? null;
   const selectedFormat    = selectedSeminaire && selectedFormatId in selectedSeminaire.formats ? selectedSeminaire.formats[selectedFormatId] : null;
   const formatLabel       = SEMINAIRE_FORMAT_LABELS[selectedFormatId] ?? selectedFormatId;
   const availableFormatIds = selectedSeminaire
     ? SEMINAIRE_FORMAT_IDS.filter(id => id in (selectedSeminaire.formats || {}))
-    : [];
+    : SEMINAIRE_FORMAT_IDS.slice();
+
+  const periodStr =
+    startDate && endDate
+      ? `${new Date(`${startDate}T00:00:00`).toLocaleDateString('fr-FR')} → ${new Date(`${endDate}T00:00:00`).toLocaleDateString('fr-FR')}`
+      : period || '';
 
   const goNext = () => {
     setError('');
-    if (step === 1 && (!selectedSeminaireId || !selectedFormatId)) { setError('Veuillez sélectionner une offre.'); return; }
+    if (step === 1) {
+      if (!selectedFormatId) { setError('Choisissez un format.'); return; }
+      if (!form.participants.trim()) { setError('Indiquez le nombre de personnes.'); return; }
+      if (!periodStr) { setError('Indiquez des dates précises ou une période.'); return; }
+      setStep(2);
+      return;
+    }
     if (step === 2) {
-      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
-      if (!form.prenom || !form.nom || !form.email || !emailOk || !form.entreprise || !form.participants.trim()) {
-        setError('Certains champs obligatoires sont manquants ou invalides.'); return;
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
+      if (!form.prenom.trim() || !form.nom.trim() || !form.telephone.trim() || !form.email.trim() || !emailOk || !form.entreprise.trim()) {
+        setError('Renseignez nom, prénom, téléphone, e-mail et société.');
+        return;
       }
+      void handleSubmit();
     }
-    if (step === 3) {
-      if (!startDate || !endDate || !villeDepart.trim()) {
-        setError('Indiquez les dates et la ville de départ.'); return;
-      }
-    }
-    setTrans(true);
-    setTimeout(() => { setStep(s => Math.min(s + 1, 5)); setTrans(false); }, 180);
   };
-
-  const goPrev = () => { setTrans(true); setTimeout(() => { setStep(s => Math.max(s - 1, 1)); setTrans(false); }, 180); };
-
-  const periodStr =
-    startDate && endDate ? `${new Date(`${startDate}T00:00:00`).toLocaleDateString('fr-FR')} → ${new Date(`${endDate}T00:00:00`).toLocaleDateString('fr-FR')}` : '';
-
-  const activitesLine = [ACTIVITY_MAINS_PACK, ...extraActivities].join(', ');
 
   const handleSubmit = async () => {
     setSubmit(true);
     const selectionLine = selectedSeminaire && selectedFormat
       ? `${selectedSeminaire.producteur} — ${formatLabel} (${selectedFormat.titre})`
-      : 'Non renseigné';
+      : formatLabel;
     try {
       const res = await fetch('/api/demande-seminaire', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         cache: 'no-store',
         body: JSON.stringify({
-          seminaire_id:     selectedSeminaireId,
-          format_id:        selectedFormatId,
-          selection_label:  selectionLine,
-          offre_image_url:
-            selectedSeminaire?.images?.[0] ?? selectedSeminaire?.image ?? null,
+          seminaire_id: selectedSeminaireId ?? selectedSeminaire?.id ?? null,
+          format_id: selectedFormatId,
+          selection_label: selectionLine,
+          offre_image_url: selectedSeminaire?.images?.[0] ?? selectedSeminaire?.image ?? null,
           offre_footer_image_url: selectedSeminaire?.images?.[2] ?? null,
-          prenom:           form.prenom,
-          nom:              form.nom,
-          email:            form.email,
-          entreprise:       form.entreprise,
-          participants:     form.participants,
-          periode:          periodStr,
-          ville_depart:     villeDepart || null,
-          distance_max_h:   distanceHours,
-          hebergement:      hebergement,
-          hebergement_type: hebergement ? accTypes.join(', ') : null,
-          transport:        withTransport,
-          transport_type:   withTransport ? transport : null,
-          activites:        activitesLine,
-          message:          form.message?.trim() ? form.message.trim() : null,
+          prenom: form.prenom.trim(),
+          nom: form.nom.trim(),
+          email: form.email.trim(),
+          entreprise: form.entreprise.trim(),
+          participants: form.participants.trim(),
+          periode: periodStr || null,
+          ville_depart: null,
+          distance_max_h: null,
+          hebergement: false,
+          hebergement_type: null,
+          transport: false,
+          transport_type: null,
+          activites: null,
+          message: form.telephone.trim() ? `Téléphone : ${form.telephone.trim()}` : null,
         }),
       });
 
@@ -1925,13 +1663,10 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
       };
 
       if (!res.ok || !data.success) {
-        throw new Error(
-          data.error || data.message || 'Erreur lors de l\'envoi. Veuillez réessayer.',
-        );
+        throw new Error(data.error || data.message || 'Erreur lors de l\'envoi. Veuillez réessayer.');
       }
 
-      setSuccess(true);
-      setTimeout(handleClose, 2200);
+      setStep(3);
     } catch (err: any) {
       setError(err.message || 'Erreur lors de l\'envoi. Veuillez réessayer.');
     } finally {
@@ -1941,321 +1676,297 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
 
   if (!isOpen) return null;
 
-  const selectOptions = seminaires.map(s => ({ value: s.id, label: `${s.label} — ${s.producteur}` }));
+  const visual =
+    selectedSeminaire?.images?.[0]
+    ?? selectedSeminaire?.image
+    ?? PACK_ASSETS.hero;
+  const progress = step >= 3 ? 1 : step / 2;
+
+  const titleStyle: CSSProperties = {
+    fontFamily: "'Poppins', sans-serif",
+    fontSize: 24,
+    fontWeight: 400,
+    lineHeight: 1.25,
+    letterSpacing: '-0.05em',
+    color: PACK_MODAL_INK,
+    margin: '0 0 12px',
+  };
+  const strong: CSSProperties = { fontWeight: 700 };
+  const leadStyle: CSSProperties = {
+    fontSize: 12,
+    lineHeight: 1.45,
+    letterSpacing: '-0.02em',
+    color: PACK_MODAL_INK,
+    margin: '0 0 16px',
+  };
+  const labelStyle: CSSProperties = {
+    ...leadStyle,
+    fontSize: 10.5,
+    fontWeight: 600,
+    margin: '0 0 7px',
+  };
 
   return (
     <>
       <style>{`
-        @media (max-width: 600px) {
-          .pack-sem-wrapper { align-items: stretch !important; justify-content: stretch !important; padding: 0 !important; }
-          .pack-sem-panel {
-            border-radius: 0 !important;
-            max-height: 100dvh !important;
-            height: 100dvh !important;
-            min-height: 0 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            overflow: hidden !important;
-          }
-          .pack-sem-header { padding-top: max(20px, env(safe-area-inset-top)) !important; flex-shrink: 0 !important; }
-          .pack-sem-body { padding: 16px 16px 0 !important; min-height: 0 !important; flex: 1 !important; overflow-y: auto !important; }
-          .pack-sem-footer { padding: 12px 16px max(12px, env(safe-area-inset-bottom)) !important; flex-shrink: 0 !important; }
+        @keyframes packSemIn  { from { opacity:0; transform:translateY(16px) scale(.985) } to { opacity:1; transform:none } }
+        @keyframes packSemOut { from { opacity:1; transform:none } to { opacity:0; transform:translateY(16px) scale(.985) } }
+        @keyframes packSemFade { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:none } }
+        @keyframes packSemSpin { to { transform:rotate(360deg) } }
+
+        .pack-sem-scroll::-webkit-scrollbar { width:0 }
+        .pack-sem-scroll { scrollbar-width:none }
+
+        .pack-sem-input {
+          width:100%; box-sizing:border-box; background:#fff;
+          border:1px solid rgba(12,29,34,.14); border-radius:10px;
+          padding:8px 11px; font-family:inherit; font-size:12px; color:${PACK_MODAL_INK};
+          letter-spacing:-.02em; outline:none; transition:border-color .15s ease, box-shadow .15s ease;
+        }
+        .pack-sem-input:focus { border-color:${PACK_MODAL_INK}; box-shadow:0 0 0 2px rgba(12,29,34,.06) }
+        .pack-sem-input::placeholder { color:#b3b3b3 }
+
+        .pack-sem-opt {
+          width:100%; box-sizing:border-box; background:#fff; cursor:pointer;
+          border:1px solid rgba(12,29,34,.14); border-radius:10px;
+          padding:9px 10px; font-family:inherit; font-size:11.5px; color:#8f8f8f;
+          letter-spacing:-.02em; text-align:center; transition:all .15s ease;
+        }
+        .pack-sem-opt:hover { border-color:rgba(12,29,34,.35); color:${PACK_MODAL_INK} }
+        .pack-sem-opt[data-active="true"] { background:${PACK_MODAL_INK}; border-color:${PACK_MODAL_INK}; color:#fff }
+
+        .pack-sem-cta {
+          border:none; border-radius:9999px; background:${PACK_MODAL_ORANGE}; color:#fff;
+          font-family:inherit; font-size:12px; letter-spacing:-.02em; font-weight:500;
+          padding:8px 20px; cursor:pointer; transition:background .18s ease;
+          display:inline-flex; align-items:center; gap:7px;
+        }
+        .pack-sem-cta:hover { background:#d9552a }
+        .pack-sem-cta:disabled { opacity:.65; cursor:not-allowed }
+
+        .pack-sem-back {
+          background:none; border:none; padding:0; cursor:pointer; font-family:inherit;
+          font-size:11px; letter-spacing:-.02em; color:#a5a5a5; transition:color .15s ease;
+        }
+        .pack-sem-back:hover { color:${PACK_MODAL_INK} }
+
+        .pack-sem-nav {
+          width:20px; height:20px; border:none; border-radius:50%; background:rgba(12,29,34,.05);
+          color:${PACK_MODAL_INK}; font-size:12px; line-height:1; cursor:pointer; font-family:inherit;
+        }
+        .pack-sem-nav:hover { background:rgba(12,29,34,.1) }
+
+        .pack-sem-pill {
+          background:#fff; cursor:pointer; white-space:nowrap;
+          border:1px solid rgba(12,29,34,.14); border-radius:8px;
+          padding:5px 10px; font-family:inherit; font-size:10.5px; color:${PACK_MODAL_INK};
+          letter-spacing:-.02em; transition:all .15s ease;
+        }
+        .pack-sem-pill:hover { border-color:rgba(12,29,34,.35) }
+        .pack-sem-pill[data-active="true"] { background:${PACK_MODAL_INK}; border-color:${PACK_MODAL_INK}; color:#fff }
+
+        @media (max-width: 860px) {
+          .pack-sem-wrapper { padding:0 !important }
+          .pack-sem-panel { width:100% !important; max-width:none !important; height:100dvh !important; border-radius:0 !important; flex-direction:column !important }
+          .pack-sem-visual { width:100% !important; height:100px !important; flex:0 0 100px !important }
+          .pack-sem-content { padding:20px 18px 0 !important }
+          .pack-sem-footer { padding:0 18px max(14px, env(safe-area-inset-bottom)) !important }
+          .pack-sem-title { font-size:20px !important }
         }
       `}</style>
-      <div onClick={handleClose} style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'rgba(10,20,10,0.65)', backdropFilter: 'blur(6px)', opacity: closing ? 0 : 1, transition: 'opacity 0.28s ease' }} />
+
+      <div
+        onClick={handleClose}
+        style={{
+          position: 'fixed', inset: 0, zIndex: 999,
+          background: 'rgba(12,29,34,0.55)', backdropFilter: 'blur(6px)',
+          opacity: closing ? 0 : 1, transition: 'opacity .24s ease',
+        }}
+      />
+
       <div
         className="pack-sem-wrapper"
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 1000,
-          display: 'flex',
-          alignItems: isMobile ? 'stretch' : 'center',
-          justifyContent: isMobile ? 'stretch' : 'center',
-          padding: isMobile ? 0 : 16,
-          pointerEvents: 'none',
-        }}
+        style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}
       >
         <div
           className="pack-sem-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Demander un devis"
           onClick={e => e.stopPropagation()}
           style={{
             pointerEvents: 'auto',
-            ...(isMobile
-              ? {
-                  position: 'fixed' as const,
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  width: '100%',
-                  maxWidth: 'none',
-                  height: '100dvh',
-                  maxHeight: '100dvh',
-                  minHeight: 0,
-                  borderRadius: 0,
-                  boxShadow: 'none',
-                }
-              : {
-                  width: '100%',
-                  maxWidth: 860,
-                  maxHeight: '96vh',
-                  minHeight: 0,
-                  borderRadius: 28,
-                  boxShadow: '0 8px 48px rgba(0,0,0,0.14)',
-                  position: 'relative' as const,
-                }),
-            background: '#fff',
             display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            animation: `${closing ? 'semModalOut' : 'semModalIn'} 0.32s cubic-bezier(0.22,1,0.36,1) both`,
-            fontFamily: 'inherit',
+            width: '100%', maxWidth: 820,
+            height: 'min(520px, 90vh)',
+            background: '#fff', borderRadius: 16, overflow: 'hidden',
+            boxShadow: '0 20px 56px rgba(12,29,34,.24)',
+            fontFamily: "'Poppins', sans-serif",
+            animation: `${closing ? 'packSemOut' : 'packSemIn'} .28s cubic-bezier(.22,1,.36,1) both`,
           }}
         >
+          <div
+            className="pack-sem-visual"
+            aria-hidden
+            style={{
+              flex: '0 0 30%', width: '30%',
+              backgroundImage: `url("${visual}")`, backgroundSize: 'cover', backgroundPosition: 'center',
+            }}
+          />
 
-          <div className="pack-sem-header" style={{ padding: '20px 24px 0', background: '#fff', flexShrink: 0, borderBottom: '1px solid rgba(11, 44, 52,0.06)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 16, height: 1, background: '#e67e22' }} />
-                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#e67e22' }}>Votre projet de séminaire</span>
-              </div>
-              <button onClick={handleClose} style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: '#f4f1ec', border: 'none', color: '#6b7280', fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
-            </div>
-            <div style={{ display: 'flex', gap: 6, paddingBottom: 14 }}>
-              {STEPS.map((st, i) => {
-                const idx = i + 1; const done = step > idx; const active = step === idx;
-                return (
-                  <div key={st.label} style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ height: 2, borderRadius: 2, background: done ? '#e67e22' : active ? '#0b2c34' : 'rgba(11, 44, 52,0.08)', transition: 'background 0.4s ease', marginBottom: 5 }} />
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: active ? '#0b2c34' : done ? '#e67e22' : 'rgba(11, 44, 52,0.28)', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{idx}. {st.label}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {error && (
-            <div style={{ background: 'rgba(230,126,34,0.07)', borderBottom: '1px solid rgba(230,126,34,0.2)', padding: '10px 24px', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-              <span style={{ fontSize: 14 }}>⚠️</span>
-              <p style={{ fontSize: 13, color: '#c0620a', fontWeight: 600, margin: 0, flex: 1 }}>{error}</p>
-              <button onClick={() => setError('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#c0620a', fontSize: 16, fontFamily: 'inherit' }}>×</button>
-            </div>
-          )}
-
-          {success && (
-            <div
+          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+            <button
+              onClick={handleClose}
+              aria-label="Fermer"
               style={{
-                position: 'absolute',
-                inset: 0,
-                zIndex: 20,
-                background: 'rgba(255,255,255,0.97)',
-                backdropFilter: 'blur(4px)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: isMobile ? 0 : 24,
-                padding: 16,
+                position: 'absolute', top: 12, right: 14, zIndex: 2,
+                width: 26, height: 26, border: 'none', background: 'none', cursor: 'pointer',
+                color: PACK_MODAL_INK, display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
             >
-              <div
-                style={{
-                  border: '1.5px solid #E4E0DA',
-                  borderRadius: '16px',
-                  padding: '28px 32px',
-                  background: '#fff',
-                  fontFamily: 'Poppins, sans-serif',
-                  maxWidth: '100%',
-                  width: 'min(100%, 420px)',
-                }}
-              >
-                <div
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    background: '#0b2c34',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '14px',
-                  }}
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path
-                      d="M5 13l4 4L19 7"
-                      stroke="#5a9aaa"
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-                <p style={{ fontSize: '15px', fontWeight: 600, color: '#0b2c34', margin: '0 0 6px', lineHeight: 1.4 }}>
-                  C'est noté, merci !
-                </p>
-                <p style={{ fontSize: '13px', color: '#6B6460', margin: 0, lineHeight: 1.6 }}>
-                  Votre demande est entre de bonnes mains. Vous recevrez un email de confirmation dans quelques instants.
-                </p>
-                <hr style={{ border: 'none', borderTop: '1px solid #E4E0DA', margin: '16px 0' }} />
-                <p style={{ fontSize: '11px', color: '#A09080', margin: 0, fontStyle: 'italic' }}>
-                  Des séminaires engagés et engageants.
-                </p>
-              </div>
-            </div>
-          )}
+              <svg width="14" height="14" viewBox="0 0 17 17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                <path d="M2 2 15 15M15 2 2 15" />
+              </svg>
+            </button>
 
-          <div ref={scrollRef} className="pack-sem-body" style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '28px 24px 24px', scrollbarWidth: 'none' }}>
-            <div style={{ opacity: transitioning ? 0 : 1, transform: transitioning ? 'translateY(6px)' : 'translateY(0)', transition: 'all 0.18s ease' }}>
-
-              {step === 1 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
-                  <div>
-                    <h3 style={{ fontStyle: 'normal', fontSize: 24, fontWeight: 700, color: '#0b2c34', margin: '0 0 4px', fontFamily: 'inherit' }}>Votre sélection.</h3>
-                    <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>
-                      Récapitulatif de votre sélection. Vous pouvez modifier le produit ou le format ci-dessous.
+            <div ref={scrollRef} className="pack-sem-scroll pack-sem-content" style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '32px 28px 0' }}>
+              <div key={step} style={{ animation: 'packSemFade .3s ease both' }}>
+                {step === 1 && (
+                  <>
+                    <h2 className="pack-sem-title" style={titleStyle}>
+                      Votre séminaire,{' '}
+                      <strong style={strong}>{selectedSeminaire?.producteur ?? 'terroir'}</strong>
+                      {' '}en quelques détails.
+                    </h2>
+                    <p style={leadStyle}>
+                      Format, effectif et dates — on s&apos;occupe du reste.
                     </p>
-                  </div>
-                  {selectedSeminaire && selectedFormat && (
-                    <div style={{ background: '#faf8f5', borderRadius: 18, padding: '16px 18px', border: '1px solid rgba(11, 44, 52,0.08)' }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#e67e22', marginBottom: 8 }}>Actuellement sélectionné</div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: '#0b2c34', marginBottom: 4 }}>{selectedSeminaire.producteur}</div>
-                      <div style={{ fontSize: 14, color: '#7a7060', fontWeight: 600 }}>{formatLabel}</div>
-                      {selectedFormat.titre && (
-                        <div style={{ fontSize: 13, color: '#9a9080', marginTop: 4 }}>{selectedFormat.titre}</div>
-                      )}
-                    </div>
-                  )}
-                  <FieldBlock label="Changer de produit">
-                    <CustomSelect value={selectedSeminaireId ?? ''} onChange={val => setSelectedSeminaireId(val || null)} options={selectOptions} placeholder="— Choisir un produit —" />
-                  </FieldBlock>
-                  {selectedSeminaire && availableFormatIds.length > 0 && (
-                    <FieldBlock label="Choisir le format">
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                        {availableFormatIds.map(id => (
-                          <TagBtn key={id} active={selectedFormatId === id} onClick={() => setSelectedFormatId(id)}>
-                            {SEMINAIRE_FORMAT_LABELS[id]}
-                          </TagBtn>
-                        ))}
-                      </div>
-                    </FieldBlock>
-                  )}
-                </div>
-              )}
 
-              {step === 2 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
-                  <div>
-                    <h3 style={{ fontStyle: 'normal', fontSize: 24, fontWeight: 700, color: '#0b2c34', margin: '0 0 4px', fontFamily: 'inherit' }}>Informations & coordonnées.</h3>
-                    <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Qui vous êtes et combien vous serez.</p>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
-                    <FieldBlock label="Prénom" required><input style={inputStyle} placeholder="Jean" value={form.prenom} onChange={e => setForm({ ...form, prenom: e.target.value })} /></FieldBlock>
-                    <FieldBlock label="Nom" required><input style={inputStyle} placeholder="Dupont" value={form.nom} onChange={e => setForm({ ...form, nom: e.target.value })} /></FieldBlock>
-                    <FieldBlock label="Email professionnel" required><input style={inputStyle} type="email" placeholder="contact@entreprise.fr" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} /></FieldBlock>
-                    <FieldBlock label="Entreprise" required><input style={inputStyle} placeholder="Terroir SAS" value={form.entreprise} onChange={e => setForm({ ...form, entreprise: e.target.value })} /></FieldBlock>
-                  </div>
-                  <FieldBlock label="Nombre de participants" required>
-                    <input
-                      style={inputStyle}
-                      type="text"
-                      inputMode="numeric"
-                      placeholder="Ex. 24, une fourchette, ou « entre 15 et 30 »"
-                      value={form.participants}
-                      onChange={e => setForm({ ...form, participants: e.target.value })}
-                    />
-                  </FieldBlock>
-                </div>
-              )}
-
-              {step === 3 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
-                  <div>
-                    <h3 style={{ fontStyle: 'normal', fontSize: 24, fontWeight: 700, color: '#0b2c34', margin: '0 0 4px', fontFamily: 'inherit' }}>Dates & destination.</h3>
-                    <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Quand vous partez et depuis où.</p>
-                  </div>
-                  <FieldBlock label="Dates du séjour" required>
-                    <CollapsibleDateRangePicker collapseCalendar startDate={startDate} endDate={endDate} onStartChange={setStart} onEndChange={setEnd} />
-                  </FieldBlock>
-                  <FieldBlock label="Votre ville de départ" required>
-                    <VilleDepartInput value={villeDepart} onChange={setVilleDepart} style={inputStyle} />
-                  </FieldBlock>
-                  <FieldBlock label="Temps maximum de trajet souhaité" required>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <button type="button" onClick={() => setDistanceHours(h => Math.max(1, h - 1))} style={{ width: 36, height: 36, borderRadius: '50%', border: '1px solid rgba(11, 44, 52,0.15)', background: '#fff', cursor: 'pointer', fontSize: 18, fontWeight: 700, color: '#0b2c34', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="Diminuer">−</button>
-                      <span style={{ fontSize: 16, fontWeight: 700, color: '#0b2c34', minWidth: 100, textAlign: 'center' }}>{distanceHours} heure{distanceHours > 1 ? 's' : ''}</span>
-                      <button type="button" onClick={() => setDistanceHours(h => Math.min(8, h + 1))} style={{ width: 36, height: 36, borderRadius: '50%', border: '1px solid rgba(11, 44, 52,0.15)', background: '#fff', cursor: 'pointer', fontSize: 18, fontWeight: 700, color: '#0b2c34', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="Augmenter">+</button>
-                    </div>
-                  </FieldBlock>
-                </div>
-              )}
-
-              {step === 4 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
-                  <div>
-                    <h3 style={{ fontStyle: 'normal', fontSize: 24, fontWeight: 700, color: '#0b2c34', margin: '0 0 4px', fontFamily: 'inherit' }}>Logistique & sur-mesure.</h3>
-                    <p style={{ color: '#b0a89e', fontSize: 14, margin: 0 }}>Hébergement, transport, activités et message.</p>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
-                    <ToggleCard icon="🏠" label="Hébergement" active={hebergement} onToggle={() => setHeberg(v => !v)}>
-                      {hebergement && <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>{['Chambres seules', 'Chambres partagées'].map(t => <TagBtn key={t} active={accTypes.includes(t)} onClick={() => toggle(accTypes, setAccTypes, t)} small>{t}</TagBtn>)}</div>}
-                    </ToggleCard>
-                    <ToggleCard icon="🚗" label="Transport" active={withTransport} onToggle={() => setWithT(v => !v)}>
-                      {withTransport && <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>{['De porte à porte', 'Depuis gare SNCF proche'].map(t => <TagBtn key={t} active={transport === t} onClick={() => setTransport(t)} small>{t}</TagBtn>)}</div>}
-                    </ToggleCard>
-                  </div>
-                  <FieldBlock label="Activités possibles">
-                    <p style={{ fontSize: 12, color: '#7a7060', margin: '0 0 12px', lineHeight: 1.55 }}>
-                      Toutes nos activités sont conçues pour renforcer les liens et faciliter la cohésion d&apos;équipe.
-                    </p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                      <span style={{
-                        padding: '6px 14px', borderRadius: 9999, border: '1.5px solid #0b2c34', background: '#0b2c34', color: '#fff',
-                        fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 5, cursor: 'default',
-                      }}>
-                        ✓ {ACTIVITY_MAINS_PACK}
-                      </span>
-                      {ACTIVITY_OPTIONS_PACK.map(a => (
-                        <TagBtn key={a} active={extraActivities.includes(a)} onClick={() => toggle(extraActivities, setExtraActivities, a)}>{a}</TagBtn>
+                    <p style={labelStyle}>Quel format ?</p>
+                    <div style={{ display: 'grid', gridTemplateColumns: availableFormatIds.length > 1 ? '1fr 1fr' : '1fr', gap: 8, marginBottom: 16 }}>
+                      {availableFormatIds.map(id => (
+                        <button
+                          key={id}
+                          type="button"
+                          className="pack-sem-opt"
+                          data-active={selectedFormatId === id}
+                          onClick={() => { setSelectedFormatId(id); setError(''); }}
+                        >
+                          {SEMINAIRE_FORMAT_LABELS[id]}
+                        </button>
                       ))}
                     </div>
-                  </FieldBlock>
-                  <FieldBlock label="Un message particulier ?">
-                    <textarea rows={4} style={{ ...inputStyle, resize: 'none', lineHeight: 1.6 }} placeholder="Salles de réunion, pauses gourmandes, team building…" value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} />
-                  </FieldBlock>
-                </div>
-              )}
 
-              {step === 5 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  <p style={{ color: '#b0a89e', fontSize: 14, margin: '0 0 4px' }}>Vérifiez vos informations avant d'envoyer.</p>
-                  {[
-                    { num: 1, title: 'Sélection', rows: [{ label: 'Produit / offre', value: selectedSeminaire && selectedFormat ? `${selectedSeminaire.producteur} — ${formatLabel} (${selectedFormat.titre})` : '—' }] },
-                    { num: 2, title: 'Coordonnées', rows: [{ label: 'Nom', value: `${form.prenom} ${form.nom}` }, { label: 'Email', value: form.email }, { label: 'Entreprise', value: form.entreprise }, { label: 'Participants', value: form.participants }] },
-                    { num: 3, title: 'Dates & lieu', rows: [{ label: 'Période', value: periodStr || '—' }, { label: 'Ville de départ', value: villeDepart.trim() || '—' }, { label: 'Temps max. trajet', value: `${distanceHours} h` }] },
-                    { num: 4, title: 'Logistique & activités', rows: [{ label: 'Hébergement', value: hebergement ? (accTypes.length > 0 ? accTypes.join(', ') : 'Oui') : 'Non' }, { label: 'Transport', value: withTransport ? (transport || 'Oui') : 'Non' }, { label: 'Activités', value: activitesLine }, ...(form.message ? [{ label: 'Message', value: form.message }] : [])] },
-                  ].map(block => (
-                    <div key={block.num} style={{ background: '#faf8f5', borderRadius: 18, padding: '14px 18px', border: '1px solid rgba(11, 44, 52,0.06)' }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#e67e22', marginBottom: 10 }}>{block.num} — {block.title}</div>
-                      {block.rows.map(r => <RecapRow key={r.label} label={r.label} value={typeof r.value === 'string' ? r.value : ''} />)}
+                    <p style={labelStyle}>Combien de personnes ?</p>
+                    <input
+                      className="pack-sem-input"
+                      style={{ maxWidth: 220, marginBottom: 16 }}
+                      inputMode="numeric"
+                      placeholder="Ex. 24"
+                      value={form.participants}
+                      onChange={e => { setForm({ ...form, participants: e.target.value }); setError(''); }}
+                    />
+
+                    <p style={labelStyle}>Quelles dates ?</p>
+                    <button
+                      type="button"
+                      className="pack-sem-input"
+                      onClick={() => setCalendarOpen(v => !v)}
+                      style={{ maxWidth: 220, textAlign: 'left', cursor: 'pointer', color: startDate ? PACK_MODAL_INK : '#b3b3b3' }}
+                    >
+                      {startDate
+                        ? `${fmtDayShort(startDate)}${endDate ? ` → ${fmtDayShort(endDate)}` : ' → …'}`
+                        : 'Sélectionnez des dates précises'}
+                    </button>
+                    {calendarOpen && (
+                      <MiniDateRangeCalendar
+                        start={startDate}
+                        end={endDate}
+                        onStart={d => { setStart(d); setPeriod(''); setError(''); }}
+                        onEnd={d => { setEnd(d); if (d) setCalendarOpen(false); }}
+                        navClassName="pack-sem-nav"
+                      />
+                    )}
+
+                    <p style={{ ...labelStyle, margin: '14px 0 7px' }}>
+                      Ou bien, sélectionnez une période
+                    </p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                      {SEMINAIRE_PERIODS.map(p => (
+                        <button
+                          key={p}
+                          type="button"
+                          className="pack-sem-pill"
+                          data-active={period === p}
+                          onClick={() => {
+                            setPeriod(period === p ? '' : p);
+                            setStart('');
+                            setEnd('');
+                            setCalendarOpen(false);
+                            setError('');
+                          }}
+                        >
+                          {p}
+                        </button>
+                      ))}
                     </div>
-                  ))}
-                  <p style={{ fontSize: 13, color: '#b0a89e', textAlign: 'center', margin: '4px 0 0' }}>Tout est correct ? Cliquez sur <strong style={{ color: '#0b2c34' }}>Demander un devis</strong>.</p>
-                </div>
-              )}
-            </div>
-          </div>
+                  </>
+                )}
 
-          <div className="pack-sem-footer" style={{ padding: '20px 24px', borderTop: '1px solid rgba(11, 44, 52,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexShrink: 0, flexWrap: 'wrap' }}>
-            <button onClick={goPrev} disabled={step === 1} style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: step === 1 ? 'transparent' : '#b0a89e', background: 'none', border: 'none', cursor: step === 1 ? 'default' : 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6, pointerEvents: step === 1 ? 'none' : 'auto' }}>
-              ← Précédent
-            </button>
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={handleClose} style={{ padding: '11px 20px', borderRadius: 9999, border: '1px solid rgba(11, 44, 52,0.1)', background: '#faf8f5', fontFamily: 'inherit', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#b0a89e', cursor: 'pointer' }}>Annuler</button>
-              <button onClick={step < 5 ? goNext : handleSubmit} disabled={submitting} style={{ padding: '11px 24px', borderRadius: 9999, background: '#0b2c34', color: '#fff', border: 'none', fontFamily: 'inherit', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'flex', alignItems: 'center', gap: 8, minWidth: 150, justifyContent: 'center' }}>
-                {submitting ? 'Envoi…' : step < 5 ? 'Continuer →' : 'Demander un devis'}
-              </button>
+                {step === 2 && (
+                  <>
+                    <h2 className="pack-sem-title" style={titleStyle}>
+                      <strong style={strong}>Votre contact,</strong> pour revenir vers vous sous 48 heures.
+                    </h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 9, maxWidth: 280 }}>
+                      <input className="pack-sem-input" placeholder="Prénom" value={form.prenom} onChange={e => { setForm({ ...form, prenom: e.target.value }); setError(''); }} />
+                      <input className="pack-sem-input" placeholder="Nom" value={form.nom} onChange={e => { setForm({ ...form, nom: e.target.value }); setError(''); }} />
+                      <input className="pack-sem-input" type="tel" placeholder="Téléphone" value={form.telephone} onChange={e => { setForm({ ...form, telephone: e.target.value }); setError(''); }} />
+                      <input className="pack-sem-input" type="email" placeholder="E-mail" value={form.email} onChange={e => { setForm({ ...form, email: e.target.value }); setError(''); }} />
+                      <input className="pack-sem-input" placeholder="Nom de la société" value={form.entreprise} onChange={e => { setForm({ ...form, entreprise: e.target.value }); setError(''); }} />
+                    </div>
+                  </>
+                )}
+
+                {step === 3 && (
+                  <div style={{ paddingTop: 28 }}>
+                    <h2 className="pack-sem-title" style={{ ...titleStyle, marginBottom: 18 }}>
+                      <strong style={strong}>Merci beaucoup !</strong>
+                    </h2>
+                    <p className="pack-sem-title" style={{ ...titleStyle, margin: 0 }}>
+                      On revient vers vous <strong style={strong}>au plus vite.</strong>
+                    </p>
+                    <p style={{ ...leadStyle, fontSize: 12, textAlign: 'center', margin: '18px 0 0' }}>L&apos;équipe TERRAGO</p>
+                  </div>
+                )}
+              </div>
+              <div style={{ height: 16 }} />
+            </div>
+
+            <div className="pack-sem-footer" style={{ flexShrink: 0, padding: '0 28px 18px' }}>
+              {error && (
+                <p style={{ fontSize: 10.5, color: PACK_MODAL_ORANGE, textAlign: 'center', margin: '0 0 8px', letterSpacing: '-.02em' }}>{error}</p>
+              )}
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 36 }}>
+                {step === 2 && (
+                  <button type="button" className="pack-sem-back" onClick={() => { setError(''); setStep(1); }} style={{ position: 'absolute', left: 0 }}>
+                    ← Retour
+                  </button>
+                )}
+                <button type="button" className="pack-sem-cta" onClick={step === 3 ? handleClose : goNext} disabled={submitting}>
+                  {submitting && (
+                    <span style={{ width: 12, height: 12, border: '2px solid rgba(255,255,255,.35)', borderTopColor: '#fff', borderRadius: '50%', animation: 'packSemSpin .7s linear infinite' }} />
+                  )}
+                  {step === 3 ? 'Terminé' : submitting ? 'Envoi…' : 'Suivant'}
+                </button>
+              </div>
+
+              <div style={{ height: 2, marginTop: 12 }}>
+                {step < 3 && (
+                  <div style={{ height: '100%', width: `${progress * 100}%`, borderRadius: 9999, background: PACK_MODAL_ORANGE, transition: 'width .35s cubic-bezier(.22,1,.36,1)' }} />
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -2269,14 +1980,18 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
 export default function SeminairesPage({ initialSeminaires }: { initialSeminaires: Seminaire[] }) {
   const router = useRouter();
   const [seminaires,    setSeminaires]    = useState<Seminaire[]>(initialSeminaires);
-  const [activeId,      setActiveId]      = useState<string | null>(null);
-  const [modalOpen,     setModalOpen]     = useState(false);
-  const [modalSem,      setModalSem]      = useState<Seminaire | null>(null);
-  const [mapExpanded,   setMapExpanded]   = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalSem, setModalSem] = useState<Seminaire | null>(null);
   /** Affiché dès le clic vers une offre (avant que Next n’affiche la page détail). */
   const [detailNavPending, setDetailNavPending] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const listRef = useRef<HTMLDivElement>(null);
+  const catalogueRef = useRef<HTMLElement>(null);
+  const catalogueInnerRef = useRef<HTMLDivElement>(null);
+  const thirdRowRef = useRef<HTMLDivElement>(null);
+  const fifthRowRef = useRef<HTMLDivElement>(null);
+  const [leftPictoTop, setLeftPictoTop] = useState<number | null>(null);
+  const [moutonPos, setMoutonPos] = useState<{ top: number; right: number } | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -2284,21 +1999,58 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
 
   const filtered = seminaires;
 
-  const scrollToCard = useCallback((id: string) => {
-    if (!listRef.current) return;
-    const el = listRef.current.querySelector(`[data-id="${id}"]`) as HTMLElement | null;
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, []);
+  useEffect(() => {
+    const section = catalogueRef.current;
+    if (!section) {
+      setLeftPictoTop(null);
+      setMoutonPos(null);
+      return;
+    }
+
+    const update = () => {
+      const sectionRect = section.getBoundingClientRect();
+      const third = thirdRowRef.current;
+      const fifth = fifthRowRef.current;
+      const inner = catalogueInnerRef.current;
+      if (third) {
+        const r = third.getBoundingClientRect();
+        setLeftPictoTop(r.top - sectionRect.top + r.height / 2);
+      } else {
+        setLeftPictoTop(null);
+      }
+      if (fifth && inner) {
+        const r = fifth.getBoundingClientRect();
+        const innerRect = inner.getBoundingClientRect();
+        const gutter = Math.max(0, window.innerWidth - innerRect.right);
+        // Centre le picto dans l’espace entre la grille et le bord droit
+        const pictoHalf = window.innerWidth >= 1280 ? 120 : 104;
+        setMoutonPos({
+          top: r.top - sectionRect.top + r.height / 2,
+          right: Math.max(20, gutter / 2 - pictoHalf),
+        });
+      } else {
+        setMoutonPos(null);
+      }
+    };
+    update();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(update) : null;
+    ro?.observe(section);
+    window.addEventListener('resize', update);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, [filtered.length]);
 
   const openDevis = (s: Seminaire) => { setModalSem(s); setModalOpen(true); };
   const navigateToSlug = (s: Seminaire) => {
     setDetailNavPending(true);
-    router.push(`/seminaires-entreprise/offres/${s.slug}`);
+    router.push(`/seminaire-exemples/${s.slug}`);
   };
 
 
   return (
-    <div style={{ background: '#faf8f5', minHeight: '100vh', fontFamily: 'inherit' }}>
+    <div className="min-h-screen overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
       {mounted &&
         detailNavPending &&
         createPortal(<SeminaireDetailLoading variant="overlay" />, document.body)}
@@ -2313,72 +2065,41 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
         ::-webkit-scrollbar { display:none }
         .sem-img-arrow { opacity:0; transition:opacity 0.2s ease; }
         .sem-img-wrap:hover .sem-img-arrow { opacity:1; }
-        .terrago-popup .mapboxgl-popup-content { border-radius:18px !important; padding:12px 14px !important; box-shadow:0 4px 20px rgba(11, 44, 52,0.14) !important; border:1px solid rgba(11, 44, 52,0.08) !important; font-family:inherit !important; }
+        .terrago-popup .mapboxgl-popup-content { border-radius:26px !important; padding:12px 14px !important; box-shadow:0 4px 20px rgba(12,29,34,0.12) !important; border:1px solid rgba(12,29,34,0.08) !important; font-family:inherit !important; }
         .terrago-popup .mapboxgl-popup-tip { display:none !important; }
         .fmt-tab { flex:1; padding:10px 18px; border-radius:9999px; border:none; font-family:inherit; font-size:10px; font-weight:700; letter-spacing:0.06em; cursor:pointer; transition:all 0.18s ease; white-space:nowrap; text-transform:uppercase; }
-        .sem-page-wrap  { max-width:1400px; margin:0 auto; padding:0 clamp(1rem,3vw,2rem); }
-        .sem-header-top { padding-top:calc(84px + 3rem); padding-bottom:1.5rem; }
-        .sem-header-sub { color:#9a9080; font-size:13px; line-height:1.75; margin:0 0 24px; }
-        @media (min-width:900px) { .sem-header-sub { white-space:nowrap; } }
-        .sem-filter-chip { display:inline-flex; align-items:center; padding:7px 16px; border-radius:9999px; border:1.5px solid rgba(11, 44, 52,0.1); background:#fff; font-family:inherit; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; color:#b0a89e; transition:all 0.15s ease; white-space:nowrap; }
-        .sem-filter-chip.active { color:#fff; border-color:transparent; }
-        .sem-filter-chip:hover:not(.active):not(:disabled) { background:#f0ece5; color:#0b2c34; }
-        .sem-split      { display:grid; grid-template-columns:1fr 380px; gap:28px; align-items:start; }
-        .sem-grid       { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; align-items:stretch; }
+        .sem-grid       { display:grid; grid-template-columns:repeat(2, 1fr); gap:20px; align-items:stretch; }
         .sem-grid > div { min-width:0; display:flex; }
         .sem-pack-card { flex:1; width:100%; min-height:0; display:flex; flex-direction:column; }
-        .sem-pack-card-visual { position:relative; width:100%; flex-shrink:0; aspect-ratio:4/3; overflow:hidden; }
-        .sem-pack-card-body { flex:1; display:flex; flex-direction:column; min-height:0; padding:8px 10px 10px; }
-        .sem-pack-card-sub { margin-bottom:6px !important; }
+        .sem-pack-card-visual { position:relative; width:100%; flex-shrink:0; aspect-ratio:16/9; overflow:hidden; }
+        .sem-pack-card-body { flex:1; display:flex; flex-direction:column; min-height:0; padding:16px 20px 18px; }
+        .sem-pack-card-sub { margin-bottom:8px !important; }
         .sem-pack-card-row { margin-top:auto; }
-        .sem-map-widget { border-radius:16px; overflow:hidden; height:640px; box-shadow:0 2px 16px rgba(11, 44, 52,0.12); }
-        .sem-cta-band   { display:flex; flex-direction:row; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap; background:#0b2c34; border-radius:24px; padding:48px 64px; }
         .sem-detail-cols { display:grid; grid-template-columns:1fr 440px; gap:48px; align-items:start; }
-        .sem-format-tabs { display:flex; gap:0; background:rgba(11, 44, 52,0.05); border-radius:9999px; padding:6px; margin-left:auto; flex-shrink:0; }
+        .sem-format-tabs { display:flex; gap:0; background:rgba(12,29,34,0.05); border-radius:9999px; padding:6px; margin-left:auto; flex-shrink:0; }
         .sem-mobile-carousel { display:none; }
-        .sem-photo-grid { display:grid; gap:8px; border-radius:16px; overflow:hidden; margin-bottom:40px; position:relative; }
+        .sem-photo-grid { display:grid; gap:8px; border-radius:26px; overflow:hidden; margin-bottom:40px; position:relative; }
         .sem-photo-grid.has-small { grid-template-columns:1fr 1fr; grid-template-rows:repeat(2,clamp(160px,18vw,220px)); }
         .sem-photo-grid.no-small  { grid-template-columns:1fr; grid-template-rows:clamp(300px,36vw,440px); }
         .sem-photo-main { cursor:pointer; overflow:hidden; }
         .sem-photo-grid.has-small .sem-photo-main { grid-row:1/3; }
         .sem-price-col { position:sticky; top:96px; align-self:start; }
-        @media (max-width:1100px) { .sem-split { grid-template-columns:1fr 320px; } }
-        @media (max-width:900px)  { .sem-grid  { grid-template-columns:repeat(2,1fr); } }
+        @media (max-width:900px)  { .sem-grid { gap:20px; } }
         @media (max-width:768px)  {
-          .sem-split { grid-template-columns:1fr; }
-          .sem-grid { gap:10px; }
-          .sem-map-widget { height:300px; min-height: 240px; }
-          .sem-header-top { padding-top:calc(64px + 2rem); }
-          .sem-cta-band { flex-direction:column; text-align:center; padding:32px 24px; gap:24px; }
+          .sem-grid { grid-template-columns:1fr; gap:20px; }
           .sem-detail-cols { grid-template-columns:1fr; gap:24px; }
           .sem-price-col { position:static; }
           .sem-format-tabs { display:none; }
           .sem-mobile-carousel { display:block; position:relative; width:100vw; left:50%; transform:translateX(-50%); height:55vh; overflow:hidden; margin-bottom:28px; }
           .sem-photo-grid-desktop { display:none !important; }
           .sem-detail-title { display:none; }
-          .sem-pack-card { border-radius:16px !important; }
-          .sem-pack-card-visual { aspect-ratio:auto; height:clamp(88px,28vw,108px); max-height:none; }
-          .sem-pack-card-body { padding:8px 9px 10px; }
-          .sem-pack-card-title { font-size:12px !important; line-height:1.3 !important; min-height:calc(1.3em * 2); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-          .sem-pack-card-sub { min-height:1.35em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-          .sem-pack-card-row { flex-wrap:nowrap; align-items:center !important; gap:4px !important; }
-          .sem-pack-card-btn { padding:6px 9px !important; font-size:8px !important; letter-spacing:0.05em !important; }
-          .sem-pack-card-price { flex-wrap:nowrap !important; gap:3px !important; }
-          .sem-pack-card-price span:nth-child(2) { font-size:12px !important; }
-          .sem-pack-card-price .sem-pack-price-from { font-size:8px !important; }
-          .sem-pack-card-price span:last-child { font-size:8px !important; }
+          .sem-pack-card-visual { aspect-ratio:16/9; }
+          .sem-pack-card-body { padding:16px 20px 18px; }
         }
         @media (max-width:600px)  {
           .sem-photo-grid.has-small { grid-template-columns:1fr; grid-template-rows:clamp(200px,60vw,300px) clamp(120px,32vw,180px) clamp(120px,32vw,180px); }
           .sem-photo-grid.has-small .sem-photo-main { grid-row:auto; }
           .sem-photo-grid.no-small  { grid-template-rows:clamp(220px,65vw,340px); }
-          .sem-grid { grid-template-columns:repeat(2,1fr); }
-        }
-        @media (max-width:480px)  {
-          .sem-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
-          /* Garder la carte visible : la carte « aperçu » au tap sur un pin vit ici ; display:none la masquait entièrement sur petits téléphones */
-          .sem-map-widget { height: min(280px, 52dvh); min-height: 220px; }
-          .sem-cta-band { border-radius:16px; }
         }
       `}</style>
 
@@ -2390,107 +2111,216 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
         initialFormatId={modalSem ? primaryFormatIdForSeminaire(modalSem) : 'journee'}
       />
 
-      {mapExpanded && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 1500, background: 'rgba(10,20,10,0.55)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
-          onClick={() => setMapExpanded(false)}>
-          <div onClick={e => e.stopPropagation()} style={{ width: '100%', maxWidth: 1200, height: '80vh', borderRadius: 24, overflow: 'hidden', boxShadow: '0 8px 48px rgba(0,0,0,0.2)' }}>
-            <MapboxMap seminaires={filtered} activeId={activeId} activeFormat="journee"
-              onSelect={(id) => { const s = filtered.find(x => x.id === id); setActiveId(id); if (s) navigateToSlug(s); setMapExpanded(false); }}
-              onExpand={() => setMapExpanded(false)} expanded={true} />
-          </div>
-        </div>
-      )}
-
-      <div className="sem-page-wrap">
-        <div className="sem-header-top">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-            <div style={{ width: 20, height: 1, background: '#e67e22' }} />
-            <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Offres packagées</span>
-          </div>
-          <h1 className="text-primary" style={{ letterSpacing: '-0.01em', margin: '0 0 12px', lineHeight: 1.06 }}>
-            <span className="font-sans font-bold text-3xl sm:text-4xl">Nos séminaires nature &amp; </span>
-            <span className="font-display italic font-bold text-4xl sm:text-5xl">team building terroir.</span>
-          </h1>
-          <p className="sem-header-sub">
-            Séminaire à la journée ou résidentiel — des team-buildings humains chez des producteurs français.
-          </p>
-          <div style={{ paddingTop: 4, paddingBottom: 16, fontSize: 11, color: '#b0a89e', fontWeight: 600, letterSpacing: '0.06em' }}>
-            {filtered.length} expérience{filtered.length > 1 ? 's' : ''} disponible{filtered.length > 1 ? 's' : ''}
-          </div>
-        </div>
-
-        <div className="sem-split">
-          <div>
-            {filtered.length === 0 ? (
-              <div style={{ background: '#fff', borderRadius: 20, border: '1px solid rgba(11, 44, 52,0.08)', padding: '2rem', textAlign: 'center' }}>
-                <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
-                <h3 style={{ fontStyle: 'italic', fontSize: 20, fontWeight: 700, color: '#0b2c34', margin: '0 0 8px' }}>
-                  Aucune offre pour le moment
-                </h3>
-                <p style={{ color: '#9a9080', fontSize: 13, margin: 0 }}>Les offres seront bientôt disponibles.</p>
-                <button onClick={() => setModalOpen(true)} style={{ marginTop: 20, background: '#0b2c34', color: '#fff', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', padding: '10px 18px', borderRadius: 9999, border: 'none', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit' }}>
-                  Demander un devis →
-                </button>
-              </div>
-            ) : (
-              <div ref={listRef} className="sem-grid">
-                {filtered.map(s => (
-                  <div key={s.id} data-id={s.id}>
-                    <SeminaireCard
-                      s={s}
-                      isActive={activeId === s.id}
-                      onSelect={() => { setActiveId(s.id); navigateToSlug(s); }}
-                      onDevis={() => openDevis(s)}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div style={{ position: 'sticky', top: 90 }}>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#b0a89e', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span>🇫🇷</span> Carte des producteurs
-            </div>
-            <div className="sem-map-widget">
-              <MapboxMap
-                seminaires={filtered}
-                activeId={activeId}
-                activeFormat="journee"
-                onSelect={(id) => {
-                  const s = filtered.find(x => x.id === id);
-                  if (s) { setActiveId(id); navigateToSlug(s); }
-                  scrollToCard(id);
-                }}
-                onExpand={() => setMapExpanded(true)}
-                expanded={false}
-              />
+      {/* ── HERO encadré (DA Séminaires / Particuliers) ── */}
+      <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
+        <div className="relative mx-auto max-w-6xl px-5 pb-2 sm:px-8">
+          <div
+            className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
+            style={{ borderRadius: HOME_RADIUS }}
+          >
+            <img
+              src={PACK_ASSETS.hero}
+              alt="Séminaire TerraGo chez un producteur"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className={`${bottomImageGradientClass} z-[1]`} />
+            <div
+              className="absolute inset-0 z-[2]"
+              style={{
+                background:
+                  'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.5) 100%)',
+              }}
+            />
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pt-12 text-center sm:px-10 sm:pt-16 lg:pt-20">
+              <h1 className="max-w-3xl text-center font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
+                Nos exemples de
+                <br />
+                <span className="font-bold">séminaire d&apos;entreprise.</span>
+              </h1>
+              <h2 className="mt-4 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
+                Des formules concrètes chez des producteurs — à la journée ou en résidentiel.
+              </h2>
+              <a
+                href="#exemples"
+                className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
+                style={{ background: 'rgba(12, 29, 34, 0.12)' }}
+              >
+                Explorer les exemples
+              </a>
             </div>
           </div>
-        </div>
 
-        <div style={{ marginTop: 80, paddingTop: 48, borderTop: '1px solid #e5e0d8', paddingBottom: 80 }}>
-          <div className="sem-cta-band">
-            <div>
-              <h3 style={{ color: '#fff', margin: '0 0 10px', lineHeight: 1.3 }}>
-                <span style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 700, fontSize: 23 }}>Votre projet ne rentre pas </span>
-                <span style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 700, fontSize: 32 }}>dans une case ?</span>
+          {/* Sticker producteur — déborde en bas à droite, comme la montagne Home/étapes */}
+          <img
+            src={PACK_ASSETS.producteurSoutenu}
+            alt="+1 producteur soutenu"
+            className="pointer-events-none absolute bottom-0 right-5 z-30 h-32 w-auto translate-x-[18%] translate-y-[55%] rotate-[6deg] object-contain drop-shadow-md sm:right-8 sm:h-40 lg:right-12 lg:h-48"
+          />
+        </div>
+      </section>
+
+      {/* ── CATALOGUE ── */}
+      <section
+        id="exemples"
+        ref={catalogueRef}
+        className="relative scroll-mt-28"
+        style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
+      >
+        {/* S orange — bordure droite, hauteur du titre catalogue */}
+        <img
+          src={PACK_ASSETS.sOrange}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute right-0 z-0 hidden h-[200px] w-[200px] translate-x-[30%] -translate-y-[20%] object-contain opacity-90 lg:block xl:h-[260px] xl:w-[260px]"
+          style={{ top: 0 }}
+        />
+        {/* S orange — bordure gauche, aligné sur la 3ᵉ ligne de cards */}
+        {leftPictoTop != null && (
+          <img
+            src={PACK_ASSETS.sOrange}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute left-0 z-0 hidden h-[200px] w-[200px] -translate-x-[30%] -translate-y-1/2 object-contain opacity-90 lg:block xl:h-[260px] xl:w-[260px]"
+            style={{ top: leftPictoTop }}
+          />
+        )}
+        {/* Mouton — à droite de la 5ᵉ ligne, centré entre cards et bord */}
+        {moutonPos != null && (
+          <img
+            src={PACK_ASSETS.mouton}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute z-20 hidden h-36 w-36 -translate-y-1/2 object-contain sm:h-44 sm:w-44 lg:block lg:h-52 lg:w-52 xl:h-60 xl:w-60"
+            style={{ top: moutonPos.top, right: moutonPos.right }}
+          />
+        )}
+
+        <div ref={catalogueInnerRef} className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="mb-8 max-w-4xl sm:mb-10">
+            <h2 className={sectionTitleClass}>
+              Choisissez l&apos;expérience
+              <br />
+              <span className="font-bold">qui vous inspire.</span>
+            </h2>
+            <p className="mt-4 font-sans text-[14px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:whitespace-nowrap sm:text-[15px]">
+              Séminaire à la journée ou résidentiel — découvrez nos formules chez des producteurs engagés.
+            </p>
+          </div>
+
+          {filtered.length === 0 ? (
+            <div
+              style={{
+                background: HOME_COLORS.gray,
+                borderRadius: HOME_RADIUS,
+                border: '1px solid rgba(12,29,34,0.08)',
+                padding: '2.5rem 2rem',
+                textAlign: 'center',
+              }}
+            >
+              <h3
+                className="font-sans text-[22px] font-bold tracking-[-0.04em]"
+                style={{ color: HOME_COLORS.primary, margin: '0 0 8px' }}
+              >
+                Aucun exemple pour le moment
               </h3>
-              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, margin: 0, lineHeight: 1.6 }}>Groupe de 5 à 200+ — on construit avec vous votre séminaire sur mesure, à la rencontre d'un ou plusieurs producteurs.</p>
+              <p style={{ color: 'rgba(12,29,34,0.55)', fontSize: 14, margin: 0, lineHeight: 1.6 }}>
+                Les formules seront bientôt disponibles.
+              </p>
+              <button
+                type="button"
+                onClick={() => setModalOpen(true)}
+                style={{
+                  marginTop: 20,
+                  background: HOME_COLORS.primary,
+                  color: '#fff',
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.1em',
+                  padding: '10px 20px',
+                  borderRadius: 9999,
+                  border: 'none',
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                }}
+              >
+                Demander un devis
+              </button>
             </div>
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <a href={BRIEF_MAIL_HREF}
-                style={{ background: '#f78d00', color: '#fff', padding: '12px 20px', borderRadius: 9999, fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'none', display: 'inline-block' }}>
-                Discutons-en par mail →
-              </a>
-              <a href="/partenaires"
-                style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '12px 20px', borderRadius: 9999, fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.2)', textDecoration: 'none', display: 'inline-block' }}>
-                Voir nos producteurs →
-              </a>
+          ) : (
+            <div className="sem-grid">
+              {filtered.map((s, i) => (
+                <div
+                  key={s.id}
+                  data-id={s.id}
+                  ref={
+                    i === 4 ? thirdRowRef : i === 8 ? fifthRowRef : undefined
+                  }
+                >
+                  <SeminaireCard
+                    s={s}
+                    isActive={activeId === s.id}
+                    onSelect={() => {
+                      setActiveId(s.id);
+                      navigateToSlug(s);
+                    }}
+                    onDevis={() => openDevis(s)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section
+        className="relative"
+        style={{
+          paddingTop: 'clamp(0.75rem, 1.5vw, 1.25rem)',
+          paddingBottom: homeSectionPadding,
+          background: '#ffffff',
+        }}
+      >
+        <div className="relative mx-auto max-w-5xl px-5 sm:px-8">
+          <div className="relative">
+            {/* Branche — déborde en bas à droite du cadre CTA */}
+            <img
+              src={PACK_ASSETS.branche}
+              alt=""
+              aria-hidden
+              className="pointer-events-none absolute bottom-0 right-0 z-30 h-32 w-32 translate-x-[22%] translate-y-[48%] rotate-[8deg] object-contain drop-shadow-md sm:h-40 sm:w-40 lg:h-52 lg:w-52"
+            />
+
+            <div
+              className="relative overflow-hidden px-6 py-12 text-center sm:px-12 sm:py-14 lg:py-16"
+              style={{ background: HOME_COLORS.primary, borderRadius: HOME_RADIUS }}
+            >
+              <h2 className="mx-auto max-w-2xl font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-white sm:text-[40px] lg:text-[48px]">
+                Votre projet ne rentre pas <span className="font-bold">dans une case&nbsp;?</span>
+              </h2>
+              <p className="mx-auto mt-4 max-w-xl font-sans text-[14px] font-normal leading-[1.7] tracking-[-0.04em] text-white/80 sm:mt-5 sm:text-[15px]">
+                Groupe de 5 à 200+ — on construit avec vous un séminaire sur mesure, à la rencontre d&apos;un ou plusieurs producteurs.
+              </p>
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(true)}
+                  className="inline-flex min-w-[180px] items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
+                >
+                  Demander un devis
+                </button>
+                <Link
+                  href="/partenaires"
+                  className="inline-flex min-w-[180px] items-center justify-center rounded-full border-2 border-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-white transition-colors hover:bg-white/15 sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
+                >
+                  Voir nos producteurs partenaires
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { HOME_COLORS } from '../../../components/home/homeStyles';
 
 interface Heading {
   text: string;
@@ -37,15 +38,10 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
   }, [headings]);
 
   return (
-    <div>
-      <div style={{
-        fontSize: 9, fontWeight: 700, letterSpacing: '0.2em',
-        textTransform: 'uppercase', color: '#9a9080', marginBottom: '0.75rem',
-      }}>
-        Dans cet article
-      </div>
-      <nav>
-        {headings.map(({ text, id }) => (
+    <nav className="flex flex-col gap-0.5">
+      {headings.map(({ text, id }) => {
+        const isActive = activeId === id;
+        return (
           <a
             key={id}
             href={`#${id}`}
@@ -53,24 +49,17 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
               e.preventDefault();
               document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
             }}
+            className="block rounded-lg px-2.5 py-2 font-sans text-[13px] leading-[1.45] tracking-[-0.02em] no-underline transition-colors"
             style={{
-              display: 'block',
-              padding: '6px 10px',
-              borderRadius: 8,
-              marginBottom: 2,
-              fontSize: 12,
-              fontWeight: activeId === id ? 700 : 500,
-              color: activeId === id ? '#0b2c34' : '#9a9080',
-              background: activeId === id ? 'rgba(11, 44, 52,0.06)' : 'transparent',
-              textDecoration: 'none',
-              lineHeight: 1.45,
-              transition: 'all 0.2s',
+              fontWeight: isActive ? 700 : 500,
+              color: isActive ? HOME_COLORS.primary : 'rgba(12,29,34,0.45)',
+              background: isActive ? 'rgba(12,29,34,0.06)' : 'transparent',
             }}
           >
             {text}
           </a>
-        ))}
-      </nav>
-    </div>
+        );
+      })}
+    </nav>
   );
 }

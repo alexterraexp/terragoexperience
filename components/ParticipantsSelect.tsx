@@ -181,7 +181,7 @@ const ParticipantsSelect: React.FC<ParticipantsSelectProps> = ({
                   <button
                     type="button"
                     onClick={handleCustomSubmit}
-                    className="px-4 py-2.5 bg-primary text-white rounded-xl text-[12px] font-bold uppercase tracking-wider hover:bg-primary/90 transition-all"
+                    className="px-4 py-2.5 bg-primary text-white rounded-full text-[12px] font-bold uppercase tracking-wider hover:bg-primary/90 transition-all"
                   >
                     Valider
                   </button>

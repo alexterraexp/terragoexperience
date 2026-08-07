@@ -112,7 +112,7 @@ function buildDevisEmailHtml(data: {
     .replace(/{{MESSAGE}}/g, escapeHtml(data.message))
     .replace(/{{REFERENCE}}/g, escapeHtml(data.reference))
     .replace(/{{LIEN_SITE}}/g, 'https://terragoexperiences.fr')
-    .replace(/{{LIEN_OFFRES}}/g, 'https://terragoexperiences.fr/seminaires-entreprise/offres');
+    .replace(/{{LIEN_OFFRES}}/g, 'https://terragoexperiences.fr/seminaire-exemples');
 }
 
 /**

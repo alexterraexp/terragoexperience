@@ -4,6 +4,12 @@ import React, { useEffect, useState } from 'react';
 import ReactGA from 'react-ga4';
 import { GA_MEASUREMENT_ID } from '../lib/analytics';
 
+const INK = '#0c1d22';
+const ORANGE = '#ec6435';
+
+const COOKIE_IMAGE =
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/fromage-details2.png';
+
 type Step = 1 | 2;
 
 interface CookieRow {
@@ -13,6 +19,26 @@ interface CookieRow {
   disabled: boolean;
   onChange: () => void;
 }
+
+const titleStyle: React.CSSProperties = {
+  fontFamily: "'Poppins', sans-serif",
+  fontSize: 26,
+  fontWeight: 400,
+  lineHeight: 1.25,
+  letterSpacing: '-0.05em',
+  color: INK,
+  margin: '0 0 14px',
+};
+
+const strong: React.CSSProperties = { fontWeight: 700 };
+
+const leadStyle: React.CSSProperties = {
+  fontSize: 13,
+  lineHeight: 1.55,
+  letterSpacing: '-0.03em',
+  color: INK,
+  margin: '0 0 26px',
+};
 
 const CookieBanner: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -26,7 +52,10 @@ const CookieBanner: React.FC = () => {
     const consent = window.localStorage.getItem('cookie_consent');
     if (!consent) setVisible(true);
 
-    const handleOpen = () => { setStep(1); setVisible(true); };
+    const handleOpen = () => {
+      setStep(1);
+      setVisible(true);
+    };
     window.addEventListener('openCookieBanner', handleOpen);
     return () => window.removeEventListener('openCookieBanner', handleOpen);
   }, []);
@@ -43,7 +72,9 @@ const CookieBanner: React.FC = () => {
   };
 
   const handleAcceptAll = () => {
-    setStat(true); setMktg(true); setPref(true);
+    setStat(true);
+    setMktg(true);
+    setPref(true);
     applyConsent(true, true, true);
     setVisible(false);
   };
@@ -73,328 +104,388 @@ const CookieBanner: React.FC = () => {
       desc: 'Utilisés pour comprendre comment les visiteurs interagissent avec le site et améliorer ses performances.',
       checked: stat,
       disabled: false,
-      onChange: () => setStat(v => !v),
+      onChange: () => setStat((v) => !v),
     },
     {
       label: 'Cookies de fonctionnalité',
       desc: "Retiennent vos préférences d'affichage comme la langue ou la région.",
       checked: pref,
       disabled: false,
-      onChange: () => setPref(v => !v),
+      onChange: () => setPref((v) => !v),
     },
     {
       label: 'Cookies pour une publicité ciblée',
       desc: 'Optimisent la performance et la personnalisation de nos publicités.',
       checked: mktg,
       disabled: false,
-      onChange: () => setMktg(v => !v),
+      onChange: () => setMktg((v) => !v),
     },
   ];
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         @keyframes ckIn {
-          from { opacity: 0; transform: translateY(20px) scale(0.98); }
-          to   { opacity: 1; transform: translateY(0)    scale(1);    }
+          from { opacity: 0; transform: translateY(16px) scale(0.985); }
+          to   { opacity: 1; transform: none; }
         }
-        .ck-panel { animation: ckIn .3s cubic-bezier(.22,1,.36,1) both; }
-        .ck-scroll::-webkit-scrollbar { display: none; }
+        @keyframes ckFade {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: none; }
+        }
+        .ck-scroll::-webkit-scrollbar { width: 0; }
         .ck-scroll { scrollbar-width: none; }
-        .ck-row-btn { transition: background .15s; }
-        .ck-row-btn:hover { background: rgba(11, 44, 52,0.04) !important; }
-        .ck-track { transition: background .2s; }
-        .ck-thumb { transition: left .2s; }
+        .ck-row { transition: background .15s ease; }
+        .ck-row:hover { background: rgba(12,29,34,0.03) !important; }
+        .ck-track { transition: background .2s ease; }
+        .ck-thumb { transition: left .2s ease; }
+        .ck-cta {
+          border: none; border-radius: 9999px; background: ${ORANGE}; color: #fff;
+          font-family: inherit; font-size: 13px; letter-spacing: -.03em; font-weight: 500;
+          padding: 10px 24px; cursor: pointer; transition: background .18s ease;
+          display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .ck-cta:hover { background: #d9552a; }
+        .ck-ghost {
+          border: 1px solid rgba(12,29,34,0.14); border-radius: 9999px; background: #fff; color: ${INK};
+          font-family: inherit; font-size: 13px; letter-spacing: -.03em; font-weight: 500;
+          padding: 10px 22px; cursor: pointer; transition: border-color .15s ease, background .15s ease;
+        }
+        .ck-ghost:hover { border-color: rgba(12,29,34,0.35); background: rgba(12,29,34,0.03); }
+        .ck-link {
+          background: none; border: none; padding: 0; cursor: pointer; font-family: inherit;
+          font-size: 12px; letter-spacing: -.02em; color: #a5a5a5; transition: color .15s ease;
+          text-decoration: underline; text-underline-offset: 3px;
+        }
+        .ck-link:hover { color: ${INK}; }
+        @media (min-width: 861px) {
+          .ck-cta, .ck-ghost { font-size: 14px; padding: 11px 28px; }
+        }
+        @media (max-width: 860px) {
+          .ck-wrapper { padding: 16px !important; align-items: center !important; }
+          .ck-panel {
+            width: 100% !important; max-width: 440px !important;
+            height: auto !important; max-height: 50dvh !important;
+            border-radius: 20px !important;
+            flex-direction: column !important;
+          }
+          .ck-visual { width: 100% !important; height: 110px !important; flex: 0 0 110px !important; }
+          .ck-content { padding: 20px 20px 0 !important; }
+          .ck-footer { padding: 0 20px 18px !important; }
+          .ck-title { font-size: 20px !important; }
+        }
       `}</style>
 
-      {/* Backdrop */}
-      <div style={{ position:'fixed', inset:0, zIndex:999, background:'rgba(0,0,0,0.4)' }} />
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 1200,
+          background: 'rgba(12,29,34,0.55)',
+          backdropFilter: 'blur(6px)',
+        }}
+      />
 
-      {/* Centering wrapper */}
-      <div style={{
-        position:'fixed', inset:0, zIndex:1000,
-        display:'flex', alignItems:'center', justifyContent:'center',
-        padding:16, pointerEvents:'none',
-      }}>
+      <div
+        className="ck-wrapper"
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 1201,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 20,
+          pointerEvents: 'none',
+        }}
+      >
         <div
           className="ck-panel"
-          onClick={e => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Préférences cookies"
           style={{
-            pointerEvents:'auto',
-            width:'100%', maxWidth: step === 1 ? 680 : 700,
-            background:'#ffffff',
-            borderRadius:20,
-            overflow:'hidden',
-            boxShadow:'0 12px 60px rgba(0,0,0,0.25)',
-            fontFamily:"'Poppins', sans-serif",
+            pointerEvents: 'auto',
+            display: 'flex',
+            width: '100%',
+            maxWidth: step === 1 ? 860 : 940,
+            height: step === 1 ? 'auto' : 'min(600px, 92vh)',
+            maxHeight: '92vh',
+            background: '#fff',
+            borderRadius: 20,
+            overflow: 'hidden',
+            boxShadow: '0 24px 70px rgba(12,29,34,.28)',
+            fontFamily: "'Poppins', sans-serif",
+            animation: 'ckIn .28s cubic-bezier(.22,1,.36,1) both',
           }}
         >
+          <div
+            className="ck-visual"
+            style={{
+              flex: '0 0 34%',
+              width: '34%',
+              backgroundImage: `url("${COOKIE_IMAGE}")`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+            role="img"
+            aria-label="Fabrication artisanale – TerraGo"
+          />
 
-          {/* ───── STEP 1 ───── */}
-          {step === 1 && (
-            <div style={{ padding: '32px 36px 28px' }}>
-              {/* Title */}
-              <p style={{
-                fontWeight:700, fontSize:20, color:'#0b2c34',
-                margin:'0 0 16px', lineHeight:1.3,
-              }}>
-                Nous utilisons des cookies 🍪
-              </p>
-
-              {/* Body */}
-              <p style={{
-                fontSize:14, color:'#4a5568', lineHeight:1.75,
-                margin:'0 0 28px',
-              }}>
-                Nous utilisons les propres cookies de TerraGo et ceux de tiers pour assurer
-                le bon fonctionnement de ce site Web. Si vous cliquez sur le bouton
-                "Tout accepter" ci-dessous, nous utiliserons également des statistiques
-                et des cookies à des fins marketing.{' '}
-                <a
-                  href="#"
-                  onClick={e => { e.preventDefault(); setStep(2); }}
-                  style={{ color:'#e67e22', fontWeight:600, textDecoration:'underline', textUnderlineOffset:3 }}
-                >
-                  En savoir plus
-                </a>
-              </p>
-
-              {/* Footer buttons */}
-              <div style={{
-                display:'flex', alignItems:'center',
-                justifyContent:'space-between', flexWrap:'wrap', gap:12,
-              }}>
-                {/* Left: settings link */}
-                <a
-                  href="#"
-                  onClick={e => { e.preventDefault(); setStep(2); }}
-                  style={{
-                    fontSize:13, fontWeight:600, color:'#0b2c34',
-                    textDecoration:'underline', textUnderlineOffset:3,
-                    cursor:'pointer',
-                  }}
-                >
-                  Paramètres des cookies
-                </a>
-
-                {/* Right: action buttons */}
-                <div style={{ display:'flex', gap:10 }}>
-                  <button
-                    onClick={handleRefuse}
-                    style={{
-                      padding:'12px 28px', borderRadius:9999,
-                      background:'#f0ede8', color:'#0b2c34',
-                      border:'none', fontSize:13, fontWeight:600,
-                      cursor:'pointer',
-                    }}
-                  >
-                    Tout refuser
-                  </button>
-                  <button
-                    onClick={handleAcceptAll}
-                    style={{
-                      padding:'12px 28px', borderRadius:9999,
-                      background:'#0b2c34', color:'#fff',
-                      border:'none', fontSize:13, fontWeight:600,
-                      cursor:'pointer',
-                    }}
-                  >
-                    Tout accepter
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ───── STEP 2 ───── */}
-          {step === 2 && (
-            <>
-              {/* Header */}
-              <div style={{
-                padding:'24px 28px 20px',
-                borderBottom:'1px solid #e8e4de',
-                display:'flex', alignItems:'flex-start',
-                justifyContent:'space-between', gap:16,
-              }}>
-                <div>
-                  <h2 style={{
-                    fontFamily: "'Poppins', sans-serif",
-                    fontWeight: 700,
-                    fontSize: 18,
-                    color: '#0b2c34',
-                    margin: '0 0 8px',
-                  }}>
-                    Centre de préférences de la confidentialité
-                  </h2>
-                  <p style={{
-                    fontSize:12.5, color:'#6b7280', lineHeight:1.7, margin:0,
-                    maxWidth:520,
-                  }}>
-                    Lorsque vous consultez ce site, des données peuvent être stockées dans votre
-                    navigateur sous forme de cookies. Vous pouvez choisir de ne pas autoriser
-                    certains types de cookies.{' '}
-                    <a href="/confidentialite" style={{ color:'#e67e22', textDecoration:'underline', textUnderlineOffset:2 }}>
-                      Plus d'informations
-                    </a>
-                  </p>
-                </div>
-                <button
-                  onClick={() => setStep(1)}
-                  style={{
-                    width:32, height:32, borderRadius:'50%',
-                    background:'#f0ede8', border:'none',
-                    fontSize:18, cursor:'pointer', color:'#6b7280',
-                    display:'flex', alignItems:'center', justifyContent:'center',
-                    flexShrink:0,
-                  }}
-                >
-                  ×
-                </button>
-              </div>
-
-              {/* Accept all button (visible in scroll area top) */}
-              <div style={{ padding:'16px 28px 0' }}>
-                <button
-                  onClick={handleAcceptAll}
-                  style={{
-                    padding:'12px 24px', borderRadius:9999,
-                    background:'#0b2c34', color:'#fff',
-                    border:'none', fontSize:12, fontWeight:700,
-                    letterSpacing:'.06em', cursor:'pointer',
-                  }}
-                >
-                  Tout autoriser
-                </button>
-              </div>
-
-              {/* Cookie categories */}
-              <div
-                className="ck-scroll"
-                style={{ padding:'12px 28px', maxHeight:320, overflowY:'auto' }}
+          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+            {step === 2 && (
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                aria-label="Fermer les paramètres"
+                style={{
+                  position: 'absolute',
+                  top: 18,
+                  right: 20,
+                  zIndex: 2,
+                  width: 30,
+                  height: 30,
+                  border: 'none',
+                  background: 'none',
+                  cursor: 'pointer',
+                  color: INK,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                {rows.map(row => (
-                  <div
-                    key={row.label}
-                    style={{
-                      border:'1px solid #e8e4de',
-                      borderRadius:10, marginBottom:8, overflow:'hidden',
-                    }}
-                  >
-                    {/* Row header */}
-                    <div
-                      className="ck-row-btn"
-                      onClick={() => !row.disabled && setExpanded(expanded === row.label ? null : row.label)}
-                      style={{
-                        padding:'14px 16px',
-                        display:'flex', alignItems:'center',
-                        justifyContent:'space-between', gap:12,
-                        cursor: row.disabled ? 'default' : 'pointer',
-                        background:'#fff',
-                      }}
-                    >
-                      <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                        <span style={{
-                          fontSize:16, color: row.disabled ? '#e67e22' : '#9ca3af',
-                          fontWeight:700, lineHeight:1,
-                        }}>
-                          {expanded === row.label ? '−' : '+'}
-                        </span>
-                        <span style={{ fontSize:13, fontWeight:600, color:'#0b2c34' }}>
-                          {row.label}
-                        </span>
-                      </div>
+                <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                  <path d="M2 2 15 15M15 2 2 15" />
+                </svg>
+              </button>
+            )}
 
-                      {row.disabled ? (
-                        <span style={{ fontSize:11, fontWeight:700, color:'#e67e22', letterSpacing:'.04em' }}>
-                          Toujours actif
-                        </span>
-                      ) : (
-                        <label
-                          onClick={e => e.stopPropagation()}
-                          style={{ cursor:'pointer', flexShrink:0 }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={row.checked}
-                            onChange={row.onChange}
-                            style={{ position:'absolute', opacity:0, width:0, height:0 }}
-                          />
+            <div
+              className="ck-scroll ck-content"
+              style={{
+                flex: 1,
+                minHeight: 0,
+                overflowY: 'auto',
+                padding: step === 1 ? '42px 40px 0' : '42px 40px 0',
+              }}
+            >
+              <div key={step} style={{ animation: 'ckFade .3s ease both' }}>
+                {step === 1 && (
+                  <>
+                    <h2 className="ck-title" style={titleStyle}>
+                      Nous utilisons des <strong style={strong}>cookies.</strong>
+                    </h2>
+                    <p style={leadStyle}>
+                      Nous utilisons les propres cookies de TerraGo et ceux de tiers pour assurer le bon
+                      fonctionnement de ce site. Si vous cliquez sur « Tout accepter », nous utiliserons
+                      également des statistiques et des cookies à des fins marketing.{' '}
+                      <button type="button" className="ck-link" onClick={() => setStep(2)} style={{ color: ORANGE, fontWeight: 600 }}>
+                        En savoir plus
+                      </button>
+                    </p>
+                  </>
+                )}
+
+                {step === 2 && (
+                  <>
+                    <h2 className="ck-title" style={titleStyle}>
+                      Centre de <strong style={strong}>préférences.</strong>
+                    </h2>
+                    <p style={{ ...leadStyle, marginBottom: 18 }}>
+                      Lorsque vous consultez ce site, des données peuvent être stockées dans votre
+                      navigateur sous forme de cookies. Vous pouvez choisir de ne pas autoriser certains
+                      types.{' '}
+                      <a
+                        href="/confidentialite"
+                        style={{ color: ORANGE, fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 3 }}
+                      >
+                        Plus d&apos;informations
+                      </a>
+                    </p>
+
+                    <button type="button" className="ck-cta" onClick={handleAcceptAll} style={{ marginBottom: 16 }}>
+                      Tout autoriser
+                    </button>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 8 }}>
+                      {rows.map((row) => {
+                        const isOpen = expanded === row.label;
+                        return (
                           <div
-                            className="ck-track"
+                            key={row.label}
                             style={{
-                              width:46, height:26, borderRadius:13,
-                              background: row.checked ? '#0b2c34' : '#d1d5db',
-                              position:'relative',
+                              border: '1px solid rgba(12,29,34,0.10)',
+                              borderRadius: 14,
+                              overflow: 'hidden',
+                              background: '#fff',
                             }}
                           >
                             <div
-                              className="ck-thumb"
+                              className="ck-row"
+                              onClick={() =>
+                                !row.disabled && setExpanded(isOpen ? null : row.label)
+                              }
                               style={{
-                                position:'absolute', top:4,
-                                left: row.checked ? 24 : 4,
-                                width:18, height:18, borderRadius:'50%',
-                                background:'#fff',
-                                boxShadow:'0 1px 4px rgba(0,0,0,0.18)',
+                                padding: '13px 14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                gap: 12,
+                                cursor: row.disabled ? 'default' : 'pointer',
                               }}
-                            />
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                                <span
+                                  style={{
+                                    fontSize: 15,
+                                    fontWeight: 600,
+                                    color: row.disabled ? ORANGE : 'rgba(12,29,34,0.35)',
+                                    lineHeight: 1,
+                                    width: 14,
+                                    textAlign: 'center',
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  {isOpen ? '−' : '+'}
+                                </span>
+                                <span
+                                  style={{
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    letterSpacing: '-0.03em',
+                                    color: INK,
+                                  }}
+                                >
+                                  {row.label}
+                                </span>
+                              </div>
+
+                              {row.disabled ? (
+                                <span
+                                  style={{
+                                    fontSize: 11,
+                                    fontWeight: 600,
+                                    letterSpacing: '-0.02em',
+                                    color: ORANGE,
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                >
+                                  Toujours actif
+                                </span>
+                              ) : (
+                                <label
+                                  onClick={(e) => e.stopPropagation()}
+                                  style={{ cursor: 'pointer', flexShrink: 0 }}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={row.checked}
+                                    onChange={row.onChange}
+                                    style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }}
+                                  />
+                                  <div
+                                    className="ck-track"
+                                    style={{
+                                      width: 44,
+                                      height: 26,
+                                      borderRadius: 13,
+                                      background: row.checked ? INK : 'rgba(12,29,34,0.15)',
+                                      position: 'relative',
+                                    }}
+                                  >
+                                    <div
+                                      className="ck-thumb"
+                                      style={{
+                                        position: 'absolute',
+                                        top: 4,
+                                        left: row.checked ? 22 : 4,
+                                        width: 18,
+                                        height: 18,
+                                        borderRadius: '50%',
+                                        background: '#fff',
+                                        boxShadow: '0 1px 4px rgba(0,0,0,0.18)',
+                                      }}
+                                    />
+                                  </div>
+                                </label>
+                              )}
+                            </div>
+
+                            {isOpen && (
+                              <div
+                                style={{
+                                  padding: '0 14px 14px 38px',
+                                  fontSize: 12,
+                                  lineHeight: 1.6,
+                                  letterSpacing: '-0.02em',
+                                  color: 'rgba(12,29,34,0.55)',
+                                  borderTop: '1px solid rgba(12,29,34,0.06)',
+                                  paddingTop: 10,
+                                }}
+                              >
+                                {row.desc}
+                              </div>
+                            )}
                           </div>
-                        </label>
-                      )}
+                        );
+                      })}
                     </div>
+                  </>
+                )}
+              </div>
+              <div style={{ height: 22 }} />
+            </div>
 
-                    {/* Expanded description */}
-                    {expanded === row.label && (
-                      <div style={{
-                        padding:'0 16px 14px 40px',
-                        fontSize:12, color:'#6b7280', lineHeight:1.65,
-                        borderTop:'1px solid #f0ede8',
-                        paddingTop:10,
-                      }}>
-                        {row.desc}
-                      </div>
-                    )}
+            <div className="ck-footer" style={{ flexShrink: 0, padding: '0 40px 26px' }}>
+              {step === 1 ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: 12,
+                  }}
+                >
+                  <button type="button" className="ck-link" onClick={() => setStep(2)}>
+                    Paramètres des cookies
+                  </button>
+                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <button type="button" className="ck-ghost" onClick={handleRefuse}>
+                      Tout refuser
+                    </button>
+                    <button type="button" className="ck-cta" onClick={handleAcceptAll}>
+                      Tout accepter
+                    </button>
                   </div>
-                ))}
-              </div>
-
-              {/* Footer */}
-              <div style={{
-                padding:'14px 28px 20px',
-                borderTop:'1px solid #e8e4de',
-                display:'flex', alignItems:'center',
-                justifyContent:'space-between', flexWrap:'wrap', gap:10,
-              }}>
-                <div style={{ fontSize:11, color:'#9ca3af' }}>
-                  Powered by <strong style={{ color:'#0b2c34' }}>TerraGo</strong>
                 </div>
-                <div style={{ display:'flex', gap:10 }}>
-                  <button
-                    onClick={handleRefuse}
-                    style={{
-                      padding:'11px 22px', borderRadius:9999,
-                      background:'#f0ede8', color:'#0b2c34',
-                      border:'none', fontSize:12, fontWeight:700,
-                      cursor:'pointer',
-                    }}
-                  >
-                    Tout refuser
-                  </button>
-                  <button
-                    onClick={handleSave}
-                    style={{
-                      padding:'11px 22px', borderRadius:9999,
-                      background:'#0b2c34', color:'#fff',
-                      border:'none', fontSize:12, fontWeight:700,
-                      cursor:'pointer',
-                    }}
-                  >
-                    Confirmer la sélection
-                  </button>
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: 12,
+                    borderTop: '1px solid rgba(12,29,34,0.08)',
+                    paddingTop: 16,
+                  }}
+                >
+                  <span style={{ fontSize: 11, letterSpacing: '-0.02em', color: '#a5a5a5' }}>
+                    Powered by <strong style={{ color: INK, fontWeight: 600 }}>TerraGo</strong>
+                  </span>
+                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <button type="button" className="ck-ghost" onClick={handleRefuse}>
+                      Tout refuser
+                    </button>
+                    <button type="button" className="ck-cta" onClick={handleSave}>
+                      Confirmer la sélection
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </>

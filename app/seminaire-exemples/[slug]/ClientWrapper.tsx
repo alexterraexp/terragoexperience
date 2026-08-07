@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import SeminaireDetailLoading from '@/components/SeminaireDetailLoading';
 
 const SeminaireDetailPage = dynamic(
-  () => import('../../../../views/SeminaireDetailPage'),
+  () => import('../../../views/SeminaireDetailPage'),
   { ssr: false, loading: () => <SeminaireDetailLoading /> }
 );
 

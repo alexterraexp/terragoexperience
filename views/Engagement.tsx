@@ -2,12 +2,15 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useModal } from '../context/ModalContext';
 import {
   HOME_COLORS,
   HOME_RADIUS,
   homeParagraphClass,
   homeSectionPadding,
   bottomImageGradientClass,
+  homeHeroOutlineButtonClass,
+  homeCtaOutlineClass,
 } from '../components/home/homeStyles';
 
 const ASSETS = {
@@ -65,6 +68,7 @@ const sectionTitleClass =
   'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
 
 const Engagement: React.FC = () => {
+  const { openPartenaireModal } = useModal();
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const hash = window.location.hash;
@@ -97,7 +101,7 @@ const Engagement: React.FC = () => {
               }}
             />
 
-            <div className="relative z-10 flex h-full flex-col items-center justify-center px-5 py-10 text-center sm:px-10 sm:py-14">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pt-12 text-center sm:px-10 sm:pt-16 lg:pt-20">
               <h1 className="max-w-3xl font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
                 Notre <span className="font-bold">approche</span>
               </h1>
@@ -105,13 +109,14 @@ const Engagement: React.FC = () => {
                 Reconnecter l&apos;humain à la terre, soutenir les producteurs engagés,
                 et créer des expériences qui laissent une trace.
               </p>
-              <Link
-                href="/nous-rejoindre"
-                className="mt-7 inline-flex items-center justify-center rounded-full border-2 border-white px-8 py-2 text-sm font-bold tracking-[0.04em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] hover:bg-white/10 sm:mt-9"
+              <button
+                type="button"
+                onClick={openPartenaireModal}
+                className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
                 style={{ background: 'rgba(12, 29, 34, 0.12)' }}
               >
                 Rejoindre la communauté
-              </Link>
+              </button>
             </div>
 
             <img
@@ -243,9 +248,9 @@ const Engagement: React.FC = () => {
                 </p>
                 <Link
                   href="/partenaires"
-                  className="mt-8 inline-flex items-center justify-center rounded-full border border-[#0c1d22] bg-white px-8 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white"
+                  className={`mt-8 ${homeCtaOutlineClass}`}
                 >
-                  Découvrir nos producteurs
+                  Découvrir nos producteurs partenaires
                 </Link>
               </div>
             </ScrollAnimate>
@@ -299,7 +304,7 @@ const Engagement: React.FC = () => {
                   href="https://www.linkedin.com/in/alexsoulard-ev/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-w-[120px] items-center justify-center rounded-full bg-[#0c1d22] px-8 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[150px] sm:px-12"
+                  className="inline-flex min-w-[100px] items-center justify-center rounded-full bg-[#0c1d22] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[150px] sm:px-12 sm:py-2.5 sm:text-[11px]"
                 >
                   Alex
                 </a>
@@ -307,7 +312,7 @@ const Engagement: React.FC = () => {
                   href="https://www.linkedin.com/in/jeromepeyronengineer/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-w-[120px] items-center justify-center rounded-full bg-[#0c1d22] px-8 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[150px] sm:px-12"
+                  className="inline-flex min-w-[100px] items-center justify-center rounded-full bg-[#0c1d22] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[150px] sm:px-12 sm:py-2.5 sm:text-[11px]"
                 >
                   Jérôme
                 </a>
@@ -403,7 +408,7 @@ const Engagement: React.FC = () => {
                     Nos partenaires
                   </p>
                   <h3 className="mt-1 font-sans text-xl font-bold tracking-[-0.04em] text-white sm:text-2xl">
-                    Nos producteurs →
+                    Nos producteurs partenaires →
                   </h3>
                 </div>
               </Link>

@@ -13,7 +13,7 @@ export default function SeminaireDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
   const router = useRouter();
-  const offresListPath = '/seminaires-entreprise/offres';
+  const offresListPath = '/seminaire-exemples';
   const [seminaire, setSeminaire] = useState<Seminaire | null>(null);
   const [allSeminaires, setAllSeminaires] = useState<Seminaire[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,13 +55,13 @@ export default function SeminaireDetailPage() {
 
   if (notFound || !seminaire) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#faf8f5', flexDirection: 'column', gap: 16 }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ffffff', flexDirection: 'column', gap: 16 }}>
         <div style={{ fontSize: 48 }}>🌿</div>
-        <h2 style={{ fontStyle: 'italic', fontWeight: 700, fontSize: 28, color: '#0b2c34', margin: 0 }}>Offre introuvable</h2>
-        <p style={{ color: '#9a9080', fontSize: 14, margin: 0 }}>Cette offre n'existe pas ou a été supprimée.</p>
+        <h2 style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 400, fontSize: 28, letterSpacing: '-0.075em', color: '#0c1d22', margin: 0 }}>Offre introuvable</h2>
+        <p style={{ color: 'rgba(12, 29, 34, 0.45)', fontSize: 14, margin: 0 }}>Cette offre n'existe pas ou a été supprimée.</p>
         <button
           onClick={() => router.push(offresListPath)}
-          style={{ marginTop: 8, background: '#0b2c34', color: '#fff', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', padding: '12px 24px', borderRadius: 9999, border: 'none', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit' }}>
+          style={{ marginTop: 8, background: '#0c1d22', color: '#fff', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', padding: '12px 24px', borderRadius: 9999, border: 'none', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit' }}>
           ← Toutes nos offres
         </button>
       </div>
@@ -79,11 +79,10 @@ export default function SeminaireDetailPage() {
         @keyframes photoSlideInLeft  { from { opacity: 0; transform: translateX(-30px) } to { opacity: 1; transform: translateX(0) } }
         ::-webkit-scrollbar { display: none }
 
-        .sem-detail-cols { display: grid; grid-template-columns: 1fr 440px; gap: 48px; align-items: start; }
         .sem-price-col { position: sticky; top: 96px; align-self: start; }
-        .sem-format-tabs { display:flex; gap:0; background:rgba(11, 44, 52,0.05); border-radius:9999px; padding:6px; margin-left:auto; flex-shrink:0; }
+        .sem-format-tabs { display:flex; gap:0; background:rgba(12, 29, 34,0.05); border-radius:9999px; padding:6px; margin-left:auto; flex-shrink:0; }
         .fmt-tab { flex:1; padding:10px 18px; border-radius:9999px; border:none; font-family:inherit; font-size:10px; font-weight:700; letter-spacing:0.06em; cursor:pointer; transition:all 0.18s ease; white-space:nowrap; text-transform:uppercase; }
-        .sem-photo-grid { display:grid; gap:8px; border-radius:16px; overflow:hidden; margin-bottom:40px; position:relative; }
+        .sem-photo-grid { display:grid; gap:8px; border-radius:26px; overflow:hidden; margin-bottom:40px; position:relative; }
         .sem-photo-grid.has-small { grid-template-columns:1fr 1fr; grid-template-rows:repeat(2,clamp(160px,18vw,220px)); }
         .sem-photo-grid.no-small  { grid-template-columns:1fr; grid-template-rows:clamp(300px,36vw,440px); }
         .sem-photo-main { cursor:pointer; overflow:hidden; }
@@ -95,53 +94,85 @@ export default function SeminaireDetailPage() {
         .sem-mobile-sheet-header { display: none; }
         .sem-detail-mobile-only { display: none; }
 
-        .sem-detail-page-inner { padding-top: calc(84px + 2rem); }
-
-        /* Bloc format — typographie identique mobile / desktop */
-        .sem-detail-format-block.sem-format-ui { margin-bottom: 32px; }
-        .sem-detail-mobile-only .sem-format-ui { margin-top: 28px; margin-bottom: 20px; }
-        .sem-detail-mobile-only .sem-detail-producer-ui { margin-top: 36px; margin-bottom: 4px; }
-        .sem-detail-format-block .sem-mobile-format-choice-head { margin-top: 0; }
+        .sem-detail-page-inner {
+          width: 100%;
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: calc(84px + 2rem) 1.5rem 80px;
+          padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+          padding-right: max(1rem, env(safe-area-inset-right, 0px));
+          box-sizing: border-box;
+        }
+        @media (min-width: 640px) {
+          .sem-detail-page-inner {
+            padding-left: 2rem;
+            padding-right: 1.25rem;
+          }
+        }
+        @media (min-width: 1024px) {
+          .sem-detail-page-inner {
+            padding-left: 2.5rem;
+            padding-right: 1.5rem;
+          }
+        }
+        .sem-detail-back-btn { margin-bottom: 20px; }
+        .sem-detail-back-btn-inner {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          background: transparent;
+          border: 1px solid rgba(12, 29, 34, 0.16);
+          border-radius: 9999px;
+          padding: 5px 11px;
+          font-size: 9px;
+          font-weight: 700;
+          color: #0c1d22;
+          cursor: pointer;
+          font-family: inherit;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+        }
+        .sem-detail-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px); gap: clamp(32px, 4vw, 56px); align-items: start; }
 
         .sem-format-ui .sem-mobile-format-pills {
           display: flex;
           flex-wrap: wrap;
-          gap: 8px;
-          margin: 0 0 14px;
+          gap: 6px;
+          margin: 0 0 10px;
         }
         .sem-format-ui .sem-mobile-format-choice-head {
-          margin-top: 8px;
-          margin-bottom: 16px;
+          margin-top: 6px;
+          margin-bottom: 12px;
         }
         .sem-format-ui .sem-mobile-format-choice-head .sem-mobile-section-title {
-          margin-bottom: 8px;
+          margin-bottom: 6px;
         }
         .sem-format-ui .sem-mobile-format-choice-lead {
           margin: 0;
           font-size: 13px;
           font-weight: 500;
-          color: #7a7060;
-          line-height: 1.45;
+          color: rgba(12, 29, 34, 0.55);
+          line-height: 1.4;
         }
         .sem-format-ui .sem-mobile-format-tabs {
           display: flex;
-          gap: 6px;
-          padding: 5px;
-          margin-bottom: 14px;
-          background: rgba(11, 44, 52, 0.06);
+          gap: 4px;
+          padding: 3px;
+          margin-bottom: 10px;
+          background: rgba(12, 29, 34, 0.06);
           border-radius: 9999px;
         }
         .sem-format-ui .sem-mobile-format-tab {
           flex: 1;
           border: none;
           border-radius: 9999px;
-          padding: 12px 12px;
+          padding: 9px 12px;
           font-family: inherit;
           font-size: 12px;
           font-weight: 700;
           letter-spacing: 0.01em;
           text-transform: none;
-          color: #9a9080;
+          color: rgba(12, 29, 34, 0.45);
           background: transparent;
           cursor: pointer;
           transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
@@ -149,46 +180,47 @@ export default function SeminaireDetailPage() {
         }
         .sem-format-ui .sem-mobile-format-tab.is-active {
           background: #fff;
-          color: #0b2c34;
-          box-shadow: 0 1px 6px rgba(11, 44, 52, 0.12);
+          color: #0c1d22;
+          box-shadow: 0 1px 4px rgba(12, 29, 34, 0.10);
         }
         .sem-format-ui .sem-mobile-pill {
           display: inline-flex;
           align-items: center;
-          padding: 6px 12px;
+          padding: 5px 10px;
           border-radius: 9999px;
-          background: rgba(11, 44, 52, 0.06);
+          background: rgba(12, 29, 34, 0.06);
           font-size: 12px;
           font-weight: 600;
-          color: #5c554c;
+          color: rgba(12, 29, 34, 0.60);
           line-height: 1.2;
         }
         .sem-format-ui .sem-mobile-format-panel .sem-mobile-capsule { margin-bottom: 0; }
         .sem-format-ui .sem-mobile-capsule {
           background: #fff !important;
-          border: 1px solid rgba(11, 44, 52, 0.10);
-          border-radius: 18px;
-          padding: 20px 18px;
-          margin-bottom: 16px;
-          box-shadow: 0 1px 4px rgba(11, 44, 52, 0.04);
+          border: 1px solid rgba(12, 29, 34, 0.10);
+          border-radius: 14px;
+          padding: 16px 16px;
+          margin-bottom: 12px;
+          box-shadow: none;
         }
         .sem-format-ui .sem-mobile-capsule-title {
           font-family: 'Poppins', sans-serif;
-          font-size: 17px;
-          font-weight: 700;
-          font-style: italic;
-          color: #0b2c34;
-          margin: 0 0 6px;
-          line-height: 1.2;
+          font-size: 16px;
+          font-weight: 600;
+          font-style: normal;
+          letter-spacing: -0.03em;
+          color: #0c1d22;
+          margin: 0 0 4px;
+          line-height: 1.25;
         }
         .sem-format-ui .sem-mobile-capsule-sub {
           font-size: 13px;
-          color: #9a9080;
-          font-style: italic;
-          margin: 0 0 18px;
+          color: rgba(12, 29, 34, 0.45);
+          font-style: normal;
+          margin: 0 0 14px;
           line-height: 1.45;
         }
-        .sem-format-ui .sem-mobile-capsule-section { margin-bottom: 20px; }
+        .sem-format-ui .sem-mobile-capsule-section { margin-bottom: 14px; }
         .sem-format-ui .sem-mobile-capsule-section:last-child { margin-bottom: 0; }
         .sem-format-ui .sem-mobile-capsule-section h3,
         .sem-format-ui .sem-mobile-section-title {
@@ -197,7 +229,7 @@ export default function SeminaireDetailPage() {
           font-weight: 700;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: #b0a89e;
+          color: #ec6435;
           margin: 0 0 12px;
           font-style: normal;
           line-height: 1.2;
@@ -226,7 +258,7 @@ export default function SeminaireDetailPage() {
           font-weight: 700;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: #b0a89e;
+          color: #ec6435;
           margin: 0;
         }
         .sem-format-ui .sem-mobile-collapsible-chevron {
@@ -238,7 +270,7 @@ export default function SeminaireDetailPage() {
           height: 28px;
           border-radius: 50%;
           background: rgba(255, 255, 255, 0.7);
-          color: #b0a89e;
+          color: rgba(12, 29, 34, 0.40);
           transition: transform 0.3s ease;
         }
         .sem-format-ui .sem-mobile-collapsible.is-expanded .sem-mobile-collapsible-chevron {
@@ -266,66 +298,77 @@ export default function SeminaireDetailPage() {
           display: flex;
           align-items: flex-start;
           gap: 10px;
-          font-size: 13px;
-          color: #3a3028;
-          line-height: 1.35;
+          font-size: 14px;
+          color: #0c1d22;
+          line-height: 1.4;
         }
         .sem-format-ui .sem-mobile-inclus-icon { flex-shrink: 0; display: flex; align-items: center; }
-        .sem-format-ui .sem-mobile-inclus-icon svg { width: 22px; height: 22px; }
+        .sem-format-ui .sem-mobile-inclus-icon svg { width: 20px; height: 20px; }
         .sem-format-ui .sem-mobile-programme-list { display: flex; flex-direction: column; gap: 10px; }
         .sem-format-ui .sem-mobile-programme-step { display: flex; gap: 10px; align-items: flex-start; }
         .sem-format-ui .sem-mobile-programme-time {
           flex-shrink: 0;
           width: 64px;
-          font-size: 11px;
+          font-size: 12px;
           font-weight: 700;
           letter-spacing: 0.04em;
           text-transform: uppercase;
-          color: #e67e22;
+          color: #ec6435;
           padding-top: 2px;
         }
-        .sem-format-ui .sem-mobile-programme-action { font-size: 13px; color: #6b6358; line-height: 1.55; }
+        .sem-format-ui .sem-mobile-programme-action { font-size: 14px; color: rgba(12, 29, 34, 0.65); line-height: 1.55; }
         .sem-format-ui .sem-mobile-hebergement-ok,
         .sem-format-ui .sem-mobile-hebergement-soon {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 8px;
+          border-radius: 9999px;
+          padding: 9px 12px;
+          font-size: 13px;
+          line-height: 1.35;
+        }
+        .sem-offer-format .sem-mobile-hebergement-ok { background: #f4f4f4; color: #0c1d22; }
+        .sem-offer-format .sem-mobile-hebergement-soon {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          background: #f4f4f4;
+          color: rgba(12, 29, 34, 0.65);
           border-radius: 12px;
           padding: 12px 14px;
           font-size: 13px;
-          line-height: 1.4;
+          font-weight: 500;
+          line-height: 1.45;
         }
-        .sem-format-ui .sem-mobile-hebergement-ok { background: #faf8f5; color: #3a3028; }
-        .sem-format-ui .sem-mobile-hebergement-soon { background: rgba(11, 44, 52, 0.06); color: #9a9080; }
-        .sem-format-ui .sem-mobile-hebergement-soon-icon { font-size: 20px; flex-shrink: 0; }
+        .sem-offer-format .sem-mobile-hebergement-soon-icon { font-size: 16px; flex-shrink: 0; line-height: 1.2; }
 
-        .sem-format-ui .sem-hebergement-card {
-          background: #faf8f5;
-          border-radius: 14px;
+        .sem-offer-format .sem-hebergement-card {
+          background: #ffffff;
+          border-radius: 10px;
           overflow: hidden;
-          border: 1px solid rgba(11, 44, 52, 0.06);
+          border: 1px solid rgba(12, 29, 34, 0.10);
         }
-        .sem-format-ui .sem-hebergement-photos {
+        .sem-offer-format .sem-hebergement-photos {
           position: relative;
           overflow: hidden;
-          background: #ebe6de;
+          background: #f4f4f4;
         }
-        .sem-format-ui .sem-hebergement-photo-frame {
+        .sem-offer-format .sem-hebergement-photo-frame {
           position: relative;
           width: 100%;
           aspect-ratio: 4 / 3;
           min-height: 220px;
-          max-height: 320px;
+          max-height: 340px;
           overflow: hidden;
         }
         @media (min-width: 769px) {
-          .sem-format-ui .sem-hebergement-photo-frame {
-            aspect-ratio: 5 / 4;
+          .sem-offer-format .sem-hebergement-photo-frame {
+            aspect-ratio: 4 / 3;
             min-height: 260px;
-            max-height: 360px;
+            max-height: 380px;
           }
         }
-        .sem-format-ui .sem-hebergement-photo-img {
+        .sem-offer-format .sem-hebergement-photo-img {
           position: absolute;
           inset: 0;
           width: 100%;
@@ -335,13 +378,13 @@ export default function SeminaireDetailPage() {
           user-select: none;
           pointer-events: none;
         }
-        .sem-format-ui .sem-hebergement-photo-nav {
+        .sem-offer-format .sem-hebergement-photo-nav {
           position: absolute;
           inset: 0;
           z-index: 2;
           pointer-events: none;
         }
-        .sem-format-ui .sem-hebergement-photo-arrow {
+        .sem-offer-format .sem-hebergement-photo-arrow {
           position: absolute;
           top: 0;
           bottom: 0;
@@ -366,15 +409,15 @@ export default function SeminaireDetailPage() {
           pointer-events: auto;
           flex-shrink: 0;
         }
-        .sem-format-ui .sem-hebergement-photo-arrow svg {
+        .sem-offer-format .sem-hebergement-photo-arrow svg {
           display: block;
           width: 11px;
           height: 11px;
           flex-shrink: 0;
         }
-        .sem-format-ui .sem-hebergement-photo-arrow--prev { left: 10px; }
-        .sem-format-ui .sem-hebergement-photo-arrow--next { right: 10px; }
-        .sem-format-ui .sem-hebergement-photo-dots {
+        .sem-offer-format .sem-hebergement-photo-arrow--prev { left: 10px; }
+        .sem-offer-format .sem-hebergement-photo-arrow--next { right: 10px; }
+        .sem-offer-format .sem-hebergement-photo-dots {
           position: absolute;
           bottom: 10px;
           left: 50%;
@@ -383,7 +426,7 @@ export default function SeminaireDetailPage() {
           gap: 4px;
           z-index: 3;
         }
-        .sem-format-ui .sem-hebergement-photo-dot {
+        .sem-offer-format .sem-hebergement-photo-dot {
           width: 4px;
           height: 4px;
           border-radius: 2px;
@@ -393,201 +436,118 @@ export default function SeminaireDetailPage() {
           cursor: pointer;
           transition: all 0.25s ease;
         }
-        .sem-format-ui .sem-hebergement-photo-dot.is-active {
+        .sem-offer-format .sem-hebergement-photo-dot.is-active {
           width: 14px;
           background: #fff;
         }
-        .sem-format-ui .sem-hebergement-card-body { padding: 14px 16px 16px; }
-        .sem-format-ui .sem-hebergement-card-head {
+        .sem-offer-format .sem-hebergement-card-body { padding: 12px 14px 14px; }
+        .sem-offer-format .sem-hebergement-card-head {
           display: flex;
           flex-wrap: wrap;
           align-items: baseline;
-          gap: 8px 10px;
-          margin-bottom: 8px;
+          gap: 6px 8px;
+          margin-bottom: 6px;
         }
-        .sem-format-ui .sem-hebergement-nom {
+        .sem-offer-format .sem-hebergement-nom {
           font-family: 'Poppins', sans-serif;
           font-size: 15px;
           font-weight: 700;
-          color: #0b2c34;
+          letter-spacing: -0.03em;
+          color: #0c1d22;
           margin: 0;
           line-height: 1.25;
         }
-        .sem-format-ui .sem-hebergement-type {
+        .sem-offer-format .sem-hebergement-type {
           font-size: 10px;
           font-weight: 700;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: #e67e22;
+          color: #ec6435;
         }
-        .sem-format-ui .sem-hebergement-desc {
+        .sem-offer-format .sem-hebergement-desc {
           font-size: 13px;
-          color: #6b6358;
-          line-height: 1.55;
-          margin: 0 0 10px;
+          font-weight: 500;
+          color: rgba(12, 29, 34, 0.65);
+          line-height: 1.5;
+          margin: 0 0 8px;
         }
-        .sem-format-ui .sem-hebergement-meta {
+        .sem-offer-format .sem-hebergement-meta {
           display: flex;
           flex-wrap: wrap;
-          gap: 8px 14px;
+          gap: 6px 12px;
           align-items: center;
         }
-        .sem-format-ui .sem-hebergement-meta-item {
+        .sem-offer-format .sem-hebergement-meta-item {
           font-size: 12px;
-          color: #7a7060;
-          line-height: 1.35;
+          color: rgba(12, 29, 34, 0.55);
+          line-height: 1.3;
         }
-        .sem-format-ui .sem-hebergement-prix {
+        .sem-offer-format .sem-hebergement-prix {
           font-weight: 700;
-          color: #0b2c34;
+          color: #0c1d22;
         }
-        .sem-format-ui .sem-hebergements-carousel { margin: 0; }
-        .sem-format-ui .sem-hebergements-header {
+        .sem-offer-format .sem-hebergements-carousel {
           display: flex;
-          align-items: center;
-          justify-content: space-between;
+          flex-direction: column;
           gap: 12px;
-          margin-bottom: 10px;
-        }
-        .sem-format-ui .sem-hebergements-index-label {
-          font-family: 'Poppins', sans-serif;
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: #b0a89e;
           margin: 0;
+          width: 100%;
+          min-width: 0;
         }
-        .sem-format-ui .sem-hebergements-index-total {
-          font-weight: 600;
-          color: #d4cdc3;
+        .sem-offer-format .sem-hebergements-carousel-slide {
+          width: 100%;
+          min-width: 0;
         }
-        .sem-format-ui .sem-hebergements-nav-btns {
-          display: flex;
-          gap: 6px;
-          flex-shrink: 0;
+        .sem-offer-format .sem-hebergements-carousel .sem-hebergement-card {
+          width: 100%;
         }
-        .sem-format-ui .sem-hebergements-nav-btn {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          border: 1px solid rgba(11, 44, 52, 0.12);
-          background: #fff;
-          color: #0b2c34;
+        .sem-offer-format .sem-hebergements-carousel .sem-hebergement-photo-frame {
+          aspect-ratio: 4 / 3;
+          min-height: 260px;
+          max-height: 380px;
+        }
+        .sem-offer-format .sem-hebergements-carousel-nav {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 0;
+          gap: 16px;
+        }
+        .sem-offer-format .sem-hebergements-carousel-arrow {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          border: none;
+          border-radius: 50%;
+          background: #ec6435;
+          color: #fff;
           cursor: pointer;
+          padding: 0;
           font-family: inherit;
-          line-height: 0;
-          transition: background 0.15s ease, opacity 0.15s ease;
+          transition: background 0.18s ease, opacity 0.18s ease, transform 0.18s ease;
         }
-        .sem-format-ui .sem-hebergements-nav-btn svg {
-          display: block;
-          width: 11px;
-          height: 11px;
+        .sem-offer-format .sem-hebergements-carousel-arrow:hover:not(:disabled) {
+          background: #d9552a;
+          transform: scale(1.04);
         }
-        .sem-format-ui .sem-hebergements-nav-btn:hover:not(:disabled) {
-          background: #f5f1eb;
-        }
-        .sem-format-ui .sem-hebergements-nav-btn:disabled {
+        .sem-offer-format .sem-hebergements-carousel-arrow:disabled {
           opacity: 0.35;
           cursor: default;
         }
-        .sem-format-ui .sem-hebergements-track {
-          display: flex;
-          align-items: flex-start;
-          gap: 10px;
-          overflow-x: auto;
-          scroll-snap-type: x mandatory;
-          -webkit-overflow-scrolling: touch;
-          scrollbar-width: none;
-          padding: 2px 0 4px;
-          touch-action: pan-x;
-          overscroll-behavior-x: contain;
-          cursor: grab;
-        }
-        .sem-format-ui .sem-hebergements-track:active {
-          cursor: grabbing;
-        }
-        .sem-format-ui .sem-hebergements-track::-webkit-scrollbar { display: none; }
-        .sem-format-ui .sem-hebergements-slide {
-          flex: 0 0 calc(50% - 5px);
-          scroll-snap-align: start;
-          min-width: 0;
-          height: auto;
-        }
-        .sem-format-ui .sem-hebergements-carousel .sem-hebergement-card {
-          height: auto;
-        }
-        .sem-format-ui .sem-hebergements-carousel .sem-hebergement-photo-frame {
-          aspect-ratio: 4 / 3;
-          min-height: 0;
-          max-height: none;
-        }
-        .sem-format-ui .sem-hebergements-carousel .sem-hebergement-card-body {
-          padding: 12px 14px 14px;
-        }
-        .sem-format-ui .sem-hebergements-carousel .sem-hebergement-nom {
-          font-size: 14px;
-        }
-        .sem-format-ui .sem-hebergements-carousel .sem-hebergement-desc {
-          font-size: 13px;
-          line-height: 1.55;
-          margin-bottom: 10px;
-          overflow: visible;
-        }
-        .sem-format-ui .sem-hebergements-carousel .sem-hebergement-meta-item {
+        .sem-offer-format .sem-hebergements-carousel-count {
           font-size: 12px;
-        }
-        .sem-format-ui .sem-hebergements-carousel .sem-hebergement-photo-arrow {
-          width: 26px;
-          height: 26px;
-        }
-        .sem-format-ui .sem-hebergements-carousel .sem-hebergement-photo-arrow--prev { left: 6px; }
-        .sem-format-ui .sem-hebergements-carousel .sem-hebergement-photo-arrow--next { right: 6px; }
-        .sem-format-ui .sem-hebergements-carousel .sem-hebergement-photo-arrow svg {
-          width: 9px;
-          height: 9px;
-        }
-        .sem-format-ui .sem-hebergements-dots {
-          display: flex;
-          justify-content: center;
-          gap: 5px;
-          margin-top: 10px;
-        }
-        .sem-format-ui .sem-hebergements-dot {
-          width: 6px;
-          height: 6px;
-          border-radius: 999px;
-          background: rgba(11, 44, 52, 0.14);
-          border: none;
-          padding: 0;
-          cursor: pointer;
-          transition: width 0.25s ease, background 0.25s ease;
-        }
-        .sem-format-ui .sem-hebergements-dot.is-active {
-          width: 18px;
-          background: #e67e22;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          color: rgba(12, 29, 34, 0.45);
+          min-width: 3.5em;
+          text-align: center;
         }
         @media (max-width: 768px) {
-          .sem-format-ui .sem-hebergements-slide {
-            flex: 0 0 100%;
-            scroll-snap-align: start;
-          }
-          .sem-format-ui .sem-hebergements-track {
-            scroll-padding-inline: 0;
-          }
-          .sem-format-ui .sem-hebergements-carousel .sem-hebergement-photo-frame {
+          .sem-offer-format .sem-hebergements-carousel .sem-hebergement-photo-frame {
             aspect-ratio: 4 / 3;
-            min-height: 200px;
-          }
-          .sem-format-ui .sem-hebergements-carousel .sem-hebergement-nom {
-            font-size: 15px;
-          }
-          .sem-format-ui .sem-hebergements-carousel .sem-hebergement-desc {
-            font-size: 13px;
+            min-height: 220px;
+            max-height: 320px;
           }
         }
 
@@ -597,13 +557,13 @@ export default function SeminaireDetailPage() {
           .sem-mobile-map-canvas:active { cursor: grabbing; }
           .sem-mobile-map-block .mapboxgl-ctrl-group {
             border-radius: 10px !important;
-            box-shadow: 0 2px 10px rgba(11, 44, 52, 0.12) !important;
-            border: 1px solid rgba(11, 44, 52, 0.08) !important;
+            box-shadow: 0 2px 10px rgba(12, 29, 34, 0.12) !important;
+            border: 1px solid rgba(12, 29, 34, 0.08) !important;
             overflow: hidden;
           }
           .sem-map-widget .mapboxgl-ctrl-group {
             border-radius: 10px !important;
-            box-shadow: 0 2px 10px rgba(11, 44, 52, 0.12) !important;
+            box-shadow: 0 2px 10px rgba(12, 29, 34, 0.12) !important;
           }
         }
 
@@ -615,7 +575,7 @@ export default function SeminaireDetailPage() {
           font-weight: 700;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: #b0a89e;
+          color: #ec6435;
           margin: 0 0 12px;
           font-style: normal;
           line-height: 1.2;
@@ -637,13 +597,13 @@ export default function SeminaireDetailPage() {
           font-family: 'Poppins', sans-serif;
           font-size: 14px;
           font-weight: 700;
-          color: #0b2c34;
+          color: #0c1d22;
           margin: 0;
           line-height: 1.3;
         }
         .sem-detail-producer-ui .sem-mobile-producer-bio {
           font-size: 14px;
-          color: #6b6358;
+          color: rgba(12, 29, 34, 0.65);
           line-height: 1.7;
           margin: 0 0 16px;
         }
@@ -669,7 +629,7 @@ export default function SeminaireDetailPage() {
           font-weight: 700;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: #b0a89e;
+          color: #ec6435;
           margin: 0;
         }
         .sem-detail-producer-ui .sem-mobile-collapsible-chevron {
@@ -679,9 +639,9 @@ export default function SeminaireDetailPage() {
           justify-content: center;
           width: 28px;
           height: 28px;
-          border-radius: 50%;
-          background: rgba(11, 44, 52, 0.06);
-          color: #b0a89e;
+          border-radius:50%;
+          background: rgba(12, 29, 34, 0.06);
+          color: rgba(12, 29, 34, 0.40);
           transition: transform 0.3s ease;
         }
         .sem-detail-producer-ui .sem-mobile-collapsible.is-expanded .sem-mobile-collapsible-chevron {
@@ -711,8 +671,8 @@ export default function SeminaireDetailPage() {
           display: flex;
           gap: 14px;
           align-items: flex-start;
-          background: #faf8f5;
-          border: 1px solid rgba(11, 44, 52, 0.06);
+          background: #f4f4f4;
+          border: 1px solid rgba(12, 29, 34, 0.06);
           border-radius: 14px;
           padding: 16px 18px;
           min-height: 72px;
@@ -720,8 +680,8 @@ export default function SeminaireDetailPage() {
         }
         .sem-detail-desktop-only .sem-detail-producer-ui .sem-producer-exp-card {
           background: #fff;
-          border-color: rgba(11, 44, 52, 0.08);
-          box-shadow: 0 1px 4px rgba(11, 44, 52, 0.05);
+          border-color: rgba(12, 29, 34, 0.08);
+          box-shadow: 0 1px 4px rgba(12, 29, 34, 0.05);
         }
         .sem-detail-producer-ui .sem-producer-exp-card-body {
           flex: 1;
@@ -731,7 +691,7 @@ export default function SeminaireDetailPage() {
         .sem-detail-producer-ui .sem-producer-exp-card strong {
           display: block;
           font-size: 13px;
-          color: #0b2c34;
+          color: #0c1d22;
           margin-bottom: 6px;
           font-weight: 700;
           line-height: 1.35;
@@ -739,17 +699,350 @@ export default function SeminaireDetailPage() {
         .sem-detail-producer-ui .sem-mobile-exp-meta {
           display: block;
           font-size: 11px;
-          color: #9a9080;
+          color: rgba(12, 29, 34, 0.45);
           margin-bottom: 6px;
         }
         .sem-detail-producer-ui .sem-producer-exp-card p {
           font-size: 12px;
-          color: #6b6358;
+          color: rgba(12, 29, 34, 0.65);
           margin: 0;
           line-height: 1.6;
         }
 
-        .sem-detail-page-root { background: #faf8f5; }
+        .sem-detail-page-root { background: #ffffff; }
+
+        /* ── Intro éditoriale ── */
+        .sem-offer-intro {
+          margin: 0 0 32px;
+        }
+        .sem-offer-intro-top {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 24px;
+        }
+        .sem-offer-intro-main { min-width: 0; flex: 1; }
+        .sem-offer-title {
+          font-family: 'Poppins', sans-serif;
+          font-size: clamp(28px, 3.4vw, 40px);
+          font-weight: 700;
+          letter-spacing: -0.075em;
+          line-height: 1.08;
+          color: #0c1d22;
+          margin: 0 0 12px;
+        }
+        .sem-offer-meta {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 6px 8px;
+          font-size: 13px;
+          font-weight: 500;
+          color: rgba(12, 29, 34, 0.55);
+          margin-bottom: 18px;
+        }
+        .sem-offer-meta-strong {
+          font-weight: 700;
+          color: #0c1d22;
+        }
+        .sem-offer-meta-dot {
+          color: rgba(12, 29, 34, 0.28);
+        }
+        .sem-offer-map-link {
+          appearance: none;
+          background: none;
+          border: none;
+          padding: 0;
+          margin: 0;
+          font: inherit;
+          font-weight: 600;
+          color: #0c1d22;
+          text-decoration: underline;
+          text-underline-offset: 3px;
+          cursor: pointer;
+        }
+        .sem-offer-map-link:hover { color: #ec6435; }
+        .sem-offer-lead {
+          margin: 0;
+          max-width: 40rem;
+          font-family: 'Poppins', sans-serif;
+          font-size: clamp(15px, 1.6vw, 17px);
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          line-height: 1.45;
+          color: #0c1d22;
+        }
+
+        /* ── Infos pratiques ── */
+        .sem-infos-pratiques {
+          margin: 28px 0 8px;
+        }
+        .sem-infos-pratiques-title {
+          font-family: 'Poppins', sans-serif;
+          font-size: clamp(18px, 2.2vw, 22px);
+          font-weight: 700;
+          letter-spacing: -0.05em;
+          color: #0c1d22;
+          margin: 0 0 12px;
+        }
+        .sem-infos-pratiques-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .sem-infos-row {
+          background: #fff;
+          border: 1px solid rgba(12, 29, 34, 0.10);
+          border-radius: 12px;
+          overflow: hidden;
+        }
+        .sem-infos-row-trigger {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 14px 16px;
+          border: none;
+          background: transparent;
+          cursor: pointer;
+          text-align: left;
+          font-family: inherit;
+          color: #0c1d22;
+        }
+        .sem-infos-row-trigger:hover { background: rgba(12, 29, 34, 0.02); }
+        .sem-infos-row-icon {
+          flex-shrink: 0;
+          width: 22px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .sem-infos-row-icon svg { width: 18px; height: 18px; }
+        .sem-infos-row-text {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+        }
+        .sem-infos-row-title {
+          font-size: 15px;
+          font-weight: 700;
+          letter-spacing: -0.03em;
+          color: #0c1d22;
+          line-height: 1.25;
+        }
+        .sem-infos-row-sub {
+          font-size: 13px;
+          font-weight: 500;
+          color: rgba(12, 29, 34, 0.5);
+          line-height: 1.35;
+        }
+        .sem-infos-row-chevron {
+          flex-shrink: 0;
+          width: 16px;
+          height: 16px;
+          color: rgba(12, 29, 34, 0.35);
+          transition: transform 0.22s ease;
+        }
+        .sem-infos-row.is-open .sem-infos-row-chevron {
+          transform: rotate(90deg);
+          color: #ec6435;
+        }
+        .sem-infos-row-body {
+          padding: 0 16px 14px 50px;
+        }
+        .sem-infos-pratiques-copy {
+          margin: 0 0 8px;
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 1.55;
+          letter-spacing: -0.03em;
+          color: rgba(12, 29, 34, 0.65);
+        }
+        .sem-infos-pratiques-bullets {
+          margin: 0;
+          padding: 0 0 0 1.1em;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          font-size: 14px;
+          line-height: 1.5;
+          color: rgba(12, 29, 34, 0.65);
+        }
+        .sem-infos-pratiques-bullets strong { color: #0c1d22; }
+        .sem-infos-producer-head {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 12px;
+        }
+        .sem-infos-producer-avatar {
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+        .sem-infos-producer-head strong {
+          font-size: 14px;
+          font-weight: 700;
+          color: #0c1d22;
+        }
+
+        /* ── Format / inclus (sous infos pratiques) ── */
+        .sem-offer-format {
+          margin: 28px 0 8px;
+        }
+        .sem-offer-format-head { margin-bottom: 16px; }
+        .sem-offer-format-title {
+          margin-bottom: 0 !important;
+        }
+        .sem-offer-format-subtitle {
+          margin: 6px 0 0;
+          font-size: 12.5px;
+          font-weight: 500;
+          line-height: 1.45;
+          color: rgba(12, 29, 34, 0.55);
+          letter-spacing: -0.03em;
+        }
+        .sem-offer-format .sem-infos-row-body {
+          padding-top: 2px;
+        }
+        .sem-offer-format-panel.is-embedded .sem-offer-format-lead {
+          margin-top: 0;
+          margin-bottom: 16px;
+          font-size: 14px;
+        }
+        .sem-offer-format-lead {
+          margin: 0 0 22px;
+          max-width: 40rem;
+          font-family: 'Poppins', sans-serif;
+          font-size: 15px;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          line-height: 1.45;
+          color: #0c1d22;
+        }
+        .sem-offer-format-block { margin-bottom: 20px; }
+        .sem-offer-format-block:last-child { margin-bottom: 0; }
+        .sem-offer-format-h,
+        .sem-offer-format .sem-mobile-collapsible-trigger h3 {
+          font-family: 'Poppins', sans-serif;
+          font-size: 15px;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          text-transform: none;
+          color: #0c1d22;
+          margin: 0 0 8px;
+          line-height: 1.25;
+        }
+        .sem-offer-format .sem-mobile-collapsible-trigger h3 {
+          margin: 0;
+        }
+        .sem-offer-inclus {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+        .sem-offer-inclus--grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0 24px;
+        }
+        .sem-offer-inclus-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          padding: 5px 0;
+          border-bottom: none;
+        }
+        .sem-offer-inclus-icon {
+          flex-shrink: 0;
+          width: 18px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding-top: 1px;
+        }
+        .sem-offer-inclus-icon svg { width: 15px; height: 15px; }
+        .sem-offer-inclus-label {
+          font-size: 12.5px;
+          font-weight: 500;
+          letter-spacing: -0.02em;
+          line-height: 1.35;
+          color: rgba(12, 29, 34, 0.75);
+        }
+        .sem-offer-programme {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+        .sem-offer-programme-step {
+          display: flex;
+          gap: 14px;
+          align-items: flex-start;
+          padding: 12px 0;
+          border-bottom: 1px solid rgba(12, 29, 34, 0.06);
+        }
+        .sem-offer-programme-time {
+          flex-shrink: 0;
+          width: 72px;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          color: #ec6435;
+          padding-top: 2px;
+        }
+        .sem-offer-programme-action {
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 1.55;
+          color: rgba(12, 29, 34, 0.7);
+        }
+
+        /* Collapsible dans le bloc format */
+        .sem-offer-format .sem-mobile-collapsible-trigger {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          padding: 0;
+          margin: 0 0 12px;
+          border: none;
+          background: none;
+          cursor: pointer;
+          font-family: inherit;
+          text-align: left;
+        }
+        .sem-offer-format .sem-mobile-collapsible-chevron {
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 28px;
+          height: 28px;
+          border-radius:50%;
+          background: #f4f4f4;
+          color: rgba(12, 29, 34, 0.45);
+          transition: transform 0.3s ease;
+        }
+        .sem-offer-format .sem-mobile-collapsible.is-expanded .sem-mobile-collapsible-chevron {
+          transform: rotate(180deg);
+        }
+        .sem-offer-format .sem-mobile-collapsible-panel {
+          display: grid;
+          grid-template-rows: 0fr;
+          transition: grid-template-rows 0.3s ease;
+        }
+        .sem-offer-format .sem-mobile-collapsible.is-expanded .sem-mobile-collapsible-panel {
+          grid-template-rows: 1fr;
+        }
+        .sem-offer-format .sem-mobile-collapsible-inner {
+          overflow: hidden;
+          min-height: 0;
+        }
 
         .sem-detail-footer-separator { display: none; }
 
@@ -768,7 +1061,7 @@ export default function SeminaireDetailPage() {
             margin-left: calc(50% - 50vw);
             padding: 0;
             border: none;
-            border-top: 1px solid rgba(11, 44, 52, 0.14);
+            border-top: 1px solid rgba(12, 29, 34, 0.14);
             background: transparent;
             height: 0;
             box-sizing: border-box;
@@ -783,6 +1076,13 @@ export default function SeminaireDetailPage() {
           .sem-detail-back-btn { display: none !important; }
           .sem-photo-grid-desktop { display: none !important; }
           .sem-mobile-sheet { display: block; }
+          .sem-mobile-sheet-header { display: none !important; }
+          .sem-offer-intro { margin-top: 8px; margin-bottom: 28px; }
+          .sem-infos-pratiques { margin-top: 28px; }
+          .sem-infos-row-body { padding-left: 16px; }
+          .sem-offer-format { margin-top: 8px; margin-bottom: 24px; }
+          .sem-offer-inclus--grid { grid-template-columns: 1fr; }
+          .sem-mobile-devis-block { margin-top: 8px; margin-bottom: 32px; }
           .sem-detail-format-row > div:last-child { display: none; }
           .sem-detail-format-row {
             flex-direction: column;
@@ -817,18 +1117,22 @@ export default function SeminaireDetailPage() {
             top: calc(12px + env(safe-area-inset-top, 0px));
             left: max(16px, env(safe-area-inset-left, 0px));
             height: auto;
-            min-height: 40px;
-            padding: 8px 14px 8px 10px;
+            min-height: 28px;
+            padding: 4px 10px 4px 7px;
             border-radius: 9999px;
-            gap: 6px;
+            gap: 4px;
             background: rgba(0, 0, 0, 0.45);
             backdrop-filter: blur(8px);
             color: #fff;
-            font-size: 10px;
+            font-size: 8px;
             font-weight: 700;
             letter-spacing: 0.05em;
             text-transform: uppercase;
             white-space: nowrap;
+          }
+          .sem-mobile-hero-btn--back svg {
+            width: 12px;
+            height: 12px;
           }
           .sem-mobile-photo-arrow {
             position: absolute;
@@ -881,7 +1185,13 @@ export default function SeminaireDetailPage() {
             flex-shrink: 0;
           }
           .sem-mobile-bestseller {
-            background: rgba(0, 0, 0, 0.45);
+            position: absolute;
+            top: calc(12px + env(safe-area-inset-top, 0px));
+            right: max(16px, env(safe-area-inset-right, 0px));
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.42);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border-radius: 9999px;
             padding: 5px 10px;
             font-size: 9px;
@@ -889,7 +1199,7 @@ export default function SeminaireDetailPage() {
             color: #fff;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            flex-shrink: 0;
+            pointer-events: none;
           }
 
           .sem-mobile-sheet {
@@ -899,7 +1209,7 @@ export default function SeminaireDetailPage() {
             background: #fff;
             border-radius: 24px 24px 0 0;
             margin-top: -24px;
-            padding: 0 20px calc(32px + env(safe-area-inset-bottom, 0px));
+            padding: 0 24px calc(32px + env(safe-area-inset-bottom, 0px));
           }
           .sem-mobile-sheet-header {
             display: block;
@@ -917,7 +1227,7 @@ export default function SeminaireDetailPage() {
             max-width: min(72vw, 280px);
             padding: 7px 11px 7px 8px;
             background: rgba(255, 255, 255, 0.82);
-            border-radius: 12px;
+            border-radius: 9999px;
             box-shadow: 0 2px 14px rgba(0, 0, 0, 0.18);
             pointer-events: none;
           }
@@ -936,34 +1246,34 @@ export default function SeminaireDetailPage() {
             font-weight: 600;
             letter-spacing: 0.06em;
             text-transform: uppercase;
-            color: #6b6358;
+            color: rgba(12, 29, 34, 0.65);
             line-height: 1.25;
           }
           .sem-mobile-sheet-header h1 {
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
-            font-style: italic;
-            font-size: 25px;
-            color: #0b2c34;
-            line-height: 1.18;
+            font-style: normal;
+            font-size: 26px;
+            color: #0c1d22;
+            line-height: 1.1;
             margin: 0 0 10px;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.075em;
           }
           .sem-mobile-pills {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 8px;
           }
           .sem-mobile-pill {
             display: inline-flex;
             align-items: center;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 9999px;
-            background: rgba(11, 44, 52, 0.06);
+            background: rgba(12, 29, 34, 0.06);
             font-size: 12px;
             font-weight: 600;
-            color: #5c554c;
+            color: rgba(12, 29, 34, 0.60);
             line-height: 1.2;
           }
           .sem-mobile-collapsible { margin-bottom: 0; }
@@ -988,7 +1298,7 @@ export default function SeminaireDetailPage() {
             font-weight: 700;
             letter-spacing: 0.14em;
             text-transform: uppercase;
-            color: #b0a89e;
+            color: rgba(12, 29, 34, 0.40);
             margin: 0;
           }
           .sem-mobile-collapsible-chevron {
@@ -998,9 +1308,9 @@ export default function SeminaireDetailPage() {
             justify-content: center;
             width: 28px;
             height: 28px;
-            border-radius: 50%;
+            border-radius: 9999px;
             background: rgba(255, 255, 255, 0.7);
-            color: #b0a89e;
+            color: rgba(12, 29, 34, 0.40);
             transition: transform 0.3s ease;
           }
           .sem-mobile-collapsible.is-expanded .sem-mobile-collapsible-chevron {
@@ -1033,7 +1343,7 @@ export default function SeminaireDetailPage() {
             font-weight: 700;
             letter-spacing: 0.14em;
             text-transform: uppercase;
-            color: #b0a89e;
+            color: #ec6435;
             margin: 0 0 12px;
             font-style: normal;
             line-height: 1.2;
@@ -1045,18 +1355,18 @@ export default function SeminaireDetailPage() {
             font-family: 'Poppins', sans-serif;
             font-size: 14px;
             font-weight: 700;
-            color: #0b2c34;
+            color: #0c1d22;
             margin: 0;
             line-height: 1.3;
           }
-          .sem-mobile-producer-bio { font-size: 14px; color: #6b6358; line-height: 1.7; margin: 0 0 16px; }
+          .sem-mobile-producer-bio { font-size: 14px; color: rgba(12, 29, 34, 0.65); line-height: 1.7; margin: 0 0 16px; }
           .sem-mobile-producer-experiences-list { gap: 14px; }
           .sem-producer-exp-card {
             display: flex;
             gap: 14px;
             align-items: flex-start;
-            background: #faf8f5;
-            border: 1px solid rgba(11, 44, 52, 0.06);
+            background: #f4f4f4;
+            border: 1px solid rgba(12, 29, 34, 0.06);
             border-radius: 14px;
             padding: 16px 18px;
             min-height: 72px;
@@ -1067,31 +1377,31 @@ export default function SeminaireDetailPage() {
           .sem-producer-exp-card strong {
             display: block;
             font-size: 13px;
-            color: #0b2c34;
+            color: #0c1d22;
             margin-bottom: 6px;
             font-weight: 700;
             line-height: 1.35;
           }
-          .sem-mobile-exp-meta { display: block; font-size: 11px; color: #9a9080; margin-bottom: 6px; }
-          .sem-producer-exp-card p { font-size: 12px; color: #6b6358; margin: 0; line-height: 1.6; }
+          .sem-mobile-exp-meta { display: block; font-size: 11px; color: rgba(12, 29, 34, 0.45); margin-bottom: 6px; }
+          .sem-producer-exp-card p { font-size: 12px; color: rgba(12, 29, 34, 0.65); margin: 0; line-height: 1.6; }
           .sem-mobile-producer-highlight {
             font-size: 14px;
             font-style: italic;
-            color: #7a7060;
+            color: rgba(12, 29, 34, 0.55);
             line-height: 1.6;
             margin: 16px 0 0;
             padding-left: 14px;
-            border-left: 3px solid #e67e22;
+            border-left: 3px solid #ec6435;
           }
           .sem-mobile-format-quote {
             font-family: 'Poppins', sans-serif;
             font-size: 14px;
             font-style: italic;
-            color: #7a7060;
+            color: rgba(12, 29, 34, 0.55);
             line-height: 1.6;
             margin: 0 0 20px;
             padding-left: 14px;
-            border-left: 3px solid #e67e22;
+            border-left: 3px solid #ec6435;
           }
           .sem-mobile-devis-block { margin-top: 28px; margin-bottom: 28px; text-align: center; }
           .sem-mobile-devis-btn {
@@ -1100,19 +1410,19 @@ export default function SeminaireDetailPage() {
             align-items: center;
             justify-content: center;
             gap: 8px;
-            background: #0b2c34;
+            background: #0c1d22;
             color: #fff;
-            font-size: 12px;
+            font-size: 10px;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            padding: 16px 24px;
+            padding: 11px 18px;
             border-radius: 9999px;
             border: none;
             cursor: pointer;
             font-family: inherit;
           }
-          .sem-mobile-devis-hint { font-size: 13px; color: #9a9080; line-height: 1.5; margin: 12px 0 0; }
+          .sem-mobile-devis-hint { font-size: 13px; color: rgba(12, 29, 34, 0.45); line-height: 1.5; margin: 12px 0 0; }
           .sem-mobile-map-block {
             position: relative;
             z-index: 0;
@@ -1141,8 +1451,8 @@ export default function SeminaireDetailPage() {
             z-index: 2;
             background: #fff;
             border-radius: 18px;
-            border: 1px solid rgba(11, 44, 52, 0.1);
-            box-shadow: 0 4px 24px rgba(11, 44, 52, 0.08);
+            border: 1px solid rgba(12, 29, 34, 0.1);
+            box-shadow: 0 4px 24px rgba(12, 29, 34, 0.08);
             padding: 18px;
             margin-top: 0;
             margin-bottom: 8px;
@@ -1166,19 +1476,19 @@ export default function SeminaireDetailPage() {
             font-weight: 700;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: #b0a89e;
+            color: rgba(12, 29, 34, 0.40);
           }
           .sem-mobile-partenaire-link {
             flex-shrink: 0;
             font-size: 11px;
             font-weight: 600;
-            color: #e67e22;
+            color: #ec6435;
             text-decoration: none;
             white-space: nowrap;
           }
           .sem-mobile-partenaire-desc {
             font-size: 13px;
-            color: #6b6358;
+            color: rgba(12, 29, 34, 0.65);
             line-height: 1.6;
             margin: 0;
             white-space: pre-line;
@@ -1201,11 +1511,12 @@ export default function SeminaireDetailPage() {
         initialFormatId={activeFormat}
       />
 
-      <div className="sem-detail-page-inner" style={{ maxWidth: 1200, margin: '0 auto', padding: '0 clamp(1rem, 3vw, 2rem) 80px', boxSizing: 'border-box' }}>
-        <div className="sem-detail-back-btn" style={{ marginBottom: 28, paddingTop: 'calc(84px + 2rem)' }}>
+      <div className="sem-detail-page-inner">
+        <div className="sem-detail-back-btn">
           <button
             onClick={() => router.push(offresListPath)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'rgba(11, 44, 52,0.06)', border: 'none', borderRadius: 9999, padding: '9px 18px', fontSize: 11, fontWeight: 700, color: '#0b2c34', cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+            className="sem-detail-back-btn-inner"
+          >
             ← Toutes nos offres
           </button>
         </div>

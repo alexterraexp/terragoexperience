@@ -15,20 +15,20 @@ export const heroIntroParagraphOnImageStyle: CSSProperties = {
 
 /** CTA principal en contour (hero sur photo). */
 export const heroPrimaryOutlineButtonClass =
-  'text-white border border-white/100 hover:border-white/90 px-8 py-3 text-[13px] tracking-[0.07em] font-bold transition-all duration-300 bg-transparent hover:bg-white/15 hover:backdrop-blur-[1px] rounded-full';
+  'text-white border border-white/100 hover:border-white/90 px-5 py-2 text-[11px] tracking-[0.07em] font-bold transition-all duration-300 bg-transparent hover:bg-white/15 hover:backdrop-blur-[1px] rounded-full sm:px-8 sm:py-3 sm:text-[13px]';
 
 /** Variante hover un peu plus douce (ex. partenaires, mission). */
 export const heroPrimaryOutlineButtonMutedHoverClass =
-  'text-white border border-white/100 hover:border-white/70 px-8 py-3 text-[13px] tracking-[0.07em] font-bold transition-all duration-300 hover:bg-white/10 rounded-full';
+  'text-white border border-white/100 hover:border-white/70 px-5 py-2 text-[11px] tracking-[0.07em] font-bold transition-all duration-300 hover:bg-white/10 rounded-full sm:px-8 sm:py-3 sm:text-[13px]';
 
 /** Lien secondaire texte (sans contour). */
 export const heroSecondaryGhostLinkClass =
-  'text-[13px] tracking-[0.07em] font-bold transition-all duration-300 px-5 py-3';
+  'text-[11px] tracking-[0.07em] font-bold transition-all duration-300 px-4 py-2 sm:px-5 sm:py-3 sm:text-[13px]';
 
 export const heroSecondaryGhostLinkStyle: CSSProperties = {
   color: 'rgba(255, 255, 255, 0.8)',
 };
 
-/** Paragraphe d’intro sur fond clair (ex. formulaire Entre amis). */
+/** Paragraphe d’intro sur fond clair (ex. formulaire expériences privées). */
 export const heroIntroParagraphOnLightClass =
   'text-base max-w-2xl mx-auto leading-relaxed';

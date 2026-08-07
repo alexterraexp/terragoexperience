@@ -3,6 +3,9 @@ import { supabaseServer } from './supabase';
 /** Durée de validité des URLs signées HOME (~3 ans). */
 const SIGNED_URL_TTL_SEC = 60 * 60 * 24 * 365 * 3;
 
+const HOME_PUBLIC_BASE =
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
+
 const HOME_FILES = {
   heroVideo: 'header-video.mp4',
   heroPoster: 'Noisettes-recolte.png',
@@ -17,18 +20,34 @@ const HOME_FILES = {
 
 export type HomeAssetUrls = Record<keyof typeof HOME_FILES, string>;
 
-async function signHomeFile(path: string): Promise<string> {
-  const { data, error } = await supabaseServer.storage
-    .from('HOME')
-    .createSignedUrl(path, SIGNED_URL_TTL_SEC);
-
-  if (error || !data?.signedUrl) {
-    throw new Error(`Impossible de signer HOME/${path}: ${error?.message ?? 'URL manquante'}`);
-  }
-  return data.signedUrl;
+function publicHomeUrl(path: string): string {
+  return `${HOME_PUBLIC_BASE}/${path
+    .split('/')
+    .map((segment) => encodeURIComponent(segment))
+    .join('/')}`;
 }
 
-/** Génère les URLs signées des assets HOME côté serveur (évite les tokens corrompus en dur). */
+async function signHomeFile(path: string): Promise<string> {
+  try {
+    const { data, error } = await supabaseServer.storage
+      .from('HOME')
+      .createSignedUrl(path, SIGNED_URL_TTL_SEC);
+
+    if (!error && data?.signedUrl) return data.signedUrl;
+
+    console.warn(
+      `[homeStorage] Impossible de signer HOME/${path}: ${error?.message ?? 'URL manquante'} — fallback public`,
+    );
+  } catch (e) {
+    console.warn(
+      `[homeStorage] Erreur réseau en signant HOME/${path} — fallback public`,
+      e instanceof Error ? e.message : e,
+    );
+  }
+  return publicHomeUrl(path);
+}
+
+/** URLs des assets HOME (signées si possible, sinon publiques). */
 export async function getHomeAssetUrls(): Promise<HomeAssetUrls> {
   const entries = await Promise.all(
     (Object.entries(HOME_FILES) as [keyof typeof HOME_FILES, string][]).map(
@@ -48,6 +67,8 @@ export const HOME_EMOJI = {
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/emoji-branche.png',
   mainsDansLaTerre:
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/mains-dans-la-terre.png',
+  producteurSoutenu:
+    'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/producteur-sountenu.png',
   rateau:
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/rateau.png',
   chaussures:
@@ -102,14 +123,14 @@ export const HOME_PRODUCERS = [
 
 /** `prep` : préposition utilisée devant le nom dans « Séminaire … Bretagne ». */
 export const REGION_IMAGES = [
-  { name: 'Pays Basque', prep: 'au', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png' },
-  { name: 'Bretagne', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/ostreiculteurs.png' },
-  { name: 'Auvergne', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/fromage-chevre.png' },
-  { name: 'Occitanie', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/olives-recoltes.png' },
-  { name: 'Provence', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/lavandepaysage.png' },
-  { name: 'Bordeaux', prep: 'à', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/degustation-spirit.jpg' },
-  { name: 'Normandie', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/travail-terre.png' },
-  { name: 'Alsace', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/olivesrecoltes.JPG' },
+  { name: 'Nouvelle-Aquitaine', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/huitre-pecheurs.avif' },
+  { name: 'Bretagne', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/bateau.avif' },
+  { name: 'Auvergne', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/auvergne.avif' },
+  { name: 'Occitanie', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/occitanie.avif' },
+  { name: 'Provence', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/lavande.avif' },
+  { name: 'Bourgogne', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/bourgogn.avif' },
+  { name: 'Normandie', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/normandie.avif' },
+  { name: 'Corse', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/corse.jpg' },
 ] as const;
 
 export const REGION_TAGS = [

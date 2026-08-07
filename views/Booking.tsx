@@ -65,7 +65,7 @@ const Booking: React.FC = () => {
               <span className="text-xs font-bold text-primary">{guests} participants</span>
             </div>
           </div>
-          <Link href="/" className="inline-block bg-primary text-white px-10 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-black transition-all shadow-xl">
+          <Link href="/" className="inline-block bg-primary text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-black transition-all shadow-xl">
             Retour à l'accueil
           </Link>
         </div>

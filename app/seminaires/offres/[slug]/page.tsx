@@ -6,5 +6,5 @@ export default async function SeminaireSlugPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  permanentRedirect(`/seminaires-entreprise/offres/${slug}`);
+  permanentRedirect(`/seminaire-exemples/${slug}`);
 }

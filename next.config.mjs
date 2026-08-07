@@ -20,6 +20,56 @@ const nextConfig = {
         destination: '/notre-approche',
         permanent: true,
       },
+      {
+        source: '/entre-amis',
+        destination: '/experiences-privees',
+        permanent: true,
+      },
+      {
+        source: '/entre-amis/:path*',
+        destination: '/experiences-privees',
+        permanent: true,
+      },
+      {
+        source: '/particuliers',
+        destination: '/experiences-privees',
+        permanent: true,
+      },
+      {
+        source: '/seminaires-entreprise/offres',
+        destination: '/seminaire-exemples',
+        permanent: true,
+      },
+      {
+        source: '/seminaires-entreprise/offres/:slug',
+        destination: '/seminaire-exemples/:slug',
+        permanent: true,
+      },
+      {
+        source: '/seminaires/offres',
+        destination: '/seminaire-exemples',
+        permanent: true,
+      },
+      {
+        source: '/seminaires/offres/:slug',
+        destination: '/seminaire-exemples/:slug',
+        permanent: true,
+      },
+      {
+        source: '/entreprises/offres',
+        destination: '/seminaire-exemples',
+        permanent: true,
+      },
+      {
+        source: '/nous-rejoindre',
+        destination: '/partenaires',
+        permanent: true,
+      },
+      {
+        source: '/recommander-un-producteur',
+        destination: '/partenaires',
+        permanent: true,
+      },
     ];
   },
 };

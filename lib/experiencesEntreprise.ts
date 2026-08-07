@@ -18,7 +18,6 @@ export type ExperienceCategory = {
   imageLeft: boolean;
   sectionTitle: string;
   ctaLabel: string;
-  ctaHref: string;
   detailTitle: string;
   detailLead: string;
   detailBody: string[];
@@ -45,10 +44,9 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
     slug: '1',
     number: 1,
     imageLeft: true,
-    sectionTitle: 'Team building — les mains dans la terre',
-    ctaLabel: 'Découvrez nos team buildings',
-    ctaHref: '/seminaires-entreprise/offres',
-    detailTitle: 'Team building chez les producteurs',
+    sectionTitle: 'Team building — **les mains dans la terre**',
+    ctaLabel: 'Organisons votre team-building',
+    detailTitle: 'Team building **chez les producteurs**',
     detailLead: 'Recréer du lien et se ressourcer au cœur de la nature.',
     detailBody: [
       'Pendant une demi-journée ou une journée, nous vous emmenons à la rencontre de nos producteurs engagés pour vivre une expérience humaine forte autour du travail de la terre et du produit brut.',
@@ -56,7 +54,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
     ],
     intro: {
       id: '1-intro',
-      title: 'Team building — les mains dans la terre',
+      title: 'Team building — **les mains dans la terre**',
       teaser: 'Recréer du lien et se ressourcer au cœur de la nature.',
       description:
         'Vos équipes deviennent actrices d’une expérience authentique : récolter, fabriquer, goûter, et surtout partager aux côtés de producteurs passionnés.',
@@ -66,47 +64,47 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
     examples: [
       {
         id: '1a',
-        title: 'Immersion et récolte',
+        title: '**Immersion** et **récolte**',
         teaser: 'Vivre la saison, aux côtés du producteur.',
         description:
           'Plongez dans le quotidien d’une exploitation : récoltez fruits, légumes ou olives et découvrez le rythme réel du métier.',
-        image: `https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/olives-recoltes.JPG`,
+        image: `${HOME}/EXPERIENCES IMG/1602491399366-770fb37c7c76.avif`,
         imageAlt: 'Récolte de noisettes en équipe – TerraGo',
       },
       {
         id: '1b',
-        title: 'Taille et plantations',
+        title: '**Taille** et **plantations**',
         teaser: 'Des gestes concrets, une trace sur le territoire.',
         description:
           'Apprenez la taille et la plantation avec l’hôte, et laissez derrière vous un geste utile pour la saison à venir.',
-        image: `${HOME}/producteur-maraicher.png`,
+        image: `${HOME}/EXPERIENCES IMG/1640677114924-1fcc88b83bba.avif`,
         imageAlt: 'Plantations avec un producteur – TerraGo',
       },
       {
         id: '1c',
-        title: 'Ateliers culinaires',
+        title: '**Ateliers culinaires**',
         teaser: 'De la récolte à la transformation, des moments authentiques à partager.',
         description:
           'Cuisinez, pétrissez ou pressez aux côtés d’un producteur passionné : un atelier collectif où chacun repart avec le fruit du travail d’équipe.',
-        image: `${HOME}/Oliviers-recolte.png`,
+        image: `${HOME}/EXPERIENCES IMG/1610547939489-73202bc6afda.avif`,
         imageAlt: 'Récolte d’olives pour huile – TerraGo',
       },
       {
         id: '1d',
-        title: 'Travail de produit brut',
+        title: '**Travail** de **produit brut**',
         teaser: 'Laine, bois et matières premières du territoire.',
         description:
           'Transformez la matière — laine, bois ou autres fibres locales — et découvrez des savoir-faire artisanaux souvent méconnus.',
-        image: `${HOME}/travail-pain-pate.png`,
+        image:  `${HOME}/EXPERIENCES IMG/1752752952625-43c64bb4b361.avif`,
         imageAlt: 'Travail de produit brut – TerraGo',
       },
       {
         id: '1e',
-        title: 'Assemblage alcoolisé',
+        title: '**Assemblage alcoolisé**',
         teaser: 'Vin, spiritueux, bière : créez votre assemblage.',
         description:
           'Composez votre assemblage avec un vigneron, un distillateur ou un brasseur : dégustation, création et partage en équipe.',
-        image: `${HOME}/repas-convivial.png`,
+        image:  `${HOME}/EXPERIENCES IMG/1779273174704-fec5c39d9b92.avif`,
         imageAlt: 'Dégustation et assemblage – TerraGo',
       },
     ],
@@ -115,10 +113,9 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
     slug: '2',
     number: 2,
     imageLeft: false,
-    sectionTitle: 'Séminaires RSE & expériences au vert',
-    ctaLabel: 'Organisez votre séminaire',
-    ctaHref: '/seminaires-entreprise',
-    detailTitle: 'Séminaires RSE',
+    sectionTitle: '**Séminaires RSE** & expériences au vert',
+    ctaLabel: 'Préparons votre séminaire',
+    detailTitle: '**Séminaires RSE**',
     detailLead: 'Renforcez l’engagement de vos collaborateurs grâce à nos séminaires RSE.',
     detailBody: [
       'Participez à des ateliers concrets et impactants qui font sens pour votre entreprise et vos salariés.',
@@ -126,7 +123,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
     ],
     intro: {
       id: '2-intro',
-      title: 'Séminaires RSE & expériences au vert',
+      title: '**Séminaires RSE** & expériences au vert',
       teaser: 'Donner du sens à vos événements d’entreprise',
       description:
         'Un séminaire peut être bien plus qu’un moment de cohésion : il peut devenir une expérience qui sensibilise, transmet et reconnecte vos équipes aux enjeux actuels. TerraGo imagine des séminaires responsables en lien direct avec les acteurs engagés des territoires.',
@@ -136,39 +133,39 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
     examples: [
       {
         id: '2a',
-        title: '🌱 La rencontre avec des agriculteurs engagés',
-        teaser: 'Comprendre une agriculture plus durable.',
+        title: 'La **rencontre** avec des **producteurs engagés**',
+        teaser: 'Une agriculture plus durable, une histoire à partager.',
         description:
-          'Échangez avec celles et ceux qui développent une agriculture plus durable et découvrez leurs démarches.',
-        image: `${HOME}/producteur-maraicher.png`,
-        imageAlt: 'Agriculteur engagé – séminaire RSE TerraGo',
+          'Échangez avec celles et ceux qui développent une agriculture plus durable, découvrez leurs démarches et vivez une rencontre authentique autour de leur histoire.',
+        image: `${HOME}/EXPERIENCES IMG/1624720114692-037e42acec41.avif`,
+        imageAlt: 'Rencontre avec des producteurs engagés – TerraGo',
       },
       {
         id: '2b',
-        title: '♻️ Les circuits courts et l’économie locale',
-        teaser: 'Valoriser les filières de proximité.',
+        title: '**Immersion** et **transmission** des savoir-faire',
+        teaser: 'Métiers, gestes et histoires à partager.',
         description:
-          'Comprenez l’impact de vos choix de consommation et valorisez les filières locales.',
+          'Créez du lien entre générations en découvrant des métiers, des gestes et des histoires souvent méconnus, au plus près de ceux qui les font vivre.',
         image: `${HOME}/maraicher-explication.png`,
-        imageAlt: 'Circuits courts et économie locale – TerraGo',
+        imageAlt: 'Transmission de savoir-faire – TerraGo',
       },
       {
         id: '2c',
-        title: '🦋 La biodiversité et la préservation des écosystèmes',
-        teaser: 'Agir pour le vivant, sur le terrain.',
+        title: 'Des **repas conviviaux** en **circuit court**',
+        teaser: 'Partager un moment autour de produits locaux.',
         description:
-          'Participez à des ateliers autour de la nature, des paysages et de la protection du vivant.',
-        image: `${HOME}/eleveuse.png`,
-        imageAlt: 'Biodiversité et écosystèmes – TerraGo',
+          'Redécouvrez le plaisir de la table à partir de produits locaux et de saison,  avec une ambiance conviviale de grandes tablées pour prolonger l’esprit du séminaire.',
+        image: `${HOME}/repas-convivial.png`,
+        imageAlt: 'Repas conviviaux en circuit court – TerraGo',
       },
       {
         id: '2d',
-        title: '🤝 La transmission des savoir-faire',
-        teaser: 'Métiers, gestes et histoires à partager.',
+        title: 'Des **lieux typiques** et **authentiques**',
+        teaser: 'Vivre le séminaire dans un cadre qui a du sens.',
         description:
-          'Créez du lien entre générations en découvrant des métiers, des gestes et des histoires souvent méconnus.',
-        image: `${HOME}/team-terrago.png`,
-        imageAlt: 'Transmission de savoir-faire – TerraGo',
+          'Fermes, domaines viticoles, ateliers d’artisans : sortez des salles de séminaire classiques pour vivre l’expérience au cœur de lieux qui racontent une histoire et un territoire.',
+        image: `${HOME}/EXPERIENCES IMG/photo-1599817242108-3d88ca5a0494.avif`,
+        imageAlt: 'Lieux typiques et authentiques – TerraGo',
       },
     ],
   },
@@ -176,17 +173,16 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
     slug: '3',
     number: 3,
     imageLeft: true,
-    sectionTitle: 'Conventions & événements d’entreprise',
-    ctaLabel: 'Imaginez votre événement',
-    ctaHref: '/demande-seminaire',
-    detailTitle: 'Conventions & événements d’entreprise',
+    sectionTitle: '**Conventions** & **événements d’entreprise**',
+    ctaLabel: 'Imaginons votre événement',
+    detailTitle: '**Conventions** & **événements d’entreprise**',
     detailLead: 'Donner du sens et de l’authenticité à vos événements.',
     detailBody: [
       'Nous mettons à votre disposition des lieux de caractère en plein cœur du terroir. Vivez un moment suspendu, entre travail et détente, pour marquer les esprits et fédérer vos équipes.',
     ],
     intro: {
       id: '3-intro',
-      title: 'Conventions & événements d’entreprise',
+      title: '**Conventions** & **événements d’entreprise**',
       teaser: 'Donner du sens et de l’authenticité à vos événements.',
       description:
         'Lieux atypiques et chaleureux pour rassembler collaborateurs, clients ou partenaires au cœur du terroir.',
@@ -196,47 +192,48 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
     examples: [
       {
         id: '3a',
-        title: '🚀 Lancement de marque',
+        title: '🚀 **Lancement de marque**',
         teaser: 'Présentez votre nouvelle offre dans un lieu authentique.',
         description:
           'Présentez votre nouvelle offre ou votre nouvelle identité dans un lieu authentique, entouré d’acteurs locaux et d’expériences mémorables.',
-        image: `${HOME}/pique-nique-convivial.png`,
+        image: `${HOME}/EXPERIENCES IMG/1749544292533-65b0ec299191.avif`,
         imageAlt: 'Lancement de marque – événement TerraGo',
       },
       {
         id: '3b',
-        title: '🎤 Convention entreprise',
+        title: '🎤 **Convention entreprise**',
         teaser: 'Une convention annuelle devenue expérience collective.',
         description:
           'Transformez votre convention annuelle en véritable expérience collective mêlant temps forts professionnels, découvertes locales et moments de partage.',
-        image: `${HOME}/team-terrago.png`,
+        image: `${HOME}/EXPERIENCES IMG/1721677337543-37b07e7e28b5.avif
+`,
         imageAlt: 'Convention d’entreprise – TerraGo',
       },
       {
         id: '3c',
-        title: '🥂 Soirée corporate',
+        title: '🥂 **Soirée corporate**',
         teaser: 'Une soirée différente, ancrée dans le terroir.',
         description:
           'Imaginez une soirée différente : dîner chez un producteur, dégustation privée, rencontre avec un artisan ou animation autour du terroir.',
-        image: `${HOME}/repas-convivial.png`,
+        image: `${HOME}/EXPERIENCES IMG/1527529482837-4698179dc6ce.avif`,
         imageAlt: 'Soirée corporate chez un producteur – TerraGo',
       },
       {
         id: '3d',
-        title: '🤝 Événement clients',
+        title: '🤝 **Événement clients**',
         teaser: 'Une expérience exclusive qui reflète vos valeurs.',
         description:
           'Offrez à vos clients une expérience exclusive qui reflète vos valeurs et crée une relation durable.',
-        image: `${HOME}/maraicher-explication.png`,
+        image: `${HOME}/EXPERIENCES IMG/1704037184953-89794b28d081.avif`,
         imageAlt: 'Événement clients – TerraGo',
       },
       {
         id: '3e',
-        title: '🌿 Expérience collaborateurs',
+        title: '🌿 **Expérience collaborateurs**',
         teaser: 'Remercier vos équipes autrement.',
         description:
           'Remerciez vos équipes avec une journée ou un séjour qui combine découverte, convivialité et reconnexion.',
-        image: `${HOME}/Oliviers-recolte.png`,
+        image: `${HOME}/EXPERIENCES IMG/1758810744035-c88d4225870c.avif`,
         imageAlt: 'Expérience collaborateurs – TerraGo',
       },
     ],
@@ -245,6 +242,30 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
 
 export function getExperienceEntreprise(slug: string): ExperienceCategory | undefined {
   return EXPERIENCES_ENTREPRISE.find((e) => e.slug === slug);
+}
+
+/** Retire les marqueurs `**…**` pour titres plats (SEO, aria-label…). */
+export function stripTitleEmphasis(title: string): string {
+  return title.replace(/\*\*(.+?)\*\*/g, '$1');
+}
+
+/** Découpe un titre avec emphases `**mot**` pour rendu gras partiel. */
+export function parseTitleEmphasis(title: string): { text: string; bold: boolean }[] {
+  const parts: { text: string; bold: boolean }[] = [];
+  const re = /\*\*(.+?)\*\*/g;
+  let last = 0;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(title)) !== null) {
+    if (match.index > last) {
+      parts.push({ text: title.slice(last, match.index), bold: false });
+    }
+    parts.push({ text: match[1], bold: true });
+    last = match.index + match[0].length;
+  }
+  if (last < title.length) {
+    parts.push({ text: title.slice(last), bold: false });
+  }
+  return parts.length ? parts : [{ text: title, bold: false }];
 }
 
 export const EXPERIENCES_ENTREPRISE_FAQ = [

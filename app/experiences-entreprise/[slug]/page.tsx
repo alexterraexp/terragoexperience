@@ -4,6 +4,7 @@ import ExperiencesEntreprise from '../../../views/ExperiencesEntreprise';
 import {
   EXPERIENCES_ENTREPRISE_SLUGS,
   getExperienceEntreprise,
+  stripTitleEmphasis,
   type ExperienceEntrepriseSlug,
 } from '../../../lib/experiencesEntreprise';
 
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Expériences entreprise – TerraGo' };
   }
 
-  const title = `${category.detailTitle} – Expériences entreprise – TerraGo`;
+  const title = `${stripTitleEmphasis(category.detailTitle)} – Expériences entreprise – TerraGo`;
   const description = category.detailLead;
 
   return {

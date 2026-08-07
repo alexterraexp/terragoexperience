@@ -59,7 +59,7 @@ function buildSejourEntreAmisEmailHtml(data: {
     .replace(/{{PRECISIONS}}/g, escapeHtml(data.precisions))
     .replace(/{{REFERENCE}}/g, escapeHtml(data.reference))
     .replace(/{{LIEN_SITE}}/g, 'https://terragoexperiences.fr')
-    .replace(/{{LIEN_OFFRES}}/g, 'https://terragoexperiences.fr/entre-amis');
+    .replace(/{{LIEN_OFFRES}}/g, 'https://terragoexperiences.fr/experiences-privees');
 }
 
 function validEmail(e: string) {
