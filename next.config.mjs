@@ -8,6 +8,20 @@ const nextConfig = {
       { protocol: 'https', hostname: 'i.f1g.fr' },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/mission-engagements',
+        destination: '/notre-approche',
+        permanent: true,
+      },
+      {
+        source: '/mission-engagements/:path*',
+        destination: '/notre-approche',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

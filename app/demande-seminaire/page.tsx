@@ -1,18 +1,10 @@
-import type { Metadata } from 'next';
-import { Suspense } from 'react';
-import Seminaires from '../../views/Seminaires';
+import { permanentRedirect } from 'next/navigation';
 
-export const metadata: Metadata = {
-  title: 'Demande de séminaire – TerraGo',
-  description:
-    'Organisez votre séminaire d\'entreprise chez un producteur français. Immersion, gastronomie et engagement au cœur du terroir. Devis sur mesure.',
-  robots: { index: true, follow: true },
-};
-
+/**
+ * Ancienne porte d'entrée du CTA « Organiser votre séminaire », qui ouvrait le
+ * formulaire via ?openModal=true. Le formulaire est désormais une modale globale :
+ * cette route ne servait plus qu'à dupliquer /seminaires-entreprise.
+ */
 export default function DemandeSeminairePage() {
-  return (
-    <Suspense fallback={null}>
-      <Seminaires />
-    </Suspense>
-  );
+  permanentRedirect('/seminaires-entreprise');
 }

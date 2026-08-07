@@ -1,442 +1,416 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
-  heroIntroParagraphOnImageStyle,
-  heroIntroParagraphOnImageWideClass,
-  heroPrimaryOutlineButtonMutedHoverClass,
-  heroSecondaryGhostLinkClass,
-} from '../components/heroSectionStyles';
+  HOME_COLORS,
+  HOME_RADIUS,
+  homeParagraphClass,
+  homeSectionPadding,
+  bottomImageGradientClass,
+} from '../components/home/homeStyles';
 
-const ScrollAnimate: React.FC<{ children: React.ReactNode; delay?: number; className?: string }> = ({ children, delay = 0, className = '' }) => {
+const ASSETS = {
+  hero: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/producteur-maraicher.png',
+  ble: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/ble.png',
+  symbole:
+    'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/s%20orange.png',
+  paolo: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/paolo.png',
+  team: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/team-terrago.png',
+  arbre: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/emoji-arbre.png',
+  mouton: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/mouton.png',
+  rateau: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/rateau.png',
+} as const;
+
+const ScrollAnimate: React.FC<{
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}> = ({ children, delay = 0, className = '' }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold: 0.15 });
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return (
-    <div ref={ref} className={className} style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(28px)', transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms` }}>
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(28px)',
+        transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms`,
+      }}
+    >
       {children}
     </div>
   );
 };
 
-const VALEURS = [
-  {
-    icon: 'diversity_3',
-    title: "L'humain",
-    badge: 'NOS PRODUCTEURS',
-    color: '#f78d00',
-    image: 'https://images.unsplash.com/photo-1624720114692-037e42acec41?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0',
-    text: "Remettre l'humain au centre, valoriser les visages derrière chaque produit, cultiver la rencontre et le partage, pour soutenir des familles, pour faire vivre nos villages, et pour donner du sens à ce que vous vivez.",
-  },
-  {
-    icon: 'workspace_premium',
-    title: 'Le savoir-faire',
-    badge: 'FRANÇAIS',
-    color: '#0b2c34',
-    image: 'https://images.unsplash.com/photo-1594928357228-3075ba0e4674?q=80&w=1293&auto=format&fit=crop&ixlib=rb-4.1.0',
-    text: "Transmettre des gestes ancestraux, préserver des techniques rares, honorer ceux qui consacrent leur vie à l'excellence d'un produit. Le savoir-faire français est un patrimoine vivant — nous le célébrons.",
-  },
-  {
-    icon: 'nature',
-    title: 'La nature',
-    badge: 'ET VOTRE SANTÉ',
-    color: '#1a6b7a',
-    image: 'https://images.unsplash.com/photo-1720420865912-2bbd6bfa1e85?q=80&w=3131&auto=format&fit=crop&ixlib=rb-4.1.0',
-    text: "Reconnecter chacun au vivant, aux saisons, aux sols. Comprendre d'où vient ce qu'on mange, respirer autrement, poser les mains sur la terre. La nature n'est pas un décor — c'est notre fondation.",
-  },
-];
-
-const TEMOIGNAGES = [
-  {
-    text: "Je suis venu pour un séminaire, je suis reparti avec de la boue sur mes baskets neuves et un immense respect pour ceux qui nous nourrissent. Mes chaussures boudent, mais mon cœur est ravi. TerraGo, c’est du vrai.",
-    author: "********",
-    role: "Consultant informatique",
-    initial: "S",
-  },
-  {
-    text: "Je pensais faire une petite balade, je me suis retrouvé au cœur du réacteur agricole. On sent que l'équipe TerraGo y met tout son cœur (et beaucoup d'énergie). C'est sincère, c'est brut, c'est génial.",
-    author: "********",
-    role: "Développeur informatique",
-    initial: "T",
-  },
-  {
-    text: "Enfin une activité où on ne construit pas des tours en spaghettis. On a soutenu un producteur passionné et soudé l'équipe autour d'un vrai projet. Plus efficace qu'une thérapie de groupe.",
-    author: "********",
-    role: "Manager Team-Building",
-    initial: "M",
-  },
-];
-
-const LinkedInGlyph = ({ className }: { className?: string }) => (
-  <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-  </svg>
-);
-
-const EQUIPE = [
-  {
-    name: 'Jérôme Peyron',
-    role: 'Co-fondateur',
-    bio: "Ingénieur des Mines passé par les stratégies de décarbonation, Jérôme a fini par choisir le terrain, le vrai. Aujourd'hui, il met sa rigueur au service du vivant pour que chaque immersion soutienne concrètement nos producteurs. Son moteur ? Réconcilier le monde d'où il vient avec la terre qui nous nourrit.",
-    initials: 'JP',
-    color: '#0b2c34',
-    linkedin: 'https://www.linkedin.com/in/jeromepeyronengineer/',
-  },
-  {
-    name: "Alex Soulard",
-    role: 'Co-fondateur',
-    bio: "Professeur le jour et passionné d'événementiel le reste du temps, Alex aime créer des expériences humaines et authentiques. Amoureux du terroir, des grands espaces et des rencontres sincères, il imagine avec TerraGo des moments de partage à la découverte de producteurs engagés et de territoires vivants.",
-    initials: 'AS',
-    color: '#f78d00',
-    image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/alex.png',
-    linkedin: 'https://www.linkedin.com/in/alexsoulard-ev/',
-  },
-];
+const sectionTitleClass =
+  'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
 
 const Engagement: React.FC = () => {
-  const [activeValeur, setActiveValeur] = useState<number | null>(null);
-
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.location.hash === '#equipe') {
-      const el = document.getElementById('equipe');
-      if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100);
-    }
+    if (typeof window === 'undefined') return;
+    const hash = window.location.hash;
+    if (!hash) return;
+    const el = document.querySelector(hash);
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100);
   }, []);
 
   return (
-    <div className="font-sans bg-beige-bg min-h-screen">
+    <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
 
-      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative w-full">
-        <div className="relative min-h-[88vh] sm:min-h-[82vh] lg:min-h-[78vh] w-full overflow-hidden flex items-center justify-center group">
+      {/* ── HERO (image encadrée) ── */}
+      <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
+        <div className="mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-[14s] group-hover:scale-[1.03]"
-            style={{ backgroundImage: "url('https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/paysagebanc.jpg')" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 sm:mt-24 lg:mt-32 text-center">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
-              <span style={{ color: 'rgba(255,255,255,0.60)', fontSize: 10, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase' }}>
-                mission et engagement
-              </span>
-              <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
-            </div>
-            <h1 className="text-white font-semibold leading-[1.06] mb-6 drop-shadow-lg">
-              <span className="font-sans text-4xl md:text-4xl lg:text-5xl">Des expériences qui </span>
-              <span className="font-display italic text-5xl md:text-5xl lg:text-6xl">soutiennent nos terroirs.</span>
-            </h1>
-            <p
-              className={`italic ${heroIntroParagraphOnImageWideClass}`}
-              style={heroIntroParagraphOnImageStyle}
-            >
-              Nous créons des immersions mains dans la terre pour reconnecter chacun au vivant, tout en permettant un soutien financier direct et juste à nos producteurs partenaires, tous engagés pour produire bien et bon.
-            </p>
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+            className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
+            style={{ borderRadius: HOME_RADIUS }}
+          >
+            <img
+              src={ASSETS.hero}
+              alt="Producteur maraîcher devant sa serre"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className={`${bottomImageGradientClass} z-[1]`} />
+            <div
+              className="absolute inset-0 z-[2]"
+              style={{
+                background:
+                  'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.5) 100%)',
+              }}
+            />
+
+            <div className="relative z-10 flex h-full flex-col items-center justify-center px-5 py-10 text-center sm:px-10 sm:py-14">
+              <h1 className="max-w-3xl font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
+                Notre <span className="font-bold">approche</span>
+              </h1>
+              <p className={`${homeParagraphClass} mt-4 max-w-xl text-[15px] leading-relaxed text-white/90 sm:mt-6 sm:text-[17px]`}>
+                Reconnecter l&apos;humain à la terre, soutenir les producteurs engagés,
+                et créer des expériences qui laissent une trace.
+              </p>
               <Link
-                href="/partenaires"
-                className={heroPrimaryOutlineButtonMutedHoverClass}
+                href="/nous-rejoindre"
+                className="mt-7 inline-flex items-center justify-center rounded-full border-2 border-white px-8 py-2 text-sm font-bold tracking-[0.04em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] hover:bg-white/10 sm:mt-9"
+                style={{ background: 'rgba(12, 29, 34, 0.12)' }}
               >
-                Nos producteurs partenaires
+                Rejoindre la communauté
               </Link>
+            </div>
+
+            <img
+              src={ASSETS.ble}
+              alt=""
+              aria-hidden
+              className="pointer-events-none absolute bottom-3 right-3 z-20 h-16 w-16 object-contain sm:bottom-5 sm:right-5 sm:h-24 sm:w-24 lg:h-28 lg:w-28"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ── NOTRE APPROCHE ── */}
+      <section
+        id="approche"
+        className="relative overflow-hidden"
+        style={{ paddingTop: homeSectionPadding, paddingBottom: 'clamp(2rem, 4vw, 3rem)', background: '#ffffff' }}
+      >
+        <img
+          src={ASSETS.symbole}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute left-0 top-1/2 z-0 h-48 w-48 -translate-x-[35%] -translate-y-1/2 object-contain opacity-90 sm:h-64 sm:w-64 lg:h-80 lg:w-80"
+        />
+
+        <div className="relative z-10 mx-auto max-w-3xl px-5 text-center sm:px-8">
+          <ScrollAnimate>
+            <h2 className={sectionTitleClass}>
+              Notre <span className="font-bold">approche.</span>
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:mt-8 sm:text-[17px]">
+              Dans un monde qui s&apos;accélère, TerraGo ouvre des parenthèses.
+              Des moments où l&apos;on pose les mains sur la terre, où l&apos;on écoute
+              les producteurs parler de leurs sols, où l&apos;on comprend que derrière
+              chaque produit, il y a une vie, un engagement, une passion.
+            </p>
+            <p className="mx-auto mt-5 max-w-2xl font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:text-[17px]">
+              Notre mission : créer des ponts durables entre ceux qui produisent
+              et ceux qui consomment, à travers des expériences immersives qui
+              soutiennent concrètement une agriculture régénératrice et les
+              filières françaises.
+            </p>
+          </ScrollAnimate>
+        </div>
+      </section>
+
+      {/* ── NOTRE VISION ── */}
+      <section
+        id="vision"
+        style={{ paddingTop: 'clamp(2rem, 4vw, 3rem)', paddingBottom: homeSectionPadding, background: '#ffffff' }}
+      >
+        <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
+          <ScrollAnimate>
+            <h2 className={sectionTitleClass}>
+              Notre <span className="font-bold">vision.</span>
+            </h2>
+            <p className="mx-auto mt-4 font-sans text-[18px] font-semibold leading-[1.35] tracking-[-0.04em] text-[#0c1d22] sm:text-[22px]">
+              Reconnecter l&apos;humain à la terre.
+            </p>
+            <p className="mx-auto mt-6 max-w-2xl font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:mt-8 sm:text-[17px]">
+              Nous imaginons un tourisme professionnel et des moments de partage
+              qui génèrent un impact durable : pour les équipes qui se retrouvent,
+              pour les producteurs qui vivent de leur métier, et pour les territoires
+              qui regagnent du sens. Chaque immersion TerraGo est pensée pour
+              laisser plus que des souvenirs — un lien réel avec le vivant.
+            </p>
+          </ScrollAnimate>
+        </div>
+      </section>
+
+      {/* ── PRODUCTEURS ── */}
+      <section
+        id="producteurs"
+        className="relative"
+        style={{
+          paddingTop: homeSectionPadding,
+          paddingBottom: homeSectionPadding,
+          background: HOME_COLORS.gray,
+        }}
+      >
+        {/* Symbole orange — calé sur le séparateur blanc / gris, à droite */}
+        <img
+          src={ASSETS.symbole}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute right-0 top-0 z-20 h-40 w-40 translate-x-[35%] -translate-y-1/2 object-contain opacity-90 sm:h-56 sm:w-56 lg:h-72 lg:w-72"
+        />
+        {/* Arbre — gauche section producteurs */}
+        <img
+          src={ASSETS.arbre}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute left-4 top-[22%] z-20 h-40 w-40 object-contain sm:left-8 sm:h-56 sm:w-56 lg:left-12 lg:h-72 lg:w-72"
+        />
+
+        <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
+          <ScrollAnimate>
+            <h2 className={`${sectionTitleClass} mb-10 text-center sm:mb-14`}>
+              Nos <span className="font-bold">producteurs partenaires.</span>
+            </h2>
+          </ScrollAnimate>
+
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            <ScrollAnimate>
+              <div
+                className="relative mx-auto aspect-square w-full max-w-md overflow-hidden lg:max-w-none"
+                style={{ borderRadius: HOME_RADIUS }}
+              >
+                <img
+                  src={ASSETS.paolo}
+                  alt="Paolo, producteur partenaire TerraGo"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            </ScrollAnimate>
+
+            <ScrollAnimate delay={120}>
+              <div className="max-w-xl">
+                <p className="font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/70 sm:text-[17px]">
+                  Nous sélectionnons un réseau de producteurs locaux engagés —
+                  pour leur authenticité, leur savoir-faire et leur volonté de
+                  transmettre. Chaque partenaire TerraGo ouvre son domaine pour
+                  des rencontres vraies, loin des activités artificielles.
+                </p>
+                <p className="mt-5 font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/70 sm:text-[17px]">
+                  Votre événement soutient directement leur activité et l&apos;économie
+                  de proximité.
+                </p>
+                <Link
+                  href="/partenaires"
+                  className="mt-8 inline-flex items-center justify-center rounded-full border border-[#0c1d22] bg-white px-8 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white"
+                >
+                  Découvrir nos producteurs
+                </Link>
+              </div>
+            </ScrollAnimate>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FONDATEURS ── */}
+      <section
+        id="equipe"
+        className="relative"
+        style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
+      >
+        {/* Mouton — droite section fondateurs */}
+        <img
+          src={ASSETS.mouton}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute right-4 top-[32%] z-20 h-36 w-36 object-contain sm:right-8 sm:h-52 sm:w-52 lg:right-12 lg:h-64 lg:w-64"
+        />
+
+        <div className="relative z-10 mx-auto max-w-5xl px-5 sm:px-8">
+          <ScrollAnimate>
+            <h2 className={`${sectionTitleClass} mb-10 text-center sm:mb-14`}>
+              Les <span className="font-bold">fondateurs,</span> en image.
+            </h2>
+          </ScrollAnimate>
+
+          <ScrollAnimate delay={100}>
+            <div className="group relative mx-auto max-w-3xl">
+              <div
+                className="relative aspect-[5/4] overflow-hidden sm:aspect-[16/10]"
+                style={{ borderRadius: HOME_RADIUS }}
+              >
+                <img
+                  src={ASSETS.team}
+                  alt="Alex et Jérôme, co-fondateurs de TerraGo"
+                  className="h-full w-full object-cover object-[center_20%] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  loading="lazy"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 z-[1] transition-opacity duration-700 group-hover:opacity-80"
+                  style={{
+                    background:
+                      'linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.1) 28%, transparent 55%)',
+                  }}
+                />
+              </div>
+              <div className="mt-5 flex items-center justify-center gap-3 sm:mt-6 sm:gap-4">
+                <a
+                  href="https://www.linkedin.com/in/alexsoulard-ev/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-w-[120px] items-center justify-center rounded-full bg-[#0c1d22] px-8 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[150px] sm:px-12"
+                >
+                  Alex
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/jeromepeyronengineer/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-w-[120px] items-center justify-center rounded-full bg-[#0c1d22] px-8 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[150px] sm:px-12"
+                >
+                  Jérôme
+                </a>
+              </div>
+            </div>
+          </ScrollAnimate>
+        </div>
+      </section>
+
+      {/* ── CHARTE RSE ── */}
+      <section
+        id="rse"
+        className="relative"
+        style={{
+          paddingTop: homeSectionPadding,
+          paddingBottom: homeSectionPadding,
+          background: HOME_COLORS.gray,
+        }}
+      >
+        {/* Rateau — gauche section charte RSE */}
+        <img
+          src={ASSETS.rateau}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute left-4 top-[28%] z-20 h-36 w-36 object-contain sm:left-8 sm:h-52 sm:w-52 lg:left-12 lg:h-64 lg:w-64"
+        />
+
+        <div className="relative z-10 mx-auto max-w-3xl px-5 text-center sm:px-8">
+          <ScrollAnimate>
+            <h2 className={sectionTitleClass}>
+              Notre charte <span className="font-bold">RSE.</span>
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:mt-8 sm:text-[17px]">
+              Notre engagement pour des expériences responsables, des circuits
+              courts et un impact positif sur les territoires. La charte détaillée
+              arrive bientôt.
+            </p>
+          </ScrollAnimate>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section
+        style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
+      >
+        <div className="mx-auto max-w-5xl px-5 sm:px-8">
+          <ScrollAnimate>
+            <h2 className={`${sectionTitleClass} mb-10 text-center sm:mb-12`}>
+              Envie d&apos;aller <span className="font-bold">plus loin ?</span>
+            </h2>
+          </ScrollAnimate>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+            <ScrollAnimate delay={80}>
               <Link
                 href="/seminaires-entreprise"
-                className={`${heroSecondaryGhostLinkClass} text-white/90 hover:text-white`}
+                className="group relative flex h-56 items-end overflow-hidden sm:h-64"
+                style={{ borderRadius: HOME_RADIUS }}
               >
-                Nos séminaires d'entreprise →
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── MISSION ──────────────────────────────────────────────────────────── */}
-      <section className="py-20 sm:py-28 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <ScrollAnimate>
-              <span className="inline-block px-3 py-1 bg-[#f78d00] text-white font-bold tracking-[0.3em] uppercase text-[9px] rounded-full mb-6">Notre mission</span>
-              <h2 className="text-3xl sm:text-5xl font-bold text-[#0b2c34] leading-tight mb-6">
-                <span className="font-sans not-italic text-3xl sm:text-5xl">Reconnecter </span>
-                <span className="font-display italic text-4xl sm:text-6xl">l'humain à la terre.</span>
-              </h2>
-              <p className="text-gray-600 text-base leading-relaxed mb-6">
-                Dans un monde qui s'accélère, TerraGo ouvre des parenthèses. Des moments où l'on pose les mains sur la terre, où l'on écoute les producteurs parler de leurs sols, où l'on comprend que derrière chaque produit, il y a une vie, un engagement, une passion.
-              </p>
-              <p className="text-gray-600 text-base leading-relaxed mb-8">
-                Notre mission : créer des ponts durables entre ceux qui produisent et ceux qui consomment, à travers des expériences immersives qui laissent une trace.
-              </p>
-              <Link href="/seminaires-entreprise" className="inline-block bg-[#0b2c34] text-white px-8 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#f78d00] transition-all duration-300">
-                Découvrir nos séminaires d'entreprise →
-              </Link>
-            </ScrollAnimate>
-
-            <ScrollAnimate delay={200}>
-              <div className="relative">
-                <div className="rounded-3xl overflow-hidden aspect-[4/5] shadow-2xl">
-                  <img
-                    src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/pommes.png"
-                    alt="Producteur dans ses champs"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-5 shadow-xl border border-black/5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#f78d00]/10 text-[#f78d00] flex items-center justify-center">
-                      <span className="material-symbols-outlined text-lg">favorite</span>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Producteurs sélectionnés</div>
-                      <div className="text-sm font-bold text-[#0b2c34]">Pour leur authenticité</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ScrollAnimate>
-          </div>
-        </div>
-      </section>
-
-      {/* ── BOUSSOLE / VALEURS ───────────────────────────────────────────────── */}
-      <section className="py-20 sm:py-28 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <ScrollAnimate>
-            <div className="text-center mb-16">
-              <span className="inline-block px-3 py-1 bg-[#f78d00] text-white font-bold tracking-[0.3em] uppercase text-[9px] rounded-full mb-6">Notre engagement</span>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0b2c34] leading-tight">
-                <span className="font-sans not-italic text-3xl sm:text-4xl">Chez TerraGo, nous avons une </span>
-                <span className="font-display italic text-5xl sm:text-5xl">boussole.</span>
-              </h2>
-              <p className="text-gray-500 text-base mt-4 max-w-xl mx-auto">Pas pour trouver le nord, mais pour garder le cap sur ce qui compte vraiment.</p>
-            </div>
-          </ScrollAnimate>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {VALEURS.map((v, i) => (
-              <ScrollAnimate key={v.title} delay={i * 150}>
-                <div
-                  className="group relative rounded-3xl border border-black/8 overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-xl hover:-translate-y-1"
-                  onClick={() => setActiveValeur(activeValeur === i ? null : i)}
-                >
-                  <div className="absolute inset-0">
-                    <img
-                      src={v.image}
-                      alt={v.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/88 group-hover:via-black/55 group-hover:to-black/20" />
-                  </div>
-                  <div className="relative z-10 h-full flex flex-col justify-end p-8">
-                    <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300"
-                      style={{ background: activeValeur === i ? v.color : 'rgba(255,255,255,0.15)', color: activeValeur === i ? '#fff' : '#fff' }}
-                    >
-                      <span className="material-symbols-outlined text-2xl">{v.icon}</span>
-                    </div>
-                    <div className="flex items-center gap-3 flex-wrap mb-2">
-                      <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white drop-shadow-md">{v.title}</h3>
-                      <span
-                        className="flex-shrink-0 px-3 py-1 text-white text-[8px] font-bold tracking-[0.15em] uppercase rounded-full"
-                        style={{ background: v.color }}
-                      >
-                        {v.badge}
-                      </span>
-                    </div>
-                    <p className="text-sm leading-relaxed text-white/0 group-hover:text-white/90 transition-colors duration-300 max-w-xs">
-                      {v.text}
-                    </p>
-                    <div
-                      className="mt-4 h-px w-16 rounded-full opacity-70"
-                      style={{ background: 'rgba(255,255,255,0.7)' }}
-                    />
-                  </div>
-                </div>
-              </ScrollAnimate>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── ÉQUIPE ───────────────────────────────────────────────────────────── */}
-      <section id="equipe" className="py-20 sm:py-28 px-6 bg-[#faf8f5]">
-        <div className="max-w-5xl mx-auto">
-          <ScrollAnimate>
-            <div className="text-center mb-16">
-              <span className="inline-block px-3 py-1 bg-[#f78d00] text-white font-bold tracking-[0.3em] uppercase text-[9px] rounded-full mb-6">L'équipe</span>
-              <h2 className="text-4xl sm:text-5xl font-bold text-[#0b2c34] leading-tight">
-                <span className="font-sans not-italic text-4xl sm:text-5xl">Des humains </span>
-                <span className="font-display italic text-5xl sm:text-6xl">passionnés.</span>
-              </h2>
-              <p className="text-gray-500 text-base mt-4 max-w-xl mx-auto">TerraGo c'est avant tout une équipe qui croit profondément que les meilleures expériences naissent de vraies rencontres.</p>
-            </div>
-          </ScrollAnimate>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl mx-auto">
-            {EQUIPE.map((m, i) => (
-              <ScrollAnimate key={m.name} delay={i * 150} className="h-full">
-                <div className="relative bg-white rounded-3xl p-8 border border-black/5 shadow-sm hover:shadow-lg transition-all duration-300 text-center">
-                  {m.linkedin ? (
-                    <a
-                      href={m.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full border border-[#0a66c2]/25 text-[#0a66c2] transition-colors hover:bg-[#0a66c2] hover:text-white hover:border-[#0a66c2]"
-                      aria-label={`Profil LinkedIn de ${m.name}`}
-                    >
-                      <LinkedInGlyph />
-                    </a>
-                  ) : null}
-                  <div
-                    className="w-20 h-20 rounded-full mx-auto mb-5 shadow-lg overflow-hidden flex items-center justify-center"
-                    style={{ background: m.image ? undefined : m.color }}
-                  >
-                    {m.image ? (
-                      <img
-                        src={m.image}
-                        alt={m.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-white text-2xl font-bold">{m.initials}</span>
-                    )}
-                  </div>
-                  <h3 className="text-lg font-bold text-[#0b2c34] mb-1 font-sans not-italic">{m.name}</h3>
-                  <p className="text-[10px] font-bold text-[#f78d00] uppercase tracking-wider mb-4">{m.role}</p>
-                  <p className="text-gray-500 text-sm leading-relaxed">{m.bio}</p>
-                </div>
-              </ScrollAnimate>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── TÉMOIGNAGES ──────────────────────────────────────────────────────── */}
-      <section className="py-20 sm:py-28 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <ScrollAnimate>
-            <div className="text-center mb-16">
-              <span className="inline-block px-3 py-1 bg-[#f78d00] text-white font-bold tracking-[0.3em] uppercase text-[9px] rounded-full mb-6">Témoignages</span>
-              <h2 className="text-4xl sm:text-5xl font-bold text-[#0b2c34] leading-tight">
-                <span className="font-sans not-italic text-3xl sm:text-4xl">Ils ont vécu </span>
-                <span className="font-display italic text-4xl sm:text-5xl">l'expérience.</span>
-              </h2>
-            </div>
-          </ScrollAnimate>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {TEMOIGNAGES.map((t, i) => (
-              <ScrollAnimate key={i} delay={i * 100}>
-                <div className="bg-[#faf8f5] rounded-3xl p-8 border border-black/5 hover:shadow-lg transition-all duration-300 flex flex-col h-full">
-                  <div className="flex gap-1 mb-5">
-                    {[...Array(5)].map((_, j) => (
-                      <span key={j} className="text-[#f78d00] text-sm">★</span>
-                    ))}
-                  </div>
-                  <p className="text-gray-600 text-sm leading-relaxed italic flex-1 mb-6">"{t.text}"</p>
-                  <div className="flex items-center gap-3 mt-auto pt-5 border-t border-black/5">
-                    <div className="w-10 h-10 rounded-full bg-[#0b2c34] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
-                      {t.initial}
-                    </div>
-                    <div>
-                      <div className="text-sm font-bold text-[#0b2c34]">{t.author}</div>
-                      <div className="text-[10px] text-gray-400">{t.role}</div>
-                    </div>
-                  </div>
-                </div>
-              </ScrollAnimate>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── LIENS VERS AUTRES PAGES ──────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-[#faf8f5]">
-        <div className="max-w-5xl mx-auto">
-          <ScrollAnimate>
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-[#0b2c34]">
-                <span className="font-sans not-italic text-3xl sm:text-4xl">Envie d'aller </span>
-                <span className="font-display italic text-4xl sm:text-5xl">plus loin ?</span>
-              </h2>
-            </div>
-          </ScrollAnimate>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <ScrollAnimate delay={100}>
-              <Link href="/seminaires-entreprise" className="group relative rounded-3xl overflow-hidden block h-56">
                 <img
-                  src="https://images.unsplash.com/photo-1680617550341-3fa60e61f572?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="Séminaires entreprise"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  src="https://images.unsplash.com/photo-1680617550341-3fa60e61f572?q=80&w=1287&auto=format&fit=crop"
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0b2c34]/90 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="text-[9px] font-bold text-[#f78d00] uppercase tracking-wider mb-1">Pour les entreprises</div>
-                  <h3 className="text-white text-xl font-bold">Séminaires d'entreprise →</h3>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0c1d22]/90 via-[#0c1d22]/30 to-transparent" />
+                <div className="relative z-10 p-6 sm:p-8">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#ec6435]">
+                    Pour les entreprises
+                  </p>
+                  <h3 className="mt-1 font-sans text-xl font-bold tracking-[-0.04em] text-white sm:text-2xl">
+                    Nos séminaires →
+                  </h3>
                 </div>
               </Link>
             </ScrollAnimate>
-            <ScrollAnimate delay={200}>
-              <Link href="/partenaires" className="group relative rounded-3xl overflow-hidden block h-56">
+
+            <ScrollAnimate delay={160}>
+              <Link
+                href="/partenaires"
+                className="group relative flex h-56 items-end overflow-hidden sm:h-64"
+                style={{ borderRadius: HOME_RADIUS }}
+              >
                 <img
-                  src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/cognacjf/vigneron.png"
-                  alt="Producteurs partenaires"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  src={ASSETS.paolo}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0b2c34]/90 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="text-[9px] font-bold text-[#f9c06a] uppercase tracking-wider mb-1">Nos partenaires</div>
-                  <h3 className="text-white text-xl font-bold">Producteurs partenaires →</h3>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0c1d22]/90 via-[#0c1d22]/30 to-transparent" />
+                <div className="relative z-10 p-6 sm:p-8">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#f9c06a]">
+                    Nos partenaires
+                  </p>
+                  <h3 className="mt-1 font-sans text-xl font-bold tracking-[-0.04em] text-white sm:text-2xl">
+                    Nos producteurs →
+                  </h3>
                 </div>
               </Link>
             </ScrollAnimate>
           </div>
         </div>
       </section>
-
-      {/* ── BANDEAU FINAL ────────────────────────────────────────────────────── */}
-      <section className="py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <ScrollAnimate>
-            <div
-              className="relative rounded-3xl overflow-hidden text-center py-20 px-8"
-              style={{ background: 'linear-gradient(135deg, #0b2c34 0%, #0f4a58 100%)' }}
-            >
-              <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
-              <div className="relative z-10">
-                <h2 className="text-white text-4xl sm:text-5xl font-bold mb-4">
-                  <span className="font-sans not-italic text-3xl sm:text-4xl">Se reconnecter à </span>
-                  <span className="font-display italic text-4xl sm:text-5xl">l'essentiel.</span>
-                </h2>
-                <p className="text-white/70 text-sm mb-10 max-w-xl mx-auto">
-                  Parce que la reconnexion commence par une rencontre. Que vous soyez pro ou passionné, écrivons la suite ensemble.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a
-                    href="mailto:terragoexperiences@gmail.com"
-                    className="bg-[#f78d00] text-white px-8 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] hover:opacity-90 transition-all"
-                  >
-                    Discutons ensemble
-                  </a>
-                  <Link
-                    href="/nous-rejoindre"
-                    className="bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-white/20 transition-all"
-                  >
-                    Devenir producteur partenaire
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </ScrollAnimate>
-        </div>
-      </section>
-
     </div>
   );
 };

@@ -1,757 +1,986 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import ScrollAnimate from '../components/ScrollAnimate';
+import LazyVideo from '../components/video/LazyVideo';
+import HomeHero from '../components/home/HomeHero';
 import {
-  heroIntroParagraphOnImageClass,
-  heroIntroParagraphOnImageStyle,
-  heroPrimaryOutlineButtonClass,
-  heroSecondaryGhostLinkClass,
-  heroSecondaryGhostLinkStyle,
-} from '../components/heroSectionStyles';
+  HOME_COLORS,
+  HOME_RADIUS,
+  homeH1Class,
+  homeH2Class,
+  homeParagraphClass,
+  homeSectionPadding,
+  homeSeparatorPadding,
+  bottomImageGradientClass,
+} from '../components/home/homeStyles';
+import type { HomeAssetUrls } from '../lib/homeStorage';
+import { HOME_EMOJI, HOME_PRODUCERS, HOME_STEPS, REGION_IMAGES, REGION_TAGS } from '../lib/homeStorage';
 
-/* ─────────────────────────────────────────────
-   PRODUCER STACK
-───────────────────────────────────────────── */
-/** Section Rencontres — cartes producteurs (dimensions réduites, centrées). */
-const PRODUCER_CARD_W = 300;
-const PRODUCER_CARD_H = 400;
-/** Espace entre le bas de l’image et la rangée de pastilles */
-const PRODUCER_DOTS_MARGIN_TOP = 12;
+interface HomeProps {
+  assets: HomeAssetUrls;
+}
 
-const ProducerStack: React.FC = () => {
-  const producers = [
-    { name: 'Benoît', job: 'Maraîchage & ferme pédagogique', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.jpg', alt: 'Benoît, sémoinaire à la ferme – TerraGo' },
-    { name: 'Jean-François', job: 'Cognac & pineau', image: '/images/producteurs/cognacJF.png', alt: 'Jean-François, producteur cognac et pineau – TerraGo' },
-    { name: 'Paolo', job: 'Olives - Lavande - Fruitiers', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/PAOLO1.jpg', alt: 'Paolo, producteur olives et lavande Provence – TerraGo' },
-    { name: 'Sabine & Marie-Lise', job: 'Noix - Lavande - Olives', image: '/images/producteurs/noixsabinemarie.jpeg', alt: 'Sabine et Marie-Lise, productrices noix et lavande – TerraGo' },
-    { name: 'Marie-Sophie & Thomas', job: 'Vins du Ventoux', image: '/images/producteurs/vincombeaumas.png', alt: 'Marie-Sophie et Thomas, vignerons Ventoux – TerraGo' },
-    { name: 'Nathalie & Benjamin', job: 'Noisettes - Amandes - Yuzu', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/solproducteurs.png', alt: 'Nathalie et Benjamin, producteurs noisettes – TerraGo' },
-    { name: 'Baptiste', job: 'Piments & Pommes ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/b5.png', alt: 'Baptiste, producteur piments Pays Basque – TerraGo' },
-  ];
+/** Vidéo bannière : lecture en boucle dès le montage. */
+const BannerVideo: React.FC<{ src: string; className?: string }> = ({ src, className = '' }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [hovered, setHovered] = useState(false);
-  const [animating, setAnimating] = useState(false);
-  const [exitingIndex, setExitingIndex] = useState<number | null>(null);
-
-  const touchStartX = useRef<number>(0);
-  const touchStartY = useRef<number>(0);
-  const isTouchDevice = useRef(false);
-
-  const goNext = () => {
-    if (animating) return;
-    setAnimating(true);
-    setExitingIndex(activeIndex);
-    setTimeout(() => {
-      setActiveIndex((prev) => (prev + 1) % producers.length);
-      setExitingIndex(null);
-      setAnimating(false);
-    }, 500);
-  };
-
-  const goTo = (i: number) => {
-    if (animating || i === activeIndex) return;
-    setAnimating(true);
-    setExitingIndex(activeIndex);
-    setTimeout(() => {
-      setActiveIndex(i);
-      setExitingIndex(null);
-      setAnimating(false);
-    }, 500);
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    isTouchDevice.current = true;
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const swipeHandledRef = useRef(false);
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    swipeHandledRef.current = false;
-    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
-    const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
-    if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > deltaY) {
-      swipeHandledRef.current = true;
-      goNext();
-    }
-  };
-
-  const handleCardClick = () => {
-    if (swipeHandledRef.current) {
-      swipeHandledRef.current = false;
-      return;
-    }
-    goNext();
-  };
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    void video.play().catch(() => undefined);
+  }, [src]);
 
   return (
-    <div
-      className="relative flex flex-col items-center justify-center w-full"
-      onMouseEnter={() => { if (!isTouchDevice.current) setHovered(true); }}
-      onMouseLeave={() => { if (!isTouchDevice.current) setHovered(false); }}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      <div
-        className="relative mx-auto shrink-0 overflow-visible"
-        style={{ width: PRODUCER_CARD_W, height: PRODUCER_CARD_H }}
-      >
-      <style>{`
-        @keyframes sendToBack {
-  0%   { transform: translateX(0px)  translateY(0px)  rotate(0deg)  scale(1);    opacity: 1; z-index: 20; }
-  100% { transform: translateX(50px) translateY(34px) rotate(8deg)  scale(0.7);  opacity: 0; z-index: 16; }
-}
-@keyframes comeForward {
-  0%   { transform: translateX(15px)  translateY(17px) rotate(6deg)   scale(0.96); transform-origin: bottom center; }
-  60%  { transform: translateX(-3px)  translateY(-4px) rotate(-1deg)  scale(1.01); transform-origin: bottom center; }
-  100% { transform: translateX(0px)   translateY(0px)  rotate(0deg)   scale(1);    transform-origin: bottom center; }
-}
-.card-send-back { animation: sendToBack  0.3s cubic-bezier(0.4, 0, 1, 1) forwards; }
-.card-come-fwd  { animation: comeForward 0.4s cubic-bezier(0.2, 0, 0.2, 1) 0.05s both; }
-        @keyframes scrollPulse {
-          0%, 100% { opacity: 0.2; transform: scaleY(0.8); transform-origin: top; }
-          50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
-        }
-        @media (max-width: 1023px) {
-          .producer-card-hidden-mobile { opacity: 0; visibility: hidden; pointer-events: none; z-index: 0; }
-        }
-        @media (hover: none) {
-          .producer-hover-arrow { display: none !important; }
-        }
-      `}</style>
+    <video
+      ref={videoRef}
+      src={src}
+      muted
+      loop
+      playsInline
+      autoPlay
+      preload="auto"
+      className={`pointer-events-none ${className}`}
+      aria-label="Vergers en récolte – TerraGo"
+    />
+  );
+};
 
-      {producers.map((person, i) => {
-        const offset = (i - activeIndex + producers.length) % producers.length;
-        const isActive    = offset === 0;
-        const isExiting   = i === exitingIndex;
-        const behind      = offset;
-        const isPromoting = animating && !isExiting && offset === 1;
+const FAQ_ITEMS = [
+  {
+    q: 'Pourquoi choisir TerraGo pour organiser un événement d\'entreprise ?',
+    a: 'TerraGo imagine des expériences professionnelles qui sortent du cadre classique des séminaires. Grâce à notre réseau de producteurs, artisans et lieux authentiques, nous créons des événements qui favorisent la cohésion, la découverte et le partage.',
+  },
+  {
+    q: 'Quels types d\'événements accompagnez-vous ?',
+    a: 'Nous organisons des séminaires d\'entreprise, team building, conventions, lancements de marque, événements clients, soirées corporate et expériences collaborateurs, avec des formats adaptés à chaque entreprise.',
+  },
+  {
+    q: 'Les expériences proposées sont-elles personnalisables ?',
+    a: 'Oui. Chaque projet est construit sur mesure en fonction de vos objectifs, du profil de vos équipes, de votre budget et de l\'ambiance recherchée.',
+  },
+  {
+    q: 'Dans quelles régions intervenez-vous ?',
+    a: 'Nous créons des expériences partout en France en sélectionnant des producteurs, artisans et partenaires locaux capables de faire vivre leur territoire et leurs savoir-faire.',
+  },
+  {
+    q: 'Quel budget prévoir pour un événement d\'entreprise ?',
+    a: 'Le budget dépend de nombreux critères : nombre de participants, durée du séjour, destination, hébergement, restauration et activités choisies. Nous vous accompagnons pour construire un projet cohérent avec vos attentes.',
+  },
+  {
+    q: 'Combien de participants pouvez-vous accompagner ?',
+    a: 'De quelques collaborateurs à plusieurs centaines de participants, nous adaptons l\'organisation, les lieux et les expériences pour répondre aux besoins de chaque groupe.',
+  },
+  {
+    q: 'Quel délai faut-il prévoir pour organiser un événement ?',
+    a: 'Idéalement, nous recommandons d\'anticiper plusieurs mois à l\'avance afin de garantir les meilleurs lieux et partenaires. Nous pouvons également étudier des demandes avec des délais plus courts selon les disponibilités.',
+  },
+  {
+    q: 'Pouvez-vous gérer l\'ensemble de l\'organisation ?',
+    a: 'Oui. TerraGo peut prendre en charge tout ou partie de votre événement : recherche du lieu, hébergement, restauration, transport, activités, coordination et accompagnement sur place.',
+  },
+  {
+    q: 'Pourquoi intégrer une expérience avec un producteur dans un séminaire ?',
+    a: 'Parce que ces rencontres créent des moments authentiques et fédérateurs. Découvrir un métier, participer à un savoir-faire ou comprendre un territoire permet aux équipes de vivre une expérience différente, plus humaine et plus mémorable.',
+  },
+] as const;
 
-        if (!isActive && !isExiting && behind > 5) return null;
+const FaqAccordion: React.FC = () => {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-        const staticTransform = isActive && !isExiting
-          ? 'translateX(0px) translateY(0px) rotate(0deg) scale(1)'
-          : `translateX(${behind * 15}px) translateY(${behind * -3}px) rotate(${behind * 5}deg) scale(${1 - behind * 0.04})`;
- 
-        const hiddenOnMobile = behind > 0 && !isExiting && !isPromoting;
+  return (
+    <div className="flex flex-col gap-3">
+      {FAQ_ITEMS.map((item, i) => {
+        const isOpen = openIndex === i;
         return (
           <div
-            key={person.name}
-            className={`${isExiting ? 'card-send-back' : isPromoting ? 'card-come-fwd' : ''} ${hiddenOnMobile ? 'producer-card-hidden-mobile' : ''}`}
+            key={item.q}
+            className="overflow-hidden transition-colors"
             style={{
-              position: 'absolute',
-              width: PRODUCER_CARD_W,
-              height: PRODUCER_CARD_H,
-              borderRadius: '20px',
-              overflow: 'hidden',
-              transformOrigin: 'bottom center',
-              cursor: isActive ? 'pointer' : 'default',
-              boxShadow: isActive && !isExiting
-                ? '0 32px 80px rgba(0,0,0,0.18)'
-                : '0 8px 24px rgba(0,0,0,0.10)',
-              zIndex: isExiting ? 20 : isActive ? 20 : 10 - behind,
-              transform: isExiting || isPromoting ? undefined : staticTransform,
-              transition: isExiting || isPromoting ? 'none' : 'transform 0.5s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s ease',
+              borderRadius: HOME_RADIUS,
+              border: '1px solid rgba(12,29,34,0.08)',
+              background: isOpen ? '#f4f4f4' : '#ffffff',
             }}
-            onClick={isActive ? handleCardClick : undefined}
           >
-            <img
-              src={person.image}
-              alt={person.alt ?? person.name}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-
-            {isActive && !isExiting && (
-              <div style={{
-                position: 'absolute', bottom: 0, left: 0, right: 0,
-                background: 'linear-gradient(to top, rgba(0,0,0,0.60) 0%, transparent 100%)',
-                padding: '40px 28px 28px',
-              }}>
-                <p style={{ fontWeight: 700, color: '#fff', fontSize: 16, margin: 0, letterSpacing: '0.01em' }}>
-                  {person.name}
-                </p>
-                <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', margin: '6px 0 0', fontWeight: 600 }}>
-                  {person.job}
-                </p>
+            <button
+              type="button"
+              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left sm:gap-4 sm:px-5 sm:py-3.5"
+              onClick={() => setOpenIndex(isOpen ? null : i)}
+              aria-expanded={isOpen}
+            >
+              <span className="font-sans text-[13px] font-semibold leading-[1.3] tracking-[-0.02em] text-[#0c1d22] sm:text-[14px]">
+                {item.q}
+              </span>
+              <span
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-transform duration-300 sm:h-8 sm:w-8"
+                style={{
+                  border: `1.5px solid ${HOME_COLORS.primary}`,
+                  transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                }}
+              >
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke={HOME_COLORS.primary} strokeWidth="2">
+                  <line x1="6" y1="1" x2="6" y2="11" />
+                  <line x1="1" y1="6" x2="11" y2="6" />
+                </svg>
+              </span>
+            </button>
+            <div
+              className="grid transition-all duration-300"
+              style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
+            >
+              <div className="overflow-hidden">
+                <p className={`${homeParagraphClass} px-5 pb-4`}>{item.a}</p>
               </div>
-            )}
-
-            {isActive && !isExiting && (
-              <div className="producer-hover-arrow" style={{
-                position: 'absolute', inset: 0,
-                display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
-                paddingRight: 24,
-                opacity: hovered ? 1 : 0,
-                transition: 'opacity 0.3s ease',
-                pointerEvents: 'none',
-              }}>
-                <div style={{
-                  background: 'rgba(255,255,255,0.92)',
-                  backdropFilter: 'blur(8px)',
-                  borderRadius: '50%',
-                  width: 44, height: 44,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
-                }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0b2c34" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         );
       })}
-
-      </div>
-      <div
-        className="flex shrink-0 justify-center gap-1.5"
-        style={{ marginTop: PRODUCER_DOTS_MARGIN_TOP, zIndex: 30 }}
-        role="tablist"
-        aria-label="Producteurs"
-      >
-        {producers.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            role="tab"
-            aria-selected={i === activeIndex}
-            aria-label={`Producteur ${i + 1} sur ${producers.length}`}
-            onClick={() => goTo(i)}
-            style={{
-              width: i === activeIndex ? 24 : 6, height: 6,
-              borderRadius: 3,
-              background: i === activeIndex ? '#e67e22' : '#c8c0b4',
-              border: 'none', cursor: 'pointer', padding: 0,
-              transition: 'all 0.3s ease',
-            }}
-          />
-        ))}
-      </div>
     </div>
   );
 };
 
-const HOME_ROTATING_METIERS = [
-  'producteurs', 'éleveurs', 'artisans', 'vignerons', 'fromagers',
-  'maraîchers', 'apiculteurs', 'ostréiculteurs', 'paysans', 'brasseurs',
-  'distillateurs', 'oléiculteurs',
+const PRODUCER_POINTS = [
+  {
+    n: '01',
+    title: 'Des producteurs engagés & passionnés',
+    desc: 'Nous visitons et sélectionnons chaque producteur pour son authenticité, son engagement et l\'unicité de son lieu.',
+  },
+  {
+    n: '02',
+    title: 'Des rencontres vraies',
+    desc: 'Chaque séjour est pensé pour favoriser les échanges, loin des activités artificielles.',
+  },
+  {
+    n: '03',
+    title: 'Un impact positif',
+    desc: 'Votre évènement soutient directement l\'économie locale et nos producteurs engagés.',
+  },
 ] as const;
 
-/** Badge métiers défilants — fond primary, texte blanc, léger angle (comme « engagées »). */
-const heroRotatingBadgeBase: React.CSSProperties = {
-  display: 'inline-block',
-  background: '#0b2c34',
-  color: '#fff',
-  fontFamily: 'Poppins, system-ui, sans-serif',
-  fontWeight: 700,
-  fontStyle: 'normal',
-  lineHeight: 1.15,
-  transform: 'rotate(-3.5deg) translateX(0.08em)',
-  transformOrigin: 'center center',
-  boxShadow: '0 3px 14px rgba(0, 0, 0, 0.18)',
-};
-const heroRotatingBadgeMobile: React.CSSProperties = {
-  ...heroRotatingBadgeBase,
-  verticalAlign: 'baseline',
-  marginLeft: '0.06em',
-  borderRadius: 8,
-  padding: '5px 10px 6px 12px',
-  fontSize: '0.96em',
-};
-const heroRotatingBadgeDesktop: React.CSSProperties = {
-  ...heroRotatingBadgeBase,
-  verticalAlign: 'baseline',
-  marginLeft: '0.06em',
-  borderRadius: 12,
-  padding: '6px 14px 7px 16px',
-  fontSize: '0.96em',
-};
+/** Drag horizontal (touch + souris) pour carousels mobile. */
+function attachHorizontalDrag(el: HTMLElement) {
+  let pointerId: number | null = null;
+  let startX = 0;
+  let startScroll = 0;
+  let moved = false;
 
-const HERO_IMAGES = [
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/lavandepaysage.png', alt: 'Paysage de lavande en Provence – TerraGo' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/olives-recoltes.png', alt: 'Récolte des olives en oliveraie – TerraGo' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/travail-terre.png', alt: 'Maraîchage et légumes de saison – TerraGo' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/ostreiculteurs.png', alt: 'Ostréiculture et parcs à huîtres – TerraGo' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/degustation-spirit.jpg', alt: 'Table et dégustation chez un vigneron– TerraGo' },
-  { src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/heroimages/fromage-chevre.png', alt: 'Fromage de chèvre artisanal – TerraGo' },
-] as const;
-
-/* ─────────────────────────────────────────────
-   HOME
-───────────────────────────────────────────── */
-const Home: React.FC = () => {
-  const [currentTextIndex, setCurrentTextIndex] = useState(0);
-  const [displayedText, setDisplayedText] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [heroImageIndex, setHeroImageIndex] = useState(0);
-  const heroTouchStartX = useRef(0);
-  const heroTouchStartY = useRef(0);
-
-  const handleHeroTouchStart = (e: React.TouchEvent) => {
-    heroTouchStartX.current = e.touches[0].clientX;
-    heroTouchStartY.current = e.touches[0].clientY;
+  const onDown = (e: PointerEvent) => {
+    pointerId = e.pointerId;
+    startX = e.clientX;
+    startScroll = el.scrollLeft;
+    moved = false;
+    el.setPointerCapture(e.pointerId);
   };
-
-  const handleHeroTouchEnd = (e: React.TouchEvent) => {
-    const deltaX = e.changedTouches[0].clientX - heroTouchStartX.current;
-    const deltaY = Math.abs(e.changedTouches[0].clientY - heroTouchStartY.current);
-    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) <= deltaY) return;
-    if (deltaX < 0) {
-      setHeroImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
-    } else {
-      setHeroImageIndex((prev) => (prev - 1 + HERO_IMAGES.length) % HERO_IMAGES.length);
+  const onMove = (e: PointerEvent) => {
+    if (pointerId !== e.pointerId) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 4) moved = true;
+    if (moved) el.scrollLeft = startScroll - dx;
+  };
+  const onUp = (e: PointerEvent) => {
+    if (pointerId !== e.pointerId) return;
+    pointerId = null;
+    try {
+      el.releasePointerCapture(e.pointerId);
+    } catch {
+      /* ignore */
     }
   };
 
+  el.addEventListener('pointerdown', onDown);
+  el.addEventListener('pointermove', onMove);
+  el.addEventListener('pointerup', onUp);
+  el.addEventListener('pointercancel', onUp);
+  return () => {
+    el.removeEventListener('pointerdown', onDown);
+    el.removeEventListener('pointermove', onMove);
+    el.removeEventListener('pointerup', onUp);
+    el.removeEventListener('pointercancel', onUp);
+  };
+}
+
+/** Index actif d’un track horizontal + goTo (pastilles orange). */
+function useSwipeTrack(trackRef: React.RefObject<HTMLDivElement | null>, length: number) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const isScrollingRef = useRef(false);
+
+  const goTo = useCallback((index: number, behavior: ScrollBehavior = 'smooth') => {
+    const track = trackRef.current;
+    if (!track || length === 0) return;
+    const clamped = ((index % length) + length) % length;
+    const slide = track.children[clamped] as HTMLElement | undefined;
+    if (!slide) return;
+    isScrollingRef.current = true;
+    const targetLeft = slide.offsetLeft - (track.firstElementChild as HTMLElement).offsetLeft;
+    track.scrollTo({ left: targetLeft, behavior });
+    setActiveIndex(clamped);
+    window.setTimeout(() => {
+      isScrollingRef.current = false;
+    }, behavior === 'smooth' ? 450 : 50);
+  }, [trackRef, length]);
+
   useEffect(() => {
-    const currentText = HOME_ROTATING_METIERS[currentTextIndex];
-    let cancelled = false;
-    const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+    const track = trackRef.current;
+    if (!track) return;
 
-    const runCycle = async () => {
-      setDisplayedText('');
-      setIsTyping(true);
-      for (let i = 1; i <= currentText.length; i++) {
-        if (cancelled) return;
-        setDisplayedText(currentText.slice(0, i));
-        await sleep(160);
-      }
-      if (cancelled) return;
-      setIsTyping(false);
-      await sleep(2200);
-      if (cancelled) return;
-      setIsTyping(true);
-      for (let i = currentText.length - 1; i >= 0; i--) {
-        if (cancelled) return;
-        setDisplayedText(currentText.slice(0, i));
-        await sleep(75);
-      }
-      if (cancelled) return;
-      setDisplayedText('');
-      setIsTyping(false);
-      await sleep(350);
-      if (cancelled) return;
-      setCurrentTextIndex((prev) => (prev + 1) % HOME_ROTATING_METIERS.length);
+    let raf = 0;
+    const onScroll = () => {
+      if (isScrollingRef.current) return;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const center = track.scrollLeft + track.clientWidth / 2;
+        let best = 0;
+        let bestDist = Infinity;
+        Array.from(track.children).forEach((child, i) => {
+          const el = child as HTMLElement;
+          const mid = el.offsetLeft - track.offsetLeft + el.offsetWidth / 2;
+          const dist = Math.abs(mid - center);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = i;
+          }
+        });
+        setActiveIndex((prev) => (prev === best ? prev : best));
+      });
     };
 
-    void runCycle();
+    track.addEventListener('scroll', onScroll, { passive: true });
     return () => {
-      cancelled = true;
+      cancelAnimationFrame(raf);
+      track.removeEventListener('scroll', onScroll);
     };
-  }, [currentTextIndex]);
+  }, [trackRef]);
+
+  return { activeIndex, goTo };
+}
+
+const SwipeDots: React.FC<{
+  count: number;
+  activeIndex: number;
+  onSelect: (index: number) => void;
+  className?: string;
+  label?: string;
+}> = ({ count, activeIndex, onSelect, className = '', label = 'Élément' }) => (
+  <div className={`flex items-center justify-center gap-2 ${className}`}>
+    {Array.from({ length: count }, (_, i) => (
+      <button
+        key={i}
+        type="button"
+        aria-label={`${label} ${i + 1}`}
+        onClick={() => onSelect(i)}
+        className="h-2 rounded-full transition-all duration-300"
+        style={{
+          width: i === activeIndex ? 28 : 8,
+          background: i === activeIndex ? HOME_COLORS.orange : 'rgba(12,29,34,0.18)',
+        }}
+      />
+    ))}
+  </div>
+);
+
+const Home: React.FC<HomeProps> = ({ assets }) => {
+  const regionScrollRef = useRef<HTMLDivElement>(null);
+  const conceptScrollRef = useRef<HTMLDivElement>(null);
+  const stepsScrollRef = useRef<HTMLDivElement>(null);
+  const experiencesScrollRef = useRef<HTMLDivElement>(null);
+  const [producerIndex, setProducerIndex] = useState(0);
+  const activeProducer = HOME_PRODUCERS[producerIndex];
+
+  const conceptSwipe = useSwipeTrack(conceptScrollRef, 3);
+  const stepsSwipe = useSwipeTrack(stepsScrollRef, HOME_STEPS.length);
+  const regionSwipe = useSwipeTrack(regionScrollRef, REGION_IMAGES.length);
+  const experiencesSwipe = useSwipeTrack(experiencesScrollRef, 3);
+
+  const conceptCards = [
+    {
+      image: assets.conceptAgir,
+      lead: (
+        <>
+          Pour agir et
+          <br />
+        </>
+      ),
+      rest: 'sensibiliser',
+    },
+    {
+      image: assets.conceptLien,
+      lead: (
+        <>
+          Pour créer
+          <br />
+        </>
+      ),
+      rest: 'du lien',
+    },
+    {
+      image: assets.conceptInspirer,
+      lead: (
+        <>
+          Pour
+          <br />
+        </>
+      ),
+      rest: 'inspirer',
+    },
+  ];
+
+  const experiences = [
+    {
+      video: assets.expOlive,
+      title: (
+        <>
+          Récolte et réalisation de son huile d&apos;olive{' '}
+          <span className="font-bold">en équipe</span>
+        </>
+      ),
+    },
+    {
+      video: assets.expCuisine,
+      title: (
+        <>
+          <span className="font-bold">Atelier cuisine</span> au cœur du moulin
+        </>
+      ),
+    },
+    {
+      video: assets.expVin,
+      title: (
+        <>
+          Visite des chais et{' '}
+          <span className="font-bold">assemblage de son vin</span>
+        </>
+      ),
+    },
+  ];
+
+  /** Défile d'une « page » de cartes région (largeur visible moins un chevauchement). */
+  const scrollRegions = (direction: 1 | -1) => {
+    const track = regionScrollRef.current;
+    if (!track) return;
+    track.scrollBy({ left: direction * (track.clientWidth * 0.8), behavior: 'smooth' });
+  };
+
+  /** Drag horizontal (touch + souris) pour les carousels mobile. */
+  useEffect(() => {
+    const cleanups = [conceptScrollRef.current, stepsScrollRef.current, experiencesScrollRef.current]
+      .filter((el): el is HTMLDivElement => !!el)
+      .map(attachHorizontalDrag);
+    return () => cleanups.forEach((off) => off());
+  }, []);
 
   return (
-    <div className="overflow-x-hidden bg-beige-bg">
+    <div className="overflow-x-hidden bg-white">
 
-      {/* ── HERO ── */}
-      <section className="relative w-full">
-        <div
-          className="relative min-h-screen w-full overflow-hidden flex items-start sm:items-center justify-center pt-32 sm:pt-0"
-          onTouchStart={handleHeroTouchStart}
-          onTouchEnd={handleHeroTouchEnd}
-        >
-          {HERO_IMAGES.map((img, i) => (
-            <img
-              key={img.src}
-              src={img.src}
-              alt=""
-              decoding="async"
-              fetchPriority={i <= 2 ? 'high' : 'low'}
-              loading={i <= 2 ? 'eager' : 'lazy'}
-              className="absolute inset-0 h-full w-full object-cover pointer-events-none transition-opacity duration-[900ms] ease-out"
-              style={{
-                opacity: i === heroImageIndex ? 1 : 0,
-                zIndex: i === heroImageIndex ? 1 : 0,
-              }}
-              aria-hidden={i !== heroImageIndex}
-            />
-          ))}
-          <span className="sr-only">{HERO_IMAGES[heroImageIndex]?.alt}</span>
-          <div className="absolute inset-0 z-[2]" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.09) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.28) 100%)' }} />
+      <HomeHero videoSrc={assets.heroVideo} />
 
-          <div className="relative z-10 w-full max-w-5xl mx-auto px-3 sm:px-5 lg:px-8 text-center">
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
-              <span style={{ color: 'rgba(255,255,255,0.60)', fontSize: 10, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase' }}>
-                Terroir français
-              </span>
-              <div style={{ width: 28, height: 1, background: 'rgba(255,255,255,0.40)' }} />
-            </div>
-
-            <h1 className="text-white font-bold leading-[1.18] mb-12 drop-shadow-xl">
-              <span className="sm:hidden block text-[2rem] font-sans tracking-tight leading-[1.24]">
-                Des séminaires et séjours engagés, à la rencontre de{' '}
-                <span className="whitespace-nowrap">
-                  nos{'\u00A0'}
-                  <span className="inline-block" style={heroRotatingBadgeMobile}>
-                    {displayedText}
-                    <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s' }}>|</span>
-                  </span>
-                </span>
-              </span>
-              <span className="hidden sm:block space-y-2">
-                <span className="block font-sans font-bold text-4xl md:text-5xl lg:text-5xl leading-[1.15]" style={{ letterSpacing: '-0.01em' }}>
-                Séminaires d'entreprise immersifs,{' '}
-                </span>
-                <span className="block font-sans text-4xl md:text-5xl lg:text-5xl font-bold italic leading-[1.15]" style={{ letterSpacing: '-0.02em' }}>
-                 à la rencontre de nos{'\u00A0'}
-                  <span className="relative inline-block" style={heroRotatingBadgeDesktop}>
-                    {displayedText}
-                    <span style={{ opacity: isTyping ? 1 : 0, transition: 'opacity 0.1s' }}>|</span>
-                  </span>
-                </span>
-              </span>
-            </h1>
-          <h1 className="sr-only">
-            Des séminaires immersifs chez des producteurs du terroir français – TerraGo
-          </h1>
-
-            <p
-              className={`hidden sm:block ${heroIntroParagraphOnImageClass}`}
-              style={heroIntroParagraphOnImageStyle}
-            >
-            Team building, séminaires au vert et séminaires RSE à la rencontre de producteurs engagés, au cœur des territoires, les mains dans la terre.
-             </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
-              <Link
-                href="/seminaires-entreprise"
-                className={heroPrimaryOutlineButtonClass}
-              >
-                Séminaires d'entreprise
-              </Link>
-              <Link
-                href="/entre-amis"
-                className={heroSecondaryGhostLinkClass}
-                style={heroSecondaryGhostLinkStyle}
-                onMouseEnter={e => (e.currentTarget.style.color = 'rgb(255, 255, 255)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)')}
-              >
-                Séjours entre amis →
-              </Link>
-            </div>
+      {/* ── NOTRE CONCEPT ── */}
+      <section style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}>
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="mb-10 text-center sm:mb-14">
+            <h2 className="mx-auto max-w-4xl font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]">
+              Des évènements <span className="font-bold">clés en main,</span> pensés pour répondre à vos{' '}
+              <span className="font-bold">objectifs d&apos;entreprise.</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-3xl font-sans text-[15px] font-normal leading-[1.65] tracking-[-0.04em] text-[#0c1d22]/65 sm:mt-6 sm:text-[17px]">
+              Séminaire, team building, convention, journée RSE :
+              <br />
+              nos propositions sont 100% personnalisées et adaptées à vos objectifs !
+            </p>
           </div>
+        </div>
+
+        {/* Mobile : carousel swipable pleine largeur (même pattern que les régions) */}
+        <div className="relative sm:mx-auto sm:max-w-6xl sm:px-8">
+          <img
+            src={HOME_EMOJI.arbre}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute left-0 top-0 z-30 h-36 w-36 -translate-x-[18%] -translate-y-[55%] object-contain sm:left-8 sm:h-52 sm:w-52 sm:-translate-x-[42%] sm:-translate-y-[38%] lg:h-60 lg:w-60 lg:-translate-y-[32%]"
+          />
 
           <div
-            className="absolute z-20 flex items-center gap-2.5 bottom-8 sm:bottom-10 right-4 sm:right-6 lg:right-8"
-            role="tablist"
-            aria-label="Images du bandeau d’accueil"
+            ref={conceptScrollRef}
+            className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+            style={{
+              WebkitOverflowScrolling: 'touch',
+              scrollPaddingInline: '1.25rem',
+              paddingLeft: '1.25rem',
+              paddingRight: '1.25rem',
+            }}
           >
-            {HERO_IMAGES.map((_, i) => (
-              <button
+            {conceptCards.map((card, i) => (
+              <div
                 key={i}
-                type="button"
-                role="tab"
-                aria-selected={i === heroImageIndex}
-                aria-label={`Image ${i + 1} sur ${HERO_IMAGES.length}`}
-                onClick={() => setHeroImageIndex(i)}
-                className={`shrink-0 rounded-full p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent transition-[width,background-color,border-color,opacity] duration-300 ease-out ${
-                  i === heroImageIndex
-                    ? 'h-2 w-8 bg-white border-2 border-white'
-                    : 'h-2 w-2 bg-transparent border-2 border-white opacity-90 hover:opacity-100'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── NOTRE VISION ── */}
-      <section
-        className="bg-white overflow-x-hidden overflow-y-visible"
-        style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }}
-        id="notre-vision"
-      >
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="flex flex-col items-center lg:items-start lg:flex-row lg:gap-12 xl:gap-14">
-            {/* Image : ~35–38 % du bloc, ratio 4/5 */}
-            <div
-              className="relative order-1 aspect-[4/5] w-full max-w-[min(380px,88vw)] shrink-0 mx-auto lg:mx-0
-                         lg:w-[min(38%,420px)] lg:max-w-[400px] lg:flex-shrink-0"
-            >
-              <div className="relative h-full w-full overflow-hidden rounded-[20px] shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
+                className="relative aspect-[3/3.45] w-[70vw] max-w-[320px] shrink-0 snap-center overflow-hidden"
+                style={{ borderRadius: HOME_RADIUS }}
+              >
                 <img
-                  src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/olivesrecoltes.JPG"
-                  alt="Immersion vendange terroir français – TerraGo"
-                  className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+                  src={card.image}
+                  alt=""
+                  className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
+                  loading="lazy"
+                  draggable={false}
                 />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
+                <p className="pointer-events-none absolute left-6 right-5 top-[50%] z-10 font-sans text-[34px] leading-[1.12] tracking-[-0.075em] text-white">
+                  <span className="font-normal">{card.lead}</span>
+                  <span className="font-bold">{card.rest}</span>
+                </p>
               </div>
-            </div>
-
-            <div className="order-2 w-full max-w-full flex-1 min-w-0 pt-12 lg:pt-1 flex flex-col justify-start">
-              <div className="flex items-center gap-3 mb-5">
-              <div style={{ width: 20, height: 1, background: '#e67e22' }} />
-              <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Notre vision</span>
-              </div>
-            <ScrollAnimate delay={100}>
-              <h2 className="font-bold text-primary leading-[1.08] mb-6 lg:mb-7" style={{ letterSpacing: '-0.01em' }}>
-                <span className=" font-sans text-4xl sm:text-5xl">Une envie simple :</span>
-                <span className=" font-display italic text-5xl sm:text-5xl lg:text-6xl"> vivre le terroir pour de vrai.</span>
-              </h2>
-            </ScrollAnimate>
-            <div className="space-y-3.5 max-w-[min(36rem,100%)] lg:max-w-[min(38rem,100%)]" style={{ color: '#7a7060', fontSize: 15, lineHeight: 1.75 }}>
-              <p>TerraGo est né d'une envie simple : permettre à chacun de vivre des expériences authentiques, humaines et enrichissantes au plus près de celles et ceux qui font le terroir.</p>
-              <p>Nous croyons que les plus beaux moments se vivent en groupe, dans des lieux vrais, en partageant des savoir-faire, du temps et des histoires.</p>
-              <p>Qu'il s'agisse d'un séminaire au vert, d'un séjour entre amis ou d'une expérience immersive à la journée, TerraGo crée des rencontres qui reconnectent à l'essentiel.</p>
-            </div>
-            <Link
-              href="/seminaires-entreprise"
-              className="inline mt-9 text-sm tracking-[0.08em] font-bold text-[#0b2c34] transition-colors duration-300 hover:text-[#e67e22]"
-            >
-              <span className="border-b-[1.5px] border-current pb-[3px]">
-                Découvrir nos séminaires d'entreprise →
-              </span>
-            </Link>
-            </div>
+            ))}
           </div>
+
+          <SwipeDots
+            count={conceptCards.length}
+            activeIndex={conceptSwipe.activeIndex}
+            onSelect={conceptSwipe.goTo}
+            label="Concept"
+            className="mt-5 sm:hidden"
+          />
+
+          {/* Desktop : grille 3 colonnes */}
+          <div className="relative hidden items-center gap-5 sm:grid sm:grid-cols-3">
+            {conceptCards.map((card, i) => {
+              const isMiddle = i === 1;
+              return (
+                <div
+                  key={i}
+                  className={`group relative overflow-hidden ${
+                    isMiddle ? 'aspect-[3/4.6]' : 'aspect-[3/3.9]'
+                  }`}
+                  style={{ borderRadius: HOME_RADIUS }}
+                >
+                  <img
+                    src={card.image}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.1]"
+                    loading="lazy"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                  <p className="absolute left-7 right-6 top-[52%] z-10 font-sans text-[32px] leading-[1.15] tracking-[-0.075em] text-white lg:text-[36px]">
+                    <span className="font-normal">{card.lead}</span>
+                    <span className="font-bold">{card.rest}</span>
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mx-auto mt-10 flex max-w-6xl justify-center px-5 sm:mt-12 sm:px-8">
+          <Link
+            href="/seminaires-entreprise"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-8 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:px-10"
+          >
+            <span aria-hidden>→</span>
+            Découvrir nos séminaires
+          </Link>
         </div>
       </section>
 
-      {/* ── FORMATS ── */}
-      <section className="bg-beige-bg" style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="formats">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-
-          <div className="mb-14">
-            <div className="flex items-center gap-3 mb-6">
-              <div style={{ width: 20, height: 1, background: '#e67e22' }} />
-              <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Formats</span>
-            </div>
-            <ScrollAnimate delay={100}>
-              <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-                <span className=" font-sans text-4xl sm:text-5xl">Des formats pour tous</span>
-                <span className=" font-display italic text-5xl sm:text-5xl lg:text-6xl"> les moments de vie</span>
-              </h2>
-            </ScrollAnimate>
-            <p className="mt-4 max-w-md" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
-              Une même philosophie, plusieurs façons de la vivre.
+      {/* ── EXPÉRIENCES ── */}
+      <section
+        style={{
+          paddingTop: homeSectionPadding,
+          paddingBottom: homeSectionPadding,
+          background: '#f4f4f4',
+        }}
+      >
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="mb-8 ml-auto max-w-3xl text-right sm:mb-10">
+            <h2 className="font-sans text-[38px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[44px] lg:text-[52px]">
+              Vivez une <span className="font-bold">expérience collective</span> au cœur des savoir-faire français.
+            </h2>
+            <p className="mt-7 font-sans text-[15px] font-normal leading-[1.65] tracking-[-0.04em] text-[#0c1d22]/65 sm:mt-9 sm:text-[17px]">
+              Oubliez les activités de team building standardisées. Avec TerraGo, vos équipes deviennent actrices d&apos;une expérience authentique aux côtés de celles et ceux qui font vivre nos territoires. Au contact de producteurs passionnés, vos collaborateurs découvrent des métiers, relèvent des défis collectifs et partagent un moment différent autour du goût, de la nature et du savoir-faire.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link href="/seminaires-entreprise" className="group relative bg-white overflow-hidden flex flex-col hover:-translate-y-1 transition-all duration-300" style={{ borderRadius: '20px', boxShadow: '0 2px 16px rgba(0,0,0,0.07)' }}>
-              <div className="overflow-hidden" style={{ borderRadius: '20px 20px 0 0' }}>
-                <div className="aspect-[4/3]">
-                  <img src="https://images.unsplash.com/photo-1605673349798-5580680c4dea?q=80&w=800&auto=format&fit=crop" alt="Séminaire nature entreprise chez un producteur – TerraGo" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                </div>
+          <p className="mb-5 text-right font-sans text-[18px] font-bold leading-[1.3] tracking-[-0.05em] text-[#0c1d22] sm:mb-6 sm:text-[22px]">
+            Quelques exemples d&apos;expériences
+          </p>
+        </div>
+
+        {/* Mobile : carousel swipable */}
+        <div className="relative">
+          <img
+            src={HOME_EMOJI.branche}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute left-5 top-0 z-30 h-44 w-44 -translate-x-[38%] -translate-y-[48%] object-contain sm:hidden"
+          />
+
+          <div
+            ref={experiencesScrollRef}
+            className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+            style={{
+              WebkitOverflowScrolling: 'touch',
+              scrollPaddingInline: '1.25rem',
+              paddingLeft: '1.25rem',
+              paddingRight: '1.25rem',
+            }}
+          >
+            {experiences.map((exp, i) => (
+              <div
+                key={i}
+                className="relative aspect-[16/10] w-[78vw] max-w-[360px] shrink-0 snap-center overflow-hidden"
+                style={{ borderRadius: HOME_RADIUS }}
+              >
+                <LazyVideo
+                  src={exp.video}
+                  className="absolute inset-0 h-full w-full"
+                  videoClassName="scale-110"
+                />
+                <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
+                <p className="pointer-events-none absolute bottom-5 left-4 right-4 z-10 font-sans text-[16px] font-normal leading-[1.25] tracking-[-0.05em] text-white">
+                  {exp.title}
+                </p>
               </div>
-              <div className="p-5 flex flex-col flex-1">
-                <span className="font-sans font-bold text-primary text-sm mb-1 group-hover:text-orange transition-colors">Séminaires d'entreprise</span>
-                <span style={{ fontSize: 11, color: '#9a9080' }}>Séminaire nature &amp; terroir engagé</span>
-                <span className="mt-auto pt-4 text-[9px] uppercase tracking-[0.22em] font-bold" style={{ color: '#e67e22' }}>Disponible →</span>
-              </div>
-            </Link>
-            {[
-              { label: 'Séjours en groupe', sub: 'Entre amis, en famille', img: 'https://images.unsplash.com/photo-1683772769298-b77177c029d8?q=80&w=800&auto=format&fit=crop', alt: 'Séjour immersif terroir entre amis – TerraGo' },
-              { label: 'Aventures des terroirs', sub: 'Multi-destinations', img: 'https://images.unsplash.com/photo-1710330336476-d6027e6035cd?q=80&w=800&auto=format&fit=crop', alt: 'Expérience terroir multi-destinations France – TerraGo' },
-              { label: 'Immersions à la journée', sub: 'Découvertes express', img: 'https://images.unsplash.com/photo-1753703986564-a2aa6e7c2a05?q=80&w=985&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: 'Immersion journée chez un producteur terroir – TerraGo' },
-            ].map((item) => (
-              <div key={item.label} className="relative bg-white overflow-hidden flex flex-col" style={{ borderRadius: '20px', boxShadow: '0 2px 16px rgba(0,0,0,0.06)', opacity: 0.72 }}>
-                <span className="absolute top-3 right-3 z-10 text-white text-[8px] font-bold uppercase tracking-wider px-3 py-1.5" style={{ background: '#e67e22', borderRadius: '9999px' }}>Bientôt</span>
-                <div className="overflow-hidden" style={{ borderRadius: '20px 20px 0 0' }}>
-                  <div className="aspect-[4/3]">
-                    <img src={item.img} alt={item.alt ?? item.label} className="w-full h-full object-cover" style={{ filter: 'saturate(0.8)' }} />
-                  </div>
-                </div>
-                <div className="p-5">
-                  <span className="font-sans font-bold text-primary text-sm block mb-1">{item.label}</span>
-                  <span style={{ fontSize: 11, color: '#9a9080' }}>{item.sub}</span>
+            ))}
+          </div>
+
+          <SwipeDots
+            count={experiences.length}
+            activeIndex={experiencesSwipe.activeIndex}
+            onSelect={experiencesSwipe.goTo}
+            label="Expérience"
+            className="mt-5 sm:hidden"
+          />
+        </div>
+
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          {/* Desktop : grille */}
+          <div className="relative hidden gap-5 sm:grid sm:grid-cols-3">
+            {experiences.map((exp, i) => (
+              <div key={i} className="relative overflow-visible">
+                {i === 0 && (
+                  <img
+                    src={HOME_EMOJI.branche}
+                    alt=""
+                    aria-hidden
+                    className="pointer-events-none absolute left-0 top-0 z-30 h-56 w-56 -translate-x-[38%] -translate-y-[48%] object-contain lg:h-64 lg:w-64"
+                  />
+                )}
+                <div
+                  className="group relative aspect-[16/11] overflow-hidden"
+                  style={{ borderRadius: HOME_RADIUS }}
+                >
+                  <LazyVideo
+                    src={exp.video}
+                    playOnHover
+                    className="absolute inset-0 h-full w-full"
+                    videoClassName="scale-110 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover:scale-[1.32] group-hover:translate-x-7 group-hover:-translate-y-5"
+                  />
+                  <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
+                  <p className="pointer-events-none absolute bottom-6 left-5 right-5 z-10 font-sans text-[18px] font-normal leading-[1.25] tracking-[-0.05em] text-white lg:text-[20px]">
+                    {exp.title}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-24 mb-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div style={{ width: 20, height: 1, background: '#e67e22' }} />
-              <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Univers</span>
-            </div>
-            <ScrollAnimate delay={100}>
-              <h2 className="font-bold text-primary leading-[1.06]" style={{ letterSpacing: '-0.01em' }}>
-                <span className=" font-sans text-4xl sm:text-5xl">Des expériences dans tous</span>
-                <span className=" font-display italic text-5xl sm:text-5xl lg:text-6xl"> les univers du terroir</span>
-              </h2>
-            </ScrollAnimate>
-            <p className="mt-4 max-w-xl" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
-              Du vin à la truffe, du fromage aux produits de la mer — TerraGo développe de réelles expériences humaines dans tous les univers du terroir.
-            </p>
-          </div>
-
-          <div className="w-full overflow-hidden py-5" style={{ borderTop: '1px solid rgba(11, 44, 52,0.07)', borderBottom: '1px solid rgba(11, 44, 52,0.07)' }}>
-            <div className="flex w-max animate-marquee-terroir whitespace-nowrap">
-              {(() => {
-                const produits = ["Huile d'olive", 'Fromages', 'Maraîchage', 'Truffe', 'Huîtres', 'Élevage', 'Vins', 'Miel', 'Céréales', 'Épices', 'Spiritueux', 'Lavande'];
-                return [...produits, ...produits].map((label, i) => (
-                  <span key={`${label}-${i}`} className="mx-8 font-semibold uppercase" style={{ fontSize: 12, letterSpacing: '0.28em', color: 'rgba(11, 44, 52,0.30)' }}>
-                    {label}
-                  </span>
-                ));
-              })()}
-            </div>
+          <div className="mt-10 flex justify-center sm:mt-12">
+            <Link
+              href="/experiences"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-8 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:px-10"
+            >
+              <span aria-hidden>→</span>
+              Découvrir les expériences TerraGo
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── RENCONTRES ── */}
-      <section className="bg-white" style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="rencontres">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            <div>
-              <div className="flex items-center gap-3 mb-7">
-                <div style={{ width: 20, height: 1, background: '#e67e22' }} />
-                <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Rencontres</span>
-              </div>
-              <ScrollAnimate delay={100}>
-                <h2 className="font-bold text-primary leading-[1.06] mb-10" style={{ letterSpacing: '-0.01em' }}>
-                  <span className=" font-sans text-4xl sm:text-5xl">Chaque expérience est</span>
-                  <span className=" font-display italic text-5xl sm:text-5xl lg:text-6xl"> portée par un humain.</span>
-                </h2>
-              </ScrollAnimate>
-              <div className="space-y-8">
-                {[
-                  { num: '01', title: 'Des lieux vrais', desc: "Nous visitons et sélectionnons chaque producteur pour son authenticité, son engagement et l'unicité de son lieu." },
-                  { num: '02', title: 'Des histoires partagées', desc: 'Chaque producteur ouvre son lieu, raconte son histoire et transmet ses savoir-faire.' },
-                  { num: '03', title: 'Une connexion durable', desc: "Bien plus qu'une visite — une rencontre qui marque et donne envie de revenir." },
-                ].map(item => (
-                  <div key={item.title} className="flex gap-5">
-                    <span className="font-display italic font-bold flex-shrink-0 mt-0.5" style={{ fontSize: 13, color: '#e67e22', letterSpacing: '0.05em' }}>{item.num}</span>
-                    <div>
-                      <h3 className="font-sans font-bold text-primary mb-1.5" style={{ fontSize: 14 }}>{item.title}</h3>
-                      <p style={{ color: '#7a7060', fontSize: 14, lineHeight: 1.7 }}>{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex w-full justify-center">
-              <ScrollAnimate delay={120} direction="left" className="flex justify-center w-full">
-                <ProducerStack />
-              </ScrollAnimate>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── ENGAGEMENT ── */}
-      <section className="relative overflow-hidden" style={{ backgroundColor: '#061a1f', paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }} id="engagement">
-        <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
-            {/* Texte (mobile: en premier | desktop: col 1) */}
-            <div className="order-1 lg:order-1">
-              <div className="flex items-center gap-3 mb-7">
-                <div style={{ width: 20, height: 1, background: '#e67e22' }} />
-                <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Engagement</span>
-              </div>
-              <ScrollAnimate delay={100}>
-                <h2 className="font-bold text-white leading-[1.06] mb-6" style={{ letterSpacing: '-0.01em' }}>
-                  <span className=" font-sans text-4xl md:text-5xl">Un engagement</span>
-                  <span className=" font-display italic text-5xl md:text-5xl lg:text-6xl"> simple et concret.</span>
-                </h2>
-              </ScrollAnimate>
-              <p className="mb-10 max-w-md lg:mb-0" style={{ color: 'rgba(255,255,255,0.40)', fontSize: 14, lineHeight: 1.75 }}>
-                Chez TerraGo, chaque décision est prise en pensant à ceux qui font le terroir et à ceux qui viennent le découvrir.
+      {/* ── BANNIÈRE IMPACT — séparateur à cheval sur le gris (haut) et le blanc (bas) ── */}
+      <div
+        style={{
+          paddingTop: homeSeparatorPadding,
+          paddingBottom: homeSeparatorPadding,
+          background: 'linear-gradient(to bottom, #f4f4f4 0 50%, #ffffff 50% 100%)',
+        }}
+      >
+        <div className="relative mx-auto w-full max-w-[92rem] px-0 sm:px-3 lg:px-4">
+          <div
+            className="relative overflow-hidden max-sm:!rounded-none"
+            style={{ borderRadius: HOME_RADIUS }}
+          >
+            <BannerVideo
+              src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/vergers.mp4"
+              className="aspect-[16/11] w-full object-cover sm:aspect-[36/12] lg:aspect-[40/9]"
+            />
+            <div className={`${bottomImageGradientClass} z-[1]`} />
+            <div className="absolute inset-0 z-10 flex items-center justify-center px-5 py-12 text-center sm:px-8">
+              <p className="max-w-none font-sans text-[clamp(1.65rem,6.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.075em] text-white">
+                Des séminaires qui ont <span className="font-bold">de l&apos;impact</span>,
+                {' '}pour <span className="font-bold">vos équipes</span>, mais aussi pour{' '}
+                <span className="font-bold">nos producteurs</span>.
               </p>
             </div>
+          </div>
 
-            {/* 3 cards (mobile: au milieu | desktop: col 2) */}
-            <div className="order-2 lg:row-span-2 space-y-3">
-              {[
-                { num: '01', title: 'Producteurs engagés', desc: 'Des producteurs de différents univers, tous engagés pour produire bien et bon.' },
-                { num: '02', title: 'Rémunération juste', desc: 'Nos séjours représentent un vrai coup de pouce financier pour les producteurs qui nous accueillent.' },
-                { num: '03', title: 'Flexibilité totale', desc: 'Chaque producteur gère son calendrier, ses disponibilités et ses tarifs. Nous les accompagnons à chaque étape.' },
-              ].map(item => (
+          {/* Emoji mains — à cheval bas vidéo / haut section rencontres, un peu à gauche du bord droit */}
+          <img
+            src={HOME_EMOJI.mainsDansLaTerre}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute bottom-0 right-[6%] z-30 h-32 w-32 translate-y-1/2 object-contain drop-shadow-md sm:right-[10%] sm:h-44 sm:w-44 lg:right-[12%] lg:h-52 lg:w-52"
+          />
+        </div>
+      </div>
+
+      {/* ── RENCONTRES PRODUCTEURS ── */}
+      {/* Supplément en haut : dégage le titre de la bannière séparatrice sans décaler sa césure. */}
+      <section
+        style={{
+          paddingTop: `calc(${homeSectionPadding} + ${homeSeparatorPadding})`,
+          paddingBottom: homeSectionPadding,
+          background: '#ffffff',
+        }}
+      >
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="relative grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:items-start lg:gap-x-20 lg:gap-y-0">
+            {/* Colonne visuelle — sous le 03 / au-dessus du bouton sur mobile */}
+            <div className="relative order-2 mx-auto w-full max-w-[420px] lg:order-1 lg:mx-0 lg:max-w-none lg:self-center">
+              <div className="relative overflow-visible">
+                {/* Photo */}
                 <div
-                  key={item.num}
-                  className="group flex gap-5 transition-all duration-300 cursor-pointer"
-                  style={{
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid rgba(255,255,255,0.06)',
-                    borderRadius: '16px',
-                    padding: '20px 24px',
-                  }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.06)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.03)'; }}
+                  className="relative overflow-hidden"
+                  style={{ borderRadius: HOME_RADIUS }}
                 >
-                  <span className="font-display italic font-bold flex-shrink-0 mt-0.5" style={{ fontSize: 13, color: '#e67e22', letterSpacing: '0.05em' }}>{item.num}</span>
-                  <div>
-                    <h3 className="font-sans font-bold text-white mb-1" style={{ fontSize: 14 }}>{item.title}</h3>
-                    <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 13, lineHeight: 1.7 }}>{item.desc}</p>
-                  </div>
+                  <img
+                    src={activeProducer.image}
+                    alt={`${activeProducer.name} – producteur TerraGo`}
+                    className="aspect-[4/4.35] w-full object-cover"
+                    loading="lazy"
+                  />
+
+                  {/* Label nom */}
+                  <span
+                    className="absolute bottom-4 left-4 z-10 rounded-full px-4 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-white sm:bottom-5 sm:left-5 sm:text-[11px]"
+                    style={{ background: HOME_COLORS.primary }}
+                  >
+                    {activeProducer.name}
+                  </span>
                 </div>
-              ))}
+
+                {/* Emoji rateau — coin bas droit, bien plus grand */}
+                <img
+                  src={HOME_EMOJI.rateau}
+                  alt=""
+                  aria-hidden
+                  className="pointer-events-none absolute -bottom-24 -right-16 z-30 h-40 w-40 rotate-[-18deg] object-contain drop-shadow-md sm:-bottom-32 sm:-right-24 sm:h-56 sm:w-56 lg:-bottom-36 lg:-right-20 lg:h-64 lg:w-64"
+                />
+              </div>
+
+              {/* Flèches carousel — centrées sous la photo */}
+              <div className="relative z-10 mt-6 flex justify-center gap-2 sm:mt-8">
+                <button
+                  type="button"
+                  aria-label="Producteur précédent"
+                  onClick={() =>
+                    setProducerIndex((i) => (i - 1 + HOME_PRODUCERS.length) % HOME_PRODUCERS.length)
+                  }
+                  className="flex h-9 w-9 items-center justify-center rounded-[10px] transition-opacity hover:opacity-80"
+                  style={{ background: HOME_COLORS.primary }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Producteur suivant"
+                  onClick={() => setProducerIndex((i) => (i + 1) % HOME_PRODUCERS.length)}
+                  className="flex h-9 w-9 items-center justify-center rounded-[10px] transition-opacity hover:opacity-80"
+                  style={{ background: HOME_COLORS.primary }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            {/* Boutons (mobile: en bas | desktop: col 1 sous le texte) */}
-            <div className="order-3 flex flex-col sm:flex-row gap-4">
+            {/* Titre + points */}
+            <div className="order-1 lg:order-2">
+              <h2 className="font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]">
+                Des <span className="font-bold">rencontres authentiques</span> pour des souvenirs durables.
+              </h2>
+
+              <ul className="mt-10 space-y-7 sm:mt-12">
+                {PRODUCER_POINTS.map((point) => (
+                  <li key={point.n} className="flex gap-4 sm:gap-5">
+                    <span className="shrink-0 font-sans text-[15px] font-bold tracking-[-0.04em] text-[#0c1d22] sm:text-[16px]">
+                      {point.n}
+                    </span>
+                    <div>
+                      <p className="font-sans text-[15px] font-bold leading-[1.35] tracking-[-0.04em] text-[#0c1d22] sm:text-[16px]">
+                        {point.title}
+                      </p>
+                      <p className="mt-1.5 font-sans text-[14px] font-normal leading-[1.65] tracking-[-0.04em] text-[#0c1d22]/65 sm:text-[15px]">
+                        {point.desc}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* CTA — sous l’image sur mobile, sous le texte sur desktop */}
+            <div className="order-3 flex justify-center lg:col-start-2 lg:mt-10 lg:justify-start">
               <Link
-                href="/seminaires-entreprise"
-                className="text-white border border-white/25 hover:border-white/60 px-9 py-4 text-sm tracking-[0.08em] font-bold transition-all duration-300 hover:bg-white/5 rounded-full text-center"
+                href="/partenaires"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-8 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:px-10"
               >
-                Nos séminaires
-              </Link>
-              <Link
-                href="/entre-amis"
-                className="text-sm tracking-[0.08em] font-bold transition-all duration-300 px-6 py-4 text-center"
-                style={{ color: 'rgba(255,255,255,0.30)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'rgb(255, 255, 255)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.30)')}
-              >
-                Séjours entre amis →
+                <span aria-hidden>→</span>
+                Découvrir nos producteurs
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── NEWSLETTER ── */}
-      <section className="bg-beige-bg relative overflow-hidden" style={{ paddingTop: 'clamp(5rem, 10vw, 9rem)', paddingBottom: 'clamp(5rem, 10vw, 9rem)' }}>
-        <div className="max-w-4xl mx-auto px-2 sm:px-4 relative z-10 text-center">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <div style={{ width: 20, height: 1, background: '#e67e22' }} />
-            <span style={{ fontSize: 9, letterSpacing: '0.28em', fontWeight: 700, textTransform: 'uppercase', color: '#e67e22' }}>Newsletter</span>
-            <div style={{ width: 20, height: 1, background: '#e67e22' }} />
+      {/* ── RÉGIONS ── */}
+      <section style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#f7f7f7' }}>
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <h2 className="mx-auto max-w-3xl text-center font-sans text-[38px] font-normal leading-[1.05] tracking-[-0.075em] text-[#0c1d22] sm:text-[46px] lg:text-[54px]">
+            Votre séminaire, <span className="font-bold">partout en France.</span>
+          </h2>
+
+          <div className="mt-7 flex flex-wrap justify-center gap-2 sm:mt-8">
+            {REGION_TAGS.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full px-4 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.1em] text-white sm:text-[11px]"
+                style={{ background: HOME_COLORS.primary }}
+              >
+                {tag}
+              </span>
+            ))}
           </div>
 
-          <h2 className="font-bold text-primary leading-[1.06] mb-4" style={{ letterSpacing: '-0.01em' }}>
-            <span className=" font-sans text-3xl sm:text-4xl">Restez informé de</span>
-            <span className=" font-display italic text-[2.65rem] sm:text-[3rem]"> notre évolution.</span>
-          </h2>
-          <p className="mb-10" style={{ color: '#9a9080', fontSize: 14, lineHeight: 1.7 }}>
-            Laissez-nous votre email, et nous vous enverrons les nouvelles de TerraGo.
-          </p>
+          <div className="mt-8 flex flex-col items-center gap-6 sm:mt-10 sm:flex-row sm:gap-8">
+            {/* Réserve la largeur des flèches pour garder le texte centré sur la section */}
+            <div className="hidden w-[88px] shrink-0 sm:block" aria-hidden />
 
-          <form className="w-full" onSubmit={(e) => e.preventDefault()}>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <input
-                type="email"
-                placeholder="Votre adresse email"
-                className="flex-1 bg-white px-6 py-4 focus:outline-none transition-all"
-                style={{
-                  border: '1px solid rgba(11, 44, 52,0.09)',
-                  borderRadius: '9999px',
-                  color: '#0b2c34',
-                  fontSize: 13,
-                }}
-                required
-              />
+            <p className={`${homeParagraphClass} flex-1 text-center sm:text-[15px]`}>
+              Du Pays Basque à l&apos;Alsace, en passant par la Bretagne, la Provence ou la Savoie, découvrez nos
+              séminaires d&apos;entreprise engagés dans toute la France, chacun partant à la rencontre de producteurs
+              locaux et d&apos;un terroir unique.
+            </p>
+
+            <div className="hidden shrink-0 justify-center gap-2 sm:flex">
               <button
-                type="submit"
-                className="px-9 py-4 text-white font-bold transition-all duration-300"
-                style={{ background: '#0b2c34', borderRadius: '9999px', fontSize: 14, letterSpacing: '0.06em' }}
-                onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.background = '#e67e22')}
-                onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = '#0b2c34')}
+                type="button"
+                onClick={() => scrollRegions(-1)}
+                aria-label="Régions précédentes"
+                className="flex h-10 w-10 items-center justify-center rounded-full border bg-white/70 transition-colors hover:bg-white"
+                style={{ borderColor: 'rgba(12,29,34,0.15)' }}
               >
-                Envoyer
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={HOME_COLORS.primary} strokeWidth="2">
+                  <path d="M19 12H5m0 0l6-6m-6 6l6 6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollRegions(1)}
+                aria-label="Régions suivantes"
+                className="flex h-10 w-10 items-center justify-center rounded-full border bg-white/70 transition-colors hover:bg-white"
+                style={{ borderColor: 'rgba(12,29,34,0.15)' }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={HOME_COLORS.primary} strokeWidth="2">
+                  <path d="M5 12h14m0 0l-6-6m6 6l-6 6" />
+                </svg>
               </button>
             </div>
-            <p className="mt-5" style={{ fontSize: 9, color: '#b8ad9e', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 700 }}>
-              100% français & authentique · Pas de spam
-            </p>
-          </form>
+          </div>
+        </div>
+
+        {/* Pas de scroll-snap : il ramènerait la 1re carte contre le bord dès le chargement,
+            supprimant la marge de départ (qui, elle, défile avec le carrousel). */}
+        <div
+          ref={regionScrollRef}
+          className="mt-10 flex gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mt-12"
+          style={{
+            paddingLeft: 'max(6vw, calc((100vw - 72rem) / 2 + 2rem))',
+            paddingRight: '1.25rem',
+          }}
+        >
+          {REGION_IMAGES.map((region) => (
+            <Link
+              key={region.name}
+              href="/seminaires-entreprise/offres"
+              className="group relative aspect-[3/3.4] w-[62vw] shrink-0 overflow-hidden sm:aspect-[3/4.1] sm:w-[255px] lg:aspect-[3/4.2] lg:w-[280px]"
+              style={{ borderRadius: HOME_RADIUS }}
+            >
+              <img
+                src={region.image}
+                alt={`Séminaire ${region.prep} ${region.name}`}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.12]"
+                loading="lazy"
+              />
+              <div className={bottomImageGradientClass} />
+              <p className="absolute bottom-0 left-0 right-0 p-5 font-sans text-[21px] leading-[1.15] tracking-[-0.06em] text-white sm:p-6 sm:text-[24px]">
+                <span className="font-normal">Séminaire {region.prep}</span>
+                <br />
+                <span className="font-bold">{region.name}</span>
+              </p>
+            </Link>
+          ))}
+        </div>
+
+        <SwipeDots
+          count={REGION_IMAGES.length}
+          activeIndex={regionSwipe.activeIndex}
+          onSelect={regionSwipe.goTo}
+          label="Région"
+          className="mt-5 sm:hidden"
+        />
+
+        <div className="mt-10 flex justify-center sm:mt-12">
+          <Link
+            href="/seminaires-entreprise/offres"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-transparent px-8 py-2.5 text-xs font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:px-10"
+          >
+            <span aria-hidden>→</span>
+            Découvrir nos destinations
+          </Link>
+        </div>
+      </section>
+
+      {/* ── COMMENT ÇA MARCHE ── */}
+      <section style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}>
+        <div className="mx-auto w-full max-w-[92rem] px-5 sm:px-8 lg:px-12">
+          <h2 className={`${homeH1Class} mb-12 text-center`}>
+            <span className="font-bold">Les étapes</span>{' '}
+            <span className="font-normal">de votre prochain séminaire.</span>
+          </h2>
+        </div>
+
+        <div className="relative">
+          {/* Sticker chaussures — déborde en haut à gauche */}
+          <img
+            src={HOME_EMOJI.chaussures}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute left-5 top-0 z-30 h-28 w-28 -translate-x-[35%] -translate-y-[62%] rotate-[-8deg] object-contain drop-shadow-md sm:left-8 sm:h-36 sm:w-36 lg:left-12 lg:h-40 lg:w-40"
+          />
+
+          {/* Sticker montagne — déborde en bas à droite */}
+          <img
+            src={HOME_EMOJI.montagne}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute bottom-0 right-5 z-30 h-32 w-32 translate-x-[18%] translate-y-[55%] rotate-[6deg] object-contain drop-shadow-md sm:right-8 sm:h-40 sm:w-40 lg:right-12 lg:h-48 lg:w-48"
+          />
+
+          {/* Mobile : carousel swipable */}
+          <div
+            ref={stepsScrollRef}
+            className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pt-6 pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+            style={{
+              WebkitOverflowScrolling: 'touch',
+              scrollPaddingInline: '1.25rem',
+              paddingLeft: '1.25rem',
+              paddingRight: '1.25rem',
+            }}
+          >
+            {HOME_STEPS.map((step, i) => (
+              <div
+                key={step.title}
+                className="relative flex w-[70vw] max-w-[320px] shrink-0 snap-center flex-col pt-5"
+              >
+                <span
+                  className="absolute left-1/2 top-0 z-10 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full font-sans text-[15px] font-bold tracking-[-0.05em] text-white"
+                  style={{ background: HOME_COLORS.orange }}
+                  aria-hidden
+                >
+                  {i + 1}
+                </span>
+                <div
+                  className="flex flex-col items-center overflow-hidden pt-9 text-center"
+                  style={{ borderRadius: HOME_RADIUS, border: '1px solid rgba(12,29,34,0.12)' }}
+                >
+                  <p className={`${homeH2Class} px-4 font-bold`}>{step.title}</p>
+                  <img
+                    src={step.image}
+                    alt={`Étape ${i + 1} : ${step.title}`}
+                    className="pointer-events-none mt-auto aspect-square w-full select-none object-contain"
+                    loading="lazy"
+                    draggable={false}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <SwipeDots
+            count={HOME_STEPS.length}
+            activeIndex={stepsSwipe.activeIndex}
+            onSelect={stepsSwipe.goTo}
+            label="Étape"
+            className="mt-5 sm:hidden"
+          />
+
+          {/* Desktop : grille */}
+          <div className="mx-auto hidden w-full max-w-[92rem] px-5 pt-6 sm:grid sm:grid-cols-2 sm:gap-5 sm:px-8 lg:grid-cols-4 lg:gap-7 lg:px-12">
+            {HOME_STEPS.map((step, i) => (
+              <div key={step.title} className="relative flex h-full flex-col pt-5">
+                <span
+                  className="absolute left-1/2 top-0 z-10 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full font-sans text-[15px] font-bold tracking-[-0.05em] text-white"
+                  style={{ background: HOME_COLORS.orange }}
+                  aria-hidden
+                >
+                  {i + 1}
+                </span>
+                <div
+                  className="flex h-full flex-col items-center overflow-hidden pt-9 text-center"
+                  style={{ borderRadius: HOME_RADIUS, border: '1px solid rgba(12,29,34,0.12)' }}
+                >
+                  <p className={`${homeH2Class} px-4 font-bold`}>{step.title}</p>
+                  <img
+                    src={step.image}
+                    alt={`Étape ${i + 1} : ${step.title}`}
+                    className="mt-auto aspect-square w-full object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section
+        className="relative"
+        style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#f4f4f4' }}
+      >
+        {/* Étoile décorative — coupée par le bord gauche de l'écran (overflow-x-hidden du wrapper) */}
+        <img
+          src={HOME_EMOJI.etoile}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute left-0 z-0 hidden h-[300px] w-[300px] -translate-x-[46%] -translate-y-[18%] object-contain lg:block xl:h-[380px] xl:w-[380px]"
+          style={{ top: homeSectionPadding }}
+        />
+
+        <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:gap-14">
+            <div>
+              <h2 className="font-sans text-[38px] leading-[1.05] tracking-[-0.075em] text-[#0c1d22] sm:text-[46px] lg:text-[54px]">
+                <span className="font-bold">Questions</span>
+                <br />
+                <span className="font-normal">fréquentes</span>
+              </h2>
+              <p className={`${homeParagraphClass} mt-10 max-w-sm`}>
+                Vous avez une question ? Consultez notre FAQ ou contactez-nous directement.
+              </p>
+            </div>
+            <FaqAccordion />
+          </div>
         </div>
       </section>
 

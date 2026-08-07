@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { fetchSeminaires } from '../lib/seminaires';
 import type { Seminaire } from '../lib/seminaires';
 import SeminaireDetailLoading from '../components/SeminaireDetailLoading';
@@ -11,11 +11,9 @@ import { ExpandedSeminaireView, SeminaireModal } from './Seminaires-pack';
 
 export default function SeminaireDetailPage() {
   const params = useParams();
-  const pathname = usePathname();
   const slug = params.slug as string;
   const router = useRouter();
-  const offresListPath =
-    pathname?.includes('/seminaires/offres/') ? '/seminaires/offres' : '/seminaires-entreprise/offres';
+  const offresListPath = '/seminaires-entreprise/offres';
   const [seminaire, setSeminaire] = useState<Seminaire | null>(null);
   const [allSeminaires, setAllSeminaires] = useState<Seminaire[]>([]);
   const [loading, setLoading] = useState(true);

@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CookieBanner from '../components/CookieBanner';
 import GoogleAnalytics from '../components/GoogleAnalytics';
+import { ModalProvider } from '../context/ModalContext';
 
 export const metadata: Metadata = {
   title: "TerraGo - L'immersion au cœur du terroir français",
@@ -41,6 +42,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-WMZSP69F');`,
           }}
         />
+        <link rel="preconnect" href="https://lxlvcwwvnujfbqgcfzze.supabase.co" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -68,11 +70,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </noscript>
         <CookieBanner />
         <GoogleAnalytics />
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </div>
+        <ModalProvider>
+          <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </div>
+        </ModalProvider>
       </body>
     </html>
   );

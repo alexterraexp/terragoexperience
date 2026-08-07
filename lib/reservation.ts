@@ -26,16 +26,13 @@ function generateReference() {
 type ReservationEmailData = {
   nom: string;
   email: string;
-  entreprise: string | undefined;
+  telephone: string;
+  typeEvenement: string;
   participants: string;
   periode: string;
-  villeDepart: string;
-  trajetMax: string;
-  hebergement: string;
-  transport: string;
-  activites: string;
-  message: string;
+  lieu: string;
   budget: string;
+  budgetParPersonne: string;
   reference: string;
 };
 
@@ -51,16 +48,13 @@ function buildEmailHtml(data: ReservationEmailData) {
     .replace(/{{PRENOM}}/g, escapeHtml(prenom))
     .replace(/{{NOM}}/g, escapeHtml(data.nom))
     .replace(/{{EMAIL}}/g, escapeHtml(data.email))
-    .replace(/{{ENTREPRISE}}/g, escapeHtml(data.entreprise || '—'))
+    .replace(/{{TELEPHONE}}/g, escapeHtml(data.telephone || '—'))
+    .replace(/{{TYPE_EVENEMENT}}/g, escapeHtml(data.typeEvenement || '—'))
     .replace(/{{PARTICIPANTS}}/g, escapeHtml(String(data.participants)))
     .replace(/{{PERIODE}}/g, escapeHtml(data.periode))
-    .replace(/{{VILLE_DEPART}}/g, escapeHtml(data.villeDepart))
-    .replace(/{{TRAJET_MAX}}/g, escapeHtml(data.trajetMax))
-    .replace(/{{HEBERGEMENT}}/g, escapeHtml(data.hebergement))
-    .replace(/{{TRANSPORT}}/g, escapeHtml(data.transport))
-    .replace(/{{ACTIVITES}}/g, escapeHtml(data.activites))
-    .replace(/{{MESSAGE}}/g, escapeHtml(data.message || '—'))
+    .replace(/{{LIEU}}/g, escapeHtml(data.lieu || '—'))
     .replace(/{{BUDGET}}/g, escapeHtml(data.budget || '—'))
+    .replace(/{{BUDGET_PAR_PERSONNE}}/g, escapeHtml(data.budgetParPersonne || '—'))
     .replace(/{{REFERENCE}}/g, escapeHtml(data.reference))
     .replace(/{{LIEN_SITE}}/g, 'https://terragoexperiences.fr')
     .replace(/{{LIEN_OFFRES}}/g, 'https://terragoexperiences.fr/seminaires-entreprise/offres')
@@ -85,29 +79,16 @@ export async function processReservation(
   const {
     nom,
     email,
-    entreprise,
+    telephone,
+    typeEvenement,
     participants,
     periode,
-    villeDepart,
-    trajetMax,
-    hebergement,
-    transport,
-    activites,
-    message,
+    lieu,
     budget,
+    budgetParPersonne,
   } = b;
 
-  const required: Record<string, unknown> = {
-    nom,
-    email,
-    participants,
-    periode,
-    villeDepart,
-    trajetMax,
-    hebergement,
-    transport,
-    activites,
-  };
+  const required: Record<string, unknown> = { nom, email, participants, periode };
   const missing = Object.entries(required)
     .filter(([, v]) => v === undefined || v === null || String(v).trim() === '')
     .map(([k]) => k);
@@ -128,30 +109,44 @@ export async function processReservation(
   const emailStr = String(email);
   const reference = generateReference();
   const prenom = nomStr.split(' ')[0];
-  const entrepriseStr =
-    entreprise != null && String(entreprise).trim() !== ''
-      ? String(entreprise)
-      : null;
+  const optional = (v: unknown) => (v != null && String(v).trim() !== '' ? String(v) : null);
+  const telephoneStr = optional(telephone);
+  const typeEvenementStr = optional(typeEvenement);
+  const lieuStr = optional(lieu);
+  const budgetStr = optional(budget);
+  const budgetParPersonneStr = optional(budgetParPersonne);
 
   if (isSupabaseConfigured) {
     const db = supabaseAdmin ?? supabaseServer;
-    const { error: supabaseError } = await db
-      .from('demandes_organiser_seminaire')
-      .insert({
-        nom: nomStr,
-        email: emailStr,
-        entreprise: entrepriseStr,
-        participants: String(participants),
-        periode: String(periode),
-        ville_depart: String(villeDepart),
-        trajet_max: String(trajetMax),
-        hebergement: String(hebergement),
-        transport: String(transport),
-        activites: String(activites),
-        message: message != null && String(message).trim() !== '' ? String(message) : null,
-        budget: budget != null && String(budget).trim() !== '' ? String(budget) : null,
-        reference,
+    const row = {
+      nom: nomStr,
+      email: emailStr,
+      participants: String(participants),
+      periode: String(periode),
+      budget: budgetStr,
+      reference,
+      telephone: telephoneStr,
+      type_evenement: typeEvenementStr,
+      lieu_souhaite: lieuStr,
+      budget_par_personne: budgetParPersonneStr,
+    };
+    let { error: supabaseError } = await db.from('demandes_organiser_seminaire').insert(row);
+
+    // Repli si la migration ajoutant les colonnes du nouveau formulaire n'a pas encore été jouée.
+    if (supabaseError?.message?.includes('column')) {
+      const { telephone: _t, type_evenement: _e, lieu_souhaite: _l, budget_par_personne: _b, ...legacyRow } = row;
+      const retry = await db.from('demandes_organiser_seminaire').insert({
+        ...legacyRow,
+        ville_depart: lieuStr,
+        message: [
+          typeEvenementStr ? `Type d'évènement : ${typeEvenementStr}` : '',
+          telephoneStr ? `Téléphone : ${telephoneStr}` : '',
+          budgetParPersonneStr ? `Budget par personne : ${budgetParPersonneStr}` : '',
+        ].filter(Boolean).join('\n') || null,
       });
+      supabaseError = retry.error;
+    }
+
     if (supabaseError) {
       console.error('Erreur Supabase (demandes_organiser_seminaire) :', supabaseError);
       if (!supabaseAdmin && process.env.NODE_ENV === 'development') {
@@ -169,16 +164,13 @@ export async function processReservation(
   const html = buildEmailHtml({
     nom: nomStr,
     email: emailStr,
-    entreprise: entrepriseStr ?? undefined,
+    telephone: telephoneStr ?? '—',
+    typeEvenement: typeEvenementStr ?? '—',
     participants: String(participants),
     periode: String(periode),
-    villeDepart: String(villeDepart),
-    trajetMax: String(trajetMax),
-    hebergement: String(hebergement),
-    transport: String(transport),
-    activites: String(activites),
-    message: message != null && String(message).trim() !== '' ? String(message) : '—',
-    budget: budget != null && String(budget).trim() !== '' ? String(budget) : '—',
+    lieu: lieuStr ?? '—',
+    budget: budgetStr ?? '—',
+    budgetParPersonne: budgetParPersonneStr ?? '—',
     reference,
   });
 
@@ -218,16 +210,13 @@ export async function processReservation(
           ``,
           `Nom : ${nomStr}`,
           `Email : ${emailStr}`,
-          `Entreprise : ${entrepriseStr ?? '—'}`,
+          `Téléphone : ${telephoneStr ?? '—'}`,
+          `Type d'évènement : ${typeEvenementStr ?? '—'}`,
           `Participants : ${participants}`,
           `Période : ${periode}`,
-          `Ville de départ : ${villeDepart}`,
-          `Trajet max. : ${trajetMax}`,
-          `Hébergement : ${hebergement}`,
-          `Transport : ${transport}`,
-          `Activités : ${activites}`,
-          `Budget indicatif : ${budget != null && String(budget).trim() !== '' ? String(budget) : '—'}`,
-          `Message : ${message != null && String(message).trim() !== '' ? String(message) : '—'}`,
+          `Lieu souhaité : ${lieuStr ?? '—'}`,
+          `Budget total : ${budgetStr ?? '—'}`,
+          `Budget par personne : ${budgetParPersonneStr ?? '—'}`,
           `Référence : ${reference}`,
         ].join('\n'),
       });

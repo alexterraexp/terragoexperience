@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { Suspense } from 'react';
 import Home from '../views/Home';
+import { getHomeAssetUrls } from '../lib/homeStorage';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -11,10 +11,10 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function HomePage() {
-  return (
-    <Suspense fallback={null}>
-      <Home />
-    </Suspense>
-  );
+/** URLs signées régénérées côté serveur à chaque rendu (bucket HOME privé). */
+export const dynamic = 'force-dynamic';
+
+export default async function HomePage() {
+  const assets = await getHomeAssetUrls();
+  return <Home assets={assets} />;
 }

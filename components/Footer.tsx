@@ -2,13 +2,104 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { HOME_COLORS } from './home/homeStyles';
+
+/** Padding interne du contenu footer : sert aussi d'alignement à la barre légale du bas. */
+const FRAME_PADDING = 'clamp(1.75rem, 3.5vw, 3.5rem)';
 
 const linkStyle: React.CSSProperties = {
-  fontSize: 13, color: '#7a7060', textDecoration: 'none', transition: 'color .2s',
+  fontSize: 14,
+  color: 'rgba(255,255,255,0.7)',
+  textDecoration: 'none',
+  transition: 'color .2s',
+  letterSpacing: '-0.075em',
+  fontFamily: "'Poppins', sans-serif",
 };
 
 const sectionTitle: React.CSSProperties = {
-  fontSize: 15, fontWeight: 700, color: '#0b2c34', marginBottom: 22, marginTop: 0,
+  fontSize: 17,
+  fontWeight: 700,
+  color: '#ffffff',
+  margin: '0 0 18px',
+  letterSpacing: '-0.05em',
+  fontFamily: "'Poppins', sans-serif",
+};
+
+const NAV_GROUPS = [
+  {
+    title: 'Expériences',
+    links: [
+      { to: '/seminaires-entreprise', label: 'Nos séminaires' },
+      { to: '/experiences-entreprise', label: 'Expériences entreprise' },
+      { to: '/partenaires', label: 'Nos destinations' },
+      { to: '/experiences', label: 'Nos expériences' },
+    ],
+  },
+  {
+    title: 'TerraGo',
+    links: [
+      { to: '/notre-approche', label: 'Notre approche' },
+      { to: '/notre-approche#equipe', label: 'Les fondateurs' },
+      { to: '/notre-approche#rse', label: 'Notre charte RSE' },
+    ],
+  },
+  {
+    title: 'Communauté',
+    links: [
+      { to: '/partenaires', label: 'Nos producteurs' },
+      { to: '/blog', label: 'Le Journal TerraGo' },
+    ],
+  },
+];
+
+const SOCIALS = [
+  {
+    href: 'https://www.instagram.com/terrago.experiences/',
+    label: 'Instagram',
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" />
+        <circle cx="12" cy="12" r="4.4" />
+        <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+  },
+  {
+    href: 'https://www.linkedin.com/company/terragoexperiences/',
+    label: 'LinkedIn',
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+      </svg>
+    ),
+  },
+];
+
+/** Logos partenaires / garanties (bucket HOME public). */
+const GUARANTEES = [
+  {
+    src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/atoutfrance.png',
+    alt: 'Atout France',
+  },
+  {
+    src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/arcus.png',
+    alt: 'Arcus Solutions',
+  },
+];
+
+const ORANGE_STAR =
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/etoilecouleurorange.png';
+
+const LEGAL_LINKS = [
+  { to: '/mentions-legales', label: 'Mentions légales' },
+  { to: '/confidentialite', label: 'Politique de confidentialité' },
+];
+
+const hoverWhite = (e: React.MouseEvent<HTMLElement>) => {
+  e.currentTarget.style.color = '#fff';
+};
+const hoverReset = (e: React.MouseEvent<HTMLElement>) => {
+  e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
 };
 
 const Footer: React.FC = () => {
@@ -17,88 +108,106 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer style={{ background: '#ffffff', fontFamily: "'Poppins', sans-serif" }}>
+    <footer
+      className="relative overflow-hidden"
+      style={{
+        background: HOME_COLORS.primary,
+        fontFamily: "'Poppins', sans-serif",
+        borderTopLeftRadius: 'clamp(28px, 4vw, 56px)',
+        borderTopRightRadius: 'clamp(28px, 4vw, 56px)',
+      }}
+    >
       <style>{`
         .footer-grid {
           display: grid;
-          grid-template-columns: 1.4fr 1fr 0.9fr 0.9fr;
-          gap: 1.25rem;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.25fr);
+          column-gap: clamp(1.5rem, 4vw, 4rem);
+          row-gap: clamp(2.25rem, 4vw, 3.75rem);
           align-items: start;
         }
-        @media (max-width: 768px) {
+        .footer-cta {
+          grid-column: 3;
+          grid-row: 1 / span 2;
+        }
+        .footer-input::placeholder {
+          color: rgba(255, 255, 255, 0.5);
+        }
+        @media (max-width: 900px) {
           .footer-grid {
-            grid-template-columns: 1fr;
-            gap: 2rem;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          }
+          .footer-cta {
+            grid-column: 1 / span 2;
+            grid-row: auto;
+          }
+        }
+        @media (max-width: 560px) {
+          .footer-grid {
+            grid-template-columns: minmax(0, 1fr);
+          }
+          .footer-cta {
+            grid-column: 1;
           }
         }
       `}</style>
 
-      <div className="max-w-[1440px] mx-auto" style={{ padding: 'clamp(2rem, 4vw, 3rem) clamp(1.5rem, 4vw, 3rem)' }}>
-        <div className="footer-grid">
+      {/* Étoile orange — centre près du coin bas droit, dépasse modérément */}
+      <img
+        src={ORANGE_STAR}
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 right-0 z-[2] h-64 w-64 translate-x-[34%] translate-y-[34%] object-contain sm:h-[22rem] sm:w-[22rem] lg:h-[26rem] lg:w-[26rem]"
+      />
 
-          {/* ── Col 1 · Brand ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <img
-              src="/logo.png"
-              alt="TerraGo"
-              style={{ height: 140, width: 'auto', alignSelf: 'flex-start' }}
-            />
-            <p style={{ color: '#6b6355', fontSize: 13, lineHeight: 1.65, margin: 0, maxWidth: 240 }}>
-              Des séminaires et séjours de groupe au cœur du terroir français.
-            </p>
+      <div
+        className="relative z-[1] mx-auto max-w-[1440px]"
+        style={{ padding: 'clamp(2rem, 4vw, 3.5rem) clamp(1rem, 3vw, 2.5rem) clamp(1rem, 2vw, 1.5rem)' }}
+      >
+        <div style={{ padding: FRAME_PADDING }}>
+          <div className="footer-grid">
+            {/* Colonnes de navigation */}
+            {NAV_GROUPS.map((group) => (
+              <div key={group.title}>
+                <h6 style={sectionTitle}>{group.title}</h6>
+                <ul className="m-0 flex list-none flex-col gap-3.5 p-0">
+                  {group.links.map((item) => (
+                    <li key={`${group.title}-${item.to}`}>
+                      <Link
+                        href={item.to}
+                        style={linkStyle}
+                        onMouseEnter={hoverWhite}
+                        onMouseLeave={hoverReset}
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
 
-            {/* Suivez-nous */}
+            {/* Contact + réseaux */}
             <div>
-              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#0b2c34', margin: '0 0 12px 0' }}>
-                Suivez-nous
-              </p>
-              <p style={{ fontSize: 11.5, color: '#9a9080', lineHeight: 1.55, margin: '0 0 14px 0', maxWidth: 220 }}>
-                Inspirations, coulisses et belles adresses — suivez l'aventure TerraGo.
-              </p>
-              <div style={{ display: 'flex', gap: 8 }}>
-                {[
-                  {
-                    href: 'https://www.instagram.com/terrago.experiences/',
-                    label: 'Instagram',
-                    icon: (
-                      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                      </svg>
-                    ),
-                  },
-                  {
-                    href: 'https://www.linkedin.com/company/terragoexperiences/',
-                    label: 'LinkedIn',
-                    icon: (
-                      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                      </svg>
-                    ),
-                  },
-                ].map(({ href, label, icon }) => (
+              <h6 style={sectionTitle}>Contact</h6>
+              <a
+                href="mailto:contact@terragoexperience.fr"
+                style={linkStyle}
+                onMouseEnter={hoverWhite}
+                onMouseLeave={hoverReset}
+              >
+                contact@terragoexperience.fr
+              </a>
+              <div className="mt-6 flex gap-4">
+                {SOCIALS.map(({ href, label, icon }) => (
                   <a
                     key={label}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    style={{
-                      width: 40, height: 40, borderRadius: '50%',
-                      border: '1.5px solid #e67e22',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: '#e67e22', textDecoration: 'none',
-                      transition: 'all .2s ease',
-                    }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget as HTMLAnchorElement;
-                      el.style.background = '#e67e22';
-                      el.style.color = '#fff';
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget as HTMLAnchorElement;
-                      el.style.background = 'transparent';
-                      el.style.color = '#e67e22';
-                    }}
+                    className="text-white transition-colors"
+                    onMouseEnter={(e) => { e.currentTarget.style.color = HOME_COLORS.orange; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = '#fff'; }}
                   >
                     {icon}
                   </a>
@@ -106,139 +215,110 @@ const Footer: React.FC = () => {
               </div>
             </div>
 
-            {/* Badge */}
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '8px 14px', borderRadius: 8,
-              background: 'rgba(11, 44, 52,0.05)',
-              border: '1px solid rgba(11, 44, 52,0.08)',
-              alignSelf: 'flex-start',
-            }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e67e22', flexShrink: 0 }} />
-              <span style={{ fontSize: 7.5, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#0b2c34' }}>
-                100% Français &amp; Authentique
-              </span>
-            </div>
-          </div>
-
-          {/* ── Col 2 · Plateforme ── */}
-          <div>
-            <h6 style={sectionTitle}>Plateforme</h6>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {[
-                { to: '/seminaires-entreprise', label: "Séminaires d'entreprise" },
-                { to: '/seminaires-entreprise/offres', label: 'Nos offres packagées' },
-                { to: '/entre-amis', label: 'Entre amis' },
-                { to: '/partenaires', label: 'Producteurs partenaires' },
-                { to: '/mission-engagements', label: 'Mission & engagements' },
-              ].map(item => (
-                <li key={item.to}>
-                  <Link
-                    href={item.to}
-                    style={linkStyle}
-                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#0b2c34')}
-                    onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* ── Col 3 · À propos ── */}
-          <div>
-            <h6 style={sectionTitle}>À propos</h6>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {[
-                { to: '/nous-rejoindre', label: 'Devenir partenaire' },
-                { to: '/recommander-un-producteur', label: 'Recommander un producteur' },
-                { to: '/blog', label: 'Le blog TerraGo' },
-                { to: 'mailto:terragoexperiences@gmail.com', label: 'Nous contacter' },
-              ].map(item => (
-                <li key={item.to}>
-                  <Link
-                    href={item.to}
-                    style={linkStyle}
-                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#0b2c34')}
-                    onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* ── Col 4 · Contact + Légal ── */}
-          <div>
-            <h6 style={sectionTitle}>Contact</h6>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 32 }}>
-              <a
-                href="mailto:terragoexperiences@gmail.com"
-                style={{ display: 'flex', alignItems: 'flex-start', gap: 10, textDecoration: 'none', color: '#7a7060', fontSize: 13, lineHeight: 1.6, transition: 'color .2s' }}
-                onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#0b2c34')}
-                onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
+            {/* Rappel + garanties */}
+            <div className="footer-cta">
+              <p
+                className="m-0 text-white"
+                style={{ fontSize: 'clamp(18px, 1.6vw, 22px)', letterSpacing: '-0.05em' }}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e67e22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 3 }}>
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
+                Vous souhaitez être recontacté&nbsp;?
+              </p>
+
+              <form className="mt-5" onSubmit={(e) => e.preventDefault()}>
+                <input
+                  type="email"
+                  required
+                  placeholder="Votre adresse mail"
+                  aria-label="Votre adresse mail"
+                  className="footer-input w-full bg-transparent px-6 py-3.5 text-sm text-white focus:outline-none"
+                  style={{
+                    border: '1.5px solid rgba(255,255,255,0.9)',
+                    borderRadius: 9999,
+                    letterSpacing: '-0.075em',
+                  }}
+                />
+              </form>
+
+              <Link
+                href="/recommander-un-producteur"
+                className="mt-6 inline-flex items-center gap-3 px-8 py-3.5 text-sm font-bold text-white transition-colors"
+                style={{
+                  border: '1.5px solid rgba(255,255,255,0.9)',
+                  borderRadius: 9999,
+                  letterSpacing: '-0.05em',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = HOME_COLORS.orange;
+                  e.currentTarget.style.borderColor = HOME_COLORS.orange;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.9)';
+                }}
+              >
+                <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden>
+                  <path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                terragoexperiences@gmail.com
-              </a>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#7a7060', fontSize: 13 }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e67e22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                  <circle cx="12" cy="9" r="2.5" />
-                </svg>
-                France entière
+                Recommander un producteur
+              </Link>
+
+              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+                <p className="m-0 text-white" style={{ fontSize: 'clamp(18px, 1.5vw, 22px)', letterSpacing: '-0.05em' }}>
+                  Nos <span className="font-bold">garanties</span>
+                </p>
+                {GUARANTEES.map((logo) => (
+                  <img
+                    key={logo.src}
+                    src={logo.src}
+                    alt={logo.alt}
+                    className="h-14 w-auto object-contain sm:h-16 lg:h-[4.5rem]"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
+                ))}
               </div>
             </div>
-
-            <h6 style={sectionTitle}>Légal</h6>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {[
-                { to: '/mentions-legales', label: 'Mentions légales' },
-                { to: '/confidentialite', label: 'Politique de confidentialité' },
-              ].map(item => (
-                <li key={item.to}>
-                  <Link
-                    href={item.to}
-                    style={linkStyle}
-                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#0b2c34')}
-                    onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#7a7060')}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <button
-                  onClick={openCookies}
-                  style={{
-                    background: 'none', border: 'none', cursor: 'pointer',
-                    padding: 0, fontSize: 13, color: '#7a7060',
-                    fontFamily: 'inherit', textAlign: 'left',
-                    transition: 'color .2s',
-                  }}
-                  onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.color = '#0b2c34')}
-                  onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.color = '#7a7060')}
-                >
-                  Cookies
-                </button>
-              </li>
-            </ul>
           </div>
-
         </div>
-      </div>
 
-      {/* ── Barre basse ── */}
-      <div style={{ borderTop: '1px solid rgba(11, 44, 52,0.08)', background: '#ffffff' }}>
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-20 py-5">
-          <p style={{ fontSize: 11, color: '#9a9080', margin: 0, fontWeight: 500, letterSpacing: '0.04em', textAlign: 'center' }}>
+        {/* Barre légale */}
+        <div
+          className="relative z-[3] flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center"
+          style={{ padding: `clamp(1.25rem, 2vw, 1.75rem) ${FRAME_PADDING} 0` }}
+        >
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', margin: 0, letterSpacing: '-0.075em' }}>
             © 2026 TerraGo — Fabriqué avec passion pour nos territoires.
           </p>
+          <div className="flex flex-wrap items-center gap-x-7 gap-y-2">
+            {LEGAL_LINKS.map((item) => (
+              <Link
+                key={item.to}
+                href={item.to}
+                style={{ ...linkStyle, fontSize: 12 }}
+                onMouseEnter={hoverWhite}
+                onMouseLeave={hoverReset}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <button
+              type="button"
+              onClick={openCookies}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                fontSize: 12,
+                color: 'rgba(255,255,255,0.7)',
+                fontFamily: 'inherit',
+                letterSpacing: '-0.075em',
+              }}
+              onMouseEnter={hoverWhite}
+              onMouseLeave={hoverReset}
+            >
+              Mes préférences cookies
+            </button>
+          </div>
         </div>
       </div>
     </footer>

@@ -4,14 +4,14 @@ import Engagement from '../../views/Engagement';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Notre mission – Séminaires engagés & circuits courts – TerraGo',
+    title: 'Notre approche – Séminaires engagés & circuits courts – TerraGo',
     description:
-      "TerraGo connecte entreprises et producteurs locaux pour un tourisme professionnel responsable. Découvrez notre engagement pour les filières françaises et l'économie de proximité.",
+      "Découvrez l'approche TerraGo : reconnecter l'humain à la terre, soutenir les producteurs engagés et créer des expériences immersives responsables.",
     robots: { index: true, follow: true },
   };
 }
 
-export default function MissionPage() {
+export default function NotreApprochePage() {
   return (
     <Suspense fallback={null}>
       <Engagement />

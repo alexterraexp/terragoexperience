@@ -9,11 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#0b2c34',
-        clay: '#f78d00',
-        gold: '#f78d00',
-        orange: '#f78d00',
+        primary: '#0c1d22',
+        clay: '#ec6435',
+        gold: '#ec6435',
+        orange: '#ec6435',
         'beige-bg': '#FAF9F6',
+        'section-gray': '#f4f4f4',
         'background-light': '#FFFFFF',
         'background-dark': '#061a1f',
       },
