@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import ReactGA from 'react-ga4';
-import { GA_MEASUREMENT_ID } from '../lib/analytics';
+import { applyCookieConsent, COOKIE_CONSENT_KEY } from '../lib/analytics';
 
 const INK = '#0c1d22';
 const ORANGE = '#ec6435';
@@ -49,7 +48,7 @@ const CookieBanner: React.FC = () => {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
-    const consent = window.localStorage.getItem('cookie_consent');
+    const consent = window.localStorage.getItem(COOKIE_CONSENT_KEY);
     if (!consent) setVisible(true);
 
     const handleOpen = () => {
@@ -61,14 +60,7 @@ const CookieBanner: React.FC = () => {
   }, []);
 
   const applyConsent = (s: boolean, m: boolean, p: boolean) => {
-    window.localStorage.setItem('cookie_consent', JSON.stringify({ stat: s, mktg: m, pref: p }));
-    if (s) {
-      ReactGA.initialize(GA_MEASUREMENT_ID);
-      ReactGA.send({
-        hitType: 'pageview',
-        page: window.location.pathname + window.location.search,
-      });
-    }
+    applyCookieConsent({ stat: s, mktg: m, pref: p });
   };
 
   const handleAcceptAll = () => {
@@ -115,7 +107,7 @@ const CookieBanner: React.FC = () => {
     },
     {
       label: 'Cookies pour une publicité ciblée',
-      desc: 'Optimisent la performance et la personnalisation de nos publicités.',
+      desc: 'Mesurent et personnalisent nos campagnes publicitaires (réseaux sociaux, retargeting).',
       checked: mktg,
       disabled: false,
       onChange: () => setMktg((v) => !v),

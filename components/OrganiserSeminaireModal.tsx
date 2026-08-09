@@ -7,6 +7,7 @@ import {
   SEMINAIRE_PERIODS,
   fmtDayShort,
 } from './MiniDateRangeCalendar';
+import { trackGenerateLead } from '../lib/analytics';
 
 const INK = '#0c1d22';
 const ORANGE = '#ec6435';
@@ -168,8 +169,10 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { success?: boolean; message?: string };
-      if (res.ok && data.success) setStep(5);
-      else setErr(data.message || "Erreur lors de l'envoi. Veuillez réessayer.");
+      if (res.ok && data.success) {
+        trackGenerateLead('reservation');
+        setStep(5);
+      } else setErr(data.message || "Erreur lors de l'envoi. Veuillez réessayer.");
     } catch {
       setErr("Erreur lors de l'envoi. Veuillez réessayer.");
     } finally {

@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import './globals.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CookieBanner from '../components/CookieBanner';
-import GoogleAnalytics from '../components/GoogleAnalytics';
+import GoogleTagManager from '../components/GoogleTagManager';
 import { ModalProvider } from '../context/ModalContext';
 
 export const metadata: Metadata = {
@@ -31,17 +30,6 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        <Script
-          id="gtm-head"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WMZSP69F');`,
-          }}
-        />
         <link rel="preconnect" href="https://lxlvcwwvnujfbqgcfzze.supabase.co" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -60,16 +48,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <link rel="icon" type="image/png" href="/logo.png" />
       </head>
       <body className="bg-beige-bg text-primary">
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-WMZSP69F"
-            height="0"
-            width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
-          />
-        </noscript>
         <CookieBanner />
-        <GoogleAnalytics />
+        <GoogleTagManager />
         <ModalProvider>
           <div className="flex flex-col min-h-screen">
             <Header />

@@ -26,6 +26,7 @@ import {
   homeHeroOutlineButtonClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
+import { trackGenerateLead } from '../lib/analytics';
 
 const HOME_ASSETS =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
@@ -1666,6 +1667,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
         throw new Error(data.error || data.message || 'Erreur lors de l\'envoi. Veuillez réessayer.');
       }
 
+      trackGenerateLead('demande-seminaire');
       setStep(3);
     } catch (err: any) {
       setError(err.message || 'Erreur lors de l\'envoi. Veuillez réessayer.');
