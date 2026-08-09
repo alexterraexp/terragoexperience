@@ -3,7 +3,7 @@ import Home from '../views/Home';
 import { getHomeAssetUrls } from '../lib/homeStorage';
 
 const OG_IMAGE = {
-  url: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/serre-maraicher.jpg',
+  url: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/enjeux/1904586-hero-follow.png',
   width: 1920,
   height: 1080,
   alt: "TerraGo — séminaires d'entreprise chez des producteurs engagés",

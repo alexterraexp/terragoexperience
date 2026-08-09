@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/serre-maraicher.jpg',
+        url: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/enjeux/1904586-hero-follow.png',
         width: 1920,
         height: 1080,
         alt: "TerraGo — séminaires d'entreprise chez des producteurs engagés",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     description:
       'Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français.',
     images: [
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/serre-maraicher.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/enjeux/1904586-hero-follow.png',
     ],
   },
 };
