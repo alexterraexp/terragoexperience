@@ -92,10 +92,11 @@ export default async function BlogPage() {
         />
         <div className="relative z-10 mx-auto max-w-4xl px-5 pb-14 text-center sm:px-8 sm:pb-20">
           <h1 className="font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
-            Le terroir français,
-            <br />
-            <span className="font-bold">ça se vit de l&apos;intérieur.</span>
+            Sortir du <span className="font-bold">cadre.</span>
           </h1>
+          <h2 className="mt-4 font-sans text-[clamp(1.05rem,2.4vw,1.5rem)] font-normal leading-[1.25] tracking-[-0.04em] text-white/85 sm:mt-5">
+            Rencontres. Territoires. Inspiration.
+          </h2>
         </div>
       </section>
 

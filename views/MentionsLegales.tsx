@@ -19,17 +19,17 @@ const MentionsLegales: React.FC = () => {
         background: HOME_COLORS.gray,
       }}
     >
-      <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-24 pt-[calc(7.5rem+env(safe-area-inset-top))] sm:px-8 sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:px-14 lg:pt-[calc(10rem+env(safe-area-inset-top))]">
+      <div className="relative mx-auto w-full max-w-6xl px-5 pb-24 pt-[calc(7.5rem+env(safe-area-inset-top))] sm:px-8 sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10rem+env(safe-area-inset-top))]">
         {/* Stickers décoratifs — côtés du cadre */}
         <img
           src={EMOJI.ble}
           alt=""
           aria-hidden
-          className="pointer-events-none absolute right-2 top-[calc(7.8rem+env(safe-area-inset-top))] z-20 h-40 w-40 rotate-6 object-contain sm:-left-3 sm:right-auto sm:top-[calc(10.5rem+env(safe-area-inset-top))] sm:h-24 sm:w-24 sm:-rotate-12 lg:-left-4 lg:h-32 lg:w-32"
+          className="pointer-events-none absolute right-2 top-[calc(7.8rem+env(safe-area-inset-top))] z-20 hidden h-40 w-40 rotate-6 object-contain sm:block sm:-left-7 sm:right-auto sm:top-[calc(10.5rem+env(safe-area-inset-top))] sm:h-24 sm:w-24 sm:-rotate-12 lg:-left-9 lg:h-32 lg:w-32"
         />
 
         <div
-          className="relative z-10 overflow-visible bg-white px-8 py-12 sm:px-16 sm:py-16 lg:px-24 lg:py-20"
+          className="relative z-10 overflow-visible bg-white px-6 py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-16"
           style={{
             borderRadius: HOME_RADIUS,
             fontFamily: "'Poppins', sans-serif",
@@ -39,7 +39,7 @@ const MentionsLegales: React.FC = () => {
             src={EMOJI.arbre}
             alt=""
             aria-hidden
-            className="pointer-events-none absolute right-6 -bottom-14 z-20 h-44 w-44 -rotate-6 object-contain sm:-right-10 sm:bottom-24 sm:h-52 sm:w-52 sm:rotate-6 lg:-right-16 lg:bottom-32 lg:h-72 lg:w-72"
+            className="pointer-events-none absolute -bottom-20 -right-2 z-20 h-44 w-44 -rotate-6 object-contain sm:-right-32 sm:bottom-24 sm:h-52 sm:w-52 sm:rotate-6 lg:-right-40 lg:bottom-32 lg:h-72 lg:w-72"
           />
           <Link
             href="/"

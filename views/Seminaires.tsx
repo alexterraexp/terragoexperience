@@ -387,6 +387,14 @@ const LIEUX_IMAGES = [
     src: `${HOME}/Destination/facade-3_3_222171-163636325813666.jpeg`,
     alt: 'Façade de domaine – lieu TerraGo',
   },
+  {
+    src: `${HOME}/Destination/62544708-23170201.jpg`,
+    alt: 'Allée de cyprès menant à un domaine – lieu TerraGo',
+  },
+  {
+    src: `${HOME}/Destination/19986461.jpg`,
+    alt: 'Dîner d’exception dans un cellier – lieu TerraGo',
+  },
 ] as const;
 
 // ─── Objectifs accordion ──────────────────────────────────────────────────────
@@ -577,7 +585,7 @@ const Seminaires: React.FC = () => {
       <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
         <div className="mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
-            className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
+            className="relative aspect-[5/4] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
             style={{ borderRadius: HOME_RADIUS }}
           >
             <img
@@ -594,7 +602,7 @@ const Seminaires: React.FC = () => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pt-12 text-center sm:px-10 sm:pt-16 lg:pt-20">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
               <h1 className="max-w-3xl text-center font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
                 Des séminaires d&apos;entreprise
                 <br />
@@ -841,19 +849,21 @@ const Seminaires: React.FC = () => {
                 <img
                   src={u.cardImage}
                   alt={`${u.lead}${u.rest}`}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.14]"
                   draggable={false}
                 />
                 <div
-                  className="absolute inset-0"
+                  className="absolute inset-0 opacity-70 transition-opacity duration-700 ease-out group-hover:opacity-100"
                   style={{
                     background:
-                      'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 50%, transparent 70%)',
+                      'linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.18) 42%, transparent 72%)',
                   }}
                 />
-                <p className="absolute bottom-0 left-0 right-0 z-10 px-4 pb-5 font-sans text-[20px] leading-[1.12] tracking-[-0.075em] text-white sm:px-5 sm:text-[22px]">
-                  <span className="font-normal">{u.lead}</span>
-                  <span className="font-bold">{u.rest}</span>
+                <p className="absolute inset-x-0 bottom-14 z-10 flex min-h-[2.6em] items-start px-4 font-sans text-[24px] leading-[1.12] tracking-[-0.075em] text-white sm:bottom-16 sm:px-5 sm:text-[28px]">
+                  <span>
+                    <span className="font-normal">{u.lead}</span>
+                    <span className="font-bold">{u.rest}</span>
+                  </span>
                 </p>
               </div>
             ))}
@@ -870,6 +880,15 @@ const Seminaires: React.FC = () => {
                 }}
               />
             ))}
+          </div>
+
+          <div className="mt-8 flex justify-center sm:mt-10">
+            <Link
+              href="/experiences-entreprise"
+              className="inline-flex items-center justify-center rounded-full border border-[#ec6435] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-8 sm:py-2.5 sm:text-[12px]"
+            >
+              Découvrir nos expériences entreprise
+            </Link>
           </div>
         </div>
       </section>

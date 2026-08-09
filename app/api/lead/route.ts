@@ -44,6 +44,24 @@ export async function POST(req: NextRequest) {
       break;
     }
 
+    case 'recontact': {
+      const email = str(body.email);
+      if (!email || !validEmail(email)) {
+        return NextResponse.json({ success: false, message: 'Adresse e-mail invalide.' }, { status: 400 });
+      }
+      subject = 'Demande de recontact — Footer TerraGo';
+      text = [
+        '=== Demande de recontact (footer) ===',
+        '',
+        `Email : ${email}`,
+        '',
+        '---',
+        'Formulaire « Vous souhaitez être recontacté ? » — terragoexperiences.fr',
+      ].join('\n');
+      replyTo = email;
+      break;
+    }
+
     case 'seminaire_territoires': {
       const prenom = str(body.prenom);
       const nom = str(body.nom);

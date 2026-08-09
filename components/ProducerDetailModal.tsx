@@ -211,6 +211,7 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
         @media (max-width: 860px) {
           .pdm-wrapper { padding: 0 !important }
           .pdm-panel { width: 100% !important; max-width: none !important; height: 100dvh !important; border-radius: 0 !important }
+          .pdm-scroll { padding-left: 40px !important; padding-right: 40px !important }
         }
       `}</style>
 
@@ -427,7 +428,7 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
               flex: '1 1 50%',
               minHeight: 0,
               overflowY: 'auto',
-              padding: '28px 36px 40px',
+              padding: '28px 56px 40px',
             }}
           >
             {showType ? (

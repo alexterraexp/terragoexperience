@@ -33,7 +33,7 @@ const HOME =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
 
 export const EXPERIENCES_ENTREPRISE_ASSETS = {
-  hero: `${HOME}/travail-pain-pate.png`,
+  hero: `${HOME}/EXPERIENCES IMG/pexels-mariaturkmani-14198583.jpg`,
   feu: `${HOME}/emoji/feu.png`,
   piment: `${HOME}/emoji/piment.png`,
   etoile: `${HOME}/etoilecouleurfoncee.png`,
@@ -86,8 +86,8 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
         teaser: 'De la récolte à la transformation, des moments authentiques à partager.',
         description:
           'Cuisinez, pétrissez ou pressez aux côtés d’un producteur passionné : un atelier collectif où chacun repart avec le fruit du travail d’équipe.',
-        image: `${HOME}/EXPERIENCES IMG/1610547939489-73202bc6afda.avif`,
-        imageAlt: 'Récolte d’olives pour huile – TerraGo',
+        image: `${HOME}/EXPERIENCES IMG/fromage-details.jpg`,
+        imageAlt: 'Atelier fromage – TerraGo',
       },
       {
         id: '1d',
@@ -192,7 +192,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
     examples: [
       {
         id: '3a',
-        title: '🚀 **Lancement de marque**',
+        title: '**Lancement de marque**',
         teaser: 'Présentez votre nouvelle offre dans un lieu authentique.',
         description:
           'Présentez votre nouvelle offre ou votre nouvelle identité dans un lieu authentique, entouré d’acteurs locaux et d’expériences mémorables.',
@@ -201,7 +201,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
       },
       {
         id: '3b',
-        title: '🎤 **Convention entreprise**',
+        title: '**Convention entreprise**',
         teaser: 'Une convention annuelle devenue expérience collective.',
         description:
           'Transformez votre convention annuelle en véritable expérience collective mêlant temps forts professionnels, découvertes locales et moments de partage.',
@@ -211,7 +211,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
       },
       {
         id: '3c',
-        title: '🥂 **Soirée corporate**',
+        title: ' **Soirée corporate**',
         teaser: 'Une soirée différente, ancrée dans le terroir.',
         description:
           'Imaginez une soirée différente : dîner chez un producteur, dégustation privée, rencontre avec un artisan ou animation autour du terroir.',
@@ -220,7 +220,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
       },
       {
         id: '3d',
-        title: '🤝 **Événement clients**',
+        title: ' **Événement clients**',
         teaser: 'Une expérience exclusive qui reflète vos valeurs.',
         description:
           'Offrez à vos clients une expérience exclusive qui reflète vos valeurs et crée une relation durable.',
@@ -229,7 +229,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
       },
       {
         id: '3e',
-        title: '🌿 **Expérience collaborateurs**',
+        title: '**Expérience collaborateurs**',
         teaser: 'Remercier vos équipes autrement.',
         description:
           'Remerciez vos équipes avec une journée ou un séjour qui combine découverte, convivialité et reconnexion.',

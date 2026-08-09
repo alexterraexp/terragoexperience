@@ -2047,7 +2047,10 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
   const openDevis = (s: Seminaire) => { setModalSem(s); setModalOpen(true); };
   const navigateToSlug = (s: Seminaire) => {
     setDetailNavPending(true);
-    router.push(`/seminaire-exemples/${s.slug}`);
+    // Laisser peindre l’overlay avant la navigation (sinon flash invisible).
+    requestAnimationFrame(() => {
+      router.push(`/seminaire-exemples/${s.slug}`);
+    });
   };
 
 
@@ -2117,7 +2120,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
       <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
         <div className="relative mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
-            className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
+            className="relative aspect-[5/4] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
             style={{ borderRadius: HOME_RADIUS }}
           >
             <img
@@ -2133,7 +2136,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
                   'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.5) 100%)',
               }}
             />
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pt-12 text-center sm:px-10 sm:pt-16 lg:pt-20">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
               <h1 className="max-w-3xl text-center font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
                 Nos exemples de
                 <br />
@@ -2142,13 +2145,21 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
               <h2 className="mt-4 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
                 Des formules concrètes chez des producteurs — à la journée ou en résidentiel.
               </h2>
-              <a
-                href="#exemples"
-                className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
-                style={{ background: 'rgba(12, 29, 34, 0.12)' }}
-              >
-                Explorer les exemples
-              </a>
+              <div className="mt-7 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:gap-4">
+                <a
+                  href="#exemples"
+                  className={homeHeroOutlineButtonClass}
+                  style={{ background: 'rgba(12, 29, 34, 0.12)' }}
+                >
+                  Explorer les exemples
+                </a>
+                <Link
+                  href="/notre-approche"
+                  className="inline-flex items-center justify-center rounded-full border-2 border-white bg-white px-5 py-1.5 text-xs font-bold tracking-[0.04em] text-[#0c1d22] transition-colors hover:border-[#ec6435] hover:bg-white/90 sm:px-8 sm:py-2 sm:text-sm"
+                >
+                  Découvrir notre approche
+                </Link>
+              </div>
             </div>
           </div>
 

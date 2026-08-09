@@ -24,11 +24,14 @@ const STEP_IMAGES = [
 ];
 
 const EVENT_TYPES = [
-  'Séminaire Résidentiel',
-  'Séminaire à la journée',
-  "Journée d'étude",
+  'Séminaire cohésion',
+  'Séminaire sensibilisation',
+  'Séminaire inspiration',
+  'Séminaire CODIR',
+  'Séminaire RSE & engagement',
+  'Team building',
   'Lancement de produit',
-  'Activité team building',
+  "Journée d'étude",
   'Conférence',
   'Autre',
 ];
@@ -273,10 +276,10 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
         @media (max-width: 860px) {
           .osm-wrapper { padding:0 !important }
           .osm-panel { width:100% !important; max-width:none !important; height:100dvh !important; border-radius:0 !important; flex-direction:column !important }
-          .osm-visual { width:100% !important; height:132px !important; flex:0 0 132px !important }
-          .osm-content { padding:26px 22px 0 !important }
+          .osm-visual { width:100% !important; height:180px !important; flex:0 0 220px !important }
+          .osm-content { padding:48px 52px 0 22px !important }
           .osm-footer { padding:0 22px max(18px, env(safe-area-inset-bottom)) !important }
-          .osm-title { font-size:22px !important }
+          .osm-title { font-size:26px !important }
         }
       `}</style>
 
@@ -344,14 +347,13 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                       Remplissez ce court formulaire, pour que nous puissions vous recontacter avec des premières propositions !
                     </p>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 26px' }}>
-                      {EVENT_TYPES.map((t, i) => (
+                      {EVENT_TYPES.map((t) => (
                         <button
                           key={t}
                           type="button"
                           className="osm-opt"
                           data-active={eventType === t}
                           onClick={() => { setEventType(t); setErr(''); }}
-                          style={i === EVENT_TYPES.length - 1 ? { gridColumnStart: 2 } : undefined}
                         >
                           {t}
                         </button>
@@ -597,7 +599,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
 const titleStyle: React.CSSProperties = {
   fontFamily: "'Poppins', sans-serif",
-  fontSize: 26,
+  fontSize: 30,
   fontWeight: 400,
   lineHeight: 1.25,
   letterSpacing: '-0.05em',

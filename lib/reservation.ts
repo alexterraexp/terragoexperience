@@ -118,6 +118,9 @@ export async function processReservation(
 
   if (isSupabaseConfigured) {
     const db = supabaseAdmin ?? supabaseServer;
+    // En prod, ville_depart est encore NOT NULL (schéma legacy) alors que le
+    // formulaire n’exige plus le lieu — ne jamais envoyer null.
+    const villeDepartStr = lieuStr ?? 'Non précisé';
     const row = {
       nom: nomStr,
       email: emailStr,
@@ -128,16 +131,23 @@ export async function processReservation(
       telephone: telephoneStr,
       type_evenement: typeEvenementStr,
       lieu_souhaite: lieuStr,
+      ville_depart: villeDepartStr,
       budget_par_personne: budgetParPersonneStr,
     };
     let { error: supabaseError } = await db.from('demandes_organiser_seminaire').insert(row);
 
     // Repli si la migration ajoutant les colonnes du nouveau formulaire n'a pas encore été jouée.
     if (supabaseError?.message?.includes('column')) {
-      const { telephone: _t, type_evenement: _e, lieu_souhaite: _l, budget_par_personne: _b, ...legacyRow } = row;
+      const {
+        telephone: _t,
+        type_evenement: _e,
+        lieu_souhaite: _l,
+        budget_par_personne: _b,
+        ...legacyRow
+      } = row;
       const retry = await db.from('demandes_organiser_seminaire').insert({
         ...legacyRow,
-        ville_depart: lieuStr,
+        ville_depart: villeDepartStr,
         message: [
           typeEvenementStr ? `Type d'évènement : ${typeEvenementStr}` : '',
           telephoneStr ? `Téléphone : ${telephoneStr}` : '',

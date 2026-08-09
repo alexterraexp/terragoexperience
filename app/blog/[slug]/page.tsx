@@ -396,7 +396,7 @@ export default async function BlogArticlePage({
                 href="/seminaire-exemples"
                 className="mt-8 inline-flex w-fit items-center justify-center rounded-full bg-white px-6 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white"
               >
-                Découvrir nos offres →
+                Découvrir nos exemples de séminaire →
               </Link>
             </div>
           </div>

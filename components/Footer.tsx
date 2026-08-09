@@ -1,9 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useModal } from '../context/ModalContext';
 import { HOME_COLORS } from './home/homeStyles';
+import { REGION_IMAGES, regionDestinationPath } from '../lib/homeStorage';
+import {
+  SEMINAIRE_ENJEUX,
+  SEMINAIRE_ENJEU_SLUGS,
+  seminaireEnjeuPath,
+} from '../lib/seminaireEnjeux';
 
 /** Padding interne du contenu footer : sert aussi d'alignement à la barre légale du bas. */
 const FRAME_PADDING = 'clamp(1.75rem, 3.5vw, 3.5rem)';
@@ -18,40 +25,63 @@ const linkStyle: React.CSSProperties = {
 };
 
 const sectionTitle: React.CSSProperties = {
-  fontSize: 17,
+  fontSize: 20,
   fontWeight: 700,
   color: '#ffffff',
-  margin: '0 0 18px',
+  margin: '0 0 12px',
   letterSpacing: '-0.05em',
   fontFamily: "'Poppins', sans-serif",
 };
 
-const NAV_GROUPS = [
+type FooterLink = { to: string; label: string };
+
+/** Ordre : Séminaires → Destinations → TerraGo → Expériences. Liens en listes horizontales (2 lignes). */
+const NAV_GROUPS: { title: string; links: FooterLink[] }[] = [
   {
-    title: 'Expériences',
+    title: 'Séminaires',
     links: [
       { to: '/seminaires-entreprise', label: 'Nos séminaires' },
-      { to: '/experiences-entreprise', label: 'Expériences entreprise' },
-      { to: '/experiences-privees', label: 'Expériences privées' },
-      { to: '/partenaires', label: 'Nos destinations' },
+      { to: '/seminaire-exemples', label: 'Exemples de séminaire' },
+      ...SEMINAIRE_ENJEUX.map((enjeu) => ({
+        to: seminaireEnjeuPath(enjeu.slug),
+        label: enjeu.name,
+      })),
+    ],
+  },
+  {
+    title: 'Destinations',
+    links: [
+      { to: '/destinations', label: 'Toutes les destinations' },
+      ...REGION_IMAGES.map((region) => ({
+        to: regionDestinationPath(region.slug),
+        label: region.name,
+      })),
     ],
   },
   {
     title: 'TerraGo',
     links: [
       { to: '/notre-approche', label: 'Notre approche' },
-      { to: '/notre-approche#equipe', label: 'Les fondateurs' },
-      { to: '/notre-approche#rse', label: 'Notre charte RSE' },
-    ],
-  },
-  {
-    title: 'Communauté',
-    links: [
+      { to: '/notre-approche/charte-rse', label: 'Notre charte RSE' },
       { to: '/partenaires', label: 'Nos producteurs partenaires' },
       { to: '/blog', label: 'Le Journal TerraGo' },
     ],
   },
+  {
+    title: 'Expériences',
+    links: [
+      { to: '/experiences-entreprise', label: 'Expériences entreprise' },
+      { to: '/experiences-privees', label: 'Expériences privées' },
+    ],
+  },
 ];
+
+/** Coupe une liste en deux rangées équilibrées. */
+function splitInTwoRows(links: FooterLink[]): [FooterLink[], FooterLink[]] {
+  if (links.length <= 1) return [links, []];
+  const mid = Math.ceil(links.length / 2);
+  return [links.slice(0, mid), links.slice(mid)];
+}
 
 const SOCIALS = [
   {
@@ -81,10 +111,12 @@ const GUARANTEES = [
   {
     src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/atoutfrance.png',
     alt: 'Atout France',
+    larger: true,
   },
   {
     src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/arcus.png',
     alt: 'Arcus Solutions',
+    rounded: true,
   },
 ];
 
@@ -103,13 +135,80 @@ const hoverReset = (e: React.MouseEvent<HTMLElement>) => {
   e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
 };
 
+const LinkRow: React.FC<{ links: FooterLink[] }> = ({ links }) => {
+  if (links.length === 0) return null;
+  return (
+    <ul className="m-0 flex list-none flex-wrap items-center gap-y-2 p-0">
+      {links.map((item, index) => (
+        <li key={item.to} className="inline-flex items-center">
+          {index > 0 && (
+            <span
+              aria-hidden
+              className="mx-2.5"
+              style={{ color: 'rgba(255,255,255,0.28)', fontSize: 14 }}
+            >
+              ·
+            </span>
+          )}
+          <Link
+            href={item.to}
+            style={linkStyle}
+            onMouseEnter={hoverWhite}
+            onMouseLeave={hoverReset}
+          >
+            {item.label}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
 const Footer: React.FC = () => {
+  const pathname = usePathname();
   const { openRecommanderModal } = useModal();
+  const [recontactEmail, setRecontactEmail] = useState('');
+  const [recontactSubmitting, setRecontactSubmitting] = useState(false);
+  const [recontactSuccess, setRecontactSuccess] = useState(false);
+  const [recontactError, setRecontactError] = useState('');
+
   const openCookies = () => {
     window.dispatchEvent(new CustomEvent('openCookieBanner'));
   };
 
+  const handleRecontactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRecontactError('');
+    const email = recontactEmail.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setRecontactError('Veuillez renseigner une adresse mail valide');
+      return;
+    }
+    setRecontactSubmitting(true);
+    try {
+      const r = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ action: 'recontact', email }),
+      });
+      const data = (await r.json().catch(() => ({}))) as { success?: boolean };
+      if (!r.ok || !data.success) throw new Error();
+      setRecontactSuccess(true);
+      setRecontactEmail('');
+    } catch {
+      setRecontactError('Une erreur est survenue. Réessayez ou écrivez-nous.');
+    } finally {
+      setRecontactSubmitting(false);
+    }
+  };
+
+  /** Pages enjeux : dernière section orange → fond orange derrière les coins arrondis du footer. */
+  const blendOrangeCorners = SEMINAIRE_ENJEU_SLUGS.some(
+    (slug) => pathname === seminaireEnjeuPath(slug),
+  );
+
   return (
+    <div style={{ background: blendOrangeCorners ? HOME_COLORS.orange : undefined }}>
     <footer
       className="relative overflow-hidden"
       style={{
@@ -122,44 +221,30 @@ const Footer: React.FC = () => {
       <style>{`
         .footer-grid {
           display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.25fr);
-          column-gap: clamp(1.5rem, 4vw, 4rem);
-          row-gap: clamp(2.25rem, 4vw, 3.75rem);
+          grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+          column-gap: clamp(2rem, 5vw, 5rem);
+          row-gap: clamp(2.25rem, 4vw, 3.5rem);
           align-items: start;
         }
-        .footer-cta {
-          grid-column: 3;
-          grid-row: 1 / span 2;
+        .footer-nav {
+          display: flex;
+          flex-direction: column;
+          gap: clamp(1.5rem, 2.5vw, 2.25rem);
+        }
+        .footer-nav-links {
+          display: flex;
+          flex-direction: column;
+          gap: 0.45rem;
         }
         .footer-input::placeholder {
           color: rgba(255, 255, 255, 0.5);
         }
         @media (max-width: 900px) {
           .footer-grid {
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-          }
-          .footer-cta {
-            grid-column: 1 / span 2;
-            grid-row: auto;
-          }
-        }
-        @media (max-width: 560px) {
-          .footer-grid {
             grid-template-columns: minmax(0, 1fr);
-          }
-          .footer-cta {
-            grid-column: 1;
           }
         }
       `}</style>
-
-      {/* Étoile orange — centre près du coin bas droit, dépasse modérément */}
-      <img
-        src={ORANGE_STAR}
-        alt=""
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 right-0 z-[2] h-64 w-64 translate-x-[34%] translate-y-[34%] object-contain sm:h-[22rem] sm:w-[22rem] lg:h-[26rem] lg:w-[26rem]"
-      />
 
       <div
         className="relative z-[1] mx-auto max-w-[1440px]"
@@ -167,28 +252,23 @@ const Footer: React.FC = () => {
       >
         <div style={{ padding: FRAME_PADDING }}>
           <div className="footer-grid">
-            {/* Colonnes de navigation */}
-            {NAV_GROUPS.map((group) => (
-              <div key={group.title}>
-                <h6 style={sectionTitle}>{group.title}</h6>
-                <ul className="m-0 flex list-none flex-col gap-3.5 p-0">
-                  {group.links.map((item) => (
-                    <li key={`${group.title}-${item.to}`}>
-                      <Link
-                        href={item.to}
-                        style={linkStyle}
-                        onMouseEnter={hoverWhite}
-                        onMouseLeave={hoverReset}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            {/* Listings horizontaux : Séminaires → Destinations → TerraGo → Expériences */}
+            <nav className="footer-nav" aria-label="Pied de page">
+              {NAV_GROUPS.map((group) => {
+                const [row1, row2] = splitInTwoRows(group.links);
+                return (
+                  <div key={group.title}>
+                    <h6 style={sectionTitle}>{group.title}</h6>
+                    <div className="footer-nav-links">
+                      <LinkRow links={row1} />
+                      <LinkRow links={row2} />
+                    </div>
+                  </div>
+                );
+              })}
+            </nav>
 
-            {/* Contact + réseaux */}
+            {/* Contact + rappel + garanties */}
             <div>
               <h6 style={sectionTitle}>Contact</h6>
               <a
@@ -199,7 +279,7 @@ const Footer: React.FC = () => {
               >
                 contact@terragoexperience.fr
               </a>
-              <div className="mt-6 flex gap-4">
+              <div className="mt-5 flex gap-4">
                 {SOCIALS.map(({ href, label, icon }) => (
                   <a
                     key={label}
@@ -215,54 +295,97 @@ const Footer: React.FC = () => {
                   </a>
                 ))}
               </div>
-            </div>
 
-            {/* Rappel + garanties */}
-            <div className="footer-cta">
               <p
-                className="m-0 text-white"
-                style={{ fontSize: 'clamp(18px, 1.6vw, 22px)', letterSpacing: '-0.05em' }}
+                className="m-0 mt-10 font-bold text-white"
+                style={{ fontSize: 14, letterSpacing: '-0.05em' }}
               >
                 Vous souhaitez être recontacté&nbsp;?
               </p>
 
-              <form className="mt-5" onSubmit={(e) => e.preventDefault()}>
-                <input
-                  type="email"
-                  required
-                  placeholder="Votre adresse mail"
-                  aria-label="Votre adresse mail"
-                  className="footer-input w-full bg-transparent px-6 py-3.5 text-sm text-white focus:outline-none"
-                  style={{
-                    border: '1.5px solid rgba(255,255,255,0.9)',
-                    borderRadius: 9999,
-                    letterSpacing: '-0.075em',
-                  }}
-                />
-              </form>
+              {recontactSuccess ? (
+                <p className="m-0 mt-4 text-sm text-white" style={{ letterSpacing: '-0.05em' }}>
+                  Merci — nous vous recontactons rapidement.
+                </p>
+              ) : (
+                <form className="mt-4" onSubmit={handleRecontactSubmit}>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="email"
+                      required
+                      value={recontactEmail}
+                      onChange={(e) => {
+                        setRecontactEmail(e.target.value);
+                        if (recontactError) setRecontactError('');
+                      }}
+                      placeholder="Votre adresse mail"
+                      aria-label="Votre adresse mail"
+                      disabled={recontactSubmitting}
+                      className="footer-input min-w-0 flex-1 bg-transparent px-5 py-2.5 text-sm text-white focus:outline-none disabled:opacity-60"
+                      style={{
+                        border: `1.5px solid ${recontactError ? HOME_COLORS.orange : 'rgba(255,255,255,0.9)'}`,
+                        borderRadius: 9999,
+                        letterSpacing: '-0.075em',
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      disabled={recontactSubmitting}
+                      className="shrink-0 px-4 py-2.5 text-[11px] font-bold text-white transition-colors disabled:opacity-60"
+                      style={{
+                        border: '1.5px solid rgba(255,255,255,0.9)',
+                        borderRadius: 9999,
+                        letterSpacing: '-0.05em',
+                        background: 'transparent',
+                        cursor: recontactSubmitting ? 'wait' : 'pointer',
+                        fontFamily: 'inherit',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (recontactSubmitting) return;
+                        e.currentTarget.style.background = HOME_COLORS.orange;
+                        e.currentTarget.style.borderColor = HOME_COLORS.orange;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent';
+                        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.9)';
+                      }}
+                    >
+                      {recontactSubmitting ? '…' : 'Envoyer'}
+                    </button>
+                  </div>
+                  {recontactError ? (
+                    <p className="m-0 mt-2 text-xs" style={{ color: HOME_COLORS.orange, letterSpacing: '-0.05em' }}>
+                      {recontactError}
+                    </p>
+                  ) : null}
+                </form>
+              )}
 
               <button
                 type="button"
                 onClick={openRecommanderModal}
-                className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white transition-colors sm:gap-3 sm:px-8 sm:py-3.5 sm:text-sm"
+                className="mt-4 inline-flex items-center gap-2 px-4 py-2 text-[11px] font-bold transition-colors"
                 style={{
-                  border: '1.5px solid rgba(255,255,255,0.9)',
+                  border: '1.5px solid #ffffff',
                   borderRadius: 9999,
                   letterSpacing: '-0.05em',
-                  background: 'transparent',
+                  background: '#ffffff',
+                  color: HOME_COLORS.primary,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = HOME_COLORS.orange;
                   e.currentTarget.style.borderColor = HOME_COLORS.orange;
+                  e.currentTarget.style.color = '#ffffff';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.9)';
+                  e.currentTarget.style.background = '#ffffff';
+                  e.currentTarget.style.borderColor = '#ffffff';
+                  e.currentTarget.style.color = HOME_COLORS.primary;
                 }}
               >
-                <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden>
+                <svg width="14" height="10" viewBox="0 0 18 12" fill="none" aria-hidden>
                   <path d="M1 6h15m0 0-5-5m5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 Recommander un producteur
@@ -272,62 +395,101 @@ const Footer: React.FC = () => {
                 <p className="m-0 text-white" style={{ fontSize: 'clamp(18px, 1.5vw, 22px)', letterSpacing: '-0.05em' }}>
                   Nos <span className="font-bold">garanties</span>
                 </p>
-                {GUARANTEES.map((logo) => (
-                  <img
-                    key={logo.src}
-                    src={logo.src}
-                    alt={logo.alt}
-                    className="h-14 w-auto object-contain sm:h-16 lg:h-[4.5rem]"
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                  />
-                ))}
+                {GUARANTEES.map((logo) =>
+                  'rounded' in logo && logo.rounded ? (
+                    <span
+                      key={logo.src}
+                      className="inline-block h-14 w-14 overflow-hidden rounded-[18px] sm:h-16 sm:w-16 sm:rounded-[20px] lg:h-[4.5rem] lg:w-[4.5rem] lg:rounded-[22px]"
+                    >
+                      <img
+                        src={logo.src}
+                        alt={logo.alt}
+                        className="h-full w-full scale-[1.42] object-cover"
+                        onError={(e) => {
+                          const wrap = e.currentTarget.parentElement;
+                          if (wrap) wrap.style.display = 'none';
+                        }}
+                      />
+                    </span>
+                  ) : (
+                    <img
+                      key={logo.src}
+                      src={logo.src}
+                      alt={logo.alt}
+                      className={
+                        'larger' in logo && logo.larger
+                          ? 'h-16 w-auto object-contain sm:h-[4.5rem] lg:h-20'
+                          : 'h-14 w-auto object-contain sm:h-16 lg:h-[4.5rem]'
+                      }
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  ),
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Barre légale */}
+        {/* Barre légale — mobile empilé ; desktop : une ligne à gauche, démarre par « Fabriqué… » */}
         <div
-          className="relative z-[3] flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center"
-          style={{ padding: `clamp(1.25rem, 2vw, 1.75rem) ${FRAME_PADDING} 0` }}
+          className="relative z-0 flex flex-col items-start gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7 sm:gap-y-2"
+          style={{
+            padding: `clamp(1.25rem, 2vw, 1.75rem) ${FRAME_PADDING} 0`,
+            lineHeight: 1.45,
+          }}
         >
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', margin: 0, letterSpacing: '-0.075em' }}>
-            © 2026 TerraGo — Fabriqué avec passion pour nos territoires.
+          <p
+            className="m-0 order-3 mt-2.5 sm:order-1 sm:mt-0"
+            style={{ fontSize: 12, lineHeight: 1.45, color: 'rgba(255,255,255,0.55)', letterSpacing: '-0.075em' }}
+          >
+            Fabriqué avec tout notre 🤍 © 2026 TerraGo
           </p>
-          <div className="flex flex-wrap items-center gap-x-7 gap-y-2">
+          <div className="order-1 flex flex-wrap items-center gap-x-7 gap-y-2.5 sm:order-2 sm:contents">
             {LEGAL_LINKS.map((item) => (
               <Link
                 key={item.to}
                 href={item.to}
-                style={{ ...linkStyle, fontSize: 12 }}
+                className="sm:order-2"
+                style={{ ...linkStyle, fontSize: 12, lineHeight: 1.45 }}
                 onMouseEnter={hoverWhite}
                 onMouseLeave={hoverReset}
               >
                 {item.label}
               </Link>
             ))}
-            <button
-              type="button"
-              onClick={openCookies}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                padding: 0,
-                fontSize: 12,
-                color: 'rgba(255,255,255,0.7)',
-                fontFamily: 'inherit',
-                letterSpacing: '-0.075em',
-              }}
-              onMouseEnter={hoverWhite}
-              onMouseLeave={hoverReset}
-            >
-              Mes préférences cookies
-            </button>
           </div>
+          <button
+            type="button"
+            onClick={openCookies}
+            className="order-2 sm:order-3"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              fontSize: 12,
+              lineHeight: 1.45,
+              color: 'rgba(255,255,255,0.7)',
+              fontFamily: 'inherit',
+              letterSpacing: '-0.075em',
+            }}
+            onMouseEnter={hoverWhite}
+            onMouseLeave={hoverReset}
+          >
+            Mes préférences cookies
+          </button>
         </div>
       </div>
+
+      {/* Étoile orange — au-dessus de la barre légale */}
+      <img
+        src={ORANGE_STAR}
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 right-0 z-[2] h-64 w-64 translate-x-[40%] translate-y-[40%] object-contain sm:h-[22rem] sm:w-[22rem] lg:h-[26rem] lg:w-[26rem]"
+      />
     </footer>
+    </div>
   );
 };
 

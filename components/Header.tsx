@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useModal } from '../context/ModalContext';
-import { REGION_IMAGES } from '../lib/homeStorage';
+import { REGION_IMAGES, regionDestinationPath } from '../lib/homeStorage';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -22,6 +22,8 @@ type DropdownItem = {
 type MegaSection = {
   title: string;
   items: DropdownItem[];
+  /** Colonnes dans la grille d’items (défaut : 2). */
+  columns?: 1 | 2;
 };
 
 type NavItem = {
@@ -44,46 +46,66 @@ type NavItem = {
 const DESTINATION_REGIONS: DropdownItem[] = REGION_IMAGES.map((region) => ({
   label: region.name,
   description: `Séminaire ${region.prep} ${region.name}`,
-  path: `/seminaire-exemples?region=${encodeURIComponent(region.name)}`,
+  path: regionDestinationPath(region.slug),
 }));
 
 const DESTINATION_LIEUX: DropdownItem[] = [
-  { label: 'Chez le producteur',           description: 'Savoir-faire et terroir vivant',  path: '/seminaire-exemples?lieu=producteur' },
-  { label: 'Au vignoble',                  description: 'Terroirs & dégustations',         path: '/seminaire-exemples?lieu=vignoble' },
-  { label: 'À la ferme',                   description: 'Immersion chez l’exploitant',     path: '/seminaire-exemples?lieu=ferme' },
-  { label: 'Au bord de l’eau',             description: 'Lacs, rivières ou océan',         path: '/seminaire-exemples?lieu=bord-de-leau' },
-  { label: 'En montagne',                  description: 'Altitude et grands espaces',      path: '/seminaire-exemples?lieu=montagne' },
-  { label: 'En pleine nature',             description: 'Forêts et paysages sauvages',     path: '/seminaire-exemples?lieu=nature' },
-  { label: 'Dans un domaine d’exception',  description: 'Lieux rares et inspirants',       path: '/seminaire-exemples?lieu=domaine' },
-  { label: 'Au cœur des terroirs',         description: 'Immersion locale authentique',    path: '/seminaire-exemples?lieu=terroirs' },
+  { label: 'Chez le producteur',           description: 'Savoir-faire et terroir vivant',  path: '/destinations/lieux/chez-le-producteur' },
+  { label: 'Au vignoble',                  description: 'Terroirs & dégustations',         path: '/destinations/lieux/au-vignoble' },
+  { label: 'À la ferme',                   description: 'Immersion chez l’exploitant',     path: '/destinations/lieux/a-la-ferme' },
+  { label: 'Au bord de l’eau',             description: 'Lacs, rivières ou océan',         path: '/destinations/lieux/au-bord-de-leau' },
+  { label: 'En montagne',                  description: 'Altitude et grands espaces',      path: '/destinations/lieux/en-montagne' },
+  { label: 'En pleine nature',             description: 'Forêts et paysages sauvages',     path: '/destinations/lieux/en-pleine-nature' },
+  { label: 'Dans un domaine d’exception',  description: 'Lieux rares et inspirants',       path: '/destinations/lieux/domaine-d-exception' },
+  { label: 'Au cœur des terroirs',         description: 'Immersion locale authentique',    path: '/destinations/lieux/au-coeur-des-terroirs' },
 ];
 
 // ─── Structure du menu ────────────────────────────────────────────────────────
+
+const SEMINAIRE_MAIN: DropdownItem[] = [
+  { label: 'Séminaires d\'entreprise avec TerraGo', description: 'Du sens, du vrai, et du vivant', path: '/seminaires-entreprise', emoji: '🌿' },
+  { label: 'Exemples de séminaire d\'entreprise', description: 'À la journée, sur 2 jours, ou sur mesure', path: '/seminaire-exemples', emoji: '📦' },
+  { label: 'Séminaires réalisés', description: 'Retours d\'expérience sur le terrain', path: '#', comingSoon: true, emoji: '✨' },
+];
+
+const SEMINAIRE_ENJEUX: DropdownItem[] = [
+  { label: 'Séminaire cohésion', description: 'Créer des liens autrement', path: '/seminaires-entreprise/cohesion' },
+  { label: 'Séminaire sensibilisation & RSE', description: 'Comprendre les enjeux du vivant', path: '/seminaires-entreprise/sensibilisation-rse' },
+  { label: 'Séminaire inspiration & miroir d\'entreprise', description: 'Prendre du recul pour mieux avancer', path: '/seminaires-entreprise/inspiration-miroir' },
+  { label: 'Séminaire CODIR', description: 'Aligner et inspirer votre comité de direction', path: '/seminaires-entreprise/codir' },
+];
 
 const NAV_ITEMS: NavItem[] = [
   {
     label: 'Nos séminaires',
     path: '/seminaires-entreprise',
-    dropdown: [
-      { label: 'Séminaires d\'entreprise avec TerraGo', description: 'Du sens, du vrai, et du vivant', path: '/seminaires-entreprise', emoji: '🌿' },
-      { label: 'Nos exemples de séminaire d\'entreprise', description: 'À la journée, sur 2 jours, ou sur mesure', path: '/seminaire-exemples', emoji: '📦' },
-      { label: 'Nos séminaires réalisés', description: 'Retours d\'expérience sur le terrain', path: '#', comingSoon: true, emoji: '✨' },
-    ],
+    dropdown: [...SEMINAIRE_MAIN, ...SEMINAIRE_ENJEUX],
+    mega: {
+      sections: [
+        { title: 'Découvrir', items: SEMINAIRE_MAIN, columns: 1 },
+        { title: 'Selon vos enjeux', items: SEMINAIRE_ENJEUX, columns: 1 },
+      ],
+      footerCta: {
+        label: 'Tous les séminaires',
+        description: '',
+        path: '/seminaires-entreprise',
+      },
+    },
   },
   {
     label: 'Nos destinations',
-    path: '/partenaires',
+    path: '/destinations',
     dropdown: [
       ...DESTINATION_REGIONS,
       ...DESTINATION_LIEUX,
-      { label: 'Toutes les destinations', description: 'Nos producteurs partenaires', path: '/partenaires', emoji: '🌾' },
+      { label: 'Toutes les destinations', description: 'Toutes les régions TerraGo', path: '/destinations', emoji: '🌾' },
     ],
     mega: {
       sections: [
         { title: 'En fonction des régions', items: DESTINATION_REGIONS },
         { title: 'En fonction des lieux',   items: DESTINATION_LIEUX },
       ],
-      footerCta: { label: 'Toutes les destinations', description: '', path: '/partenaires' },
+      footerCta: { label: 'Toutes les destinations', description: '', path: '/destinations' },
     },
   },
   {
@@ -91,17 +113,17 @@ const NAV_ITEMS: NavItem[] = [
     path: '/experiences',
     dropdown: [
       { label: 'Expériences entreprise', description: 'Team building, RSE & événements', path: '/experiences-entreprise', emoji: '✨' },
-      { label: 'Expériences privées', description: 'Activités et repas authentiques pour particuliers', path: '/experiences-privees', emoji: '🌿' },
-      { label: 'Nos offres de séjours', description: 'Entre amis ou en famille', path: '#', comingSoon: true, emoji: '🫶' },
+      { label: 'Expériences privées', description: 'Sur demande dès 8 pers. — séjours, immersions & repas', path: '/experiences-privees', emoji: '🌿' },
+      { label: 'Offres de séjours', description: 'Entre amis ou en famille', path: '#', comingSoon: true, emoji: '🫶' },
     ],
   },
   {
     label: 'Notre approche',
     path: '/notre-approche',
     dropdown: [
-      { label: 'Notre approche', description: 'La mission et la vision TerraGo', path: '/notre-approche', emoji: '🌱' },
-      { label: 'Notre charte RSE', description: 'Engagements responsables', path: '/notre-approche#rse', emoji: '♻️' },
-      { label: 'Nos producteurs partenaires', description: 'Le réseau TerraGo', path: '/partenaires', emoji: '🌾' },
+      { label: 'Approche', description: 'La mission et la vision TerraGo', path: '/notre-approche', emoji: '🌱' },
+      { label: 'Charte RSE', description: 'Engagements responsables', path: '/notre-approche/charte-rse', emoji: '♻️' },
+      { label: 'Producteurs partenaires', description: 'Le réseau TerraGo', path: '/partenaires', emoji: '🌾' },
     ],
     footer: [
       { label: 'Devenir partenaire', description: 'Rejoindre le réseau TerraGo', path: '#', modal: 'partenaire', emoji: '🤝' },
@@ -114,53 +136,46 @@ const NAV_ITEMS: NavItem[] = [
 
 const AccordionSection: React.FC<{
   nav: NavItem;
-  isLast: boolean;
   isOpen: boolean;
   onToggle: () => void;
   onItemClick: (item: DropdownItem) => void;
   onNavigate: (path: string) => void;
-}> = ({ nav, isLast, isOpen, onToggle, onItemClick, onNavigate }) => {
+}> = ({ nav, isOpen, onToggle, onItemClick, onNavigate }) => {
   const hasDropdown = nav.dropdown.length > 0;
 
   if (!hasDropdown) {
     return (
-      <div className={!isLast ? 'border-b border-[#0c1d22]/[0.08]' : ''}>
-        <button
-          type="button"
-          onClick={() => onNavigate(nav.path)}
-          className="group flex min-h-[64px] w-full cursor-pointer items-center justify-between border-none bg-transparent px-6 py-5 text-left"
-        >
-          <span className="font-sans text-[22px] font-normal leading-[1.15] tracking-[-0.05em] text-[#0c1d22] transition-colors duration-150 group-active:text-[#ec6435]">
-            {nav.label}
-          </span>
-          <span className="text-[#ec6435] opacity-0 transition-opacity duration-150 group-active:opacity-100" aria-hidden>
-            →
-          </span>
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => onNavigate(nav.path)}
+        className="flex w-full cursor-pointer items-center justify-center rounded-[12px] border-none bg-[#eef0f2] px-5 py-4 text-center transition-colors duration-150 active:bg-[#e4e7ea]"
+      >
+        <span className="font-sans text-[16px] font-bold tracking-[-0.03em] text-[#0c1d22]">
+          {nav.label}
+        </span>
+      </button>
     );
   }
 
   return (
-    <div className={!isLast ? 'border-b border-[#0c1d22]/[0.08]' : ''}>
+    <div>
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="group flex min-h-[64px] w-full cursor-pointer items-center justify-between border-none bg-transparent px-6 py-5 text-left"
+        className="relative flex w-full cursor-pointer items-center justify-center rounded-[12px] border-none bg-[#eef0f2] px-5 py-4 text-center transition-colors duration-150 active:bg-[#e4e7ea]"
       >
-        <span className="font-sans text-[22px] font-normal leading-[1.15] tracking-[-0.05em] text-[#0c1d22]">
+        <span className="font-sans text-[16px] font-bold tracking-[-0.03em] text-[#0c1d22]">
           {nav.label}
         </span>
         <span
           className={[
-            'flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all duration-300',
-            isOpen
-              ? 'rotate-45 border-[#ec6435] bg-[#ec6435] text-white'
-              : 'border-[#0c1d22]/20 bg-transparent text-[#0c1d22]',
+            'absolute right-4 top-1/2 inline-flex -translate-y-1/2 items-center justify-center text-[#0c1d22] transition-transform duration-300',
+            isOpen ? 'rotate-45' : '',
           ].join(' ')}
+          aria-hidden
         >
-          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+          <svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="5.5" y1="1" x2="5.5" y2="10" />
             <line x1="1" y1="5.5" x2="10" y2="5.5" />
           </svg>
@@ -172,34 +187,53 @@ const AccordionSection: React.FC<{
           'overflow-hidden transition-all duration-300 ease-out',
           isOpen
             ? nav.mega
-              ? 'max-h-[1200px] opacity-100'
-              : 'max-h-[480px] opacity-100'
+              ? 'mt-2 max-h-[1200px] opacity-100'
+              : 'mt-2 max-h-[480px] opacity-100'
             : 'max-h-0 opacity-0',
         ].join(' ')}
       >
-        <div className="px-5 pb-5">
+        <div className="rounded-[12px] bg-[#f7f8f9] px-3 py-3">
           {nav.mega ? (
             <>
               {nav.mega.sections.map((section) => (
-                <div key={section.title} className="mb-4 rounded-[16px] bg-[#f4f4f4] px-2 py-2">
-                  <p className="px-3 pb-1.5 pt-2 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#0c1d22]/40">
+                <div key={section.title} className="mb-3 last:mb-0">
+                  <p className="px-2 pb-1.5 pt-1 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#0c1d22]/40">
                     {section.title}
                   </p>
-                  <div className="grid grid-cols-2 gap-0.5">
-                    {section.items.map((item) => (
-                      <button
-                        key={item.label}
-                        type="button"
-                        onClick={() => onItemClick(item)}
-                        className="cursor-pointer rounded-full border-none bg-transparent px-3 py-2.5 text-left font-sans text-[13px] font-medium tracking-[-0.02em] text-[#0c1d22]/75 transition-colors duration-150 active:bg-white active:text-[#ec6435]"
-                      >
-                        {item.label}
-                      </button>
-                    ))}
+                  <div
+                    className={[
+                      'grid gap-0.5',
+                      (section.columns ?? 2) === 1 ? 'grid-cols-1' : 'grid-cols-2',
+                    ].join(' ')}
+                  >
+                    {section.items.map((item) =>
+                      item.comingSoon ? (
+                        <div
+                          key={item.label}
+                          className="flex items-center justify-between gap-2 rounded-[10px] px-3 py-2.5"
+                        >
+                          <span className="font-sans text-[13px] font-medium tracking-[-0.02em] text-[#0c1d22]/35">
+                            {item.label}
+                          </span>
+                          <span className="shrink-0 rounded-full bg-[#ec6435] px-2 py-0.5 font-sans text-[8px] font-bold uppercase tracking-[0.06em] text-white">
+                            Bientôt
+                          </span>
+                        </div>
+                      ) : (
+                        <button
+                          key={item.label}
+                          type="button"
+                          onClick={() => onItemClick(item)}
+                          className="cursor-pointer rounded-[10px] border-none bg-transparent px-3 py-2.5 text-left font-sans text-[13px] font-medium tracking-[-0.02em] text-[#0c1d22]/75 transition-colors duration-150 active:bg-white active:text-[#ec6435]"
+                        >
+                          {item.label}
+                        </button>
+                      ),
+                    )}
                   </div>
                 </div>
               ))}
-              <div className="mt-1 flex flex-col gap-0.5">
+              <div className="mt-1 flex flex-col gap-0.5 border-t border-[#0c1d22]/[0.06] pt-1">
                 {[
                   ...(nav.mega.footerCta ? [nav.mega.footerCta] : []),
                   ...(nav.footer ?? []),
@@ -208,7 +242,7 @@ const AccordionSection: React.FC<{
                     key={item.label}
                     type="button"
                     onClick={() => onItemClick(item)}
-                    className="group flex w-full cursor-pointer items-center justify-between rounded-full border-none bg-transparent px-3 py-3 text-left transition-colors duration-150 active:bg-[#f4f4f4]"
+                    className="group flex w-full cursor-pointer items-center justify-between rounded-[10px] border-none bg-transparent px-3 py-3 text-left transition-colors duration-150 active:bg-white"
                   >
                     <span className="font-sans text-[14px] font-semibold tracking-[-0.02em] text-[#0c1d22]">
                       {item.label}
@@ -222,12 +256,12 @@ const AccordionSection: React.FC<{
             </>
           ) : (
             <>
-              <div className="flex flex-col gap-0.5 rounded-[16px] bg-[#f4f4f4] p-1.5">
+              <div className="flex flex-col gap-0.5">
                 {nav.dropdown.map((item) =>
                   item.comingSoon ? (
                     <div
                       key={item.label}
-                      className="flex items-center justify-between gap-3 rounded-full px-3.5 py-3.5"
+                      className="flex items-center justify-between gap-3 rounded-[10px] px-3.5 py-3"
                     >
                       <div className="min-w-0 flex-1">
                         <div className="font-sans text-[14px] font-semibold tracking-[-0.02em] text-[#0c1d22]/40">
@@ -248,7 +282,7 @@ const AccordionSection: React.FC<{
                       key={item.label}
                       type="button"
                       onClick={() => onItemClick(item)}
-                      className="group flex w-full cursor-pointer items-start justify-between gap-3 rounded-full border-none bg-transparent px-3.5 py-3.5 text-left transition-colors duration-150 active:bg-white"
+                      className="group flex w-full cursor-pointer items-start justify-between gap-3 rounded-[10px] border-none bg-transparent px-3.5 py-3 text-left transition-colors duration-150 active:bg-white"
                     >
                       <div className="min-w-0 flex-1">
                         <div className="font-sans text-[14px] font-semibold tracking-[-0.02em] text-[#0c1d22] transition-colors duration-150 group-active:text-[#ec6435]">
@@ -268,13 +302,13 @@ const AccordionSection: React.FC<{
                 )}
               </div>
               {(nav.footer?.length ?? 0) > 0 && (
-                <div className="mt-1 flex flex-col gap-0.5">
+                <div className="mt-1 flex flex-col gap-0.5 border-t border-[#0c1d22]/[0.06] pt-1">
                   {nav.footer!.map((item) => (
                     <button
                       key={item.label}
                       type="button"
                       onClick={() => onItemClick(item)}
-                      className="group flex w-full cursor-pointer items-center justify-between rounded-full border-none bg-transparent px-3 py-3 text-left transition-colors duration-150 active:bg-[#f4f4f4]"
+                      className="group flex w-full cursor-pointer items-center justify-between rounded-[10px] border-none bg-transparent px-3 py-3 text-left transition-colors duration-150 active:bg-white"
                     >
                       <span className="font-sans text-[14px] font-semibold tracking-[-0.02em] text-[#0c1d22]">
                         {item.label}
@@ -336,6 +370,7 @@ const Header: React.FC = () => {
   };
 
   const handleItemClick = (item: DropdownItem) => {
+    if (item.comingSoon) return;
     setOpenDropdown(null);
     setIsMenuOpen(false);
     if (item.modal === 'partenaire') {
@@ -371,13 +406,17 @@ const Header: React.FC = () => {
   /** Pages à hero image encadrée : header blanc uni, sans séparateur. */
   const isFramedHeroPage =
     pathname === '/notre-approche' ||
+    (pathname?.startsWith('/notre-approche/') ?? false) ||
     pathname === '/partenaires' ||
     pathname === '/seminaires-entreprise' ||
+    (pathname?.startsWith('/seminaires-entreprise/') ?? false) ||
     pathname === '/seminaire-exemples' ||
     (pathname?.startsWith('/seminaire-exemples/') ?? false) ||
     pathname === '/experiences-entreprise' ||
     (pathname?.startsWith('/experiences-entreprise/') ?? false) ||
-    pathname === '/experiences-privees';
+    pathname === '/experiences-privees' ||
+    pathname === '/destinations' ||
+    (pathname?.startsWith('/destinations/') ?? false);
   const isHeroTransparent = hasHeroTransparent && !isScrolled;
   const isDark = isHeroTransparent;
 
@@ -393,6 +432,12 @@ const Header: React.FC = () => {
         (pathname?.startsWith('/seminaires/') ?? false) ||
         pathname === '/seminaire-exemples' ||
         (pathname?.startsWith('/seminaire-exemples/') ?? false)
+      );
+    }
+    if (nav.path === '/destinations') {
+      return (
+        pathname === '/destinations' ||
+        (pathname?.startsWith('/destinations/') ?? false)
       );
     }
     if (nav.path === '/partenaires') {
@@ -412,7 +457,11 @@ const Header: React.FC = () => {
       );
     }
     if (nav.path === '/notre-approche') {
-      return pathname === '/notre-approche' || pathname === '/a-propos';
+      return (
+        pathname === '/notre-approche' ||
+        (pathname?.startsWith('/notre-approche/') ?? false) ||
+        pathname === '/a-propos'
+      );
     }
     return pathname === nav.path;
   };
@@ -639,17 +688,41 @@ const Header: React.FC = () => {
                         ].join(' ')}
                       >
                         <p className={sectionTitleCls}>{section.title}</p>
-                        <div className="grid grid-cols-2 gap-x-6 gap-y-0.5">
-                          {section.items.map((item) => (
-                            <button
-                              key={item.label}
-                              type="button"
-                              onClick={() => handleItemClick(item)}
-                              className={panelLinkCls}
-                            >
-                              {item.label}
-                            </button>
-                          ))}
+                        <div
+                          className={[
+                            'grid gap-x-6 gap-y-0.5',
+                            (section.columns ?? 2) === 1 ? 'grid-cols-1' : 'grid-cols-2',
+                          ].join(' ')}
+                        >
+                          {section.items.map((item) =>
+                            item.comingSoon ? (
+                              <div
+                                key={item.label}
+                                className="flex items-center justify-between gap-2 py-2 cursor-default"
+                              >
+                                <span
+                                  className={[
+                                    'font-sans text-[14px] font-medium',
+                                    isDark ? 'text-white/40' : 'text-[#0b2c34]/40',
+                                  ].join(' ')}
+                                >
+                                  {item.label}
+                                </span>
+                                <span className="px-2.5 py-0.5 rounded-full bg-[#ec6435] text-white text-[8px] font-bold uppercase tracking-wide">
+                                  Bientôt
+                                </span>
+                              </div>
+                            ) : (
+                              <button
+                                key={item.label}
+                                type="button"
+                                onClick={() => handleItemClick(item)}
+                                className={panelLinkCls}
+                              >
+                                {item.label}
+                              </button>
+                            ),
+                          )}
                         </div>
                         {sIdx === 0 && openNav.mega?.footerCta && (
                           <button
@@ -808,13 +881,12 @@ const Header: React.FC = () => {
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-              <nav className="pt-2" aria-label="Navigation mobile">
-                {NAV_ITEMS.map((nav, idx) => (
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-5 sm:px-6">
+              <nav className="flex flex-col gap-2.5" aria-label="Navigation mobile">
+                {NAV_ITEMS.map((nav) => (
                   <AccordionSection
                     key={nav.path}
                     nav={nav}
-                    isLast={idx === NAV_ITEMS.length - 1}
                     isOpen={mobileOpenSection === nav.label}
                     onToggle={() =>
                       setMobileOpenSection((prev) =>
@@ -836,14 +908,14 @@ const Header: React.FC = () => {
               </nav>
             </div>
 
-            <div className="shrink-0 border-t border-[#0c1d22]/[0.08] bg-white px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 sm:px-6">
+            <div className="shrink-0 bg-white px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2 sm:px-6">
               <button
                 type="button"
                 onClick={() => {
                   setIsMenuOpen(false);
                   openModal();
                 }}
-                className="flex w-full items-center justify-center rounded-full bg-[#ec6435] py-3 font-sans text-[13px] font-medium tracking-[-0.03em] text-white transition-colors duration-200 active:bg-[#d9552a]"
+                className="flex w-full items-center justify-center rounded-[12px] bg-[#0c1d22] py-4 font-sans text-[16px] font-bold tracking-[-0.03em] text-white transition-colors duration-200 active:bg-[#163039]"
               >
                 Organiser votre séminaire
               </button>

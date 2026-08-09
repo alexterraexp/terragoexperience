@@ -99,6 +99,74 @@ export function generateSlug(producteur: string): string {
 
 // ─── Récupération des séminaires depuis Supabase ─────────────────────────────
 
+/** Extrait la région admin (après la virgule) et la localité éventuelle. */
+export function parseSeminaireLocation(region: string): {
+  locality?: string;
+  regionName: string;
+} {
+  const parts = region
+    .split(',')
+    .map((p) => p.trim())
+    .filter(Boolean);
+  if (parts.length >= 2) {
+    return {
+      locality: parts[0],
+      regionName: normalizeRegionName(parts.slice(1).join(', ')),
+    };
+  }
+  return { regionName: normalizeRegionName(region.trim()) };
+}
+
+function normalizeRegionName(name: string): string {
+  return name
+    .replace(/\bNouvelle\s+Aquitaine\b/gi, 'Nouvelle-Aquitaine')
+    .replace(/\bProvence-Alpes-Côte d'Azur\b/gi, "Provence-Alpes-Côte d'Azur")
+    .replace(/\bCentre-Val de Loire\b/gi, 'Centre-Val de Loire');
+}
+
+function producerShortName(producteur: string): string {
+  return producteur.replace(/^avec\s+/i, '').trim();
+}
+
+/** Title + meta uniques par fiche séminaire. */
+export function buildSeminairePageMetadata(
+  seminaire: Seminaire,
+  all: Seminaire[] = [],
+): { title: string; description: string } {
+  const { regionName } = parseSeminaireLocation(seminaire.region);
+  const sameRegion = all.filter((s) => {
+    const other = parseSeminaireLocation(s.region);
+    return other.regionName.toLowerCase() === regionName.toLowerCase();
+  });
+
+  const base = `Séminaire chez un producteur en ${regionName}`;
+  const title =
+    sameRegion.length > 1
+      ? `${base} – ${producerShortName(seminaire.producteur)} | TerraGo`
+      : `${base} | TerraGo`;
+
+  const labelBit = seminaire.label?.trim()
+    ? ` (${seminaire.label.trim()})`
+    : '';
+  const description = [
+    `Séminaire d'entreprise ${seminaire.producteur}${labelBit} en ${seminaire.region}.`,
+    'Immersion terroir, cohésion d’équipe et engagement RSE avec TerraGo.',
+  ].join(' ');
+
+  return { title, description };
+}
+
+export async function fetchSeminaireBySlug(
+  slug: string,
+  db: SupabaseClient = supabase,
+): Promise<{ seminaire: Seminaire | null; all: Seminaire[] }> {
+  const all = await fetchSeminaires(db);
+  return {
+    seminaire: all.find((s) => s.slug === slug) ?? null,
+    all,
+  };
+}
+
 export async function fetchSeminaires(db: SupabaseClient = supabase): Promise<Seminaire[]> {
   const { data, error } = await db
     .from('seminaires')

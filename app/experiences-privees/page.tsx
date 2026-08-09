@@ -4,14 +4,14 @@ import Particuliers from '../../views/Particuliers';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Expériences privées – Activités et repas authentiques – TerraGo',
+    title: 'Expériences privées sur demande – Dès 8 personnes – TerraGo',
     description:
-      'Activités et repas authentiques pour particuliers chez des producteurs français. Vivez une expérience privée, immersive et sur mesure.',
+      'Expériences privées TerraGo sur demande : séjours, activités, immersions et repas du terroir ou guinguette. Nos formats entreprises s’ouvrent aux particuliers dès 8 personnes.',
     robots: { index: true, follow: true },
     openGraph: {
-      title: 'Expériences privées – TerraGo',
+      title: 'Expériences privées sur demande – TerraGo',
       description:
-        'Activités et repas authentiques pour particuliers chez des producteurs engagés.',
+        'Sur demande, dès 8 personnes : séjours, immersions et repas guinguette ouverts aux particuliers.',
       url: 'https://terragoexperiences.fr/experiences-privees',
       siteName: 'TerraGo',
       locale: 'fr_FR',

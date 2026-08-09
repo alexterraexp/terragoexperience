@@ -18,7 +18,7 @@ import {
   homeCtaOutlineGhostClass,
 } from '../components/home/homeStyles';
 import type { HomeAssetUrls } from '../lib/homeStorage';
-import { HOME_EMOJI, HOME_PRODUCERS, HOME_STEPS, REGION_IMAGES, REGION_TAGS } from '../lib/homeStorage';
+import { HOME_EMOJI, HOME_PRODUCERS, HOME_STEPS, REGION_IMAGES, REGION_TAGS, regionDestinationPath } from '../lib/homeStorage';
 
 interface HomeProps {
   assets: HomeAssetUrls;
@@ -736,7 +736,8 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
       {/* ── RÉGIONS ── */}
       <section
-        className="relative"
+        id="destinations"
+        className="relative scroll-mt-28"
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#f7f7f7' }}
       >
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
@@ -806,7 +807,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
           {REGION_IMAGES.map((region) => (
             <Link
               key={region.name}
-              href="/seminaire-exemples"
+              href={regionDestinationPath(region.slug)}
               className="group relative aspect-[3/3.4] w-[62vw] shrink-0 overflow-hidden sm:aspect-[3/4.1] sm:w-[255px] lg:aspect-[3/4.2] lg:w-[280px]"
               style={{ borderRadius: HOME_RADIUS }}
             >
@@ -841,7 +842,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
         <div className="mt-10 flex justify-center sm:mt-12">
           <Link
-            href="/seminaire-exemples"
+            href="/destinations"
             className={homeCtaOutlineGhostClass}
           >
             <span aria-hidden>→</span>

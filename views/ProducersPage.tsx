@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { supabase } from '../lib/supabase';
 import { useModal } from '../context/ModalContext';
@@ -33,6 +33,122 @@ const PRODUCER_ASSETS = {
 
 const sectionTitleClass =
   'font-sans text-[clamp(1.05rem,3.1vw,2.25rem)] font-normal leading-[1.15] tracking-[-0.06em] text-[#0c1d22] whitespace-nowrap';
+
+/** Pastilles calées sur le scroll réel (pas une pastille par carte). */
+function useSwipePages(trackRef: React.RefObject<HTMLDivElement | null>, itemCount: number) {
+  const [pageCount, setPageCount] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const isScrollingRef = useRef(false);
+
+  const getMetrics = useCallback((track: HTMLElement) => {
+    const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+    if (maxScroll < 8 || itemCount < 2) {
+      return { pageCount: 0, maxScroll: 0, step: 0 };
+    }
+    const first = track.children[0] as HTMLElement | undefined;
+    const second = track.children[1] as HTMLElement | undefined;
+    const step =
+      first && second
+        ? second.offsetLeft - first.offsetLeft
+        : first
+          ? first.offsetWidth
+          : track.clientWidth;
+    const pages = Math.min(itemCount, Math.max(2, Math.round(maxScroll / Math.max(step, 1)) + 1));
+    return { pageCount: pages, maxScroll, step: Math.max(step, 1) };
+  }, [itemCount]);
+
+  const syncActive = useCallback((track: HTMLElement) => {
+    const { pageCount: pages, maxScroll, step } = getMetrics(track);
+    if (pages <= 1) {
+      setActiveIndex(0);
+      return;
+    }
+    if (track.scrollLeft >= maxScroll - 4) {
+      setActiveIndex(pages - 1);
+      return;
+    }
+    const idx = Math.round(track.scrollLeft / step);
+    setActiveIndex(Math.max(0, Math.min(idx, pages - 1)));
+  }, [getMetrics]);
+
+  const measure = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) {
+      setPageCount(0);
+      return;
+    }
+    const { pageCount: pages } = getMetrics(track);
+    setPageCount(pages);
+    syncActive(track);
+  }, [trackRef, getMetrics, syncActive]);
+
+  const goTo = useCallback((index: number, behavior: ScrollBehavior = 'smooth') => {
+    const track = trackRef.current;
+    if (!track) return;
+    const { pageCount: pages, maxScroll, step } = getMetrics(track);
+    if (pages <= 1) return;
+    const clamped = Math.max(0, Math.min(index, pages - 1));
+    const targetLeft = clamped >= pages - 1 ? maxScroll : clamped * step;
+    isScrollingRef.current = true;
+    track.scrollTo({ left: targetLeft, behavior });
+    setActiveIndex(clamped);
+    window.setTimeout(() => {
+      isScrollingRef.current = false;
+      syncActive(track);
+    }, behavior === 'smooth' ? 450 : 50);
+  }, [trackRef, getMetrics, syncActive]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let raf = 0;
+    const onScroll = () => {
+      if (isScrollingRef.current) return;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => syncActive(track));
+    };
+
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
+    ro?.observe(track);
+    measure();
+
+    track.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', measure);
+    return () => {
+      cancelAnimationFrame(raf);
+      ro?.disconnect();
+      track.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', measure);
+    };
+  }, [trackRef, itemCount, measure, syncActive]);
+
+  return { activeIndex, goTo, pageCount };
+}
+
+const SwipeDots: React.FC<{
+  count: number;
+  activeIndex: number;
+  onSelect: (index: number) => void;
+  className?: string;
+  label?: string;
+}> = ({ count, activeIndex, onSelect, className = '', label = 'Élément' }) => (
+  <div className={`flex items-center justify-center gap-2 ${className}`}>
+    {Array.from({ length: count }, (_, i) => (
+      <button
+        key={i}
+        type="button"
+        aria-label={`${label} ${i + 1}`}
+        onClick={() => onSelect(i)}
+        className="h-2 rounded-full transition-all duration-300"
+        style={{
+          width: i === activeIndex ? 28 : 8,
+          background: i === activeIndex ? HOME_COLORS.orange : 'rgba(12,29,34,0.18)',
+        }}
+      />
+    ))}
+  </div>
+);
 
 // ── ProducerCard ─────────────────────────────────────────────────────────────
 type ProducerCardProps = {
@@ -77,8 +193,10 @@ const ProducersPage: React.FC = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const producersScrollRef = useRef<HTMLDivElement>(null);
 
   const producers: Producer[] = producersFull.map(fullToProducer);
+  const producersSwipe = useSwipePages(producersScrollRef, producers.length);
 
   useEffect(() => {
     let cancelled = false;
@@ -136,6 +254,9 @@ const ProducersPage: React.FC = () => {
         }}
       />
       <style>{`
+        .prod-swipe-wrap {
+          position: relative;
+        }
         .prod-swipe {
           display: flex;
           gap: 16px;
@@ -144,9 +265,9 @@ const ProducersPage: React.FC = () => {
           -webkit-overflow-scrolling: touch;
           scrollbar-width: none;
           padding: 4px 0 16px;
-          margin: 0 -1.25rem;
-          padding-left: 1.25rem;
-          padding-right: 1.25rem;
+          margin: 0 -1.5rem;
+          padding-left: 1.5rem;
+          padding-right: 4.5rem;
         }
         .prod-swipe::-webkit-scrollbar { display: none; }
         @media (min-width: 640px) {
@@ -154,14 +275,42 @@ const ProducersPage: React.FC = () => {
             gap: 20px;
             margin: 0 -2rem;
             padding-left: 2rem;
-            padding-right: 2rem;
+            padding-right: 5.5rem;
           }
+        }
+        @media (min-width: 1024px) {
+          .prod-swipe {
+            margin: 0 -2.5rem;
+            padding-left: 2.5rem;
+            padding-right: 6rem;
+          }
+        }
+        .prod-swipe-fade {
+          position: absolute;
+          top: 0;
+          right: -1.5rem;
+          bottom: 16px;
+          width: clamp(4.5rem, 12vw, 7rem);
+          background: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.55) 45%,
+            #ffffff 100%
+          );
+          pointer-events: none;
+          z-index: 3;
+        }
+        @media (min-width: 640px) {
+          .prod-swipe-fade { right: -2rem; }
+        }
+        @media (min-width: 1024px) {
+          .prod-swipe-fade { right: -2.5rem; }
         }
         .prod-mini-card {
           position: relative;
           flex: 0 0 min(72vw, 240px);
           width: min(72vw, 240px);
-          aspect-ratio: 3 / 4;
+          aspect-ratio: 3 / 4.2;
           border: none;
           padding: 0;
           border-radius: 20px;
@@ -255,7 +404,7 @@ const ProducersPage: React.FC = () => {
       <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
         <div className="relative mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
-            className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
+            className="relative aspect-[5/4] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
             style={{ borderRadius: HOME_RADIUS }}
           >
             <img
@@ -271,7 +420,7 @@ const ProducersPage: React.FC = () => {
                   'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.5) 100%)',
               }}
             />
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pt-12 text-center sm:px-10 sm:pt-16 lg:pt-20">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
               <h1 className="max-w-3xl text-center font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
                 Nos producteurs
                 <br />
@@ -280,13 +429,22 @@ const ProducersPage: React.FC = () => {
               <h2 className="mt-4 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
                 Des hôtes engagés pour accueillir vos groupes en séminaire ou séjour immersif.
               </h2>
-              <a
-                href="#producteurs"
-                className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
-                style={{ background: 'rgba(12, 29, 34, 0.12)' }}
-              >
-                Explorer les producteurs partenaires
-              </a>
+              <div className="mt-7 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:gap-4">
+                <a
+                  href="#producteurs"
+                  className={homeHeroOutlineButtonClass}
+                  style={{ background: 'rgba(12, 29, 34, 0.12)' }}
+                >
+                  Explorer les producteurs partenaires
+                </a>
+                <button
+                  type="button"
+                  onClick={openPartenaireModal}
+                  className="inline-flex items-center justify-center rounded-full border-2 border-[#ec6435] bg-[#ec6435] px-5 py-1.5 text-xs font-bold tracking-[0.04em] text-white transition-colors hover:border-[#d9552a] hover:bg-[#d9552a] sm:px-8 sm:py-2 sm:text-sm"
+                >
+                  Devenir partenaire
+                </button>
+              </div>
             </div>
           </div>
           <img
@@ -303,7 +461,7 @@ const ProducersPage: React.FC = () => {
         className="scroll-mt-28"
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
       >
-        <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="relative mx-auto max-w-[1280px] px-6 sm:px-8 lg:px-10">
           <div className="mb-8 sm:mb-10">
             <h2 className={sectionTitleClass}>
               <span className="font-bold">Engagés et passionnés</span>, ils vous ouvrent leurs portes.
@@ -340,13 +498,32 @@ const ProducersPage: React.FC = () => {
             </div>
           )}
           {!loading && !error && producers.length > 0 && (
-            <div className="prod-swipe" role="list" aria-label="Producteurs partenaires">
-              {producers.map((p) => (
-                <div key={p.id} role="listitem">
-                  <ProducerCard producer={p} onClick={handleSelectProducer} />
+            <>
+              <div className="prod-swipe-wrap">
+                <div
+                  ref={producersScrollRef}
+                  className="prod-swipe"
+                  role="list"
+                  aria-label="Producteurs partenaires"
+                >
+                  {producers.map((p) => (
+                    <div key={p.id} role="listitem">
+                      <ProducerCard producer={p} onClick={handleSelectProducer} />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+                <div className="prod-swipe-fade" aria-hidden />
+              </div>
+              {producersSwipe.pageCount > 1 && (
+                <SwipeDots
+                  count={producersSwipe.pageCount}
+                  activeIndex={producersSwipe.activeIndex}
+                  onSelect={producersSwipe.goTo}
+                  className="mt-2"
+                  label="Page"
+                />
+              )}
+            </>
           )}
 
           {/* Mains dans la terre — à cheval catalogue / CTA */}

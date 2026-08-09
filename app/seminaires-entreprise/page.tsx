@@ -3,15 +3,18 @@ import { Suspense } from 'react';
 import Seminaires from '../../views/Seminaires';
 
 export async function generateMetadata(): Promise<Metadata> {
+  const title =
+    "Séminaires d'entreprise à impact – Cohésion, RSE & immersion | TerraGo";
+  const description =
+    "Découvrez les séminaires d'entreprise TerraGo : cohésion, sensibilisation, inspiration et engagement au contact de producteurs et artisans.";
+
   return {
-    title: 'Séminaire au vert chez un producteur français – TerraGo',
-    description:
-      'Organisez un séminaire nature et engagé chez un producteur du terroir. Journée, résidentiel ou sur mesure — team building authentique loin des salles de réunion.',
+    title,
+    description,
     robots: { index: true, follow: true },
     openGraph: {
-      title: 'Séminaire au vert chez un producteur français – TerraGo',
-      description:
-        'Organisez un séminaire nature et engagé chez un producteur du terroir. Journée, résidentiel ou sur mesure — team building authentique loin des salles de réunion.',
+      title,
+      description,
       url: 'https://terragoexperiences.fr/seminaires-entreprise',
       siteName: 'TerraGo',
       locale: 'fr_FR',

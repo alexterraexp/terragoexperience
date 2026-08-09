@@ -1,0 +1,240 @@
+'use client';
+
+import React, { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { useModal } from '../context/ModalContext';
+import {
+  HOME_COLORS,
+  HOME_RADIUS,
+  homeParagraphClass,
+  homeSectionPadding,
+} from '../components/home/homeStyles';
+import { REGION_TAGS, regionDestinationPath } from '../lib/homeStorage';
+import { DESTINATIONS } from '../lib/destinations';
+import { LIEUX, lieuDestinationPath } from '../lib/lieux';
+
+const sectionTitleClass =
+  'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
+
+const CategoryHeading: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className = '',
+}) => (
+  <div className={`flex items-center gap-4 sm:gap-5 ${className}`}>
+    <h2 className="shrink-0 font-sans text-[15px] font-normal leading-[1.2] tracking-[-0.04em] text-[#0c1d22] sm:text-[17px] lg:text-[18px]">
+      {children}
+    </h2>
+    <div
+      className="h-px min-w-0 flex-1"
+      style={{ background: 'rgba(12, 29, 34, 0.18)' }}
+      aria-hidden
+    />
+  </div>
+);
+
+const ScrollAnimate: React.FC<{
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}> = ({ children, delay = 0, className = '' }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.12 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(24px)',
+        transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+const Destinations: React.FC = () => {
+  const { openModal } = useModal();
+
+  return (
+    <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      <section className="relative w-full bg-white pt-[calc(8.75rem+env(safe-area-inset-top))] sm:pt-[calc(10rem+env(safe-area-inset-top))] lg:pt-[calc(11rem+env(safe-area-inset-top))]">
+        <div className="mx-auto max-w-6xl px-5 pb-10 sm:px-8 sm:pb-12">
+          <ScrollAnimate>
+            <p
+              className="font-sans text-[13px] font-bold tracking-[-0.03em] sm:text-[14px]"
+              style={{ color: HOME_COLORS.orange }}
+            >
+              Destinations TerraGo
+            </p>
+            <h1 className={`mt-3 max-w-3xl ${sectionTitleClass}`}>
+              Toutes nos <span className="font-bold">destinations</span>.
+            </h1>
+            <p className={`mt-4 max-w-2xl ${homeParagraphClass}`}>
+              Organisez votre séminaire d&apos;entreprise partout en France, au plus près des
+              producteurs et des terroirs. Explorez par région ou par type de lieu : programme type,
+              expériences et idées de logement.
+            </p>
+          </ScrollAnimate>
+
+          <ScrollAnimate delay={60} className="mt-7 flex flex-wrap gap-2 sm:mt-8">
+            {REGION_TAGS.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full px-4 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.1em] text-white sm:text-[11px]"
+                style={{ background: HOME_COLORS.primary }}
+              >
+                {tag}
+              </span>
+            ))}
+          </ScrollAnimate>
+        </div>
+      </section>
+
+      <section
+        style={{
+          paddingBottom: homeSectionPadding,
+          background: '#ffffff',
+        }}
+      >
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <ScrollAnimate>
+            <CategoryHeading className="mb-3 sm:mb-4">
+              En fonction des <span className="font-bold">régions</span>
+            </CategoryHeading>
+            <p className={`mb-5 max-w-none sm:mb-6 ${homeParagraphClass}`}>
+              Du Sud-Ouest à la Provence, de la Bretagne aux Alpes… découvrez les territoires où nous
+              imaginons des expériences uniques pour vos équipes.
+            </p>
+          </ScrollAnimate>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+            {DESTINATIONS.map((region, i) => (
+              <ScrollAnimate key={region.slug} delay={Math.min(i * 50, 200)}>
+                <Link
+                  href={regionDestinationPath(region.slug)}
+                  className="group relative block aspect-[16/10] overflow-hidden"
+                  style={{ borderRadius: HOME_RADIUS }}
+                >
+                  <img
+                    src={region.heroImage}
+                    alt={`Séminaire ${region.prep} ${region.name}`}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                  <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
+                    <span className="font-normal">Séminaire {region.prep}</span>
+                    <br />
+                    <span className="font-bold">{region.name}</span>
+                  </p>
+                </Link>
+              </ScrollAnimate>
+            ))}
+          </div>
+
+          <ScrollAnimate className="mt-14 sm:mt-16">
+            <CategoryHeading className="mb-3 sm:mb-4">
+              En fonction des <span className="font-bold">lieux</span>
+            </CategoryHeading>
+            <p className={`mb-5 max-w-none sm:mb-6 ${homeParagraphClass}`}>
+              Chez un producteur, au cœur d&apos;un vignoble, dans une ferme, au bord de l&apos;eau
+              ou en pleine nature… choisissez le lieu qui donnera une autre dimension à votre
+              séminaire.
+            </p>
+          </ScrollAnimate>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+            {LIEUX.map((lieu, i) => (
+              <ScrollAnimate key={lieu.slug} delay={Math.min(i * 50, 200)}>
+                <Link
+                  href={lieuDestinationPath(lieu.slug)}
+                  className="group relative block aspect-[16/10] overflow-hidden"
+                  style={{ borderRadius: HOME_RADIUS }}
+                >
+                  <img
+                    src={lieu.heroImage}
+                    alt={lieu.heroImageAlt}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                  <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
+                    <span className="font-normal">Séminaire</span>
+                    <br />
+                    <span className="font-bold">{lieu.name}</span>
+                  </p>
+                </Link>
+              </ScrollAnimate>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ── CTA BANNIÈRES ── */}
+      <section
+        style={{
+          paddingTop: 'clamp(2rem, 4vw, 3rem)',
+          paddingBottom: homeSectionPadding,
+          background: '#ffffff',
+        }}
+      >
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-5 sm:gap-5 sm:px-8 lg:grid-cols-2">
+          <Link
+            href="/seminaires-entreprise"
+            className="group relative flex min-h-[260px] flex-col items-center justify-center overflow-hidden px-6 py-10 text-center transition-transform duration-300 hover:scale-[1.01] sm:min-h-[300px] sm:px-10 sm:py-12"
+            style={{ background: HOME_COLORS.primary, borderRadius: HOME_RADIUS }}
+          >
+            <h2 className="max-w-md font-sans text-[24px] font-normal leading-[1.12] tracking-[-0.07em] text-white sm:text-[28px] lg:text-[32px]">
+              Découvrez nos <span className="font-bold">séminaires d&apos;entreprise</span>
+            </h2>
+            <p className="mx-auto mt-4 max-w-sm font-sans text-[13px] font-normal leading-[1.7] tracking-[-0.04em] text-white/80 sm:mt-5 sm:text-[14px]">
+              Des expériences pensées pour réunir vos équipes, sortir du cadre et créer un impact
+              concret sur les territoires et nos producteurs.
+            </p>
+            <span className="mt-7 inline-flex items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors group-hover:bg-[#ec6435] group-hover:text-white sm:mt-8 sm:px-7 sm:py-2.5 sm:text-[11px]">
+              Découvrir le détail de nos séminaires
+            </span>
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => openModal()}
+            className="group relative flex min-h-[260px] flex-col items-center justify-center overflow-hidden px-6 py-10 text-center transition-transform duration-300 hover:scale-[1.01] sm:min-h-[300px] sm:px-10 sm:py-12"
+            style={{ background: HOME_COLORS.orange, borderRadius: HOME_RADIUS }}
+          >
+            <h2 className="max-w-md font-sans text-[24px] font-normal leading-[1.12] tracking-[-0.07em] text-white sm:text-[28px] lg:text-[32px]">
+              Votre prochain séminaire <span className="font-bold">commence ici.</span>
+            </h2>
+            <p className="mx-auto mt-4 max-w-sm font-sans text-[13px] font-normal leading-[1.7] tracking-[-0.04em] text-white/80 sm:mt-5 sm:text-[14px]">
+              Parlez-nous de vos équipes, de vos envies et de vos enjeux. Nous imaginons avec vous
+              une expérience sur mesure, au cœur des territoires.
+            </p>
+            <span className="mt-7 inline-flex items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors group-hover:bg-[#0c1d22] group-hover:text-white sm:mt-8 sm:px-7 sm:py-2.5 sm:text-[11px]">
+              Organiser mon séminaire
+            </span>
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Destinations;

@@ -4,7 +4,7 @@ import Engagement from '../../views/Engagement';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Notre approche – Séminaires engagés & circuits courts – TerraGo',
+    title: 'Notre approche – Des séminaires à impact, au cœur des territoires | TerraGo',
     description:
       "Découvrez l'approche TerraGo : reconnecter l'humain à la terre, soutenir les producteurs engagés et créer des expériences immersives responsables.",
     robots: { index: true, follow: true },

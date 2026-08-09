@@ -8,16 +8,15 @@ import {
   HOME_RADIUS,
   homeParagraphClass,
   homeSectionPadding,
-  bottomImageGradientClass,
   homeHeroOutlineButtonClass,
   homeCtaOutlineClass,
 } from '../components/home/homeStyles';
 
 const ASSETS = {
-  hero: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/producteur-maraicher.png',
-  ble: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/ble.png',
   symbole:
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/s%20orange.png',
+  producteurSoutenu:
+    'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/producteur-sountenu.png',
   paolo: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/paolo.png',
   team: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/team-terrago.png',
   arbre: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/emoji-arbre.png',
@@ -80,52 +79,34 @@ const Engagement: React.FC = () => {
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
 
-      {/* ── HERO (image encadrée) ── */}
+      {/* ── HERO (fond orange) ── */}
       <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
-        <div className="mx-auto max-w-6xl px-5 pb-2 sm:px-8">
+        <div className="relative mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
-            className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
-            style={{ borderRadius: HOME_RADIUS }}
+            className="relative flex aspect-[5/4] w-full flex-col items-center justify-center overflow-hidden px-5 pb-8 pt-10 text-center sm:aspect-[16/9] sm:px-10 sm:pb-10 sm:pt-16 lg:aspect-[2.2/1] lg:pt-20"
+            style={{ borderRadius: HOME_RADIUS, background: HOME_COLORS.orange }}
           >
-            <img
-              src={ASSETS.hero}
-              alt="Producteur maraîcher devant sa serre"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className={`${bottomImageGradientClass} z-[1]`} />
-            <div
-              className="absolute inset-0 z-[2]"
-              style={{
-                background:
-                  'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.5) 100%)',
-              }}
-            />
-
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pt-12 text-center sm:px-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
-                Notre <span className="font-bold">approche</span>
-              </h1>
-              <p className={`${homeParagraphClass} mt-4 max-w-xl text-[15px] leading-relaxed text-white/90 sm:mt-6 sm:text-[17px]`}>
-                Reconnecter l&apos;humain à la terre, soutenir les producteurs engagés,
-                et créer des expériences qui laissent une trace.
-              </p>
-              <button
-                type="button"
-                onClick={openPartenaireModal}
-                className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
-                style={{ background: 'rgba(12, 29, 34, 0.12)' }}
-              >
-                Rejoindre la communauté
-              </button>
-            </div>
-
-            <img
-              src={ASSETS.ble}
-              alt=""
-              aria-hidden
-              className="pointer-events-none absolute bottom-3 right-3 z-20 h-16 w-16 object-contain sm:bottom-5 sm:right-5 sm:h-24 sm:w-24 lg:h-28 lg:w-28"
-            />
+            <h1 className="max-w-3xl font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
+              Notre <span className="font-bold">approche</span>
+            </h1>
+            <p className={`${homeParagraphClass} mt-4 max-w-xl text-[15px] leading-relaxed text-white/90 sm:mt-6 sm:text-[17px]`}>
+              Reconnecter l&apos;humain à la terre, soutenir les producteurs engagés,
+              et créer des expériences qui laissent une trace.
+            </p>
+            <button
+              type="button"
+              onClick={openPartenaireModal}
+              className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
+            >
+              Rejoindre la communauté
+            </button>
           </div>
+
+          <img
+            src={ASSETS.producteurSoutenu}
+            alt="+1 producteur soutenu"
+            className="pointer-events-none absolute bottom-0 right-5 z-30 h-32 w-auto translate-x-[18%] translate-y-[55%] rotate-[6deg] object-contain drop-shadow-md sm:right-8 sm:h-40 lg:right-12 lg:h-48"
+          />
         </div>
       </section>
 
@@ -346,10 +327,16 @@ const Engagement: React.FC = () => {
               Notre charte <span className="font-bold">RSE.</span>
             </h2>
             <p className="mx-auto mt-6 max-w-2xl font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:mt-8 sm:text-[17px]">
-              Notre engagement pour des expériences responsables, des circuits
-              courts et un impact positif sur les territoires. La charte détaillée
-              arrive bientôt.
+              Soutenir les producteurs, limiter l&apos;impact dès la conception,
+              proposer des activités qui ont du sens — et progresser en toute
+              transparence. Ce n&apos;est pas un document d&apos;intention : c&apos;est
+              ce que nous faisons concrètement.
             </p>
+            <div className="mt-8">
+              <Link href="/notre-approche/charte-rse" className={homeCtaOutlineClass}>
+                Lire la charte
+              </Link>
+            </div>
           </ScrollAnimate>
         </div>
       </section>

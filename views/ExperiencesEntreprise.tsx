@@ -122,14 +122,15 @@ const FaqAccordion: React.FC = () => {
   );
 };
 
-/** Panneau titre / explication — fixe, non swipable. */
+/** Panneau titre / explication — fixe desktop ; 1er slide mobile. */
 const IntroPanel: React.FC<{
   intro: ExperienceExample;
   number: number;
   accent?: string;
-}> = ({ intro, number, accent = HOME_COLORS.orange }) => (
+  showSwipeHint?: boolean;
+}> = ({ intro, number, accent = HOME_COLORS.orange, showSwipeHint = false }) => (
   <aside
-    className="relative flex h-full min-h-[280px] flex-col justify-start px-6 py-7 sm:min-h-[320px] sm:px-7 sm:py-8 lg:min-h-[360px] lg:px-8 lg:py-9"
+    className="relative flex h-full min-h-[280px] flex-col px-6 py-7 sm:min-h-[320px] sm:px-7 sm:py-8 lg:min-h-[360px] lg:px-8 lg:py-9"
     style={{ background: accent, borderRadius: HOME_RADIUS }}
   >
     <span
@@ -148,19 +149,36 @@ const IntroPanel: React.FC<{
     <p className="mt-4 font-sans text-[13px] font-normal leading-[1.65] tracking-[-0.03em] text-white/85 sm:text-[14px]">
       {intro.description}
     </p>
+    {showSwipeHint ? (
+      <div className="mt-auto pt-8">
+        <div className="inline-flex max-w-full items-center gap-2.5 rounded-2xl bg-white/15 px-3.5 py-2.5 backdrop-blur-[2px]">
+          <span
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white font-sans text-[13px] font-bold"
+            style={{ color: accent }}
+            aria-hidden
+          >
+            →
+          </span>
+          <span className="font-sans text-[11px] font-semibold leading-snug tracking-[-0.02em] text-white whitespace-nowrap">
+            Swipez pour découvrir le détail
+          </span>
+        </div>
+      </div>
+    ) : null}
   </aside>
 );
 
-/** Carte d’exemple swipable : image + texte. */
+/** Carte d’exemple swipable : image plein cadre + dégradé (mobile), split (desktop). */
 const SlideCard: React.FC<{
   example: ExperienceExample;
   accent?: string;
 }> = ({ example, accent = HOME_COLORS.orange }) => (
   <article
-    className="relative flex h-full min-h-[280px] w-full flex-col overflow-hidden sm:min-h-[320px] lg:min-h-[360px] lg:flex-row"
+    className="relative aspect-square w-full overflow-hidden lg:flex lg:h-full lg:aspect-auto lg:min-h-[360px] lg:flex-row"
     style={{ borderRadius: HOME_RADIUS }}
   >
-    <div className="relative min-h-[160px] w-full shrink-0 sm:min-h-[200px] lg:min-h-0 lg:w-[38%]">
+    {/* Image : plein cadre mobile, colonne gauche desktop */}
+    <div className="absolute inset-0 lg:relative lg:h-full lg:min-h-0 lg:w-[38%] lg:shrink-0">
       <img
         src={example.image}
         alt={example.imageAlt}
@@ -168,10 +186,23 @@ const SlideCard: React.FC<{
         draggable={false}
       />
     </div>
+
+    {/* Dégradé accent — mobile uniquement */}
     <div
-      className="relative flex min-w-0 flex-1 flex-col justify-center px-6 py-7 sm:px-8 sm:py-8 lg:px-9 lg:py-9"
-      style={{ background: accent }}
-    >
+      className="pointer-events-none absolute inset-0 lg:hidden"
+      style={{
+        background: `linear-gradient(to top, ${accent} 0%, ${accent}f2 28%, ${accent}b8 52%, ${accent}40 72%, transparent 100%)`,
+      }}
+      aria-hidden
+    />
+
+    {/* Texte : bas du carré mobile ; panneau uni desktop */}
+    <div className="relative z-10 flex h-full min-w-0 flex-col justify-end bg-transparent px-6 py-7 lg:h-full lg:flex-1 lg:justify-center lg:px-9 lg:py-9">
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 hidden lg:block"
+        style={{ background: accent }}
+        aria-hidden
+      />
       <h3 className="font-sans text-[20px] font-normal leading-[1.15] tracking-[-0.05em] text-white sm:text-[24px] lg:text-[26px]">
         <EmphasizedTitle title={example.title} />
       </h3>
@@ -185,23 +216,16 @@ const SlideCard: React.FC<{
   </article>
 );
 
-/**
- * Ligne catégorie : titre/explication bloqués d’un côté,
- * contenu swipable de l’autre (imageLeft = intro à gauche).
- */
-const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) => {
-  const { openModal } = useModal();
+/** Hook swipe horizontal (snap + pilules). */
+function useSwipeCarousel(length: number) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const isScrollingRef = useRef(false);
-  const introLeft = category.imageLeft;
-  const accent = category.slug === '2' ? HOME_COLORS.primary : HOME_COLORS.orange;
 
   const goTo = useCallback((index: number, behavior: ScrollBehavior = 'smooth') => {
     const track = trackRef.current;
-    if (!track) return;
-    const len = category.examples.length;
-    const clamped = ((index % len) + len) % len;
+    if (!track || length < 1) return;
+    const clamped = ((index % length) + length) % length;
     const slide = track.children[clamped] as HTMLElement | undefined;
     if (!slide) return;
     isScrollingRef.current = true;
@@ -210,7 +234,7 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
     window.setTimeout(() => {
       isScrollingRef.current = false;
     }, behavior === 'smooth' ? 450 : 50);
-  }, [category.examples.length]);
+  }, [length]);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -233,7 +257,7 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
             best = i;
           }
         });
-        if (best !== activeIndex) setActiveIndex(best);
+        setActiveIndex((prev) => (best !== prev ? best : prev));
       });
     };
 
@@ -242,51 +266,49 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
       cancelAnimationFrame(raf);
       track.removeEventListener('scroll', onScroll);
     };
-  }, [activeIndex]);
+  }, []);
 
-  const dots = (
-    <div className="flex items-center justify-center gap-2">
-      {category.examples.map((example, i) => (
-        <button
-          key={example.id}
-          type="button"
-          aria-label={`Exemple ${i + 1} — ${stripTitleEmphasis(category.sectionTitle)}`}
-          onClick={() => goTo(i)}
-          className="h-2 rounded-full transition-all duration-300"
-          style={{
-            width: i === activeIndex ? 28 : 8,
-            background: i === activeIndex ? accent : 'rgba(12,29,34,0.18)',
-          }}
-        />
-      ))}
-    </div>
-  );
+  return { trackRef, activeIndex, goTo };
+}
 
-  const introCol = (
-    <div className="h-full min-w-0">
-      <IntroPanel intro={category.intro} number={category.number} accent={accent} />
-    </div>
-  );
-
-  const swipeCol = (
-    <div className="relative h-full min-w-0">
-      <div
-        ref={trackRef}
-        className="flex h-full snap-x snap-mandatory gap-3 overflow-x-auto sm:gap-4"
+const PillDots: React.FC<{
+  count: number;
+  activeIndex: number;
+  onSelect: (index: number) => void;
+  accent: string;
+  label: string;
+}> = ({ count, activeIndex, onSelect, accent, label }) => (
+  <div className="flex items-center justify-center gap-2">
+    {Array.from({ length: count }, (_, i) => (
+      <button
+        key={i}
+        type="button"
+        aria-label={`${label} ${i + 1}`}
+        onClick={() => onSelect(i)}
+        className="h-2 rounded-full transition-all duration-300"
         style={{
-          WebkitOverflowScrolling: 'touch',
-          msOverflowStyle: 'none',
-          scrollbarWidth: 'none',
+          width: i === activeIndex ? 28 : 8,
+          background: i === activeIndex ? accent : 'rgba(12,29,34,0.18)',
         }}
-      >
-        {category.examples.map((example) => (
-          <div key={example.id} className="h-full w-full shrink-0 snap-center">
-            <SlideCard example={example} accent={accent} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+      />
+    ))}
+  </div>
+);
+
+/**
+ * Mobile : un seul carrousel (titre → détails au swipe).
+ * Desktop : intro fixe + carrousel d’exemples (imageLeft = intro à gauche).
+ */
+const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) => {
+  const { openModal } = useModal();
+  const introLeft = category.imageLeft;
+  const accent = category.slug === '2' ? HOME_COLORS.primary : HOME_COLORS.orange;
+  /** Sur mobile les pilules restent orange ; le panneau 2 garde son accent sombre. */
+  const pillAccent = HOME_COLORS.orange;
+  const mobileLen = 1 + category.examples.length;
+  const mobile = useSwipeCarousel(mobileLen);
+  const desktop = useSwipeCarousel(category.examples.length);
+  const sectionLabel = stripTitleEmphasis(category.sectionTitle);
 
   return (
     <div id={`categorie-${category.slug}`} className="scroll-mt-28 px-5 sm:px-6 lg:px-8">
@@ -297,12 +319,45 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
           </p>
         ) : null}
 
-        {/*
-          Grille 2 colonnes : intro + slides à hauteur égale.
-          Les dots sont sur la 2e ligne, sous le carrousel uniquement.
-        */}
+        {/* Mobile : titre d’abord, puis swipe vers les détails */}
+        <div className="lg:hidden">
+          <div
+            ref={mobile.trackRef}
+            className="flex snap-x snap-mandatory gap-3 overflow-x-auto"
+            style={{
+              WebkitOverflowScrolling: 'touch',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+            }}
+          >
+            <div className="w-full shrink-0 snap-center">
+              <IntroPanel
+                intro={category.intro}
+                number={category.number}
+                accent={accent}
+                showSwipeHint
+              />
+            </div>
+            {category.examples.map((example) => (
+              <div key={example.id} className="w-full shrink-0 snap-center">
+                <SlideCard example={example} accent={accent} />
+              </div>
+            ))}
+          </div>
+          <div className="mt-4">
+            <PillDots
+              count={mobileLen}
+              activeIndex={mobile.activeIndex}
+              onSelect={mobile.goTo}
+              accent={pillAccent}
+              label={`${sectionLabel} — slide`}
+            />
+          </div>
+        </div>
+
+        {/* Desktop : intro fixe + carrousel d’exemples */}
         <div
-          className={`grid grid-cols-1 gap-4 lg:gap-x-5 lg:gap-y-4 ${
+          className={`hidden gap-x-5 gap-y-4 lg:grid ${
             introLeft
               ? 'lg:grid-cols-[minmax(300px,38%)_minmax(0,1fr)]'
               : 'lg:grid-cols-[minmax(0,1fr)_minmax(300px,38%)]'
@@ -310,17 +365,65 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
         >
           {introLeft ? (
             <>
-              <div className="h-full min-h-0">{introCol}</div>
-              <div className="h-full min-h-0">{swipeCol}</div>
-              <div className="hidden lg:block" aria-hidden />
-              <div>{dots}</div>
+              <div className="h-full min-h-0">
+                <IntroPanel intro={category.intro} number={category.number} accent={accent} />
+              </div>
+              <div className="relative h-full min-w-0">
+                <div
+                  ref={desktop.trackRef}
+                  className="flex h-full snap-x snap-mandatory gap-4 overflow-x-auto"
+                  style={{
+                    WebkitOverflowScrolling: 'touch',
+                    msOverflowStyle: 'none',
+                    scrollbarWidth: 'none',
+                  }}
+                >
+                  {category.examples.map((example) => (
+                    <div key={example.id} className="h-full w-full shrink-0 snap-center">
+                      <SlideCard example={example} accent={accent} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div aria-hidden />
+              <PillDots
+                count={category.examples.length}
+                activeIndex={desktop.activeIndex}
+                onSelect={desktop.goTo}
+                accent={accent}
+                label={`Exemple — ${sectionLabel}`}
+              />
             </>
           ) : (
             <>
-              <div className="h-full min-h-0">{swipeCol}</div>
-              <div className="h-full min-h-0">{introCol}</div>
-              <div>{dots}</div>
-              <div className="hidden lg:block" aria-hidden />
+              <div className="relative h-full min-w-0">
+                <div
+                  ref={desktop.trackRef}
+                  className="flex h-full snap-x snap-mandatory gap-4 overflow-x-auto"
+                  style={{
+                    WebkitOverflowScrolling: 'touch',
+                    msOverflowStyle: 'none',
+                    scrollbarWidth: 'none',
+                  }}
+                >
+                  {category.examples.map((example) => (
+                    <div key={example.id} className="h-full w-full shrink-0 snap-center">
+                      <SlideCard example={example} accent={accent} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="h-full min-h-0">
+                <IntroPanel intro={category.intro} number={category.number} accent={accent} />
+              </div>
+              <PillDots
+                count={category.examples.length}
+                activeIndex={desktop.activeIndex}
+                onSelect={desktop.goTo}
+                accent={accent}
+                label={`Exemple — ${sectionLabel}`}
+              />
+              <div aria-hidden />
             </>
           )}
         </div>
@@ -371,12 +474,12 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
       <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
         <div className="mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
-            className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
+            className="relative aspect-[5/4] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
             style={{ borderRadius: HOME_RADIUS }}
           >
             <img
               src={EXPERIENCES_ENTREPRISE_ASSETS.hero}
-              alt="Travail du pain et de la pâte – expériences TerraGo"
+              alt="Producteur dans son champ – expériences TerraGo"
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className={`${bottomImageGradientClass} z-[1]`} />
@@ -388,7 +491,7 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pt-12 text-center sm:px-10 sm:pt-16 lg:pt-20">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
               <h1 className="max-w-3xl font-sans text-[clamp(1.85rem,4.8vw,3.4rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
                 Des expériences <span className="font-bold">authentiques,</span>
                 <br />
@@ -487,7 +590,7 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
       {/* ── CTA BANNIÈRE ── */}
       <section
         style={{
-          paddingTop: 'clamp(2rem, 4vw, 3rem)',
+          paddingTop: homeSectionPadding,
           paddingBottom: 'clamp(2rem, 4vw, 3rem)',
           background: '#f4f4f4',
         }}
@@ -510,8 +613,8 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
             className="relative overflow-hidden px-6 py-12 text-center sm:px-12 sm:py-14 lg:py-16"
             style={{ background: HOME_COLORS.primary, borderRadius: HOME_RADIUS }}
           >
-            <h2 className="mx-auto max-w-2xl font-sans text-[28px] font-bold leading-[1.1] tracking-[-0.07em] text-white sm:text-[36px] lg:text-[42px]">
-              Des événements qui vous ressemblent.
+            <h2 className="mx-auto max-w-2xl font-sans text-[28px] font-normal leading-[1.1] tracking-[-0.07em] text-white sm:text-[36px] lg:text-[42px]">
+              Des événements qui <span className="font-bold">vous ressemblent.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl font-sans text-[14px] font-normal leading-[1.7] tracking-[-0.04em] text-white/80 sm:mt-5 sm:text-[15px]">
               Brief, lieu, activités, restauration : nous construisons avec vous une expérience unique,

@@ -84,8 +84,8 @@ const STEPS_BASE_URL =
 
 export const HOME_STEPS = [
   { title: 'Envoyez-nous votre brief', image: `${STEPS_BASE_URL}/10.png` },
-  { title: 'Proposition des offres et validation', image: `${STEPS_BASE_URL}/11.png` },
-  { title: 'Cocréation de votre programme', image: `${STEPS_BASE_URL}/12.png` },
+  { title: 'Proposition des offres et validation', image: `${STEPS_BASE_URL}/creationprogramme.png` },
+  { title: 'Cocréation de votre programme', image: `${STEPS_BASE_URL}/programme-web.png` },
   { title: 'Accompagnement jusqu\'au jour J !', image: `${STEPS_BASE_URL}/13.png` },
 ] as const;
 
@@ -121,17 +121,28 @@ export const HOME_PRODUCERS = [
   },
 ] as const;
 
-/** `prep` : préposition utilisée devant le nom dans « Séminaire … Bretagne ». */
+/**
+ * `prep` : préposition (« Séminaire en Bretagne »).
+ * `article` : article défini devant le nom (« la Bretagne », « l'Auvergne ») — espace inclus sauf pour `l'`.
+ */
 export const REGION_IMAGES = [
-  { name: 'Nouvelle-Aquitaine', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/huitre-pecheurs.avif' },
-  { name: 'Bretagne', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/bateau.avif' },
-  { name: 'Auvergne', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/auvergne.avif' },
-  { name: 'Occitanie', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/occitanie.avif' },
-  { name: 'Provence', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/lavande.avif' },
-  { name: 'Bourgogne', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/bourgogn.avif' },
-  { name: 'Normandie', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/normandie.avif' },
-  { name: 'Corse', prep: 'en', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/corse.jpg' },
+  { slug: 'nouvelle-aquitaine', name: 'Nouvelle-Aquitaine', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/huitre-pecheurs.avif' },
+  { slug: 'provence', name: 'Provence', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/lavande.avif' },
+  { slug: 'ile-de-france', name: 'Île-de-France', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/0147530379456.jpg' },
+  { slug: 'normandie', name: 'Normandie', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/normandie.avif' },
+  { slug: 'occitanie', name: 'Occitanie', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/occitanie.avif' },
+  { slug: 'bretagne', name: 'Bretagne', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/197677686-34666032.jpg' },
+  { slug: 'pays-de-la-loire', name: 'Pays de la Loire', prep: 'en', article: 'les ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/24311133636914.jpg' },
+  { slug: 'auvergne', name: 'Auvergne', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/37910945-15085778.jpg' },
+  { slug: 'bourgogne', name: 'Bourgogne', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/bourgogn.avif' },
+  { slug: 'corse', name: 'Corse', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/1198427643714.jpg' },
 ] as const;
+
+export type RegionSlug = (typeof REGION_IMAGES)[number]['slug'];
+
+export function regionDestinationPath(slug: string): string {
+  return `/destinations/${slug}`;
+}
 
 export const REGION_TAGS = [
   'Séminaire engagé',

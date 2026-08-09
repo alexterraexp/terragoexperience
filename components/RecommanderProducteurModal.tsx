@@ -318,8 +318,10 @@ const RecommanderProducteurModal: React.FC<Props> = ({ isOpen, onClose }) => {
                       Recommander <strong style={strong}>un producteur.</strong>
                     </h2>
                     <p style={leadStyle}>
-                      Vous connaissez une pépite du terroir ? Remplissez ce court
-                      formulaire, on se charge de le contacter.
+                      Vous connaissez un producteur, un agriculteur ou un artisan qui mérite d&apos;être découvert ?
+                    </p>
+                    <p style={{ ...leadStyle, marginTop: -10 }}>
+                      Partagez-nous ses coordonnées. Nous prendrons contact avec lui pour lui présenter TerraGo et imaginer, pourquoi pas, une future expérience ensemble.
                     </p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 13, maxWidth: 340 }}>
                       <input

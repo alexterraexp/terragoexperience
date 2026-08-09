@@ -6,7 +6,7 @@ const INK = '#0c1d22';
 const ORANGE = '#ec6435';
 const HOME_BUCKET =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
-const VISUAL = `${HOME_BUCKET}/champ-ble.avif`;
+const VISUAL = `${HOME_BUCKET}/olives-recoltes.JPG`;
 
 const SECTEURS = [
   'Viticulture',
@@ -95,8 +95,8 @@ const CustomSelect: React.FC<{
             position: 'absolute',
             left: 0,
             right: 0,
-            top: '100%',
-            margin: '4px 0 0',
+            bottom: '100%',
+            margin: '0 0 4px',
             padding: '6px 0',
             listStyle: 'none',
             background: '#fff',
@@ -377,8 +377,10 @@ const DevenirPartenaireModal: React.FC<Props> = ({ isOpen, onClose }) => {
                       Devenez <strong style={strong}>partenaire TerraGo.</strong>
                     </h2>
                     <p style={leadStyle}>
-                      Remplissez ce court formulaire pour nous présenter votre exploitation.
-                      Nous vous recontactons pour échanger sur le réseau.
+                      Vous êtes producteur, agriculteur, artisan ou entrepreneur local et souhaitez accueillir des entreprises sur votre territoire ?
+                    </p>
+                    <p style={{ ...leadStyle, marginTop: -10 }}>
+                      Présentez-nous votre activité en quelques minutes. Nous vous recontacterons pour faire connaissance, échanger sur votre savoir-faire et imaginer ensemble de futures expériences TerraGo.
                     </p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 13, maxWidth: 340 }}>
                       <input
