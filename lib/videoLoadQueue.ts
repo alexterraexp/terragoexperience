@@ -1,6 +1,6 @@
 /** Limite le nombre de chargements vidéo simultanés (hors hero). */
 let activeLoads = 0;
-const MAX_CONCURRENT = 1;
+const MAX_CONCURRENT = 3;
 const waitQueue: Array<() => void> = [];
 
 export function acquireVideoSlot(): Promise<void> {

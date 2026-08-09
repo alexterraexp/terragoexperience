@@ -8,10 +8,13 @@ interface LazyVideoProps {
   poster?: string;
   className?: string;
   videoClassName?: string;
+  /** Marge autour du viewport pour précharger (utile carrousels horizontaux). */
   rootMargin?: string;
   threshold?: number;
   /** Si true, la vidéo ne joue qu'au survol (desktop) / focus. */
   playOnHover?: boolean;
+  /** Charge dès le montage, sans attendre l’intersection. */
+  priority?: boolean;
 }
 
 const LazyVideo: React.FC<LazyVideoProps> = ({
@@ -19,16 +22,19 @@ const LazyVideo: React.FC<LazyVideoProps> = ({
   poster,
   className = '',
   videoClassName = '',
-  rootMargin = '250px',
-  threshold = 0.2,
+  // Précharge largement à gauche/droite pour les cards qui « peek » dans un swipe.
+  rootMargin = '120px 70% 120px 70%',
+  threshold = 0,
   playOnHover = false,
+  priority = false,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(priority);
+  const [isVisible, setIsVisible] = useState(priority);
   const [isHovered, setIsHovered] = useState(false);
   const [srcLoaded, setSrcLoaded] = useState(false);
+  const [hasFrame, setHasFrame] = useState(false);
   const slotHeldRef = useRef(false);
   const playOnHoverRef = useRef(playOnHover);
   playOnHoverRef.current = playOnHover;
@@ -40,7 +46,21 @@ const LazyVideo: React.FC<LazyVideoProps> = ({
     }
   }, []);
 
+  const showFirstFrame = useCallback((video: HTMLVideoElement) => {
+    try {
+      if (video.currentTime < 0.05) video.currentTime = 0.05;
+    } catch {
+      /* ignore */
+    }
+    setHasFrame(true);
+  }, []);
+
   useEffect(() => {
+    if (priority) {
+      setShouldLoad(true);
+      setIsVisible(true);
+    }
+
     const el = containerRef.current;
     if (!el) return;
 
@@ -54,7 +74,7 @@ const LazyVideo: React.FC<LazyVideoProps> = ({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [rootMargin, threshold]);
+  }, [rootMargin, threshold, priority]);
 
   useEffect(() => {
     if (!shouldLoad || srcLoaded) return;
@@ -75,14 +95,7 @@ const LazyVideo: React.FC<LazyVideoProps> = ({
 
       const onLoaded = () => {
         releaseSlot();
-        // Affiche la première frame sans démarrer la lecture (mode survol)
-        if (playOnHoverRef.current && video.paused) {
-          try {
-            video.currentTime = 0.01;
-          } catch {
-            /* ignore */
-          }
-        }
+        showFirstFrame(video);
       };
       video.addEventListener('loadeddata', onLoaded, { once: true });
     });
@@ -91,7 +104,7 @@ const LazyVideo: React.FC<LazyVideoProps> = ({
       cancelled = true;
       releaseSlot();
     };
-  }, [shouldLoad, src, srcLoaded, releaseSlot]);
+  }, [shouldLoad, src, srcLoaded, releaseSlot, showFirstFrame]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -99,16 +112,21 @@ const LazyVideo: React.FC<LazyVideoProps> = ({
 
     const shouldPlay = playOnHover ? isHovered : isVisible;
     if (shouldPlay) {
-      void video.play().catch(() => undefined);
+      video.muted = true;
+      void video.play()
+        .then(() => setHasFrame(true))
+        .catch(() => undefined);
     } else {
       video.pause();
+      // Garde une frame visible (évite le rectangle blanc sur les cards adjacentes).
+      showFirstFrame(video);
     }
-  }, [isVisible, isHovered, srcLoaded, playOnHover]);
+  }, [isVisible, isHovered, srcLoaded, playOnHover, showFirstFrame]);
 
   return (
     <div
       ref={containerRef}
-      className={`relative overflow-hidden ${className}`}
+      className={`relative overflow-hidden bg-[#0c1d22] ${className}`}
       onMouseEnter={playOnHover ? () => setIsHovered(true) : undefined}
       onMouseLeave={playOnHover ? () => setIsHovered(false) : undefined}
       onFocus={playOnHover ? () => setIsHovered(true) : undefined}
@@ -119,8 +137,10 @@ const LazyVideo: React.FC<LazyVideoProps> = ({
           src={poster}
           alt=""
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover"
-          loading="lazy"
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+            hasFrame ? 'opacity-0' : 'opacity-100'
+          }`}
+          loading={priority ? 'eager' : 'lazy'}
         />
       )}
       <video
@@ -128,7 +148,7 @@ const LazyVideo: React.FC<LazyVideoProps> = ({
         muted
         loop
         playsInline
-        preload="none"
+        preload={priority ? 'auto' : 'metadata'}
         poster={poster}
         className={`absolute inset-0 h-full w-full object-cover ${videoClassName}`}
       />

@@ -7,6 +7,7 @@ import { useModal } from '../context/ModalContext';
 import {
   HOME_COLORS,
   HOME_RADIUS,
+  homeFramedHeroWideAspectClass,
   bottomImageGradientClass,
   homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
@@ -475,7 +476,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
             />
           ) : null}
           <div
-            className="relative aspect-[5/4] w-full overflow-hidden sm:aspect-[2.45/1] lg:aspect-[2.85/1]"
+            className={`relative ${homeFramedHeroWideAspectClass}`}
             style={{ borderRadius: HOME_RADIUS }}
           >
             <img
@@ -492,12 +493,12 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center px-5 pb-6 pt-10 text-center sm:px-10 sm:pb-8 sm:pt-12 lg:pb-10 lg:pt-14">
+            <div className="absolute inset-0 z-10 flex flex-col items-center px-4 pb-6 pt-10 text-center sm:px-10 sm:pb-8 sm:pt-12 lg:pb-10 lg:pt-14">
               <div className="flex flex-1 flex-col items-center justify-center">
                 <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                   {enjeu.eyebrow}
                 </p>
-                <h1 className="mt-2 max-w-4xl font-sans text-[clamp(1.85rem,4.2vw,3rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
+                <h1 className="mt-2 max-w-4xl font-sans text-[clamp(1.65rem,5vw,3rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
                   Organisez <span className="font-bold">votre {displayTitle}</span>.
                 </h1>
                 <p className="mt-3 max-w-xl font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.02em] text-white/85 sm:text-[14px]">

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   homeH1Class,
@@ -11,31 +11,83 @@ import { useModal } from '../../context/ModalContext';
 
 interface HomeHeroProps {
   videoSrc: string;
+  /** Affiché immédiatement pendant le chargement de la vidéo (~12 Mo). */
+  posterSrc?: string;
 }
 
-const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc }) => {
+const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { openModal } = useModal();
+  const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    void video.play().catch(() => undefined);
+
+    let cancelled = false;
+    setVideoReady(false);
+
+    const tryPlay = () => {
+      if (cancelled) return;
+      video.muted = true;
+      video.playsInline = true;
+      void video.play()
+        .then(() => {
+          if (!cancelled) setVideoReady(true);
+        })
+        .catch(() => undefined);
+    };
+
+    // Reprend depuis le début à chaque montage / nouvel URL.
+    const onLoadedData = () => {
+      try {
+        video.currentTime = 0;
+      } catch {
+        /* ignore */
+      }
+      tryPlay();
+    };
+
+    video.addEventListener('loadeddata', onLoadedData);
+    video.addEventListener('canplay', tryPlay);
+    tryPlay();
+
+    return () => {
+      cancelled = true;
+      video.removeEventListener('loadeddata', onLoadedData);
+      video.removeEventListener('canplay', tryPlay);
+    };
   }, [videoSrc]);
 
   return (
     <section className="relative w-full overflow-hidden">
-      {/* Conteneur pleine largeur — hauteur responsive identique sur tous les écrans */}
-      <div className="relative h-[100svh] min-h-[520px] w-full max-h-[900px] sm:max-h-none sm:min-h-[600px] lg:h-screen lg:max-h-[100svh]">
+      {/* Conteneur pleine largeur — hauteur viewport sur mobile */}
+      <div className="relative h-[100svh] min-h-[640px] w-full sm:min-h-[600px] lg:h-screen lg:max-h-[100svh]">
+        {posterSrc ? (
+          <img
+            src={posterSrc}
+            alt=""
+            aria-hidden
+            fetchPriority="high"
+            decoding="async"
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+              videoReady ? 'opacity-0' : 'opacity-100'
+            }`}
+          />
+        ) : null}
+
         <video
           ref={videoRef}
           src={videoSrc}
+          poster={posterSrc}
           autoPlay
           muted
           loop
           playsInline
           preload="auto"
-          className="absolute inset-0 h-full w-full object-cover"
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+            videoReady ? 'opacity-100' : 'opacity-0'
+          }`}
           aria-label="Transhumance en montagne – TerraGo"
         />
 
@@ -48,8 +100,8 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc }) => {
           }}
         />
 
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-5 pt-24 pb-12 text-center sm:px-5 sm:pt-28">
-          <h1 className={`${homeH1Class} max-w-none text-[clamp(2.45rem,8vw,3.75rem)] leading-[1.02] text-white`}>
+        <div className="relative z-10 flex h-full flex-col items-center justify-center px-3.5 pt-24 pb-14 text-center sm:px-6 sm:pt-28 sm:pb-12">
+          <h1 className={`${homeH1Class} max-w-none text-[clamp(1.85rem,6.6vw,3.75rem)] leading-[1.06] text-white`}>
             <span className="sm:whitespace-nowrap">
               <span className="font-bold">Séminaires d&apos;entreprise engagés,</span>{' '}
               <span className="font-normal">à la</span>
@@ -60,10 +112,10 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc }) => {
               rencontre des producteurs français.
             </span>
           </h1>
-          <p className={`${homeParagraphClass} mt-6 max-w-5xl text-[17px] leading-relaxed text-white/95 sm:mt-10 sm:text-lg`}>
+          <p className={`${homeParagraphClass} mt-5 max-w-5xl px-0 text-[16px] leading-relaxed text-white/95 sm:mt-10 sm:text-lg`}>
           Team building, séminaires au vert et expériences RSE à la rencontre de producteurs engagés partout en France. 
           </p>
-          <div className="mt-20 flex flex-col items-center gap-3 sm:mt-24 sm:flex-row sm:gap-5">
+          <div className="mt-12 flex flex-col items-center gap-3 sm:mt-24 sm:flex-row sm:gap-5">
             <Link
               href="/seminaires-entreprise"
               className="rounded-full border-2 border-white px-7 py-1.5 text-xs font-bold tracking-[0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:min-w-[280px] sm:px-16 sm:py-2 sm:text-sm sm:text-center"

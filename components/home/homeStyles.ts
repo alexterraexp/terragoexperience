@@ -9,6 +9,17 @@ export const HOME_COLORS = {
 
 export const HOME_RADIUS = '26px';
 
+/**
+ * Cadre hero encadré — plus haut sur mobile (ex-5/4 trop écrasé sur iPhone).
+ * Ne pas appliquer à Charte RSE / Notre approche (contenu plus court).
+ */
+export const homeFramedHeroAspectClass =
+  'aspect-[4/5] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]';
+
+/** Variante destinations / enjeux (ratios desktop différents). */
+export const homeFramedHeroWideAspectClass =
+  'aspect-[4/5] w-full overflow-hidden sm:aspect-[2.45/1] lg:aspect-[2.85/1]';
+
 export const homeH1Class =
   'font-sans text-[40px] leading-[1.05] tracking-[-0.075em] text-[#0c1d22]';
 

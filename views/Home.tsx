@@ -24,29 +24,91 @@ interface HomeProps {
   assets: HomeAssetUrls;
 }
 
-/** Vidéo bannière : lecture en boucle dès le montage. */
-const BannerVideo: React.FC<{ src: string; className?: string }> = ({ src, className = '' }) => {
+/** Vidéo bannière impact : poster immédiat + lecture dès qu’elle entre en vue. */
+const BannerVideo: React.FC<{ src: string; poster?: string; className?: string }> = ({
+  src,
+  poster,
+  className = '',
+}) => {
+  const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    const wrap = wrapRef.current;
     const video = videoRef.current;
-    if (!video) return;
-    video.muted = true;
-    void video.play().catch(() => undefined);
+    if (!wrap || !video) return;
+
+    let cancelled = false;
+
+    const tryPlay = () => {
+      if (cancelled) return;
+      video.muted = true;
+      video.playsInline = true;
+      void video.play()
+        .then(() => {
+          if (!cancelled) setReady(true);
+        })
+        .catch(() => undefined);
+    };
+
+    const onLoaded = () => {
+      try {
+        video.currentTime = 0;
+      } catch {
+        /* ignore */
+      }
+      tryPlay();
+    };
+
+    video.addEventListener('loadeddata', onLoaded);
+    video.addEventListener('canplay', tryPlay);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) tryPlay();
+        else video.pause();
+      },
+      { rootMargin: '200px 0px', threshold: 0.05 },
+    );
+    observer.observe(wrap);
+    tryPlay();
+
+    return () => {
+      cancelled = true;
+      video.removeEventListener('loadeddata', onLoaded);
+      video.removeEventListener('canplay', tryPlay);
+      observer.disconnect();
+    };
   }, [src]);
 
   return (
-    <video
-      ref={videoRef}
-      src={src}
-      muted
-      loop
-      playsInline
-      autoPlay
-      preload="auto"
-      className={`pointer-events-none ${className}`}
-      aria-label="Vergers en récolte – TerraGo"
-    />
+    <div ref={wrapRef} className={`relative overflow-hidden bg-[#0c1d22] ${className}`}>
+      {poster ? (
+        <img
+          src={poster}
+          alt=""
+          aria-hidden
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+            ready ? 'opacity-0' : 'opacity-100'
+          }`}
+        />
+      ) : null}
+      <video
+        ref={videoRef}
+        src={src}
+        poster={poster}
+        muted
+        loop
+        playsInline
+        autoPlay
+        preload="auto"
+        className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+          ready ? 'opacity-100' : 'opacity-0'
+        }`}
+        aria-label="Vergers en récolte – TerraGo"
+      />
+    </div>
   );
 };
 
@@ -321,6 +383,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
   const experiences = [
     {
       video: assets.expOlive,
+      poster: assets.conceptAgir,
       title: (
         <>
           Récolte et réalisation de son huile d&apos;olive{' '}
@@ -330,6 +393,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
     },
     {
       video: assets.expCuisine,
+      poster: assets.conceptLien,
       title: (
         <>
           <span className="font-bold">Atelier cuisine</span> au cœur du moulin
@@ -338,6 +402,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
     },
     {
       video: assets.expVin,
+      poster: assets.conceptInspirer,
       title: (
         <>
           Visite des chais et{' '}
@@ -365,7 +430,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
   return (
     <div className="overflow-x-hidden bg-white">
 
-      <HomeHero videoSrc={assets.heroVideo} />
+      <HomeHero videoSrc={assets.heroVideo} posterSrc={assets.heroPoster} />
 
       {/* ── NOTRE CONCEPT ── */}
       <section style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}>
@@ -517,11 +582,13 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
             {experiences.map((exp, i) => (
               <div
                 key={i}
-                className="relative aspect-[16/10] w-[78vw] max-w-[360px] shrink-0 snap-center overflow-hidden"
+                className="relative aspect-[16/10] w-[78vw] max-w-[360px] shrink-0 snap-center overflow-hidden bg-[#0c1d22]"
                 style={{ borderRadius: HOME_RADIUS }}
               >
                 <LazyVideo
                   src={exp.video}
+                  poster={exp.poster}
+                  priority={i === 0}
                   className="absolute inset-0 h-full w-full"
                   videoClassName="scale-110"
                 />
@@ -556,12 +623,14 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                   />
                 )}
                 <div
-                  className="group relative aspect-[16/11] overflow-hidden"
+                  className="group relative aspect-[16/11] overflow-hidden bg-[#0c1d22]"
                   style={{ borderRadius: HOME_RADIUS }}
                 >
                   <LazyVideo
                     src={exp.video}
+                    poster={exp.poster}
                     playOnHover
+                    priority={i < 3}
                     className="absolute inset-0 h-full w-full"
                     videoClassName="scale-110 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover:scale-[1.32] group-hover:translate-x-7 group-hover:-translate-y-5"
                   />
@@ -600,8 +669,9 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
             style={{ borderRadius: HOME_RADIUS }}
           >
             <BannerVideo
-              src="https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/vergers.mp4"
-              className="aspect-[16/11] w-full object-cover sm:aspect-[36/12] lg:aspect-[40/9]"
+              src={assets.bannerVideo}
+              poster={assets.conceptAgir}
+              className="aspect-[16/11] w-full sm:aspect-[36/12] lg:aspect-[40/9]"
             />
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div className="absolute inset-0 z-10 flex items-center justify-center px-5 py-12 text-center sm:px-8">

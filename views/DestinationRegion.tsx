@@ -7,6 +7,7 @@ import { useModal } from '../context/ModalContext';
 import {
   HOME_COLORS,
   HOME_RADIUS,
+  homeFramedHeroWideAspectClass,
   bottomImageGradientClass,
   homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
@@ -308,7 +309,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
             className="pointer-events-none absolute bottom-0 left-0 z-30 h-36 w-36 -translate-x-[35%] translate-y-[42%] object-contain drop-shadow-md sm:h-48 sm:w-48 lg:h-56 lg:w-56"
           />
           <div
-            className="relative aspect-[5/4] w-full overflow-hidden sm:aspect-[2.45/1] lg:aspect-[2.85/1]"
+            className={`relative ${homeFramedHeroWideAspectClass}`}
             style={{ borderRadius: HOME_RADIUS }}
           >
             <img
@@ -325,12 +326,12 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center px-5 pb-6 pt-10 text-center sm:px-10 sm:pb-8 sm:pt-12 lg:pb-10 lg:pt-14">
+            <div className="absolute inset-0 z-10 flex flex-col items-center px-4 pb-6 pt-10 text-center sm:px-10 sm:pb-8 sm:pt-12 lg:pb-10 lg:pt-14">
               <div className="flex flex-1 flex-col items-center justify-center">
                 <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                   Séminaire {destination.prep} {destination.name}
                 </p>
-                <h1 className="mt-2 max-w-4xl font-sans text-[clamp(1.85rem,4.2vw,3rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
+                <h1 className="mt-2 max-w-4xl font-sans text-[clamp(1.65rem,5vw,3rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
                   Organisez <span className="font-bold">votre séminaire</span> d&apos;entreprise{' '}
                   <span className="font-bold">
                     {destination.prep} {destination.name}

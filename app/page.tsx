@@ -31,10 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-/** URLs signées régénérées côté serveur à chaque rendu (bucket HOME privé). */
-export const dynamic = 'force-dynamic';
-
-export default async function HomePage() {
-  const assets = await getHomeAssetUrls();
+export default function HomePage() {
+  const assets = getHomeAssetUrls();
   return <Home assets={assets} />;
 }

@@ -14,6 +14,7 @@ import {
 import {
   HOME_COLORS,
   HOME_RADIUS,
+  homeFramedHeroAspectClass,
   bottomImageGradientClass,
   homeHeroOutlineButtonClass,
   homeSectionPadding,
@@ -404,7 +405,7 @@ const ProducersPage: React.FC = () => {
       <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
         <div className="relative mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
-            className="relative aspect-[5/4] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
+            className={`relative ${homeFramedHeroAspectClass}`}
             style={{ borderRadius: HOME_RADIUS }}
           >
             <img
@@ -420,8 +421,8 @@ const ProducersPage: React.FC = () => {
                   'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.5) 100%)',
               }}
             />
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl text-center font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
+              <h1 className="max-w-3xl text-center font-sans text-[clamp(1.75rem,5.2vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
                 Nos producteurs
                 <br />
                 <span className="font-bold">partenaires.</span>

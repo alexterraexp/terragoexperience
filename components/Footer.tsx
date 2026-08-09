@@ -135,16 +135,17 @@ const hoverReset = (e: React.MouseEvent<HTMLElement>) => {
   e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
 };
 
+/** Mobile : une colonne (pas de wrap bizarre). Desktop : rangée horizontale avec ·. */
 const LinkRow: React.FC<{ links: FooterLink[] }> = ({ links }) => {
   if (links.length === 0) return null;
   return (
-    <ul className="m-0 flex list-none flex-wrap items-center gap-y-2 p-0">
+    <ul className="footer-link-row m-0 flex list-none flex-col gap-2 p-0 sm:flex-row sm:flex-wrap sm:items-center sm:gap-y-2">
       {links.map((item, index) => (
         <li key={item.to} className="inline-flex items-center">
           {index > 0 && (
             <span
               aria-hidden
-              className="mx-2.5"
+              className="footer-link-sep mx-2.5 hidden sm:inline"
               style={{ color: 'rgba(255,255,255,0.28)', fontSize: 14 }}
             >
               ·
@@ -236,6 +237,15 @@ const Footer: React.FC = () => {
           flex-direction: column;
           gap: 0.45rem;
         }
+        /* Mobile : une seule liste verticale (évite le découpage en 2 rangées + wrap). */
+        @media (max-width: 639px) {
+          .footer-nav-links {
+            gap: 0.55rem;
+          }
+          .footer-nav-links .footer-link-row + .footer-link-row {
+            margin-top: 0;
+          }
+        }
         .footer-input::placeholder {
           color: rgba(255, 255, 255, 0.5);
         }
@@ -259,9 +269,25 @@ const Footer: React.FC = () => {
                 return (
                   <div key={group.title}>
                     <h6 style={sectionTitle}>{group.title}</h6>
+                    {/* Mobile : tous les liens en une colonne. sm+ : 2 rangées horizontales. */}
                     <div className="footer-nav-links">
-                      <LinkRow links={row1} />
-                      <LinkRow links={row2} />
+                      <div className="flex flex-col gap-2 sm:hidden">
+                        {group.links.map((item) => (
+                          <Link
+                            key={item.to}
+                            href={item.to}
+                            style={linkStyle}
+                            onMouseEnter={hoverWhite}
+                            onMouseLeave={hoverReset}
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="hidden sm:contents">
+                        <LinkRow links={row1} />
+                        <LinkRow links={row2} />
+                      </div>
                     </div>
                   </div>
                 );
@@ -430,38 +456,38 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Barre légale — mobile empilé ; desktop : une ligne à gauche, démarre par « Fabriqué… » */}
+        {/* Barre légale — mobile empilé (1 lien / ligne) ; desktop : une ligne */}
         <div
-          className="relative z-0 flex flex-col items-start gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7 sm:gap-y-2"
+          className="relative z-[1] flex flex-col items-start gap-2.5 pr-20 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7 sm:gap-y-2 sm:pr-32 lg:pr-40"
           style={{
-            padding: `clamp(1.25rem, 2vw, 1.75rem) ${FRAME_PADDING} 0`,
+            paddingTop: 'clamp(1.25rem, 2vw, 1.75rem)',
+            paddingLeft: FRAME_PADDING,
+            paddingBottom: 'clamp(1.5rem, 3vw, 2rem)',
             lineHeight: 1.45,
           }}
         >
           <p
-            className="m-0 order-3 mt-2.5 sm:order-1 sm:mt-0"
+            className="m-0 order-last mt-2.5 sm:order-1 sm:mt-0"
             style={{ fontSize: 12, lineHeight: 1.45, color: 'rgba(255,255,255,0.55)', letterSpacing: '-0.075em' }}
           >
             Fabriqué avec tout notre 🤍 © 2026 TerraGo
           </p>
-          <div className="order-1 flex flex-wrap items-center gap-x-7 gap-y-2.5 sm:order-2 sm:contents">
-            {LEGAL_LINKS.map((item) => (
-              <Link
-                key={item.to}
-                href={item.to}
-                className="sm:order-2"
-                style={{ ...linkStyle, fontSize: 12, lineHeight: 1.45 }}
-                onMouseEnter={hoverWhite}
-                onMouseLeave={hoverReset}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
+          {LEGAL_LINKS.map((item) => (
+            <Link
+              key={item.to}
+              href={item.to}
+              className="order-1 sm:order-2"
+              style={{ ...linkStyle, fontSize: 12, lineHeight: 1.45 }}
+              onMouseEnter={hoverWhite}
+              onMouseLeave={hoverReset}
+            >
+              {item.label}
+            </Link>
+          ))}
           <button
             type="button"
             onClick={openCookies}
-            className="order-2 sm:order-3"
+            className="order-1 sm:order-3"
             style={{
               background: 'none',
               border: 'none',
@@ -481,12 +507,12 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Étoile orange — au-dessus de la barre légale */}
+      {/* Étoile orange — coin bas droit, derrière le texte */}
       <img
         src={ORANGE_STAR}
         alt=""
         aria-hidden
-        className="pointer-events-none absolute bottom-0 right-0 z-[2] h-64 w-64 translate-x-[40%] translate-y-[40%] object-contain sm:h-[22rem] sm:w-[22rem] lg:h-[26rem] lg:w-[26rem]"
+        className="pointer-events-none absolute bottom-0 right-0 z-0 h-40 w-40 translate-x-[48%] translate-y-[48%] object-contain opacity-90 sm:h-[22rem] sm:w-[22rem] sm:translate-x-[40%] sm:translate-y-[40%] sm:opacity-100 lg:h-[26rem] lg:w-[26rem]"
       />
     </footer>
     </div>

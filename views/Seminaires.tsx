@@ -7,6 +7,7 @@ import { useModal } from '../context/ModalContext';
 import {
   HOME_COLORS,
   HOME_RADIUS,
+  homeFramedHeroAspectClass,
   homeParagraphClass,
   homeSectionPadding,
   bottomImageGradientClass,
@@ -585,7 +586,7 @@ const Seminaires: React.FC = () => {
       <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
         <div className="mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
-            className="relative aspect-[5/4] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
+            className={`relative ${homeFramedHeroAspectClass}`}
             style={{ borderRadius: HOME_RADIUS }}
           >
             <img
@@ -602,8 +603,8 @@ const Seminaires: React.FC = () => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl text-center font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
+              <h1 className="max-w-3xl text-center font-sans text-[clamp(1.75rem,5.2vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
                 Des séminaires d&apos;entreprise
                 <br />
                 avec un <span className="font-bold">vrai impact.</span>

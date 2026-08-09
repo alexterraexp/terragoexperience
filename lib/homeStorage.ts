@@ -1,8 +1,3 @@
-import { supabaseServer } from './supabase';
-
-/** Durée de validité des URLs signées HOME (~3 ans). */
-const SIGNED_URL_TTL_SEC = 60 * 60 * 24 * 365 * 3;
-
 const HOME_PUBLIC_BASE =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
 
@@ -27,34 +22,16 @@ function publicHomeUrl(path: string): string {
     .join('/')}`;
 }
 
-async function signHomeFile(path: string): Promise<string> {
-  try {
-    const { data, error } = await supabaseServer.storage
-      .from('HOME')
-      .createSignedUrl(path, SIGNED_URL_TTL_SEC);
-
-    if (!error && data?.signedUrl) return data.signedUrl;
-
-    console.warn(
-      `[homeStorage] Impossible de signer HOME/${path}: ${error?.message ?? 'URL manquante'} — fallback public`,
-    );
-  } catch (e) {
-    console.warn(
-      `[homeStorage] Erreur réseau en signant HOME/${path} — fallback public`,
-      e instanceof Error ? e.message : e,
-    );
-  }
-  return publicHomeUrl(path);
-}
-
-/** URLs des assets HOME (signées si possible, sinon publiques). */
-export async function getHomeAssetUrls(): Promise<HomeAssetUrls> {
-  const entries = await Promise.all(
+/**
+ * URLs publiques HOME — le bucket est déjà exposé en public.
+ * Évite l’attente de signature Supabase avant le premier paint du hero.
+ */
+export function getHomeAssetUrls(): HomeAssetUrls {
+  return Object.fromEntries(
     (Object.entries(HOME_FILES) as [keyof typeof HOME_FILES, string][]).map(
-      async ([key, path]) => [key, await signHomeFile(path)] as const,
+      ([key, path]) => [key, publicHomeUrl(path)],
     ),
-  );
-  return Object.fromEntries(entries) as HomeAssetUrls;
+  ) as HomeAssetUrls;
 }
 
 export const PRODUCER_IMAGE =
