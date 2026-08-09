@@ -670,9 +670,10 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
           >
             <BannerVideo
               src={assets.bannerVideo}
-              poster={assets.conceptAgir}
+              poster={assets.bannerPoster}
               className="aspect-[16/11] w-full sm:aspect-[36/12] lg:aspect-[40/9]"
             />
+
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div className="absolute inset-0 z-10 flex items-center justify-center px-5 py-12 text-center sm:px-8">
               <p className="max-w-none font-sans text-[clamp(1.65rem,6.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.075em] text-white">

@@ -15,6 +15,7 @@ import {
   homeParagraphClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
+import FramedHeroImage from '../components/FramedHeroImage';
 import {
   getSeminaireEnjeu,
   seminaireEnjeuPath,
@@ -479,11 +480,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
             className={`relative ${homeFramedHeroWideAspectClass}`}
             style={{ borderRadius: HOME_RADIUS }}
           >
-            <img
-              src={enjeu.heroImage}
-              alt={enjeu.heroImageAlt}
-              className="absolute inset-0 h-full w-full object-cover"
-            />
+            <FramedHeroImage src={enjeu.heroImage} alt={enjeu.heroImageAlt} />
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div
               className="absolute inset-0 z-[2]"

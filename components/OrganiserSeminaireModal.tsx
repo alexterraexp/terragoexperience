@@ -226,9 +226,15 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           border:1px solid rgba(12,29,34,.14); border-radius:12px;
           padding:11px 12px; font-family:inherit; font-size:13px; color:#8f8f8f;
           letter-spacing:-.02em; text-align:center; transition:all .15s ease;
+          display:flex; align-items:center; justify-content:center;
+          min-height:44px;
         }
         .osm-opt:hover { border-color:rgba(12,29,34,.35); color:${INK} }
         .osm-opt[data-active="true"] { background:${INK}; border-color:${INK}; color:#fff }
+
+        .osm-opt-grid {
+          display:grid; grid-template-columns:1fr 1fr; gap:12px 26px;
+        }
 
         .osm-pill {
           background:#fff; cursor:pointer; white-space:nowrap;
@@ -290,6 +296,14 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             border-top:1px solid rgba(12,29,34,0.06);
           }
           .osm-title { font-size:24px !important }
+          .osm-opt-grid {
+            grid-template-columns:1fr !important;
+            gap:10px !important;
+          }
+          .osm-opt {
+            min-height:48px;
+            white-space:nowrap;
+          }
         }
       `}</style>
 
@@ -359,7 +373,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                     <p style={leadStyle}>
                       Remplissez ce court formulaire, pour que nous puissions vous recontacter avec des premières propositions !
                     </p>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 26px' }}>
+                    <div className="osm-opt-grid">
                       {EVENT_TYPES.map((t) => (
                         <button
                           key={t}

@@ -12,6 +12,7 @@ import {
   homeSectionPadding,
   bottomImageGradientClass,
 } from '../components/home/homeStyles';
+import FramedHeroImage from '../components/FramedHeroImage';
 import {
   EXPERIENCES_ENTREPRISE,
   EXPERIENCES_ENTREPRISE_ASSETS,
@@ -478,10 +479,9 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
             className={`relative ${homeFramedHeroAspectClass}`}
             style={{ borderRadius: HOME_RADIUS }}
           >
-            <img
+            <FramedHeroImage
               src={EXPERIENCES_ENTREPRISE_ASSETS.hero}
               alt="Producteur dans son champ – expériences TerraGo"
-              className="absolute inset-0 h-full w-full object-cover"
             />
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div

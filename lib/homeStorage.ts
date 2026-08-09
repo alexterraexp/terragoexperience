@@ -11,6 +11,7 @@ const HOME_FILES = {
   expCuisine: 'atelier-cuisine-farine.mp4',
   expVin: 'vignes-barrique.mp4',
   bannerVideo: 'vergers.mp4',
+  bannerPoster: 'serre-maraicher.jpg',
 } as const;
 
 export type HomeAssetUrls = Record<keyof typeof HOME_FILES, string>;

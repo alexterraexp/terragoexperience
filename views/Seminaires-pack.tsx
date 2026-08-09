@@ -27,6 +27,7 @@ import {
   homeHeroOutlineButtonClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
+import FramedHeroImage from '../components/FramedHeroImage';
 import { trackGenerateLead } from '../lib/analytics';
 
 const HOME_ASSETS =
@@ -2124,10 +2125,9 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
             className={`relative ${homeFramedHeroAspectClass}`}
             style={{ borderRadius: HOME_RADIUS }}
           >
-            <img
+            <FramedHeroImage
               src={PACK_ASSETS.hero}
               alt="Séminaire TerraGo chez un producteur"
-              className="absolute inset-0 h-full w-full object-cover"
             />
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div

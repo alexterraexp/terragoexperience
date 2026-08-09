@@ -19,6 +19,7 @@ import {
   homeHeroOutlineButtonClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
+import FramedHeroImage from '../components/FramedHeroImage';
 import { HOME_EMOJI } from '../lib/homeStorage';
 import ProducerDetailModal from '../components/ProducerDetailModal';
 
@@ -408,10 +409,9 @@ const ProducersPage: React.FC = () => {
             className={`relative ${homeFramedHeroAspectClass}`}
             style={{ borderRadius: HOME_RADIUS }}
           >
-            <img
+            <FramedHeroImage
               src={PRODUCER_ASSETS.hero}
               alt="Producteurs partenaires TerraGo"
-              className="absolute inset-0 h-full w-full object-cover"
             />
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div

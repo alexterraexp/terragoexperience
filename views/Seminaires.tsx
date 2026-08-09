@@ -13,6 +13,7 @@ import {
   bottomImageGradientClass,
   homeHeroOutlineButtonClass,
 } from '../components/home/homeStyles';
+import FramedHeroImage from '../components/FramedHeroImage';
 
 const HOME =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
@@ -589,10 +590,9 @@ const Seminaires: React.FC = () => {
             className={`relative ${homeFramedHeroAspectClass}`}
             style={{ borderRadius: HOME_RADIUS }}
           >
-            <img
+            <FramedHeroImage
               src={ASSETS.hero}
               alt="Arrivée en randonnée – séminaire TerraGo"
-              className="absolute inset-0 h-full w-full object-cover"
             />
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div
