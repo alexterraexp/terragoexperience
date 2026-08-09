@@ -157,13 +157,27 @@ const CookieBanner: React.FC = () => {
           .ck-wrapper { padding: 16px !important; align-items: center !important; }
           .ck-panel {
             width: 100% !important; max-width: 440px !important;
-            height: auto !important; max-height: 50dvh !important;
+            height: auto !important; max-height: min(88svh, 640px) !important;
             border-radius: 20px !important;
             flex-direction: column !important;
           }
-          .ck-visual { width: 100% !important; height: 110px !important; flex: 0 0 110px !important; }
-          .ck-content { padding: 20px 20px 0 !important; }
-          .ck-footer { padding: 0 20px 18px !important; }
+          .ck-visual { width: 100% !important; height: 130px !important; flex: 0 0 130px !important; }
+          .ck-content { padding: 22px 22px 0 !important; }
+          .ck-footer { padding: 18px 22px max(20px, env(safe-area-inset-bottom, 0px)) !important; }
+          .ck-footer-step1 {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 16px !important;
+          }
+          .ck-footer-step1 .ck-actions {
+            display: flex !important;
+            width: 100% !important;
+            gap: 10px !important;
+          }
+          .ck-footer-step1 .ck-actions .ck-ghost,
+          .ck-footer-step1 .ck-actions .ck-cta {
+            flex: 1 1 0 !important;
+          }
           .ck-title { font-size: 20px !important; }
         }
       `}</style>
@@ -431,18 +445,19 @@ const CookieBanner: React.FC = () => {
             <div className="ck-footer" style={{ flexShrink: 0, padding: '0 40px 26px' }}>
               {step === 1 ? (
                 <div
+                  className="ck-footer-step1"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     flexWrap: 'wrap',
-                    gap: 12,
+                    gap: 14,
                   }}
                 >
                   <button type="button" className="ck-link" onClick={() => setStep(2)}>
                     Paramètres des cookies
                   </button>
-                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                  <div className="ck-actions" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                     <button type="button" className="ck-ghost" onClick={handleRefuse}>
                       Tout refuser
                     </button>

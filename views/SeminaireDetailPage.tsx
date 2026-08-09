@@ -1078,6 +1078,7 @@ export default function SeminaireDetailPage() {
           .sem-mobile-sheet { display: block; }
           .sem-mobile-sheet-header { display: none !important; }
           .sem-offer-intro { margin-top: 8px; margin-bottom: 28px; }
+          .sem-offer-title { margin-top: 0 !important; margin-bottom: 14px !important; }
           .sem-infos-pratiques { margin-top: 28px; }
           .sem-infos-row-body { padding-left: 16px; }
           .sem-offer-format { margin-top: 8px; margin-bottom: 24px; }
@@ -1114,7 +1115,8 @@ export default function SeminaireDetailPage() {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
           }
           .sem-mobile-hero-btn--back {
-            top: calc(12px + env(safe-area-inset-top, 0px));
+            /* Sous le burger / safe-area du header fixe */
+            top: calc(64px + env(safe-area-inset-top, 0px));
             left: max(16px, env(safe-area-inset-left, 0px));
             height: auto;
             min-height: 28px;
@@ -1186,7 +1188,8 @@ export default function SeminaireDetailPage() {
           }
           .sem-mobile-bestseller {
             position: absolute;
-            top: calc(12px + env(safe-area-inset-top, 0px));
+            /* Aligné sous le burger (évite de passer derrière le menu) */
+            top: calc(64px + env(safe-area-inset-top, 0px));
             right: max(16px, env(safe-area-inset-right, 0px));
             z-index: 20;
             background: rgba(255, 255, 255, 0.42);
@@ -1209,7 +1212,7 @@ export default function SeminaireDetailPage() {
             background: #fff;
             border-radius: 24px 24px 0 0;
             margin-top: -24px;
-            padding: 0 24px calc(32px + env(safe-area-inset-bottom, 0px));
+            padding: 40px 24px calc(32px + env(safe-area-inset-bottom, 0px));
           }
           .sem-mobile-sheet-header {
             display: block;

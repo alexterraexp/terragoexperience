@@ -275,11 +275,21 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
         @media (max-width: 860px) {
           .osm-wrapper { padding:0 !important }
-          .osm-panel { width:100% !important; max-width:none !important; height:100dvh !important; border-radius:0 !important; flex-direction:column !important }
-          .osm-visual { width:100% !important; height:180px !important; flex:0 0 220px !important }
-          .osm-content { padding:48px 52px 0 22px !important }
-          .osm-footer { padding:0 22px max(18px, env(safe-area-inset-bottom)) !important }
-          .osm-title { font-size:26px !important }
+          .osm-panel {
+            width:100% !important; max-width:none !important;
+            height:100svh !important; max-height:100svh !important;
+            border-radius:0 !important; flex-direction:column !important;
+          }
+          .osm-visual { width:100% !important; height:140px !important; flex:0 0 140px !important }
+          .osm-body { flex:1 1 auto !important; min-height:0 !important; overflow:hidden !important }
+          .osm-content { padding:36px 22px 0 !important }
+          .osm-footer {
+            flex-shrink:0 !important;
+            padding:12px 22px max(16px, env(safe-area-inset-bottom)) !important;
+            background:#fff;
+            border-top:1px solid rgba(12,29,34,0.06);
+          }
+          .osm-title { font-size:24px !important }
         }
       `}</style>
 
@@ -321,7 +331,10 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             }}
           />
 
-          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div
+            className="osm-body"
+            style={{ flex: 1, minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}
+          >
             <button
               onClick={handleClose}
               aria-label="Fermer"

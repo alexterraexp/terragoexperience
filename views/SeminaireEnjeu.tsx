@@ -493,8 +493,8 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center px-4 pb-6 pt-10 text-center sm:px-10 sm:pb-8 sm:pt-12 lg:pb-10 lg:pt-14">
-              <div className="flex flex-1 flex-col items-center justify-center">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-8 px-4 pb-14 pt-10 text-center sm:gap-0 sm:px-10 sm:pb-8 sm:pt-12 lg:pb-10 lg:pt-14">
+              <div className="flex flex-col items-center sm:flex-1 sm:justify-center">
                 <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                   {enjeu.eyebrow}
                 </p>
@@ -508,7 +508,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
               <button
                 type="button"
                 onClick={() => openModal()}
-                className={homeHeroOutlineButtonClass}
+                className={`${homeHeroOutlineButtonClass} sm:mt-auto`}
                 style={{ background: 'rgba(12, 29, 34, 0.12)' }}
               >
                 Réserver mon séminaire

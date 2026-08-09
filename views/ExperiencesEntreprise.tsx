@@ -131,7 +131,7 @@ const IntroPanel: React.FC<{
   showSwipeHint?: boolean;
 }> = ({ intro, number, accent = HOME_COLORS.orange, showSwipeHint = false }) => (
   <aside
-    className="relative flex h-full min-h-[280px] flex-col px-6 py-7 sm:min-h-[320px] sm:px-7 sm:py-8 lg:min-h-[360px] lg:px-8 lg:py-9"
+    className="relative flex h-full min-h-[320px] flex-col px-6 py-7 sm:min-h-[340px] sm:px-7 sm:py-8 lg:min-h-[360px] lg:px-8 lg:py-9"
     style={{ background: accent, borderRadius: HOME_RADIUS }}
   >
     <span
@@ -175,7 +175,7 @@ const SlideCard: React.FC<{
   accent?: string;
 }> = ({ example, accent = HOME_COLORS.orange }) => (
   <article
-    className="relative aspect-square w-full overflow-hidden lg:flex lg:h-full lg:aspect-auto lg:min-h-[360px] lg:flex-row"
+    className="relative h-full min-h-[320px] w-full overflow-hidden sm:min-h-[340px] lg:flex lg:min-h-[360px] lg:flex-row"
     style={{ borderRadius: HOME_RADIUS }}
   >
     {/* Image : plein cadre mobile, colonne gauche desktop */}
@@ -320,18 +320,18 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
           </p>
         ) : null}
 
-        {/* Mobile : titre d’abord, puis swipe vers les détails */}
+        {/* Mobile : titre d’abord, puis swipe vers les détails — même hauteur via stretch */}
         <div className="lg:hidden">
           <div
             ref={mobile.trackRef}
-            className="flex snap-x snap-mandatory gap-3 overflow-x-auto"
+            className="flex items-stretch snap-x snap-mandatory gap-3 overflow-x-auto"
             style={{
               WebkitOverflowScrolling: 'touch',
               msOverflowStyle: 'none',
               scrollbarWidth: 'none',
             }}
           >
-            <div className="w-full shrink-0 snap-center">
+            <div className="flex w-full shrink-0 snap-center flex-col">
               <IntroPanel
                 intro={category.intro}
                 number={category.number}
@@ -340,7 +340,7 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
               />
             </div>
             {category.examples.map((example) => (
-              <div key={example.id} className="w-full shrink-0 snap-center">
+              <div key={example.id} className="flex w-full shrink-0 snap-center flex-col">
                 <SlideCard example={example} accent={accent} />
               </div>
             ))}
