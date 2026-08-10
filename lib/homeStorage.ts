@@ -62,7 +62,7 @@ const STEPS_BASE_URL =
 
 export const HOME_STEPS = [
   { title: 'Envoyez-nous votre brief', image: `${STEPS_BASE_URL}/10.png` },
-  { title: 'Proposition des offres et validation', image: `${STEPS_BASE_URL}/creationprogramme.png` },
+  { title: 'Proposition des offres et validation', image: `${STEPS_BASE_URL}/offres-et-validation.png` },
   { title: 'Cocréation de votre programme', image: `${STEPS_BASE_URL}/programme-web.png` },
   { title: 'Accompagnement jusqu\'au jour J !', image: `${STEPS_BASE_URL}/13.png` },
 ] as const;
@@ -109,7 +109,7 @@ export const REGION_IMAGES = [
   { slug: 'ile-de-france', name: 'Île-de-France', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/0147530379456.jpg' },
   { slug: 'normandie', name: 'Normandie', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/normandie.avif' },
   { slug: 'occitanie', name: 'Occitanie', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/occitanie.avif' },
-  { slug: 'bretagne', name: 'Bretagne', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/197677686-34666032.jpg' },
+  { slug: 'bretagne', name: 'Bretagne', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/157872401-35444288.jpg' },
   { slug: 'pays-de-la-loire', name: 'Pays de la Loire', prep: 'en', article: 'les ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/24311133636914.jpg' },
   { slug: 'auvergne', name: 'Auvergne', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/37910945-15085778.jpg' },
   { slug: 'bourgogne', name: 'Bourgogne', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/bourgogn.avif' },

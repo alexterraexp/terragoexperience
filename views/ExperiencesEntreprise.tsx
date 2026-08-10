@@ -13,6 +13,7 @@ import {
   bottomImageGradientClass,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
+import PhotoCopyright from '../components/PhotoCopyright';
 import {
   EXPERIENCES_ENTREPRISE,
   EXPERIENCES_ENTREPRISE_ASSETS,
@@ -23,6 +24,7 @@ import {
   type ExperienceExample,
   type ExperienceEntrepriseSlug,
 } from '../lib/experiencesEntreprise';
+import { getImageCopyright } from '../lib/imageCopyrights';
 
 /** Titre avec gras uniquement sur les segments `**…**`. */
 const EmphasizedTitle: React.FC<{ title: string }> = ({ title }) => (
@@ -187,6 +189,9 @@ const SlideCard: React.FC<{
         className="absolute inset-0 h-full w-full object-cover"
         draggable={false}
       />
+      {getImageCopyright(example.image) ? (
+        <PhotoCopyright label={getImageCopyright(example.image)!} />
+      ) : null}
     </div>
 
     {/* Dégradé accent — mobile uniquement */}

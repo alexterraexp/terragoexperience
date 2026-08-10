@@ -9,9 +9,12 @@ import {
   homeParagraphClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
+import PhotoCopyright from '../components/PhotoCopyright';
 import { REGION_TAGS, regionDestinationPath } from '../lib/homeStorage';
 import { DESTINATIONS } from '../lib/destinations';
 import { LIEUX, lieuDestinationPath } from '../lib/lieux';
+import { protectedImageProps } from '../lib/protectedImage';
+import { getImageCopyright } from '../lib/imageCopyrights';
 
 const sectionTitleClass =
   'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
@@ -138,8 +141,15 @@ const Destinations: React.FC = () => {
                     src={region.heroImage}
                     alt={`Séminaire ${region.prep} ${region.name}`}
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                    {...protectedImageProps}
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                  {getImageCopyright(region.heroImage) ? (
+                    <PhotoCopyright
+                      className="z-[2]"
+                      label={getImageCopyright(region.heroImage)!}
+                    />
+                  ) : null}
                   <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
                     <span className="font-normal">Séminaire {region.prep}</span>
                     <br />
@@ -173,8 +183,15 @@ const Destinations: React.FC = () => {
                     src={lieu.heroImage}
                     alt={lieu.heroImageAlt}
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                    {...protectedImageProps}
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                  {lieu.heroImageCopyright || getImageCopyright(lieu.heroImage) ? (
+                    <PhotoCopyright
+                      className="z-[2]"
+                      label={lieu.heroImageCopyright || getImageCopyright(lieu.heroImage)!}
+                    />
+                  ) : null}
                   <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
                     <span className="font-normal">Séminaire</span>
                     <br />

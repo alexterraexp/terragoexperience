@@ -100,8 +100,9 @@ export const DESTINATIONS: DestinationRegion[] = [
       'À moins de 3 h de Paris en train, vos équipes basculent rapidement dans un autre rythme : grand air, producteurs engagés et moments de partage autour du vivant.',
       'TerraGo y imagine des expériences ancrées dans le terroir — de l’huître à la vigne — pour reconnecter vos collaborateurs au sens et à la matière.',
     ],
-    prosImage: `${HOME}/repas-convivial.png`,
-    prosImageAlt: 'Moment convivial autour d’une table – Nouvelle-Aquitaine',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/20211025_124532-scaled.webp',
+    prosImageAlt: 'Séchage des piments d’Espelette en Nouvelle-Aquitaine',
     pros: [
       {
         title: 'Un cadre entre terre et océan',
@@ -166,9 +167,22 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Maisons d’hôtes, domaines ou lodges en bord de bassin : nous sélectionnons des lieux chaleureux, adaptés aux groupes et proches des expériences producteur.',
       images: [
-        { src: `${HOME}/Noisettes-recolte.png`, alt: 'Hébergement séminaire en Nouvelle-Aquitaine' },
-        { src: `${HOME}/repas-convivial.png`, alt: 'Espace convivial pour séminaire' },
-        { src: regionImage('nouvelle-aquitaine'), alt: 'Cadre littoral Nouvelle-Aquitaine' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/5284910512984.jpg',
+          alt: 'Lodges contemporains au bord d’un lac en forêt des Landes',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/b38cb07b.webp',
+          alt: 'Pavillon en bois éclairé pour un dîner en forêt',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/47183145R.jpg',
+          alt: 'Piscine d’un domaine séminaire en Nouvelle-Aquitaine',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/542896176891514.png',
+          alt: 'Table dîner en extérieur au coucher du soleil',
+        },
       ],
       highlights: [
         'Capacité groupe et salles de travail',
@@ -197,8 +211,9 @@ export const DESTINATIONS: DestinationRegion[] = [
       'Accessible et solaire, elle invite vos équipes à ralentir, partager et se reconnecter au vivant.',
       'TerraGo y crée des programmes autour des producteurs — olives, vin, lavande, maraîchage — pour un impact humain fort.',
     ],
-    prosImage: `${HOME}/Oliviers-recolte.png`,
-    prosImageAlt: 'Récolte d’olives en Provence',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/423678569352.jpg',
+    prosImageAlt: 'Récolte d’olives vertes en Provence',
     pros: [
       {
         title: 'Un cadre inspirant au cœur du Sud',
@@ -263,9 +278,18 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Mas rénovés, domaines viticoles ou maisons d’hôtes : des cadres élégants et chaleureux, adaptés aux groupes professionnels.',
       images: [
-        { src: `${HOME}/Oliviers-recolte.png`, alt: 'Hébergement séminaire en Provence' },
-        { src: `${HOME}/repas-convivial.png`, alt: 'Table provençale pour séminaire' },
-        { src: regionImage('provence'), alt: 'Lavande et Provence' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/537583942.jpg',
+          alt: 'Allée de cyprès menant à un domaine en Provence',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/64839245.jpg',
+          alt: 'Piscine et vignoble d’un mas pour séminaire en Provence',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/5386930.jpg',
+          alt: 'Champ de lavande et bâtiment en pierre en Provence',
+        },
       ],
       highlights: [
         'Espaces outdoor et indoor',
@@ -294,8 +318,9 @@ export const DESTINATIONS: DestinationRegion[] = [
       'Vos équipes quittent le bureau en quelques minutes et basculent dans un autre rythme — nature, savoir-faire locaux et moments de partage.',
       'TerraGo y imagine des expériences ancrées dans le vivant, idéales pour une journée d’étude, un team building ou un format résidentiel proche de la capitale.',
     ],
-    prosImage: `${HOME}/repas-convivial.png`,
-    prosImageAlt: 'Moment convivial en Île-de-France',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/iledefrance/8592616.jpg',
+    prosImageAlt: 'Domaine en pierre et brique pour séminaire en Île-de-France',
     pros: [
       {
         title: 'La proximité au service de l’impact',
@@ -360,9 +385,18 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Fermes rénovées, domaines ou maisons d’hôtes : des cadres chaleureux, adaptés aux groupes et accessibles rapidement depuis la capitale.',
       images: [
-        { src: regionImage('ile-de-france'), alt: 'Paris et Île-de-France pour séminaire' },
-        { src: `${HOME}/repas-convivial.png`, alt: 'Table pour séminaire en Île-de-France' },
-        { src: `${HOME}/maraicher-explication.png`, alt: 'Cadre producteur proche de Paris' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/iledefrance/52662594024.jpg',
+          alt: 'Allée de cerisiers dans un domaine en Île-de-France',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/iledefrance/758241.png',
+          alt: 'Manoir en pierre pour séminaire en Île-de-France',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/iledefrance/76581962.webp',
+          alt: 'Château et miroir d’eau en Île-de-France',
+        },
       ],
       highlights: [
         'Accès facile depuis Paris',
@@ -391,8 +425,9 @@ export const DESTINATIONS: DestinationRegion[] = [
       'En moins de 2 h, vos équipes changent d’air et retrouvent authenticité, grand air et produits du terroir.',
       'TerraGo y crée des expériences autour des producteurs — cidre, fromage, élevage, maraîchage — pour un impact humain fort.',
     ],
-    prosImage: `${HOME}/maraicher-explication.png`,
-    prosImageAlt: 'Rencontre producteur en Normandie',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/normandie/20409927.jpg',
+    prosImageAlt: 'Vaches normandes dans un pré verdoyant',
     pros: [
       {
         title: 'Proximité et changement d’air',
@@ -457,9 +492,18 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Manoirs, fermes rénovées ou maisons d’hôtes : des lieux chaleureux, adaptés aux groupes et proches des expériences TerraGo.',
       images: [
-        { src: `${HOME}/Noisettes-recolte.png`, alt: 'Hébergement séminaire en Normandie' },
-        { src: `${HOME}/maraicher-explication.png`, alt: 'Cadre rural normand' },
-        { src: regionImage('normandie'), alt: 'Paysages de Normandie' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/normandie/185733098130.png',
+          alt: 'Manoir anglo-normand avec parc pour séminaire',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/normandie/4871102398458.png',
+          alt: 'Maison à colombages normande illuminée le soir',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/normandie/657129866165.jpg',
+          alt: 'Manoir en pierre et terrasse pour séminaire en Normandie',
+        },
       ],
       highlights: [
         'Cadre verdoyant',
@@ -488,8 +532,9 @@ export const DESTINATIONS: DestinationRegion[] = [
       'Soleil, terroirs et producteurs passionnés : vos équipes y trouvent inspiration, convivialité et ancrage.',
       'TerraGo y imagine des expériences qui mêlent travail, découverte et moments de partage autour du vivant.',
     ],
-    prosImage: `${HOME}/travail-pain-pate.png`,
-    prosImageAlt: 'Atelier producteur en Occitanie',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/occitanie/aligot-geant-aubrac-aligot-les-traces-1.jpg',
+    prosImageAlt: 'Préparation d’un aligot géant sur l’Aubrac en Occitanie',
     pros: [
       {
         title: 'Une diversité de territoires',
@@ -554,9 +599,18 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Mas, domaines ou maisons d’hôtes : des lieux chaleureux, adaptés aux groupes et proches des expériences TerraGo.',
       images: [
-        { src: `${HOME}/Oliviers-recolte.png`, alt: 'Hébergement séminaire en Occitanie' },
-        { src: `${HOME}/travail-pain-pate.png`, alt: 'Espace atelier en Occitanie' },
-        { src: regionImage('occitanie'), alt: 'Paysages d’Occitanie' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/occitanie/31G301623-31b4561185744b8d9d8e2e3a95cdecf0.jpg',
+          alt: 'Mas rénové avec piscine pour séminaire en Occitanie',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/occitanie/dsc_8361_dxo.avif',
+          alt: 'Manoir avec tour et terrasse en Occitanie',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/occitanie/delp-21-0120.avif',
+          alt: 'Domaine avec parc pour séminaire en Occitanie',
+        },
       ],
       highlights: [
         'Espaces de travail',
@@ -579,14 +633,15 @@ export const DESTINATIONS: DestinationRegion[] = [
 {
     ...regionBase('bretagne'),
     heroImage: regionImage('bretagne'),
-    heroImageAlt: 'Bateau sur la côte bretonne – séminaire TerraGo',
+    heroImageAlt: 'Pêche en Bretagne – séminaire TerraGo',
     intro: [
       'Falaises, ports et campagnes verdoyantes : la Bretagne offre un décor puissant pour un séminaire d’entreprise qui marque les esprits.',
       'Facilement accessible, elle invite vos équipes à ralentir, respirer et se reconnecter — entre océan, producteurs et savoir-faire locaux.',
       'TerraGo y crée des programmes où le travail rencontre le vivant : ateliers, rencontres et moments de partage face à l’horizon.',
     ],
-    prosImage: `${HOME}/maraicher-explication.png`,
-    prosImageAlt: 'Échange avec un producteur en Bretagne',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/197677686-34666032.jpg',
+    prosImageAlt: 'Bateau sur la côte bretonne – séminaire TerraGo',
     pros: [
       {
         title: 'Un cadre inspirant face à l’océan',
@@ -651,9 +706,18 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Maisons bretonnes, domaines ou hébergements en bord de côte : des cadres chaleureux, adaptés aux groupes et proches des expériences TerraGo.',
       images: [
-        { src: `${HOME}/Noisettes-recolte.png`, alt: 'Hébergement séminaire en Bretagne' },
-        { src: `${HOME}/maraicher-explication.png`, alt: 'Cadre nature en Bretagne' },
-        { src: regionImage('bretagne'), alt: 'Littoral breton pour séminaire' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bretagne/8492052.webp',
+          alt: 'Maison en pierre pour séminaire en Bretagne',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bretagne/184592R0.jpg',
+          alt: 'Cabane en bois sur pilotis en Bretagne',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bretagne/25490.jpg',
+          alt: 'Hébergement de caractère pour séminaire en Bretagne',
+        },
       ],
       highlights: [
         'Espaces de travail et de convivialité',
@@ -682,8 +746,9 @@ export const DESTINATIONS: DestinationRegion[] = [
       'À moins de 2 h de Paris, vos équipes basculent dans un autre rythme — patrimoine vivant, producteurs engagés et paysages qui ouvrent les esprits.',
       'TerraGo y imagine des expériences ancrées dans le terroir — vignes, vergers, maraîchage — pour reconnecter vos collaborateurs au sens et au partage.',
     ],
-    prosImage: `${HOME}/repas-convivial.png`,
-    prosImageAlt: 'Moment convivial autour d’une table – Pays de la Loire',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/11680885-17791202.jpg',
+    prosImageAlt: 'Marais salants en Pays de la Loire – séminaire TerraGo',
     pros: [
       {
         title: 'Un cadre entre fleuve et châteaux',
@@ -748,9 +813,18 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Châteaux, domaines viticoles ou maisons d’hôtes : des cadres élégants et chaleureux, adaptés aux groupes professionnels au plus près du fleuve.',
       images: [
-        { src: regionImage('pays-de-la-loire'), alt: 'Château en Pays de la Loire pour séminaire' },
-        { src: `${HOME}/repas-convivial.png`, alt: 'Table ligérienne pour séminaire' },
-        { src: `${HOME}/Oliviers-recolte.png`, alt: 'Jardin et domaine pour séminaire' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/paysdelaloire/78419501.jpg',
+          alt: 'Piscine et terrasse d’un gîte en Pays de la Loire',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/paysdelaloire/785392042.jpg',
+          alt: 'Domaine en pierre avec piscine vu du ciel',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/paysdelaloire/31905132.jpg',
+          alt: 'Manoir et vignoble en Pays de la Loire',
+        },
       ],
       highlights: [
         'Cadre patrimoine et nature',
@@ -779,8 +853,9 @@ export const DESTINATIONS: DestinationRegion[] = [
       'Loin des distractions urbaines, vos équipes retrouvent concentration, souffle et authenticité au contact du vivant.',
       'TerraGo y conçoit des programmes ancrés dans le territoire — producteurs, nature et moments de partage — pour un impact durable.',
     ],
-    prosImage: `${HOME}/Oliviers-recolte.png`,
-    prosImageAlt: 'Immersion nature en Auvergne',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/auvergne/472819.avif',
+    prosImageAlt: 'Fromages d’Auvergne en cave d’affinage',
     pros: [
       {
         title: 'Un cadre inspirant au cœur des volcans',
@@ -845,9 +920,18 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Gîtes, fermes rénovées ou lodges au calme : des lieux adaptés aux groupes, avec salles de travail et ambiance chaleureuse.',
       images: [
-        { src: `${HOME}/Noisettes-recolte.png`, alt: 'Hébergement séminaire en Auvergne' },
-        { src: `${HOME}/Oliviers-recolte.png`, alt: 'Cadre nature Auvergne' },
-        { src: regionImage('auvergne'), alt: 'Paysages d’Auvergne' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/auvergne/2489.jpg',
+          alt: 'Hôtel de caractère avec piscine pour séminaire en Auvergne',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/auvergne/8529041.jpg',
+          alt: 'Lodges en bois au cœur de la forêt auvergnate',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/auvergne/482931.jpeg',
+          alt: 'Cour de ferme en pierre pour séminaire en Auvergne',
+        },
       ],
       highlights: [
         'Cadre ressourçant',
@@ -876,8 +960,9 @@ export const DESTINATIONS: DestinationRegion[] = [
       'À proximité de Paris et Lyon, elle offre un cadre raffiné sans perdre l’authenticité du terroir.',
       'TerraGo y imagine des programmes autour du vin, des producteurs et du partage — pour un événement élégant et porteur de sens.',
     ],
-    prosImage: `${HOME}/repas-convivial.png`,
-    prosImageAlt: 'Moment de partage en Bourgogne',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bourgogne/5289663206521.jpg',
+    prosImageAlt: 'Cave à vin avec fûts de chêne en Bourgogne',
     pros: [
       {
         title: 'Un terroir d’exception',
@@ -942,9 +1027,18 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Chambres d’hôtes, domaines viticoles ou demeures bourguignonnes : des lieux élégants, adaptés aux groupes et proches des expériences.',
       images: [
-        { src: `${HOME}/repas-convivial.png`, alt: 'Hébergement séminaire en Bourgogne' },
-        { src: `${HOME}/Noisettes-recolte.png`, alt: 'Domaine pour séminaire' },
-        { src: regionImage('bourgogne'), alt: 'Vignobles de Bourgogne' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bourgogne/582941.jpeg',
+          alt: 'Hôtel de caractère en pierre en Bourgogne',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bourgogne/6a072c957050557772b70b.webp',
+          alt: 'Domaine moderne avec piscine au bord de l’eau en Bourgogne',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bourgogne/28459142.avif',
+          alt: 'Manoir avec piscine et parc en Bourgogne',
+        },
       ],
       highlights: [
         'Cadre prestigieux et chaleureux',
@@ -973,8 +1067,9 @@ export const DESTINATIONS: DestinationRegion[] = [
       'Île de caractère, elle invite vos équipes à une immersion forte — nature, producteurs et hospitalité corse.',
       'TerraGo y imagine des programmes sur mesure, entre travail, exploration et rencontres authentiques.',
     ],
-    prosImage: `${HOME}/repas-convivial.png`,
-    prosImageAlt: 'Moment convivial en Corse',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/corse/74105.webp',
+    prosImageAlt: 'Villa en pierre avec piscine au pied des montagnes corses',
     pros: [
       {
         title: 'Un cadre inspirant entre mer et montagne',
@@ -1047,9 +1142,18 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Maisons, domaines ou hôtels de caractère : des cadres adaptés aux groupes, avec une vraie identité locale.',
       images: [
-        { src: regionImage('corse'), alt: 'Hébergement séminaire en Corse' },
-        { src: `${HOME}/repas-convivial.png`, alt: 'Espace convivial en Corse' },
-        { src: `${HOME}/Noisettes-recolte.png`, alt: 'Cadre nature corse' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/corse/318941.jpeg',
+          alt: 'Villa en pierre avec piscine au milieu du maquis corse',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/corse/21440451.avif',
+          alt: 'Terrasse couverte avec vue sur les montagnes corses',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/corse/a16b3d6ea0f676f0876e93e41c695e57.avif',
+          alt: 'Salle de séminaire dans un lieu de caractère en Corse',
+        },
       ],
       highlights: [
         'Cadre exceptionnel',

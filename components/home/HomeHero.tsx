@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { ChevronDown } from 'lucide-react';
 import {
   homeH1Class,
   homeParagraphClass,
@@ -59,6 +60,10 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
     };
   }, [videoSrc]);
 
+  const scrollToConcept = () => {
+    document.getElementById('concept')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
     <section className="relative w-full overflow-hidden">
       {/* Conteneur pleine largeur — hauteur viewport sur mobile */}
@@ -113,12 +118,12 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
             </span>
           </h1>
           <p className={`${homeParagraphClass} mt-5 max-w-5xl px-0 text-[16px] leading-relaxed text-white/95 sm:mt-10 sm:text-lg`}>
-          Team building, séminaires au vert et expériences RSE à la rencontre de producteurs engagés partout en France. 
+          Team building, séminaires au vert et expériences RSE à la rencontre de producteurs engagés partout en France.
           </p>
           <div className="mt-12 flex flex-col items-center gap-3 sm:mt-24 sm:flex-row sm:gap-5">
             <Link
               href="/seminaires-entreprise"
-              className="rounded-full border-2 border-white px-7 py-1.5 text-xs font-bold tracking-[0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:min-w-[280px] sm:px-16 sm:py-2 sm:text-sm sm:text-center"
+              className="hidden rounded-full border-2 border-white px-7 py-1.5 text-xs font-bold tracking-[0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:inline-flex sm:min-w-[280px] sm:items-center sm:justify-center sm:px-16 sm:py-2 sm:text-sm sm:text-center"
               style={{ background: 'rgba(12, 29, 34, 0.1)' }}
             >
               Découvrir nos séminaires
@@ -128,9 +133,22 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
               onClick={openModal}
               className="rounded-full bg-white px-7 py-1.5 text-xs font-bold tracking-[0.02em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:min-w-[280px] sm:px-16 sm:py-2 sm:text-sm sm:text-center"
             >
-              Organiser votre séminaire
+              Organiser mon séminaire
             </button>
           </div>
+          <button
+            type="button"
+            onClick={scrollToConcept}
+            className="mt-8 inline-flex items-center justify-center sm:hidden"
+            aria-label="Descendre à la suite"
+          >
+            <ChevronDown
+              size={28}
+              strokeWidth={1.5}
+              className="text-white/45 transition-opacity hover:text-white/70"
+              aria-hidden
+            />
+          </button>
         </div>
       </div>
     </section>

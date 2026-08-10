@@ -16,12 +16,14 @@ import {
   homeSectionPadding,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
+import PhotoCopyright from '../components/PhotoCopyright';
 import {
   getSeminaireEnjeu,
   seminaireEnjeuPath,
   type SeminaireEnjeu as EnjeuData,
   type SeminaireEnjeuExample,
 } from '../lib/seminaireEnjeux';
+import { getImageCopyright } from '../lib/imageCopyrights';
 import {
   SEMINAIRE_FORMAT_LABELS,
   fetchSeminaires,
@@ -249,6 +251,11 @@ const ExampleSeminarBlock: React.FC<{
               alt={example.imageAlt}
               className="absolute inset-0 h-full w-full object-cover"
             />
+            {getImageCopyright(seminaire?.images[0] || example.image) ? (
+              <PhotoCopyright
+                label={getImageCopyright(seminaire?.images[0] || example.image)!}
+              />
+            ) : null}
           </div>
         </ScrollAnimate>
 

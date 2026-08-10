@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { frenchPlaceKindLabel, matchFrenchPlaces } from '../lib/frenchCities';
 import {
   MiniDateRangeCalendar,
@@ -14,13 +15,12 @@ const ORANGE = '#ec6435';
 
 const HOME_BUCKET = 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
 
-/** Un visuel par écran (index = étape − 1), le 5e accompagnant l'écran de remerciement. */
+/** Un visuel par étape du formulaire (index = étape − 1). */
 const STEP_IMAGES = [
   `${HOME_BUCKET}/1596142332133-327e2a0ff006.avif`,
   `${HOME_BUCKET}/paysage-huitres.png`,
   `${HOME_BUCKET}/EXPERIENCES IMG/1749544292533-65b0ec299191.avif`,
-  `${HOME_BUCKET}/fontaine.png`,
-  `${HOME_BUCKET}/champ-ble.avif`,
+  `${HOME_BUCKET}/seminaire/exception/1111.jpg`,
 ];
 
 const EVENT_TYPES = [
@@ -56,6 +56,7 @@ type OrganiserSeminaireModalProps = {
 };
 
 const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpen, onClose }) => {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [closing, setClosing] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -135,15 +136,29 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     }, 240);
   };
 
+  /** Fermeture explicite depuis l'écran de confirmation → retour accueil. */
+  const handleGoHome = () => {
+    setClosing(true);
+    setTimeout(() => {
+      setClosing(false);
+      reset();
+      onClose();
+      router.push('/');
+    }, 240);
+  };
+
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') handleClose();
+      if (e.key === 'Escape') {
+        if (step === 5) handleGoHome();
+        else handleClose();
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- handleClose est stable pour la durée d'ouverture
-  }, [isOpen]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- handlers stables pour la durée d'ouverture
+  }, [isOpen, step]);
 
   const participantsNb = Number(participants.replace(/\D/g, ''));
   const budgetParPersonne = participantsNb > 0 ? Math.round(budget / participantsNb) : null;
@@ -198,7 +213,8 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
   if (!isOpen) return null;
 
-  const image = STEP_IMAGES[Math.min(step, 5) - 1];
+  const isConfirm = step === 5;
+  const image = STEP_IMAGES[Math.min(step, 4) - 1];
   const progress = Math.min(step, 4) / 4;
 
   return (
@@ -263,6 +279,17 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           .osm-cta { font-size:15px; padding:12px 34px; }
         }
 
+        .osm-cta-home {
+          border:none; border-radius:9999px; background:#fff; color:${ORANGE};
+          font-family:inherit; font-size:13px; letter-spacing:-.03em; font-weight:500;
+          padding:11px 26px; cursor:pointer; transition:background .18s ease, transform .18s ease, color .18s ease;
+          display:inline-flex; align-items:center; justify-content:center;
+        }
+        .osm-cta-home:hover { background:rgba(255,255,255,.92) }
+        @media (min-width: 861px) {
+          .osm-cta-home { font-size:14px; padding:12px 30px; }
+        }
+
         .osm-back {
           background:none; border:none; padding:0; cursor:pointer; font-family:inherit;
           font-size:12px; letter-spacing:-.02em; color:#a5a5a5; transition:color .15s ease;
@@ -280,15 +307,23 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
         }
 
         @media (max-width: 860px) {
-          .osm-wrapper { padding:0 !important }
-          .osm-panel {
+          .osm-wrapper:not(.osm-wrapper--confirm) { padding:0 !important }
+          .osm-panel:not(.osm-panel--confirm) {
             width:100% !important; max-width:none !important;
             height:100svh !important; max-height:100svh !important;
             border-radius:0 !important; flex-direction:column !important;
           }
+          .osm-panel--confirm {
+            width:calc(100% - 32px) !important;
+            max-width:560px !important;
+            height:auto !important;
+            max-height:min(88svh, 560px) !important;
+            border-radius:20px !important;
+          }
           .osm-visual { width:100% !important; height:140px !important; flex:0 0 140px !important }
           .osm-body { flex:1 1 auto !important; min-height:0 !important; overflow:hidden !important }
           .osm-content { padding:36px 22px 0 !important }
+          .osm-content--confirm { padding:48px 24px 28px !important }
           .osm-footer {
             flex-shrink:0 !important;
             padding:12px 22px max(16px, env(safe-area-inset-bottom)) !important;
@@ -296,6 +331,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             border-top:1px solid rgba(12,29,34,0.06);
           }
           .osm-title { font-size:24px !important }
+          .osm-confirm-title { font-size:24px !important }
           .osm-opt-grid {
             grid-template-columns:1fr !important;
             gap:10px !important;
@@ -308,7 +344,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
       `}</style>
 
       <div
-        onClick={handleClose}
+        onClick={isConfirm ? undefined : handleClose}
         style={{
           position: 'fixed', inset: 0, zIndex: 1200,
           background: 'rgba(12,29,34,0.55)', backdropFilter: 'blur(6px)',
@@ -317,9 +353,112 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
       />
 
       <div
-        className="osm-wrapper"
+        className={`osm-wrapper${isConfirm ? ' osm-wrapper--confirm' : ''}`}
         style={{ position: 'fixed', inset: 0, zIndex: 1201, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, pointerEvents: 'none' }}
       >
+        {isConfirm ? (
+          <div
+            className="osm-panel osm-panel--confirm"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Demande reçue"
+            style={{
+              pointerEvents: 'auto',
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+              maxWidth: 620,
+              background: ORANGE,
+              borderRadius: 20,
+              overflow: 'hidden',
+              boxShadow: '0 24px 70px rgba(12,29,34,.28)',
+              fontFamily: "'Poppins', sans-serif",
+              animation: `${closing ? 'osmOut' : 'osmIn'} .28s cubic-bezier(.22,1,.36,1) both`,
+            }}
+          >
+            <button
+              type="button"
+              onClick={handleGoHome}
+              aria-label="Fermer et retourner à l'accueil"
+              style={{
+                position: 'absolute', top: 16, right: 16, zIndex: 2,
+                width: 30, height: 30, border: 'none', background: 'none', cursor: 'pointer',
+                color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                <path d="M2 2 15 15M15 2 2 15" />
+              </svg>
+            </button>
+
+            <div
+              className="osm-scroll osm-content osm-content--confirm"
+              style={{
+                padding: '52px 44px 36px',
+                textAlign: 'left',
+                animation: 'osmFade .3s ease both',
+              }}
+            >
+              <h2
+                className="osm-confirm-title"
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                  fontSize: 28,
+                  fontWeight: 400,
+                  lineHeight: 1.3,
+                  letterSpacing: '-0.04em',
+                  color: '#fff',
+                  margin: '0 0 20px',
+                }}
+              >
+                <strong style={{ fontWeight: 700 }}>Merci !</strong> votre demande est{' '}
+                <strong style={{ fontWeight: 700 }}>bien reçue</strong>.
+              </h2>
+              <p
+                style={{
+                  fontSize: 15.5,
+                  lineHeight: 1.65,
+                  letterSpacing: '-0.02em',
+                  color: 'rgba(255,255,255,.92)',
+                  margin: '0 0 14px',
+                  maxWidth: 520,
+                }}
+              >
+                On s&apos;occupe de votre demande au plus vite, et nous reviendrons vers vous sous 48&nbsp;heures.
+              </p>
+              <p
+                style={{
+                  fontSize: 15.5,
+                  lineHeight: 1.65,
+                  letterSpacing: '-0.02em',
+                  color: 'rgba(255,255,255,.92)',
+                  margin: 0,
+                  maxWidth: 520,
+                }}
+              >
+                Vous allez également recevoir un e-mail de confirmation avec le récapitulatif de votre demande.
+              </p>
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.55,
+                  letterSpacing: '-0.02em',
+                  color: 'rgba(255,255,255,.72)',
+                  margin: '28px 0 0',
+                }}
+              >
+                À très vite,<br />
+                L&apos;équipe TerraGo
+              </p>
+              <div style={{ marginTop: 28 }}>
+                <button type="button" className="osm-cta-home" onClick={handleGoHome}>
+                  Retour à l&apos;accueil
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
         <div
           className="osm-panel"
           role="dialog"
@@ -363,8 +502,22 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
               </svg>
             </button>
 
-            <div ref={scrollRef} className="osm-scroll osm-content" style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '54px 46px 0' }}>
-              <div key={step} style={{ animation: 'osmFade .3s ease both' }}>
+            <div
+              ref={scrollRef}
+              className="osm-scroll osm-content"
+              style={{
+                flex: 1,
+                minHeight: 0,
+                overflowY: 'auto',
+                padding: '54px 46px 0',
+              }}
+            >
+              <div
+                key={step}
+                style={{
+                  animation: 'osmFade .3s ease both',
+                }}
+              >
                 {step === 1 && (
                   <>
                     <h2 className="osm-title" style={titleStyle}>
@@ -577,17 +730,6 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                   </>
                 )}
 
-                {step === 5 && (
-                  <div style={{ paddingTop: 42 }}>
-                    <h2 className="osm-title" style={{ ...titleStyle, marginBottom: 30 }}>
-                      <strong style={strong}>Merci beaucoup !</strong>
-                    </h2>
-                    <p className="osm-title" style={{ ...titleStyle, margin: 0 }}>
-                      On revient vers vous <strong style={strong}>au plus vite.</strong>
-                    </p>
-                    <p style={{ ...leadStyle, fontSize: 14, textAlign: 'center', margin: '26px 0 0' }}>L’équipe TERRAGO</p>
-                  </div>
-                )}
               </div>
               <div style={{ height: 26 }} />
             </div>
@@ -598,27 +740,26 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
               )}
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 44 }}>
-                {step > 1 && step < 5 && (
+                {step > 1 && (
                   <button type="button" className="osm-back" onClick={() => { setErr(''); setStep((s) => s - 1); }} style={{ position: 'absolute', left: 0 }}>
                     ← Retour
                   </button>
                 )}
-                <button type="button" className="osm-cta" onClick={step === 5 ? handleClose : goNext} disabled={busy}>
+                <button type="button" className="osm-cta" onClick={goNext} disabled={busy}>
                   {busy && (
                     <span style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,.35)', borderTopColor: '#fff', borderRadius: '50%', animation: 'osmSpin .7s linear infinite' }} />
                   )}
-                  {step === 5 ? 'Terminé' : busy ? 'Envoi…' : 'Suivant'}
+                  {busy ? 'Envoi…' : 'Suivant'}
                 </button>
               </div>
 
               <div style={{ height: 3, marginTop: 18 }}>
-                {step < 5 && (
-                  <div style={{ height: '100%', width: `${progress * 100}%`, borderRadius: 9999, background: ORANGE, transition: 'width .35s cubic-bezier(.22,1,.36,1)' }} />
-                )}
+                <div style={{ height: '100%', width: `${progress * 100}%`, borderRadius: 9999, background: ORANGE, transition: 'width .35s cubic-bezier(.22,1,.36,1)' }} />
               </div>
             </div>
           </div>
         </div>
+        )}
       </div>
     </>
   );

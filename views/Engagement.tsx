@@ -185,12 +185,12 @@ const Engagement: React.FC = () => {
           aria-hidden
           className="pointer-events-none absolute right-0 top-0 z-20 h-40 w-40 translate-x-[35%] -translate-y-1/2 object-contain opacity-90 sm:h-56 sm:w-56 lg:h-72 lg:w-72"
         />
-        {/* Arbre — gauche section producteurs */}
+        {/* Arbre — mobile : intersection vision / producteurs ; desktop : gauche section */}
         <img
           src={ASSETS.arbre}
           alt=""
           aria-hidden
-          className="pointer-events-none absolute left-4 top-[22%] z-20 h-40 w-40 object-contain sm:left-8 sm:h-56 sm:w-56 lg:left-12 lg:h-72 lg:w-72"
+          className="pointer-events-none absolute left-4 top-0 z-20 h-40 w-40 -translate-y-1/2 object-contain sm:left-8 sm:top-[22%] sm:h-56 sm:w-56 sm:translate-y-0 lg:left-12 lg:h-72 lg:w-72"
         />
 
         <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
@@ -245,12 +245,12 @@ const Engagement: React.FC = () => {
         className="relative"
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
       >
-        {/* Mouton — droite section fondateurs */}
+        {/* Mouton — mobile : intersection producteurs / fondateurs ; desktop : droite section */}
         <img
           src={ASSETS.mouton}
           alt=""
           aria-hidden
-          className="pointer-events-none absolute right-4 top-[32%] z-20 h-36 w-36 object-contain sm:right-8 sm:h-52 sm:w-52 lg:right-12 lg:h-64 lg:w-64"
+          className="pointer-events-none absolute right-4 top-0 z-20 h-36 w-36 -translate-y-1/2 object-contain sm:right-8 sm:top-[32%] sm:h-52 sm:w-52 sm:translate-y-0 lg:right-12 lg:h-64 lg:w-64"
         />
 
         <div className="relative z-10 mx-auto max-w-5xl px-5 sm:px-8">
@@ -313,12 +313,12 @@ const Engagement: React.FC = () => {
           background: HOME_COLORS.gray,
         }}
       >
-        {/* Rateau — gauche section charte RSE */}
+        {/* Rateau — mobile : intersection fondateurs / RSE ; desktop : gauche section */}
         <img
           src={ASSETS.rateau}
           alt=""
           aria-hidden
-          className="pointer-events-none absolute left-4 top-[28%] z-20 h-36 w-36 object-contain sm:left-8 sm:h-52 sm:w-52 lg:left-12 lg:h-64 lg:w-64"
+          className="pointer-events-none absolute left-4 top-0 z-20 h-36 w-36 -translate-y-1/2 object-contain sm:left-8 sm:top-[28%] sm:h-52 sm:w-52 sm:translate-y-0 lg:left-12 lg:h-64 lg:w-64"
         />
 
         <div className="relative z-10 mx-auto max-w-3xl px-5 text-center sm:px-8">

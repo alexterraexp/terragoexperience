@@ -43,9 +43,12 @@ export type DestinationLieu = {
   metaDescription: string;
   heroImage: string;
   heroImageAlt: string;
+  /** Crédit photo hero (ex. « Youza Ecolodge ») — absente = pas de copyright. */
+  heroImageCopyright?: string;
   intro: string[];
   prosImage: string;
   prosImageAlt: string;
+  prosImageCopyright?: string;
   pros: LieuPro[];
   formatsLead: string;
   formats: string[];
@@ -59,11 +62,12 @@ export type DestinationLieu = {
     description: string;
     image: string;
     imageAlt: string;
+    imageCopyright?: string;
   };
   logement: {
     title: string;
     description: string;
-    images: { src: string; alt: string }[];
+    images: { src: string; alt: string; copyright?: string }[];
     highlights: string[];
   };
   faq: LieuFaqItem[];
@@ -101,15 +105,19 @@ export const LIEUX: DestinationLieu[] = [
     metaTitle: 'Séminaire chez un producteur | TerraGo',
     metaDescription:
       'Organisez un séminaire d’entreprise chez le producteur avec TerraGo : immersion terroir, ateliers concrets, team building RSE et hébergement de caractère partout en France.',
-    heroImage: `${HOME}/maraicher-explication.png`,
-    heroImageAlt: 'Séminaire d’entreprise chez le producteur – atelier TerraGo',
+    heroImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/producteur/578192052.jpg',
+    heroImageAlt: 'Maison de producteur pour séminaire d’entreprise – TerraGo',
+    heroImageCopyright: 'Marine Van-den-Broek',
     intro: [
       'Un séminaire d’entreprise chez le producteur, c’est sortir de la salle de réunion pour vivre le geste, comprendre un métier et fédérer vos équipes autour du réel.',
       'TerraGo sélectionne des exploitations engagées — maraîchers, éleveurs, artisans du goût — capables d’accueillir des groupes et de transmettre un savoir-faire avec authenticité.',
       'Travail stratégique le matin, immersion producteur l’après-midi, dîner produit local le soir : un format qui crée du lien, du sens et des souvenirs durables.',
     ],
-    prosImage: `${HOME}/repas-convivial.png`,
-    prosImageAlt: 'Moment d’équipe autour d’une table chez le producteur',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/producteur/Sol-Sologne-Loiret-table-Marine-Van-den-Broek-responsive.jpg',
+    prosImageAlt: 'Table dressée face à la forêt chez un producteur',
+    prosImageCopyright: 'Marine Van-den-Broek',
     pros: [
       {
         title: 'Une immersion qui marque les esprits',
@@ -168,15 +176,28 @@ export const LIEUX: DestinationLieu[] = [
         'Partagez le quotidien de Nathalie et Benjamin : visite de l’exploitation, atelier concret et dégustation. Une immersion humaine qui renforce le lien d’équipe et donne du sens à votre séminaire.',
       image: HOME_PRODUCERS[1].image,
       imageAlt: 'Nathalie et Benjamin, producteurs partenaires TerraGo',
+      imageCopyright: 'Marine Van-den-Broek',
     },
     logement: {
       title: 'Hébergements proches des exploitations',
       description:
         'Gîtes, fermes rénovées ou maisons d’hôtes à proximité des producteurs : des lieux chaleureux, adaptés aux groupes et alignés avec l’esprit TerraGo.',
       images: [
-        { src: `${HOME}/Noisettes-recolte.png`, alt: 'Hébergement proche d’un producteur' },
-        { src: `${HOME}/maraicher-explication.png`, alt: 'Cadre d’exploitation pour séminaire' },
-        { src: `${HOME}/repas-convivial.png`, alt: 'Espace convivial chez le producteur' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/producteur/7852905.jpg',
+          alt: 'Ferme rénovée au milieu des arbres pour séminaire',
+          copyright: 'Marine Van-den-Broek',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/producteur/41906523-Marine-Van-den-Broek',
+          alt: 'Salon convivial dans une maison de producteur',
+          copyright: 'Marine Van-den-Broek',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/producteur/859241-Marine-Van-den-Broek.webp',
+          alt: 'Espace détente extérieur chez un producteur',
+          copyright: 'Marine Van-den-Broek',
+        },
       ],
       highlights: [
         'Proximité des ateliers producteur',
@@ -211,8 +232,9 @@ export const LIEUX: DestinationLieu[] = [
       'Entre rangs de vignes, caves et domaines, TerraGo imagine des programmes où le travail rencontre la culture du vin et la transmission des vignerons.',
       'Idéal pour fédérer une équipe, accueillir des partenaires ou célébrer une étape clé — sans tomber dans le cliché « afterwork dégustation ».',
     ],
-    prosImage: regionImg('bourgogne'),
-    prosImageAlt: 'Domaine viticole pour séminaire d’entreprise',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/vignoble/vign5.jpeg',
+    prosImageAlt: 'Allée de cyprès menant à un domaine viticole',
     pros: [
       {
         title: 'Un cadre premium et authentique',
@@ -265,21 +287,30 @@ export const LIEUX: DestinationLieu[] = [
       },
     ],
     producer: {
-      name: 'Paolo',
-      role: 'Producteur d’olives & terroir méditerranéen',
+      name: 'Jean-François',
+      role: 'Distillateur & vigneron',
       description:
-        'Au-delà du vin, TerraGo vous connecte aussi à des producteurs du vivant. Rencontrez Paolo pour une immersion autour de l’olive, du geste et du partage — une expérience complémentaire à un séjour vignoble.',
-      image: HOME_PRODUCERS[2].image,
-      imageAlt: 'Paolo, producteur partenaire TerraGo',
+        'Chez Jean-François, vos équipes plongent dans l’univers du Cognac : visite des chais, transmission du geste et dégustation. Une immersion vignoble élégante et fédératrice, au plus près du savoir-faire.',
+      image: '/images/producteurs/cognacJF.png',
+      imageAlt: 'Jean-François, distillateur et vigneron – séminaire au vignoble TerraGo',
     },
     logement: {
       title: 'Domaines et chambres d’hôtes viticoles',
       description:
         'Châteaux, maisons de vigneron ou lodges au cœur des appellations : des hébergements élégants, adaptés aux groupes et proches des expériences.',
       images: [
-        { src: regionImg('bourgogne'), alt: 'Hébergement séminaire au vignoble' },
-        { src: `${HOME}/repas-convivial.png`, alt: 'Dégustation et repas au domaine' },
-        { src: regionImg('provence'), alt: 'Paysage viticole pour séminaire' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/vignoble/vign3.jpg',
+          alt: 'Domaine viticole au pied d’une colline boisée',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/vignoble/vign4.jpg',
+          alt: 'Château de Saint-Martin pour séminaire au vignoble',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/vignoble/vign2.jpg',
+          alt: 'Maison en pierre pour hébergement au vignoble',
+        },
       ],
       highlights: [
         'Salles de travail dans le domaine',
@@ -307,8 +338,10 @@ export const LIEUX: DestinationLieu[] = [
     metaTitle: 'Séminaire à la ferme | TerraGo',
     metaDescription:
       'Organisez un séminaire d’entreprise à la ferme avec TerraGo : immersion agricole, ateliers concrets, team building nature et hébergement authentique.',
-    heroImage: `${HOME}/Noisettes-recolte.png`,
-    heroImageAlt: 'Séminaire d’entreprise à la ferme – TerraGo',
+    heroImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/ferme/8953021.jpg',
+    heroImageAlt: 'Maraîcher dans une serre pour séminaire à la ferme – TerraGo',
+    heroImageCopyright: 'Pierine di Giacomo',
     intro: [
       'Un séminaire d’entreprise à la ferme reconnecte vos équipes au vivant : grand air, gestes concrets et hospitalité rurale.',
       'TerraGo collabore avec des fermes capables d’accueillir des groupes — élevage, maraîchage, cultures — pour des programmes utiles, chaleureux et mémorables.',
@@ -316,6 +349,7 @@ export const LIEUX: DestinationLieu[] = [
     ],
     prosImage: `${HOME}/maraicher-explication.png`,
     prosImageAlt: 'Atelier à la ferme pour séminaire d’entreprise',
+    prosImageCopyright: 'Pierine di Giacomo',
     pros: [
       {
         title: 'Une authenticité qui fédère',
@@ -368,21 +402,35 @@ export const LIEUX: DestinationLieu[] = [
       },
     ],
     producer: {
-      name: 'Baptiste',
-      role: 'Producteur de piments',
+      name: 'Benoît',
+      role: 'Producteur maraîcher',
       description:
-        'Rencontrez Baptiste pour une immersion colorée et fédératrice : visite, atelier et dégustation. Une expérience ferme vive, concrète et pleine d’énergie pour vos équipes.',
-      image: HOME_PRODUCERS[0].image,
-      imageAlt: 'Baptiste, producteur – séminaire à la ferme TerraGo',
+        'Chez Louise & Benoît, vos équipes découvrent une ferme maraîchère engagée près de Paris : circuits courts, gestes durables et immersion terrain. Une expérience ferme authentique et fédératrice pour vos équipes.',
+      image:
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.jpg',
+      imageAlt: 'Benoît, producteur maraîcher – séminaire à la ferme TerraGo',
+      imageCopyright: 'Pierine di Giacomo',
     },
     logement: {
       title: 'Gîtes et fermes adaptées aux groupes',
       description:
         'Fermes rénovées, gîtes spacieux ou maisons d’hôtes rurales : des hébergements authentiques, confortables et proches des activités.',
       images: [
-        { src: `${HOME}/Noisettes-recolte.png`, alt: 'Hébergement séminaire à la ferme' },
-        { src: regionImg('auvergne'), alt: 'Cadre rural pour séminaire' },
-        { src: `${HOME}/repas-convivial.png`, alt: 'Repas convivial à la ferme' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/ferme/730507323.jpg',
+          alt: 'Bar en bois outdoor pour séminaire à la ferme',
+          copyright: 'Pierine di Giacomo',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/ferme/794104642.jpg',
+          alt: 'Salon rustique chic dans une ferme rénovée',
+          copyright: 'Pierine di Giacomo',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/ferme/723951348.jpg',
+          alt: 'Hébergement à la ferme pour séminaire d’entreprise',
+          copyright: 'Pierine di Giacomo',
+        },
       ],
       highlights: [
         'Espaces groupe et salles de travail',
@@ -410,15 +458,17 @@ export const LIEUX: DestinationLieu[] = [
     metaTitle: 'Séminaire au bord de l’eau | TerraGo',
     metaDescription:
       'Organisez un séminaire d’entreprise au bord de l’eau avec TerraGo : lac, rivière ou océan, activités outdoor, rencontres producteur et hébergements inspirants.',
-    heroImage: regionImg('nouvelle-aquitaine'),
-    heroImageAlt: 'Séminaire d’entreprise au bord de l’eau – TerraGo',
+    heroImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bord-eau/7859012.avif',
+    heroImageAlt: 'Terrasse face au lac pour séminaire au bord de l’eau – TerraGo',
     intro: [
       'Un séminaire d’entreprise au bord de l’eau change immédiatement le tempo : horizon, lumière et respiration pour mieux travailler ensemble.',
       'Lacs, rivières, bassins ou littoral : TerraGo conçoit des programmes où le cadre naturel soutient la réflexion et la cohésion.',
       'Entre sessions stratégiques, activités outdoor et rencontres locales, vos équipes repartent recentrées et reconnectées.',
     ],
-    prosImage: regionImg('bretagne'),
-    prosImageAlt: 'Cadre littoral pour séminaire d’entreprise',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bord-eau/8941041.jpg',
+    prosImageAlt: 'Élevage d’huîtres au bord de l’eau',
     pros: [
       {
         title: 'Un cadre qui détend et inspire',
@@ -483,9 +533,18 @@ export const LIEUX: DestinationLieu[] = [
       description:
         'Maisons d’hôtes, lodges ou domaines en bord de lac, de rivière ou d’océan : des lieux inspirants, adaptés aux groupes et proches des activités.',
       images: [
-        { src: regionImg('nouvelle-aquitaine'), alt: 'Hébergement séminaire au bord de l’eau' },
-        { src: regionImg('bretagne'), alt: 'Cadre littoral pour séminaire' },
-        { src: `${HOME}/repas-convivial.png`, alt: 'Moment convivial en bord d’eau' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bord-eau/78529510.jpg',
+          alt: 'Domaine avec plage et piscine au bord d’un lac',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bord-eau/789520.avif',
+          alt: 'Hôtel face à l’océan au coucher du soleil',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bord-eau/78539052.jpg',
+          alt: 'Hébergement pour séminaire au bord de l’eau',
+        },
       ],
       highlights: [
         'Vue et accès à l’eau',
@@ -513,8 +572,9 @@ export const LIEUX: DestinationLieu[] = [
     metaTitle: 'Séminaire en montagne | TerraGo',
     metaDescription:
       'Organisez un séminaire d’entreprise en montagne avec TerraGo : grands espaces, activités outdoor, rencontres producteur et hébergements de caractère.',
-    heroImage: regionImg('auvergne'),
-    heroImageAlt: 'Séminaire d’entreprise en montagne – TerraGo',
+    heroImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/MONTAGNE/98317677686-27139098.jpg',
+    heroImageAlt: 'Vallée et sommets enneigés pour séminaire en montagne – TerraGo',
     intro: [
       'Un séminaire d’entreprise en montagne offre altitude, silence et grands espaces pour prendre de la hauteur — au sens propre comme au figuré.',
       'TerraGo y conçoit des programmes entre sessions de travail, outdoor et rencontres locales, pour un impact humain fort.',
@@ -586,9 +646,18 @@ export const LIEUX: DestinationLieu[] = [
       description:
         'Hébergements spacieux en altitude ou en moyenne montagne : confort groupe, salles de travail et accès rapide aux activités outdoor.',
       images: [
-        { src: regionImg('auvergne'), alt: 'Hébergement séminaire en montagne' },
-        { src: `${HOME}/Noisettes-recolte.png`, alt: 'Cadre nature montagne' },
-        { src: `${HOME}/repas-convivial.png`, alt: 'Repas d’équipe en montagne' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/MONTAGNE/Chalet-les-granges-Auvergne-montagne-responsive.webp',
+          alt: 'Chalet avec vue sur les sommets pour séminaire en montagne',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/MONTAGNE/5728195.png',
+          alt: 'Balcon de chalet face aux montagnes',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/MONTAGNE/1f3d3862.webp',
+          alt: 'Chalet enneigé pour séminaire en montagne',
+        },
       ],
       highlights: [
         'Grands espaces et calme',
@@ -616,8 +685,10 @@ export const LIEUX: DestinationLieu[] = [
     metaTitle: 'Séminaire en pleine nature | TerraGo',
     metaDescription:
       'Organisez un séminaire d’entreprise en pleine nature avec TerraGo : forêts, grands espaces, team building outdoor et expériences producteur engagées.',
-    heroImage: regionImg('occitanie'),
+    heroImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nature/645728910.webp',
     heroImageAlt: 'Séminaire d’entreprise en pleine nature – TerraGo',
+    heroImageCopyright: 'Youza Ecolodge',
     intro: [
       'Un séminaire d’entreprise en pleine nature place vos équipes au cœur des forêts, campagnes et paysages sauvages — loin du bruit, près de l’essentiel.',
       'TerraGo y compose des programmes entre travail stratégique, outdoor et rencontres producteur, pour un impact durable sur la cohésion.',
@@ -677,21 +748,31 @@ export const LIEUX: DestinationLieu[] = [
       },
     ],
     producer: {
-      name: 'Marie-Lise & Sabine',
-      role: 'Productrices de noix',
+      name: 'Suzanna',
+      role: 'Éleveuse de bufflones',
       description:
-        'Rencontrez Marie-Lise et Sabine pour une immersion terroir en pleine nature : visite, atelier et dégustation. Une expérience humaine qui prolonge le cadre outdoor.',
-      image: HOME_PRODUCERS[5].image,
-      imageAlt: 'Marie-Lise et Sabine – séminaire nature TerraGo',
+        'Rencontrez Suzanna pour une immersion singulière en pleine nature : visite de l’élevage, découverte du métier et dégustation. Une expérience authentique et fédératrice au grand air.',
+      image: HOME_PRODUCERS[4].image,
+      imageAlt: 'Suzanna, éleveuse – séminaire en pleine nature TerraGo',
     },
     logement: {
       title: 'Écolodges et maisons au calme',
       description:
         'Hébergements nature, lodges ou maisons d’hôtes isolées : confort groupe, silence et proximité immédiate des activités outdoor.',
       images: [
-        { src: regionImg('occitanie'), alt: 'Hébergement séminaire en pleine nature' },
-        { src: `${HOME}/Noisettes-recolte.png`, alt: 'Cadre nature pour séminaire' },
-        { src: regionImg('normandie'), alt: 'Campagne verdoyante TerraGo' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nature/674289.jpg',
+          alt: 'Lodge en bois au cœur de la forêt pour séminaire en pleine nature',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nature/74289013.png',
+          alt: 'Domaine isolé au milieu des arbres vu du ciel',
+          copyright: 'Youza Ecolodge',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nature/52367489.jpg',
+          alt: 'Salle de séminaire avec vue sur la nature',
+        },
       ],
       highlights: [
         'Calme et grand air',
@@ -719,15 +800,17 @@ export const LIEUX: DestinationLieu[] = [
     metaTitle: 'Séminaire dans un domaine d’exception | TerraGo',
     metaDescription:
       'Organisez un séminaire d’entreprise dans un domaine d’exception avec TerraGo : lieux rares, expériences premium, team building terroir et hébergement inspirant.',
-    heroImage: regionImg('provence'),
-    heroImageAlt: 'Séminaire d’entreprise dans un domaine d’exception – TerraGo',
+    heroImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/1111.jpg',
+    heroImageAlt: 'Soirée d’entreprise dans un domaine d’exception – TerraGo',
     intro: [
       'Un séminaire d’entreprise dans un domaine d’exception pose un cadre rare : architecture, parc, terroir et hospitalité soignée.',
       'TerraGo sélectionne des lieux inspirants — domaines, demeures, propriétés de caractère — pour des événements qui marquent durablement vos équipes et vos partenaires.',
       'Luxe discret, expériences authentiques et programmes sur mesure : l’élégance au service du collectif.',
     ],
-    prosImage: regionImg('bourgogne'),
-    prosImageAlt: 'Domaine d’exception pour séminaire d’entreprise',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/111112.jpg',
+    prosImageAlt: 'Grande salle en pierre d’un domaine d’exception',
     pros: [
       {
         title: 'Un lieu qui parle pour vous',
@@ -792,9 +875,18 @@ export const LIEUX: DestinationLieu[] = [
       description:
         'Chambres d’hôtes d’exception, suites dans le domaine ou propriétés privatisables : confort, intimité et services adaptés aux groupes corporate.',
       images: [
-        { src: regionImg('provence'), alt: 'Domaine d’exception pour séminaire' },
-        { src: regionImg('bourgogne'), alt: 'Demeure de caractère TerraGo' },
-        { src: `${HOME}/repas-convivial.png`, alt: 'Table d’exception pour séminaire' },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/1121221.webp',
+          alt: 'Terrasse dressée d’un domaine d’exception',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/12213313.jpg',
+          alt: 'Domaine viticole vu du ciel pour séminaire',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/12234.jpg',
+          alt: 'Domaine avec piscines au milieu des collines',
+        },
       ],
       highlights: [
         'Privatisation possible',
@@ -883,12 +975,12 @@ export const LIEUX: DestinationLieu[] = [
       },
     ],
     producer: {
-      name: 'Paolo',
-      role: 'Producteur d’olives',
+      name: 'Baptiste',
+      role: 'Producteur de piments',
       description:
-        'Rencontrez Paolo pour une immersion oléicole authentique : visite, geste et dégustation. Une rencontre emblématique d’un séminaire au cœur des terroirs.',
-      image: HOME_PRODUCERS[2].image,
-      imageAlt: 'Paolo – séminaire au cœur des terroirs TerraGo',
+        'Rencontrez Baptiste pour une immersion colorée et fédératrice au cœur des terroirs : visite, atelier et dégustation. Une expérience vive, concrète et pleine d’énergie pour vos équipes.',
+      image: HOME_PRODUCERS[0].image,
+      imageAlt: 'Baptiste, producteur de piments – séminaire au cœur des terroirs TerraGo',
     },
     logement: {
       title: 'Maisons et domaines ancrés localement',

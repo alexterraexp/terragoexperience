@@ -12,8 +12,10 @@ import {
   homeSectionPadding,
   bottomImageGradientClass,
   homeHeroOutlineButtonClass,
+  homeCtaOutlineClass,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
+import { seminaireEnjeuPath } from '../lib/seminaireEnjeux';
 
 const HOME =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
@@ -240,6 +242,7 @@ const FEATURES = [
 
 type Objectif = {
   id: string;
+  href: string;
   title: string;
   subtitle: string;
   lead: string;
@@ -249,6 +252,7 @@ type Objectif = {
 const OBJECTIFS: Objectif[] = [
   {
     id: 'cohesion',
+    href: seminaireEnjeuPath('cohesion'),
     title: 'Objectif Cohésion',
     subtitle: 'Créer des liens autrement.',
     lead:
@@ -262,6 +266,7 @@ const OBJECTIFS: Objectif[] = [
   },
   {
     id: 'sensibilisation',
+    href: seminaireEnjeuPath('sensibilisation-rse'),
     title: 'Objectif Sensibilisation',
     subtitle: 'Comprendre les enjeux du vivant.',
     lead:
@@ -275,6 +280,7 @@ const OBJECTIFS: Objectif[] = [
   },
   {
     id: 'inspiration',
+    href: seminaireEnjeuPath('inspiration-miroir'),
     title: 'Objectif Inspiration',
     subtitle: 'Prendre du recul pour mieux avancer.',
     lead:
@@ -475,6 +481,12 @@ const ObjectifsAccordion: React.FC = () => {
                         </li>
                       ))}
                     </ul>
+                    <div className="mt-6">
+                      <Link href={obj.href} className={homeCtaOutlineClass}>
+                        Découvrir les séminaires{' '}
+                        {obj.title.replace(/^Objectif\s+/i, '').toLowerCase()}
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>

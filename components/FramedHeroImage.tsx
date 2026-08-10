@@ -2,18 +2,27 @@
 
 import React, { useRef, useState } from 'react';
 import { HOME_COLORS } from './home/homeStyles';
+import PhotoCopyright from './PhotoCopyright';
+import { protectedImageProps } from '../lib/protectedImage';
 
 type FramedHeroImageProps = {
   src: string;
   alt: string;
   className?: string;
+  /** Crédit photo optionnel (ex. « Youza Ecolodge »). */
+  copyright?: string;
 };
 
 /**
  * Image de héros encadré : sous-couche marque + indication de chargement,
  * puis fondu de l’image pour éviter le flash gris vide.
  */
-const FramedHeroImage: React.FC<FramedHeroImageProps> = ({ src, alt, className = '' }) => {
+const FramedHeroImage: React.FC<FramedHeroImageProps> = ({
+  src,
+  alt,
+  className = '',
+  copyright,
+}) => {
   const [loaded, setLoaded] = useState(false);
   const prevSrc = useRef(src);
 
@@ -55,9 +64,23 @@ const FramedHeroImage: React.FC<FramedHeroImageProps> = ({ src, alt, className =
         decoding="async"
         fetchPriority="high"
         onLoad={markLoaded}
+        draggable={protectedImageProps.draggable}
+        onContextMenu={protectedImageProps.onContextMenu}
         className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out ${className}`}
-        style={{ opacity: loaded ? 1 : 0 }}
+        style={{
+          ...protectedImageProps.style,
+          opacity: loaded ? 1 : 0,
+        }}
       />
+
+      {copyright ? (
+        <PhotoCopyright
+          label={copyright}
+          className="z-[6]"
+          offsetRight="1.25rem"
+          offsetBottom="0.75rem"
+        />
+      ) : null}
 
       <style>{`
         @keyframes framedHeroShimmer {

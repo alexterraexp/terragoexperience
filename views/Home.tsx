@@ -19,6 +19,8 @@ import {
 } from '../components/home/homeStyles';
 import type { HomeAssetUrls } from '../lib/homeStorage';
 import { HOME_EMOJI, HOME_PRODUCERS, HOME_STEPS, REGION_IMAGES, REGION_TAGS, regionDestinationPath } from '../lib/homeStorage';
+import PhotoCopyright from '../components/PhotoCopyright';
+import { getImageCopyright } from '../lib/imageCopyrights';
 
 interface HomeProps {
   assets: HomeAssetUrls;
@@ -433,7 +435,11 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
       <HomeHero videoSrc={assets.heroVideo} posterSrc={assets.heroPoster} />
 
       {/* ── NOTRE CONCEPT ── */}
-      <section style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}>
+      <section
+        id="concept"
+        className="scroll-mt-28"
+        style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
+      >
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="mb-10 text-center sm:mb-14">
             <h2 className="mx-auto max-w-4xl font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]">
@@ -481,6 +487,9 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                   draggable={false}
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
+                {getImageCopyright(card.image) ? (
+                  <PhotoCopyright className="z-[2]" label={getImageCopyright(card.image)!} />
+                ) : null}
                 <p className="pointer-events-none absolute left-6 right-5 top-[50%] z-10 font-sans text-[34px] leading-[1.12] tracking-[-0.075em] text-white">
                   <span className="font-normal">{card.lead}</span>
                   <span className="font-bold">{card.rest}</span>
@@ -516,6 +525,9 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                     loading="lazy"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                  {getImageCopyright(card.image) ? (
+                    <PhotoCopyright className="z-[2]" label={getImageCopyright(card.image)!} />
+                  ) : null}
                   <p className="absolute left-7 right-6 top-[52%] z-10 font-sans text-[32px] leading-[1.15] tracking-[-0.075em] text-white lg:text-[36px]">
                     <span className="font-normal">{card.lead}</span>
                     <span className="font-bold">{card.rest}</span>
@@ -649,7 +661,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
               className={homeCtaOutlineClass}
             >
               <span aria-hidden>→</span>
-              Découvrir les expériences TerraGo
+              Nos expériences pour les entreprises
             </Link>
           </div>
         </div>
@@ -718,6 +730,10 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                     className="aspect-[4/4.35] w-full object-cover"
                     loading="lazy"
                   />
+
+                  {getImageCopyright(activeProducer.image) ? (
+                    <PhotoCopyright label={getImageCopyright(activeProducer.image)!} />
+                  ) : null}
 
                   {/* Label nom */}
                   <span

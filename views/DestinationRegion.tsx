@@ -16,11 +16,14 @@ import {
   homeSectionPadding,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
+import PhotoCopyright from '../components/PhotoCopyright';
 import { regionDestinationPath } from '../lib/homeStorage';
 import {
   getRelatedDestinations,
   type DestinationRegion as DestinationData,
 } from '../lib/destinations';
+import { protectedImageProps } from '../lib/protectedImage';
+import { getImageCopyright } from '../lib/imageCopyrights';
 
 /** Même format que les titres de section Home / Séminaires. */
 const sectionTitleClass =
@@ -243,8 +246,11 @@ const LogementCarousel: React.FC<{
                 src={img.src}
                 alt={img.alt}
                 className="absolute inset-0 h-full w-full object-cover"
-                draggable={false}
+                {...protectedImageProps}
               />
+              {getImageCopyright(img.src) ? (
+                <PhotoCopyright label={getImageCopyright(img.src)!} />
+              ) : null}
             </div>
           ))}
         </div>
@@ -313,7 +319,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
             className={`relative ${homeFramedHeroWideAspectClass}`}
             style={{ borderRadius: HOME_RADIUS }}
           >
-            <FramedHeroImage src={destination.heroImage} alt={destination.heroImageAlt} />
+            <FramedHeroImage src={destination.heroImage} alt={destination.heroImageAlt} copyright={getImageCopyright(destination.heroImage)} />
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div
               className="absolute inset-0 z-[2]"
@@ -439,7 +445,11 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                     src={destination.prosImage}
                     alt={destination.prosImageAlt}
                     className="absolute inset-0 h-full w-full object-cover"
+                    {...protectedImageProps}
                   />
+                  {getImageCopyright(destination.prosImage) ? (
+                    <PhotoCopyright label={getImageCopyright(destination.prosImage)!} />
+                  ) : null}
                 </div>
               </ScrollAnimate>
             </div>
@@ -528,7 +538,11 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                   src={destination.producer.image}
                   alt={destination.producer.imageAlt}
                   className="absolute inset-0 h-full w-full object-cover"
+                  {...protectedImageProps}
                 />
+                {getImageCopyright(destination.producer.image) ? (
+                  <PhotoCopyright label={getImageCopyright(destination.producer.image)!} />
+                ) : null}
               </div>
             </ScrollAnimate>
 
@@ -670,8 +684,15 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                     src={region.heroImage}
                     alt={`Séminaire ${region.prep} ${region.name}`}
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                    {...protectedImageProps}
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+                  {getImageCopyright(region.heroImage) ? (
+                    <PhotoCopyright
+                      className="z-[2]"
+                      label={getImageCopyright(region.heroImage)!}
+                    />
+                  ) : null}
                   <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[26px]">
                     <span className="font-normal">Séminaire {region.prep}</span>
                     <br />

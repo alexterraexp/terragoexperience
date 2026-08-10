@@ -16,11 +16,14 @@ import {
   homeSectionPadding,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
+import PhotoCopyright from '../components/PhotoCopyright';
 import {
   getRelatedLieux,
   lieuDestinationPath,
   type DestinationLieu as LieuData,
 } from '../lib/lieux';
+import { protectedImageProps } from '../lib/protectedImage';
+import { getImageCopyright } from '../lib/imageCopyrights';
 
 /** Même format que les titres de section Home / Séminaires. */
 const sectionTitleClass =
@@ -243,8 +246,11 @@ const LogementCarousel: React.FC<{
                 src={img.src}
                 alt={img.alt}
                 className="absolute inset-0 h-full w-full object-cover"
-                draggable={false}
+                {...protectedImageProps}
               />
+              {img.copyright || getImageCopyright(img.src) ? (
+                <PhotoCopyright label={img.copyright || getImageCopyright(img.src)!} />
+              ) : null}
             </div>
           ))}
         </div>
@@ -320,7 +326,11 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
             className={`relative ${homeFramedHeroWideAspectClass}`}
             style={{ borderRadius: HOME_RADIUS }}
           >
-            <FramedHeroImage src={lieu.heroImage} alt={lieu.heroImageAlt} />
+            <FramedHeroImage
+              src={lieu.heroImage}
+              alt={lieu.heroImageAlt}
+              copyright={lieu.heroImageCopyright || getImageCopyright(lieu.heroImage)}
+            />
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div
               className="absolute inset-0 z-[2]"
@@ -440,7 +450,13 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                     src={lieu.prosImage}
                     alt={lieu.prosImageAlt}
                     className="absolute inset-0 h-full w-full object-cover"
+                    {...protectedImageProps}
                   />
+                  {lieu.prosImageCopyright || getImageCopyright(lieu.prosImage) ? (
+                    <PhotoCopyright
+                      label={lieu.prosImageCopyright || getImageCopyright(lieu.prosImage)!}
+                    />
+                  ) : null}
                 </div>
               </ScrollAnimate>
             </div>
@@ -529,7 +545,15 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                   src={lieu.producer.image}
                   alt={lieu.producer.imageAlt}
                   className="absolute inset-0 h-full w-full object-cover"
+                  {...protectedImageProps}
                 />
+                {lieu.producer.imageCopyright || getImageCopyright(lieu.producer.image) ? (
+                  <PhotoCopyright
+                    label={
+                      lieu.producer.imageCopyright || getImageCopyright(lieu.producer.image)!
+                    }
+                  />
+                ) : null}
               </div>
             </ScrollAnimate>
 
@@ -663,8 +687,15 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                     src={other.heroImage}
                     alt={other.eyebrow}
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                    {...protectedImageProps}
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+                  {other.heroImageCopyright || getImageCopyright(other.heroImage) ? (
+                    <PhotoCopyright
+                      className="z-[2]"
+                      label={other.heroImageCopyright || getImageCopyright(other.heroImage)!}
+                    />
+                  ) : null}
                   <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[26px]">
                     <span className="font-normal">Séminaire</span>
                     <br />
