@@ -235,7 +235,7 @@ const FEATURES = [
   {
     lead: 'Des temps de réunion ',
     rest: 'dans des lieux inspirants',
-    image: `${HOME}/sem-slug/sallereunion.png`,
+    image: `${HOME}/seminaire/536782491-meeting.jpg`,
     alt: 'Temps de réunion dans des lieux inspirants – séminaire TerraGo',
   },
 ] as const;
@@ -324,7 +324,7 @@ const UNIVERS_DATA: UniversData[] = [
     id: 'ferme',
     lead: 'À la ',
     rest: 'ferme',
-    cardImage: `${HOME}/univers/photo-1569239591652-6cc3025b07fa.avif`,
+    cardImage: `${HOME}/seminaire/ferme/295839-farm.jpg`,
   },
   {
     id: 'vergers',
@@ -354,7 +354,7 @@ const UNIVERS_DATA: UniversData[] = [
     id: 'affineurs',
     lead: 'Chez les maîtres ',
     rest: 'affineurs',
-    cardImage: `${HOME}/univers/photo-1624806992066-5ffcf7ca186b.avif`,
+    cardImage: `${HOME}/EXPERIENCES%20IMG/6427859-fromage.jpg`,
   },
   {
     id: 'potagers',

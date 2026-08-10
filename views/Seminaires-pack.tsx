@@ -996,18 +996,16 @@ const SEM_DETAIL_CARD: React.CSSProperties = {
   boxShadow: '0 4px 28px rgba(12, 29, 34, 0.09)',
 };
 
-/** Panneau devis sticky — fond gris clair, allongé. */
+/** Panneau devis sticky — fond gris clair, compact. */
 const SEM_DEVIS_PANEL: React.CSSProperties = {
   background: HOME_COLORS.gray,
   borderRadius: HOME_RADIUS,
   border: '1px solid rgba(12, 29, 34, 0.08)',
-  padding: '40px 28px',
-  minHeight: 420,
+  padding: '28px 24px',
   boxShadow: 'none',
   color: HOME_COLORS.primary,
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'space-between',
 };
 
 function PartenaireCard({ nom, logo, description, siteWeb }: { nom: string; logo?: string; description?: string; siteWeb?: string }) {
@@ -1464,7 +1462,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
 
           <div className="sem-price-col">
             <div style={SEM_DEVIS_PANEL}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 28, flex: 1, justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <div>
                   <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', color: HOME_COLORS.orange, marginBottom: 10 }}>
                     Tarif sur demande
@@ -1472,14 +1470,8 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
                   <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.04em', color: HOME_COLORS.primary, lineHeight: 1.2 }}>
                     {tarifAffiche}
                   </div>
-                  <img
-                    src={`${HOME_ASSETS}/emoji/picto-devis.png`}
-                    alt=""
-                    aria-hidden
-                    style={{ display: 'block', width: 140, height: 'auto', margin: '20px auto 0' }}
-                  />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginTop: 'auto' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'rgba(12, 29, 34, 0.55)' }}>
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>

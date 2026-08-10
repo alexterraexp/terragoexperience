@@ -147,7 +147,8 @@ const Engagement: React.FC = () => {
       {/* ── NOTRE VISION ── */}
       <section
         id="vision"
-        style={{ paddingTop: 'clamp(2rem, 4vw, 3rem)', paddingBottom: homeSectionPadding, background: '#ffffff' }}
+        className="pt-12 sm:pt-8"
+        style={{ paddingBottom: homeSectionPadding, background: '#ffffff' }}
       >
         <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
           <ScrollAnimate>
@@ -155,14 +156,26 @@ const Engagement: React.FC = () => {
               Notre <span className="font-bold">vision.</span>
             </h2>
             <p className="mx-auto mt-4 font-sans text-[18px] font-semibold leading-[1.35] tracking-[-0.04em] text-[#0c1d22] sm:text-[22px]">
-              Reconnecter l&apos;humain à la terre.
+              Reconnecter l&apos;humain à la terre et soutenir nos producteurs.
             </p>
             <p className="mx-auto mt-6 max-w-2xl font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:mt-8 sm:text-[17px]">
               Nous imaginons un tourisme professionnel et des moments de partage
-              qui génèrent un impact durable : pour les équipes qui se retrouvent,
-              pour les producteurs qui vivent de leur métier, et pour les territoires
-              qui regagnent du sens. Chaque immersion TerraGo est pensée pour
-              laisser plus que des souvenirs — un lien réel avec le vivant.
+              qui génèrent un impact durable : pour les équipes, pour les
+              producteurs, et pour les territoires.
+            </p>
+            <p className="mx-auto mt-5 max-w-2xl font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:text-[17px]">
+              Chaque expérience développée chez un producteur est aussi une
+              manière de le soutenir directement : en valorisant son métier, en
+              faisant connaître son savoir-faire et en lui apportant une source
+              de revenus complémentaire. Parce que faire découvrir leur
+              quotidien, c&apos;est aussi leur témoigner une véritable
+              reconnaissance et contribuer concrètement à la pérennité de leur
+              activité.
+            </p>
+            <p className="mx-auto mt-5 max-w-2xl font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:text-[17px]">
+              Chaque immersion TerraGo est ainsi pensée pour laisser plus que
+              des souvenirs : un lien réel avec le vivant, et un impact concret
+              pour ceux qui le font vivre.
             </p>
           </ScrollAnimate>
         </div>
@@ -253,53 +266,89 @@ const Engagement: React.FC = () => {
           className="pointer-events-none absolute right-4 top-0 z-20 h-36 w-36 -translate-y-1/2 object-contain sm:right-8 sm:top-[32%] sm:h-52 sm:w-52 sm:translate-y-0 lg:right-12 lg:h-64 lg:w-64"
         />
 
-        <div className="relative z-10 mx-auto max-w-5xl px-5 sm:px-8">
+        <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
           <ScrollAnimate>
             <h2 className={`${sectionTitleClass} mb-10 text-center sm:mb-14`}>
-              Les <span className="font-bold">fondateurs,</span> en image.
+              Les <span className="font-bold">fondateurs.</span>
             </h2>
           </ScrollAnimate>
 
-          <ScrollAnimate delay={100}>
-            <div className="group relative mx-auto max-w-3xl">
-              <div
-                className="relative aspect-[5/4] overflow-hidden sm:aspect-[16/10]"
-                style={{ borderRadius: HOME_RADIUS }}
-              >
-                <img
-                  src={ASSETS.team}
-                  alt="Alex et Jérôme, co-fondateurs de TerraGo"
-                  className="h-full w-full object-cover object-[center_20%] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                  loading="lazy"
-                />
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            <ScrollAnimate>
+              <div className="max-w-xl">
+                <p className="font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/70 sm:text-[17px]">
+                  Nous sommes Jérôme et Alex, les fondateurs de TerraGo.
+                </p>
+                <p className="mt-5 font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/70 sm:text-[17px]">
+                  TerraGo est né d&apos;une envie : sortir des expériences
+                  professionnelles toutes faites et revenir à quelque chose de
+                  plus simple, de plus humain, de plus authentique.
+                </p>
+                <p className="mt-5 font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/70 sm:text-[17px]">
+                  Au fil de nos rencontres, nous avons découvert des producteurs
+                  engagés, des femmes et des hommes passionnés qui ont énormément
+                  à transmettre : des savoir-faire, des parcours, mais aussi une
+                  autre manière de regarder nos territoires et notre
+                  environnement.
+                </p>
+                <p className="mt-5 font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/70 sm:text-[17px]">
+                  Nous avons voulu créer des expériences qui permettent aux
+                  entreprises de venir à leur rencontre, de remettre du sens dans
+                  les moments partagés et de soutenir concrètement celles et ceux
+                  qui font vivre nos territoires.
+                </p>
+              </div>
+            </ScrollAnimate>
+
+            <ScrollAnimate delay={120}>
+              <div className="group mx-auto w-full max-w-md lg:max-w-none">
                 <div
-                  className="pointer-events-none absolute inset-0 z-[1] transition-opacity duration-700 group-hover:opacity-80"
-                  style={{
-                    background:
-                      'linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.1) 28%, transparent 55%)',
-                  }}
-                />
-              </div>
-              <div className="mt-5 flex items-center justify-center gap-3 sm:mt-6 sm:gap-4">
-                <a
-                  href="https://www.linkedin.com/in/alexsoulard-ev/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-w-[100px] items-center justify-center rounded-full bg-[#0c1d22] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[150px] sm:px-12 sm:py-2.5 sm:text-[11px]"
+                  className="relative aspect-square overflow-hidden"
+                  style={{ borderRadius: HOME_RADIUS }}
                 >
-                  Alex
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/jeromepeyronengineer/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-w-[100px] items-center justify-center rounded-full bg-[#0c1d22] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[150px] sm:px-12 sm:py-2.5 sm:text-[11px]"
-                >
-                  Jérôme
-                </a>
+                  <img
+                    src={ASSETS.team}
+                    alt="Alex et Jérôme, co-fondateurs de TerraGo"
+                    className="h-full w-full object-cover object-[center_20%] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                    loading="lazy"
+                  />
+                  <div
+                    className="pointer-events-none absolute inset-0 z-[1] transition-opacity duration-700 group-hover:opacity-80"
+                    style={{
+                      background:
+                        'linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.1) 28%, transparent 55%)',
+                    }}
+                  />
+                </div>
+                <div className="mt-5 flex items-center justify-center gap-3 sm:mt-6 sm:gap-4">
+                  <a
+                    href="https://www.linkedin.com/in/alexsoulard-ev/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Profil LinkedIn d’Alex"
+                    className="inline-flex min-w-[100px] items-center justify-center gap-2 rounded-full bg-[#0c1d22] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[140px] sm:px-10 sm:py-2.5 sm:text-[11px]"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden className="sm:h-[13px] sm:w-[13px]">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                    </svg>
+                    Alex
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/jeromepeyronengineer/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Profil LinkedIn de Jérôme"
+                    className="inline-flex min-w-[100px] items-center justify-center gap-2 rounded-full bg-[#0c1d22] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[140px] sm:px-10 sm:py-2.5 sm:text-[11px]"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden className="sm:h-[13px] sm:w-[13px]">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                    </svg>
+                    Jérôme
+                  </a>
+                </div>
               </div>
-            </div>
-          </ScrollAnimate>
+            </ScrollAnimate>
+          </div>
         </div>
       </section>
 
