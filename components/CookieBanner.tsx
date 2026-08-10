@@ -190,35 +190,72 @@ const CookieBanner: React.FC = () => {
           .ck-cta, .ck-ghost { font-size: 14px; padding: 11px 28px; }
         }
         @media (max-width: 860px) {
-          .ck-wrapper { padding: 16px !important; align-items: center !important; }
+          .ck-wrapper {
+            padding: 12px !important;
+            align-items: center !important;
+            /* iOS Safari : laisse de la place au chrome navigateur */
+            padding-top: max(12px, env(safe-area-inset-top, 0px)) !important;
+            padding-bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important;
+          }
           .ck-panel {
             width: 100% !important; max-width: 440px !important;
-            height: auto !important; max-height: min(88svh, 640px) !important;
-            border-radius: 20px !important;
+            height: auto !important;
+            max-height: calc(100vh - 40px) !important;
+            max-height: calc(100dvh - 40px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
+            border-radius: 18px !important;
             flex-direction: column !important;
+            min-height: 0 !important;
           }
-          /* Step paramètres : hauteur figée pour que le scroll interne fonctionne */
+          /* Step paramètres : hauteur bornée pour forcer le scroll interne */
           .ck-panel.ck-panel-settings {
-            height: min(88svh, 640px) !important;
+            height: calc(100vh - 40px) !important;
+            height: calc(100dvh - 40px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
+            max-height: calc(100vh - 40px) !important;
+            max-height: calc(100dvh - 40px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
           }
-          .ck-visual { width: 100% !important; height: 130px !important; flex: 0 0 130px !important; }
-          .ck-content { padding: 22px 22px 0 !important; }
-          .ck-footer { padding: 18px 22px max(20px, env(safe-area-inset-bottom, 0px)) !important; }
+          .ck-visual { width: 100% !important; height: 88px !important; flex: 0 0 88px !important; }
+          .ck-panel-settings .ck-visual { height: 72px !important; flex: 0 0 72px !important; }
+          .ck-body { flex: 1 1 auto !important; min-height: 0 !important; min-width: 0 !important; overflow: hidden !important; }
+          .ck-content { padding: 16px 16px 0 !important; }
+          .ck-footer { padding: 12px 16px max(14px, env(safe-area-inset-bottom, 0px)) !important; }
           .ck-footer-step1 {
             flex-direction: column !important;
             align-items: stretch !important;
-            gap: 16px !important;
+            gap: 12px !important;
           }
           .ck-footer-step1 .ck-actions {
             display: flex !important;
             width: 100% !important;
-            gap: 10px !important;
+            gap: 8px !important;
           }
           .ck-footer-step1 .ck-actions .ck-ghost,
           .ck-footer-step1 .ck-actions .ck-cta {
             flex: 1 1 0 !important;
           }
-          .ck-title { font-size: 20px !important; }
+          .ck-footer-step2 {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 10px !important;
+          }
+          .ck-footer-step2 .ck-actions {
+            display: flex !important;
+            width: 100% !important;
+            gap: 8px !important;
+          }
+          .ck-footer-step2 .ck-actions .ck-ghost,
+          .ck-footer-step2 .ck-actions .ck-cta {
+            flex: 1 1 0 !important;
+            font-size: 12px !important;
+            padding: 9px 14px !important;
+          }
+          .ck-title { font-size: 18px !important; margin-bottom: 8px !important; }
+          .ck-lead { font-size: 12px !important; line-height: 1.45 !important; margin-bottom: 14px !important; }
+          .ck-row-label { font-size: 12px !important; }
+          .ck-cta-allow { margin-bottom: 10px !important; font-size: 12px !important; padding: 9px 18px !important; }
+          .ck-rows { gap: 6px !important; }
+          .ck-row { padding: 10px 12px !important; }
+          .ck-powered { display: none !important; }
+          .ck-spacer { height: 10px !important; }
         }
       `}</style>
 
@@ -256,13 +293,14 @@ const CookieBanner: React.FC = () => {
             width: '100%',
             maxWidth: step === 1 ? 860 : 940,
             height: step === 1 ? 'auto' : 'min(600px, 92vh)',
-            maxHeight: '92vh',
+            maxHeight: 'min(92dvh, 92vh)',
             background: '#fff',
             borderRadius: 20,
             overflow: 'hidden',
             boxShadow: '0 24px 70px rgba(12,29,34,.28)',
             fontFamily: "'Poppins', sans-serif",
             animation: 'ckIn .28s cubic-bezier(.22,1,.36,1) both',
+            minHeight: 0,
           }}
         >
           <div
@@ -278,7 +316,18 @@ const CookieBanner: React.FC = () => {
             aria-label="Fabrication artisanale – TerraGo"
           />
 
-          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div
+            className="ck-body"
+            style={{
+              flex: 1,
+              minWidth: 0,
+              minHeight: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
             {step === 2 && (
               <button
                 type="button"
@@ -286,8 +335,8 @@ const CookieBanner: React.FC = () => {
                 aria-label="Fermer les paramètres"
                 style={{
                   position: 'absolute',
-                  top: 18,
-                  right: 20,
+                  top: 12,
+                  right: 12,
                   zIndex: 2,
                   width: 30,
                   height: 30,
@@ -309,10 +358,12 @@ const CookieBanner: React.FC = () => {
             <div
               className="ck-scroll ck-content"
               style={{
-                flex: 1,
+                flex: '1 1 auto',
                 minHeight: 0,
                 overflowY: 'auto',
-                padding: step === 1 ? '42px 40px 0' : '42px 40px 0',
+                overflowX: 'hidden',
+                WebkitOverflowScrolling: 'touch',
+                padding: '42px 40px 0',
               }}
             >
               <div key={step} style={{ animation: 'ckFade .3s ease both' }}>
@@ -321,7 +372,7 @@ const CookieBanner: React.FC = () => {
                     <h2 className="ck-title" style={titleStyle}>
                       Nous utilisons des <strong style={strong}>cookies.</strong>
                     </h2>
-                    <p style={leadStyle}>
+                    <p className="ck-lead" style={leadStyle}>
                       Nous utilisons les propres cookies de TerraGo et ceux de tiers pour assurer le bon
                       fonctionnement de ce site. Si vous cliquez sur « Tout accepter », nous utiliserons
                       également des statistiques et des cookies à des fins marketing.{' '}
@@ -337,7 +388,7 @@ const CookieBanner: React.FC = () => {
                     <h2 className="ck-title" style={titleStyle}>
                       Centre de <strong style={strong}>préférences.</strong>
                     </h2>
-                    <p style={{ ...leadStyle, marginBottom: 18 }}>
+                    <p className="ck-lead" style={{ ...leadStyle, marginBottom: 18 }}>
                       Lorsque vous consultez ce site, des données peuvent être stockées dans votre
                       navigateur sous forme de cookies. Vous pouvez choisir de ne pas autoriser certains
                       types.{' '}
@@ -349,11 +400,11 @@ const CookieBanner: React.FC = () => {
                       </a>
                     </p>
 
-                    <button type="button" className="ck-cta" onClick={handleAcceptAll} style={{ marginBottom: 16 }}>
+                    <button type="button" className="ck-cta ck-cta-allow" onClick={handleAcceptAll} style={{ marginBottom: 16 }}>
                       Tout autoriser
                     </button>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 8 }}>
+                    <div className="ck-rows" style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 8 }}>
                       {rows.map((row) => {
                         const isOpen = expanded === row.label;
                         return (
@@ -395,6 +446,7 @@ const CookieBanner: React.FC = () => {
                                   {isOpen ? '−' : '+'}
                                 </span>
                                 <span
+                                  className="ck-row-label"
                                   style={{
                                     fontSize: 13,
                                     fontWeight: 600,
@@ -479,7 +531,7 @@ const CookieBanner: React.FC = () => {
                   </>
                 )}
               </div>
-              <div style={{ height: 22 }} />
+              <div className="ck-spacer" style={{ height: 22 }} />
             </div>
 
             <div className="ck-footer" style={{ flexShrink: 0, padding: '0 40px 26px' }}>
@@ -508,6 +560,7 @@ const CookieBanner: React.FC = () => {
                 </div>
               ) : (
                 <div
+                  className="ck-footer-step2"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -515,13 +568,13 @@ const CookieBanner: React.FC = () => {
                     flexWrap: 'wrap',
                     gap: 12,
                     borderTop: '1px solid rgba(12,29,34,0.08)',
-                    paddingTop: 16,
+                    paddingTop: 14,
                   }}
                 >
-                  <span style={{ fontSize: 11, letterSpacing: '-0.02em', color: '#a5a5a5' }}>
+                  <span className="ck-powered" style={{ fontSize: 11, letterSpacing: '-0.02em', color: '#a5a5a5' }}>
                     Powered by <strong style={{ color: INK, fontWeight: 600 }}>TerraGo</strong>
                   </span>
-                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                  <div className="ck-actions" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                     <button type="button" className="ck-ghost" onClick={handleRefuse}>
                       Tout refuser
                     </button>
