@@ -92,6 +92,18 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     scrollRef.current?.scrollTo({ top: 0 });
   }, [step]);
 
+  const lockScrollWhileDragging = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.style.overflowY = 'hidden';
+  };
+
+  const unlockScrollAfterDragging = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.style.overflowY = 'auto';
+  };
+
   useEffect(() => {
     if (!isOpen) return;
     document.body.style.overflow = 'hidden';
@@ -296,14 +308,24 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
         }
         .osm-back:hover { color:${INK} }
 
-        .osm-range { -webkit-appearance:none; appearance:none; width:100%; height:8px; border-radius:9999px; outline:none; cursor:pointer }
+        .osm-range {
+          -webkit-appearance:none; appearance:none; width:100%; height:8px; border-radius:9999px;
+          outline:none; cursor:pointer; touch-action:none;
+        }
         .osm-range::-webkit-slider-thumb {
           -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%;
           background:#fff; border:1px solid rgba(12,29,34,.2); box-shadow:0 1px 4px rgba(0,0,0,.18); cursor:pointer;
+          touch-action:none;
         }
         .osm-range::-moz-range-thumb {
           width:18px; height:18px; border-radius:50%; background:#fff;
           border:1px solid rgba(12,29,34,.2); box-shadow:0 1px 4px rgba(0,0,0,.18); cursor:pointer;
+          touch-action:none;
+        }
+        .osm-range-wrap {
+          touch-action: none;
+          padding: 14px 0;
+          margin: -6px 0;
         }
 
         @media (max-width: 860px) {
@@ -339,6 +361,20 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           .osm-opt {
             min-height:48px;
             white-space:nowrap;
+          }
+          .osm-range {
+            height: 28px;
+          }
+          .osm-range::-webkit-slider-thumb {
+            width: 28px;
+            height: 28px;
+          }
+          .osm-range::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+          }
+          .osm-range-wrap {
+            padding: 10px 0 18px;
           }
         }
       `}</style>
@@ -687,19 +723,29 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                     <h2 className="osm-title" style={{ ...titleStyle, margin: '40px 0 22px' }}>
                       Quel est votre <strong style={strong}>budget total ?</strong>
                     </h2>
-                    <input
-                      type="range"
-                      className="osm-range"
-                      min={BUDGET_MIN}
-                      max={BUDGET_MAX}
-                      step={BUDGET_STEP}
-                      value={budget}
-                      onChange={(e) => setBudget(Number(e.target.value))}
-                      aria-label="Budget total"
-                      style={{
-                        background: `linear-gradient(to right, ${INK} 0%, ${INK} ${((budget - BUDGET_MIN) / (BUDGET_MAX - BUDGET_MIN)) * 100}%, #ededed ${((budget - BUDGET_MIN) / (BUDGET_MAX - BUDGET_MIN)) * 100}%, #ededed 100%)`,
-                      }}
-                    />
+                    <div
+                      className="osm-range-wrap"
+                      onTouchStart={lockScrollWhileDragging}
+                      onTouchEnd={unlockScrollAfterDragging}
+                      onTouchCancel={unlockScrollAfterDragging}
+                      onPointerDown={lockScrollWhileDragging}
+                      onPointerUp={unlockScrollAfterDragging}
+                      onPointerCancel={unlockScrollAfterDragging}
+                    >
+                      <input
+                        type="range"
+                        className="osm-range"
+                        min={BUDGET_MIN}
+                        max={BUDGET_MAX}
+                        step={BUDGET_STEP}
+                        value={budget}
+                        onChange={(e) => setBudget(Number(e.target.value))}
+                        aria-label="Budget total"
+                        style={{
+                          background: `linear-gradient(to right, ${INK} 0%, ${INK} ${((budget - BUDGET_MIN) / (BUDGET_MAX - BUDGET_MIN)) * 100}%, #ededed ${((budget - BUDGET_MIN) / (BUDGET_MAX - BUDGET_MIN)) * 100}%, #ededed 100%)`,
+                        }}
+                      />
+                    </div>
                     <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 60, marginTop: 18 }}>
                       <div style={{ textAlign: 'center' }}>
                         <div style={{ fontSize: 19, fontWeight: 600, color: INK, letterSpacing: '-.04em' }}>

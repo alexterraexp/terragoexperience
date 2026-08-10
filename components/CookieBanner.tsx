@@ -59,6 +59,37 @@ const CookieBanner: React.FC = () => {
     return () => window.removeEventListener('openCookieBanner', handleOpen);
   }, []);
 
+  // Empêche le scroll de la page derrière la bannière (surtout mobile / iOS).
+  useEffect(() => {
+    if (!visible) return;
+
+    const scrollY = window.scrollY;
+    const { style: bodyStyle } = document.body;
+    const { style: htmlStyle } = document.documentElement;
+    const prev = {
+      bodyOverflow: bodyStyle.overflow,
+      bodyPosition: bodyStyle.position,
+      bodyTop: bodyStyle.top,
+      bodyWidth: bodyStyle.width,
+      htmlOverflow: htmlStyle.overflow,
+    };
+
+    htmlStyle.overflow = 'hidden';
+    bodyStyle.overflow = 'hidden';
+    bodyStyle.position = 'fixed';
+    bodyStyle.top = `-${scrollY}px`;
+    bodyStyle.width = '100%';
+
+    return () => {
+      htmlStyle.overflow = prev.htmlOverflow;
+      bodyStyle.overflow = prev.bodyOverflow;
+      bodyStyle.position = prev.bodyPosition;
+      bodyStyle.top = prev.bodyTop;
+      bodyStyle.width = prev.bodyWidth;
+      window.scrollTo(0, scrollY);
+    };
+  }, [visible]);
+
   const applyConsent = (s: boolean, m: boolean, p: boolean) => {
     applyCookieConsent({ stat: s, mktg: m, pref: p });
   };
@@ -126,7 +157,12 @@ const CookieBanner: React.FC = () => {
           to   { opacity: 1; transform: none; }
         }
         .ck-scroll::-webkit-scrollbar { width: 0; }
-        .ck-scroll { scrollbar-width: none; }
+        .ck-scroll {
+          scrollbar-width: none;
+          overscroll-behavior: contain;
+          -webkit-overflow-scrolling: touch;
+          touch-action: pan-y;
+        }
         .ck-row { transition: background .15s ease; }
         .ck-row:hover { background: rgba(12,29,34,0.03) !important; }
         .ck-track { transition: background .2s ease; }
@@ -160,6 +196,10 @@ const CookieBanner: React.FC = () => {
             height: auto !important; max-height: min(88svh, 640px) !important;
             border-radius: 20px !important;
             flex-direction: column !important;
+          }
+          /* Step paramètres : hauteur figée pour que le scroll interne fonctionne */
+          .ck-panel.ck-panel-settings {
+            height: min(88svh, 640px) !important;
           }
           .ck-visual { width: 100% !important; height: 130px !important; flex: 0 0 130px !important; }
           .ck-content { padding: 22px 22px 0 !important; }
@@ -206,7 +246,7 @@ const CookieBanner: React.FC = () => {
         }}
       >
         <div
-          className="ck-panel"
+          className={`ck-panel${step === 2 ? ' ck-panel-settings' : ''}`}
           role="dialog"
           aria-modal="true"
           aria-label="Préférences cookies"
