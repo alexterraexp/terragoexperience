@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { applyCookieConsent, COOKIE_CONSENT_KEY } from '../lib/analytics';
 
 const INK = '#0c1d22';
@@ -308,13 +309,18 @@ const CookieBanner: React.FC = () => {
             style={{
               flex: '0 0 34%',
               width: '34%',
-              backgroundImage: `url("${COOKIE_IMAGE}")`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              position: 'relative',
+              overflow: 'hidden',
             }}
-            role="img"
-            aria-label="Fabrication artisanale – TerraGo"
-          />
+          >
+            <Image
+              src={COOKIE_IMAGE}
+              alt="Fabrication artisanale – TerraGo"
+              fill
+              className="object-cover"
+              sizes="(max-width: 860px) 100vw, 34vw"
+            />
+          </div>
 
           <div
             className="ck-body"

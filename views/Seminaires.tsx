@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useModal } from '../context/ModalContext';
@@ -643,18 +644,22 @@ const Seminaires: React.FC = () => {
         className="relative scroll-mt-28"
         style={{ paddingTop: homeSectionPadding, paddingBottom: 'clamp(2.5rem, 5vw, 4rem)', background: '#ffffff' }}
       >
-        <img
+        <Image
           src={ASSETS.sOrange}
           alt=""
           aria-hidden
+          width={260}
+          height={260}
           className="pointer-events-none absolute right-0 z-0 hidden h-[200px] w-[200px] translate-x-[30%] -translate-y-[20%] object-contain lg:block xl:h-[260px] xl:w-[260px]"
           style={{ top: 0 }}
         />
 
         <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
-          <img
+          <Image
             src={ASSETS.producteurSoutenu}
             alt="+1 producteur soutenu"
+            width={208}
+            height={208}
             className="pointer-events-none absolute right-5 top-0 z-20 h-28 w-auto -translate-y-[72%] object-contain sm:right-8 sm:h-40 sm:-translate-y-[55%] lg:right-8 lg:h-52"
           />
           <ScrollAnimate>
@@ -719,11 +724,12 @@ const Seminaires: React.FC = () => {
                 className="relative aspect-[3/3.45] w-[70vw] max-w-[320px] shrink-0 snap-center overflow-hidden"
                 style={{ borderRadius: HOME_RADIUS }}
               >
-                <img
+                <Image
                   src={f.image}
                   alt={f.alt}
-                  className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
-                  loading="lazy"
+                  fill
+                  sizes="70vw"
+                  className="pointer-events-none select-none object-cover"
                   draggable={false}
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
@@ -751,10 +757,13 @@ const Seminaires: React.FC = () => {
                   className="group relative aspect-[5/4] overflow-hidden"
                   style={{ borderRadius: HOME_RADIUS }}
                 >
-                  <img
+                  <Image
                     src={f.image}
                     alt={f.alt}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.1]"
+                    fill
+                    sizes="(max-width: 1024px) 50vw, 33vw"
+                    priority={i === 0}
+                    className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.1]"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
                   <p className="absolute left-5 right-4 top-[50%] z-10 font-sans text-[26px] leading-[1.12] tracking-[-0.075em] text-white lg:left-6 lg:right-5 lg:text-[28px]">
@@ -773,10 +782,12 @@ const Seminaires: React.FC = () => {
         className="relative"
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: HOME_COLORS.gray }}
       >
-        <img
+        <Image
           src={ASSETS.etoile}
           alt=""
           aria-hidden
+          width={380}
+          height={380}
           className="pointer-events-none absolute left-0 z-0 hidden h-[300px] w-[300px] -translate-x-[48%] object-contain lg:block xl:h-[380px] xl:w-[380px]"
           style={{ top: '18%' }}
         />
@@ -801,10 +812,12 @@ const Seminaires: React.FC = () => {
         className="relative scroll-mt-28"
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
       >
-        <img
+        <Image
           src={ASSETS.ble}
           alt=""
           aria-hidden
+          width={176}
+          height={176}
           className="pointer-events-none absolute right-3 top-0 z-20 h-24 w-24 -translate-y-1/2 object-contain sm:right-8 sm:h-36 sm:w-36 lg:right-12 lg:h-44 lg:w-44"
         />
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
@@ -859,10 +872,12 @@ const Seminaires: React.FC = () => {
                 className="group relative aspect-[3/4] w-[72%] shrink-0 snap-start overflow-hidden sm:w-[42%] lg:w-[23%]"
                 style={{ borderRadius: HOME_RADIUS }}
               >
-                <img
+                <Image
                   src={u.cardImage}
                   alt={`${u.lead}${u.rest}`}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.14]"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.14]"
                   draggable={false}
                 />
                 <div
@@ -928,7 +943,7 @@ const Seminaires: React.FC = () => {
                 >
                   {LIEUX_IMAGES.map((img) => (
                     <div key={img.src} className="relative aspect-[4/3] w-full min-w-full shrink-0 snap-center">
-                      <img src={img.src} alt={img.alt} className="absolute inset-0 h-full w-full object-cover" />
+                      <Image src={img.src} alt={img.alt} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
                     </div>
                   ))}
                 </div>
@@ -1063,16 +1078,20 @@ const Seminaires: React.FC = () => {
         }}
       >
         <div className="relative mx-auto max-w-5xl px-5 sm:px-8">
-          <img
+          <Image
             src={ASSETS.feu}
             alt=""
             aria-hidden
+            width={208}
+            height={208}
             className="pointer-events-none absolute -left-4 -top-10 z-20 h-28 w-28 object-contain sm:-left-8 sm:-top-14 sm:h-40 sm:w-40 lg:-left-12 lg:-top-16 lg:h-52 lg:w-52"
           />
-          <img
+          <Image
             src={ASSETS.piment}
             alt=""
             aria-hidden
+            width={208}
+            height={208}
             className="pointer-events-none absolute -bottom-10 -right-4 z-20 h-28 w-28 object-contain sm:-bottom-14 sm:-right-8 sm:h-40 sm:w-40 lg:-bottom-16 lg:-right-12 lg:h-52 lg:w-52"
           />
 

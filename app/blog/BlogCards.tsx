@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { HOME_COLORS, HOME_RADIUS } from '../../components/home/homeStyles';
 
@@ -45,10 +46,13 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
             className="group relative block aspect-[4/3] overflow-hidden sm:aspect-[16/10] lg:aspect-auto lg:min-h-[420px]"
             style={{ borderRadius: HOME_RADIUS }}
           >
-            <img
+            <Image
               src={featured.cover_url ?? DEFAULT_COVER}
               alt={featured.title}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+              fill
+              className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+              sizes="(max-width: 1024px) 100vw, 65vw"
+              priority
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
 
@@ -125,10 +129,12 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
                 className="group relative aspect-[3/4] overflow-hidden sm:aspect-[4/5]"
                 style={{ borderRadius: HOME_RADIUS }}
               >
-                <img
+                <Image
                   src={post.cover_url ?? DEFAULT_COVER}
                   alt={post.title}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                  fill
+                  className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
@@ -174,10 +180,12 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
                 className="relative aspect-[3/4] overflow-hidden sm:aspect-[4/5]"
                 style={{ borderRadius: HOME_RADIUS }}
               >
-                <img
+                <Image
                   src={post.cover_url ?? DEFAULT_COVER}
-                  alt=""
-                  className="absolute inset-0 h-full w-full object-cover brightness-[0.7] saturate-50"
+                  alt={post.title}
+                  fill
+                  className="object-cover brightness-[0.7] saturate-50"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-[#0c1d22]/35" />
 

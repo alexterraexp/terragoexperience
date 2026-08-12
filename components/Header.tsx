@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useModal } from '../context/ModalContext';
@@ -563,14 +564,14 @@ const Header: React.FC = () => {
               ].filter(Boolean).join(' ')}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
-              <img src="/logo-white.png" alt="" aria-hidden className="hidden" />
-              <img
+              <Image src="/logo-white.png" alt="" aria-hidden width={116} height={90} className="hidden" />
+              <Image
                 src={isDark ? '/logo-white.png' : '/logo.png'}
                 alt="TerraGo"
                 width={116}
                 height={90}
                 className="h-[36px] w-auto object-contain transition-transform duration-300 group-hover:scale-105 sm:h-[40px] lg:h-[44px]"
-                decoding="async"
+                priority
               />
             </Link>
 
@@ -867,7 +868,7 @@ const Header: React.FC = () => {
                 className="flex items-center"
                 aria-label="TerraGo – Accueil"
               >
-                <img src="/logo.png" alt="TerraGo" className="h-7 w-auto object-contain" />
+                <Image src="/logo.png" alt="TerraGo" width={112} height={28} className="h-7 w-auto object-contain" />
               </Link>
               <button
                 type="button"

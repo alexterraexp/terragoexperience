@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useModal } from '../context/ModalContext';
@@ -24,6 +25,12 @@ import {
 } from '../lib/destinations';
 import { protectedImageProps } from '../lib/protectedImage';
 import { getImageCopyright } from '../lib/imageCopyrights';
+import { supabase } from '../lib/supabase';
+import { fetchSeminaireBySlug } from '../lib/seminaires';
+import {
+  mapSupabaseRowToFull,
+  type SupabaseProducerRow,
+} from '../lib/producerTypes';
 
 /** Même format que les titres de section Home / Séminaires. */
 const sectionTitleClass =
@@ -242,10 +249,12 @@ const LogementCarousel: React.FC<{
         >
           {images.map((img) => (
             <div key={img.src} className="relative aspect-[4/3] w-full shrink-0 snap-center">
-              <img
+              <Image
                 src={img.src}
                 alt={img.alt}
-                className="absolute inset-0 h-full w-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
                 {...protectedImageProps}
               />
               {getImageCopyright(img.src) ? (
@@ -302,6 +311,46 @@ type Props = {
 const DestinationRegion: React.FC<Props> = ({ destination }) => {
   const { openModal } = useModal();
   const related = getRelatedDestinations(destination.slug, 2);
+  const [producerAbout, setProducerAbout] = useState<string | null>(null);
+  const [producerRole, setProducerRole] = useState<string | null>(null);
+
+  const producerSlug = destination.producer.generic
+    ? undefined
+    : destination.producer.seminaireSlug;
+
+  useEffect(() => {
+    if (!producerSlug) {
+      setProducerAbout(null);
+      setProducerRole(null);
+      return;
+    }
+
+    let cancelled = false;
+    (async () => {
+      const { seminaire } = await fetchSeminaireBySlug(producerSlug);
+      if (cancelled || !seminaire) return;
+
+      const { data } = await supabase
+        .from('producers_full')
+        .select('*')
+        .eq('seminaire_id', seminaire.id)
+        .maybeSingle();
+
+      if (cancelled || !data) return;
+
+      const producer = mapSupabaseRowToFull(data as SupabaseProducerRow);
+      const about = producer.description?.trim() || producer.highlight?.trim() || null;
+      setProducerAbout(about);
+      if (producer.type?.trim()) setProducerRole(producer.type.trim());
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [producerSlug]);
+
+  const aboutText = producerAbout || destination.producer.description;
+  const roleText = producerRole || destination.producer.role;
 
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -309,10 +358,12 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
       <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
         <div className="relative mx-auto max-w-[1280px] px-5 pb-2 sm:px-8">
           {/* Picto vélo — coin bas gauche du hero, déborde à l’extérieur */}
-          <img
+          <Image
             src={PICTO_VELO}
             alt=""
             aria-hidden
+            width={224}
+            height={224}
             className="pointer-events-none absolute bottom-0 left-0 z-30 h-36 w-36 -translate-x-[35%] translate-y-[42%] object-contain drop-shadow-md sm:h-48 sm:w-48 lg:h-56 lg:w-56"
           />
           <div
@@ -441,10 +492,12 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                   className="relative aspect-[4/5] w-full max-w-[420px] overflow-hidden sm:max-w-[480px] lg:max-w-none lg:w-full"
                   style={{ borderRadius: '28px' }}
                 >
-                  <img
+                  <Image
                     src={destination.prosImage}
                     alt={destination.prosImageAlt}
-                    className="absolute inset-0 h-full w-full object-cover"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover"
                     {...protectedImageProps}
                   />
                   {getImageCopyright(destination.prosImage) ? (
@@ -508,10 +561,12 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
         }}
       >
         {/* Étoile — bordure droite, à l’intersection avec le programme type */}
-        <img
+        <Image
           src={ETOILE}
           alt=""
           aria-hidden
+          width={380}
+          height={380}
           className="pointer-events-none absolute right-0 z-0 hidden h-[300px] w-[300px] translate-x-[46%] -translate-y-1/2 object-contain lg:block xl:h-[380px] xl:w-[380px]"
           style={{ top: 0 }}
         />
@@ -521,10 +576,18 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
               className="font-sans text-[13px] font-bold tracking-[-0.03em] sm:text-[14px]"
               style={{ color: HOME_COLORS.orange }}
             >
-              Exemple de producteur
+              {destination.producer.generic
+                ? 'Exemples de producteurs'
+                : 'Exemple de producteur'}
             </p>
             <h2 className={`mt-3 max-w-2xl ${sectionTitleClass}`}>
-              Rencontrez <span className="font-bold">{destination.producer.name}</span>.
+              {destination.producer.generic ? (
+                <span className="font-bold">{destination.producer.name}</span>
+              ) : (
+                <>
+                  Rencontrez <span className="font-bold">{destination.producer.name}</span>.
+                </>
+              )}
             </h2>
           </ScrollAnimate>
 
@@ -534,10 +597,12 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                 className="relative aspect-[4/3] w-full overflow-hidden lg:aspect-auto lg:h-full lg:min-h-[360px]"
                 style={{ borderRadius: HOME_RADIUS }}
               >
-                <img
+                <Image
                   src={destination.producer.image}
                   alt={destination.producer.imageAlt}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
                   {...protectedImageProps}
                 />
                 {getImageCopyright(destination.producer.image) ? (
@@ -548,16 +613,36 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
 
             <ScrollAnimate delay={80} className="flex flex-col justify-center">
               <p className="font-sans text-[14px] font-semibold tracking-[-0.03em] text-[#0c1d22] sm:text-[15px]">
-                {destination.producer.role}
+                {roleText}
               </p>
-              <p className={`mt-4 ${homeParagraphClass}`}>{destination.producer.description}</p>
-              <button
-                type="button"
-                onClick={() => openModal()}
-                className={`mt-7 self-start ${homeCtaOutlineClass}`}
+              {!destination.producer.generic ? (
+                <p
+                  className="mt-5 font-sans text-[13px] font-bold tracking-[-0.03em] sm:text-[14px]"
+                  style={{ color: HOME_COLORS.orange }}
+                >
+                  À propos du producteur
+                </p>
+              ) : null}
+              <p
+                className={`${destination.producer.generic ? 'mt-4' : 'mt-3'} ${homeParagraphClass}`}
               >
-                Découvrir cette expérience
-              </button>
+                {aboutText}
+              </p>
+              {destination.producer.generic || !producerSlug ? (
+                <Link
+                  href="/seminaire-exemples"
+                  className={`mt-7 self-start ${homeCtaOutlineClass}`}
+                >
+                  Découvrir nos exemples de séminaire
+                </Link>
+              ) : (
+                <Link
+                  href={`/seminaire-exemples/${producerSlug}`}
+                  className={`mt-7 self-start ${homeCtaOutlineClass}`}
+                >
+                  Découvrir cet exemple de séminaire
+                </Link>
+              )}
             </ScrollAnimate>
           </div>
         </div>
@@ -573,10 +658,12 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
         }}
       >
         {/* S orange — bordure gauche, à l’intersection avec la section producteur */}
-        <img
+        <Image
           src={S_ORANGE}
           alt=""
           aria-hidden
+          width={260}
+          height={260}
           className="pointer-events-none absolute left-0 z-0 hidden h-[200px] w-[200px] -translate-x-[30%] -translate-y-1/2 object-contain opacity-90 lg:block xl:h-[260px] xl:w-[260px]"
           style={{ top: 0 }}
         />
@@ -627,10 +714,12 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
         }}
       >
         {/* Abeille — padding bas droit */}
-        <img
+        <Image
           src={ABEILLE}
           alt=""
           aria-hidden
+          width={224}
+          height={224}
           className="pointer-events-none absolute bottom-8 right-4 z-20 hidden h-32 w-32 object-contain sm:block sm:bottom-10 sm:right-8 sm:h-44 sm:w-44 lg:bottom-12 lg:right-12 lg:h-56 lg:w-56"
         />
         <div className="relative z-10 mx-auto max-w-3xl px-5 sm:px-8">
@@ -680,10 +769,12 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                   className="group relative block aspect-[21/9] overflow-hidden sm:aspect-[2.2/1]"
                   style={{ borderRadius: HOME_RADIUS }}
                 >
-                  <img
+                  <Image
                     src={region.heroImage}
                     alt={`Séminaire ${region.prep} ${region.name}`}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
                     {...protectedImageProps}
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />

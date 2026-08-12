@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useModal } from '../context/ModalContext';
 import {
@@ -102,9 +103,11 @@ const Engagement: React.FC = () => {
             </button>
           </div>
 
-          <img
+          <Image
             src={ASSETS.producteurSoutenu}
             alt="+1 producteur soutenu"
+            width={192}
+            height={192}
             className="pointer-events-none absolute bottom-0 right-5 z-30 h-32 w-auto translate-x-[18%] translate-y-[55%] rotate-[6deg] object-contain drop-shadow-md sm:right-8 sm:h-40 lg:right-12 lg:h-48"
           />
         </div>
@@ -116,10 +119,12 @@ const Engagement: React.FC = () => {
         className="relative overflow-hidden"
         style={{ paddingTop: homeSectionPadding, paddingBottom: 'clamp(2rem, 4vw, 3rem)', background: '#ffffff' }}
       >
-        <img
+        <Image
           src={ASSETS.symbole}
           alt=""
           aria-hidden
+          width={320}
+          height={320}
           className="pointer-events-none absolute left-0 top-1/2 z-0 h-48 w-48 -translate-x-[35%] -translate-y-1/2 object-contain opacity-90 sm:h-64 sm:w-64 lg:h-80 lg:w-80"
         />
 
@@ -192,17 +197,21 @@ const Engagement: React.FC = () => {
         }}
       >
         {/* Symbole orange — calé sur le séparateur blanc / gris, à droite */}
-        <img
+        <Image
           src={ASSETS.symbole}
           alt=""
           aria-hidden
+          width={288}
+          height={288}
           className="pointer-events-none absolute right-0 top-0 z-20 h-40 w-40 translate-x-[35%] -translate-y-1/2 object-contain opacity-90 sm:h-56 sm:w-56 lg:h-72 lg:w-72"
         />
         {/* Arbre — mobile : intersection vision / producteurs ; desktop : gauche section */}
-        <img
+        <Image
           src={ASSETS.arbre}
           alt=""
           aria-hidden
+          width={288}
+          height={288}
           className="pointer-events-none absolute left-4 top-0 z-20 h-40 w-40 -translate-y-1/2 object-contain sm:left-8 sm:top-[22%] sm:h-56 sm:w-56 sm:translate-y-0 lg:left-12 lg:h-72 lg:w-72"
         />
 
@@ -219,11 +228,12 @@ const Engagement: React.FC = () => {
                 className="relative mx-auto aspect-square w-full max-w-md overflow-hidden lg:max-w-none"
                 style={{ borderRadius: HOME_RADIUS }}
               >
-                <img
+                <Image
                   src={ASSETS.paolo}
                   alt="Paolo, producteur partenaire TerraGo"
-                  className="h-full w-full object-cover"
-                  loading="lazy"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 28rem, 50vw"
                 />
               </div>
             </ScrollAnimate>
@@ -259,10 +269,12 @@ const Engagement: React.FC = () => {
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
       >
         {/* Mouton — mobile : intersection producteurs / fondateurs ; desktop : droite section */}
-        <img
+        <Image
           src={ASSETS.mouton}
           alt=""
           aria-hidden
+          width={256}
+          height={256}
           className="pointer-events-none absolute right-4 top-0 z-20 h-36 w-36 -translate-y-1/2 object-contain sm:right-8 sm:top-[32%] sm:h-52 sm:w-52 sm:translate-y-0 lg:right-12 lg:h-64 lg:w-64"
         />
 
@@ -306,11 +318,12 @@ const Engagement: React.FC = () => {
                   className="relative aspect-square overflow-hidden"
                   style={{ borderRadius: HOME_RADIUS }}
                 >
-                  <img
+                  <Image
                     src={ASSETS.team}
                     alt="Alex et Jérôme, co-fondateurs de TerraGo"
-                    className="h-full w-full object-cover object-[center_20%] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                    loading="lazy"
+                    fill
+                    className="object-cover object-[center_20%] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                    sizes="(max-width: 1024px) 28rem, 50vw"
                   />
                   <div
                     className="pointer-events-none absolute inset-0 z-[1] transition-opacity duration-700 group-hover:opacity-80"
@@ -363,10 +376,12 @@ const Engagement: React.FC = () => {
         }}
       >
         {/* Rateau — mobile : intersection fondateurs / RSE ; desktop : gauche section */}
-        <img
+        <Image
           src={ASSETS.rateau}
           alt=""
           aria-hidden
+          width={256}
+          height={256}
           className="pointer-events-none absolute left-4 top-0 z-20 h-36 w-36 -translate-y-1/2 object-contain sm:left-8 sm:top-[28%] sm:h-52 sm:w-52 sm:translate-y-0 lg:left-12 lg:h-64 lg:w-64"
         />
 
@@ -408,11 +423,12 @@ const Engagement: React.FC = () => {
                 className="group relative flex h-56 items-end overflow-hidden sm:h-64"
                 style={{ borderRadius: HOME_RADIUS }}
               >
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1680617550341-3fa60e61f572?q=80&w=1287&auto=format&fit=crop"
-                  alt=""
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                  loading="lazy"
+                  alt="Séminaires d’entreprise TerraGo"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  sizes="(max-width: 640px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0c1d22]/90 via-[#0c1d22]/30 to-transparent" />
                 <div className="relative z-10 p-6 sm:p-8">
@@ -432,11 +448,12 @@ const Engagement: React.FC = () => {
                 className="group relative flex h-56 items-end overflow-hidden sm:h-64"
                 style={{ borderRadius: HOME_RADIUS }}
               >
-                <img
+                <Image
                   src={ASSETS.paolo}
-                  alt=""
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                  loading="lazy"
+                  alt="Producteurs partenaires TerraGo"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  sizes="(max-width: 640px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0c1d22]/90 via-[#0c1d22]/30 to-transparent" />
                 <div className="relative z-10 p-6 sm:p-8">

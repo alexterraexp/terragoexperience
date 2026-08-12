@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { useModal } from '../context/ModalContext';
 
 const Auth: React.FC = () => {
@@ -116,7 +117,7 @@ const Auth: React.FC = () => {
 
 const SocialButton = ({ icon, label }: { icon: string, label: string }) => (
   <button className="w-full flex items-center justify-center gap-4 bg-white border border-black/5 py-4 rounded-2xl hover:bg-stone-50 transition-all shadow-sm group">
-    <img src={icon} alt={label} className="size-5 object-contain opacity-70 group-hover:opacity-100 transition-opacity" />
+    <Image src={icon} alt={label} width={20} height={20} className="size-5 object-contain opacity-70 group-hover:opacity-100 transition-opacity" unoptimized />
     <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary">{label}</span>
   </button>
 );

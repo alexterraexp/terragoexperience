@@ -46,6 +46,10 @@ export type DestinationRegion = {
     description: string;
     image: string;
     imageAlt: string;
+    /** Exemples de métiers (pas un producteur nommé) */
+    generic?: boolean;
+    /** Slug `/seminaire-exemples/[slug]` pour un producteur nommé */
+    seminaireSlug?: string;
   };
   logement: {
     title: string;
@@ -161,6 +165,7 @@ export const DESTINATIONS: DestinationRegion[] = [
         'Rencontrez Baptiste pour une immersion dans la culture du piment : visite de l’exploitation, atelier les mains dans la terre et dégustation. Une expérience vive, colorée et fédératrice pour vos équipes.',
       image: HOME_PRODUCERS[0].image,
       imageAlt: 'Baptiste, producteur de piments – TerraGo',
+      seminaireSlug: 'avec-baptiste',
     },
     logement: {
       title: 'Hébergements au plus près du territoire',
@@ -270,8 +275,10 @@ export const DESTINATIONS: DestinationRegion[] = [
       role: 'Producteur d’olives',
       description:
         'Chez Paolo, vos équipes découvrent le métier de l’olive : récolte selon saison, explication du pressage et dégustation d’huiles. Un moment authentique et fédérateur.',
-      image: HOME_PRODUCERS[2].image,
+      image:
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/OLIVEPAOLO/paoloolive.png',
       imageAlt: 'Paolo, producteur d’olives en Provence – TerraGo',
+      seminaireSlug: 'avec-paolo',
     },
     logement: {
       title: 'Mas et domaines pour séminaires',
@@ -373,12 +380,14 @@ export const DESTINATIONS: DestinationRegion[] = [
       },
     ],
     producer: {
-      name: 'Suzanna',
-      role: 'Éleveuse de bufflones',
+      name: 'Benoît',
+      role: 'Producteur maraîcher',
       description:
-        'Chez Suzanna, vos équipes découvrent un élevage engagé : visite, explication du métier et dégustation. Un moment authentique et fédérateur, proche de Paris.',
-      image: HOME_PRODUCERS[4].image,
-      imageAlt: 'Suzanna, éleveuse – TerraGo',
+        'Chez Louise & Benoît, vos équipes découvrent une ferme maraîchère engagée près de Paris : circuits courts, gestes durables et immersion terrain. Une expérience authentique et fédératrice, aux portes de la capitale.',
+      image:
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.jpg',
+      imageAlt: 'Benoît, producteur maraîcher – TerraGo',
+      seminaireSlug: 'avec-louise-benoit',
     },
     logement: {
       title: 'Fermes et domaines proches de Paris',
@@ -486,6 +495,7 @@ export const DESTINATIONS: DestinationRegion[] = [
         'Chez Suzanna, vos équipes découvrent un élevage engagé : visite, explication du métier et dégustation. Une immersion rare et fédératrice.',
       image: HOME_PRODUCERS[4].image,
       imageAlt: 'Suzanna, éleveuse – TerraGo',
+      seminaireSlug: 'avec-suzanna',
     },
     logement: {
       title: 'Fermes et maisons normandes',
@@ -593,6 +603,7 @@ export const DESTINATIONS: DestinationRegion[] = [
         'Vivez une immersion autour de l’olive avec Paolo : visite du verger, atelier et dégustation d’huile. Une expérience sensorielle et fédératrice.',
       image: HOME_PRODUCERS[2].image,
       imageAlt: 'Paolo, producteur d’olives – TerraGo',
+      seminaireSlug: 'avec-paolo',
     },
     logement: {
       title: 'Maisons et domaines pour vos équipes',
@@ -694,12 +705,13 @@ export const DESTINATIONS: DestinationRegion[] = [
       },
     ],
     producer: {
-      name: 'Nathalie & Benjamin',
-      role: 'Producteurs engagés',
+      name: 'Suzanna',
+      role: 'Éleveuse de bufflones',
       description:
-        'Partagez le quotidien de Nathalie et Benjamin : visite, atelier les mains dans la terre et dégustation. Une immersion humaine qui renforce le lien d’équipe.',
-      image: HOME_PRODUCERS[1].image,
-      imageAlt: 'Nathalie et Benjamin, producteurs – TerraGo',
+        'Chez Suzanna, vos équipes découvrent un élevage engagé : visite, explication du métier et dégustation. Une immersion rare et fédératrice, au cœur de la Bretagne.',
+      image: HOME_PRODUCERS[4].image,
+      imageAlt: 'Suzanna, éleveuse – TerraGo',
+      seminaireSlug: 'avec-suzanna',
     },
     logement: {
       title: 'Des lieux de caractère pour vos équipes',
@@ -801,12 +813,14 @@ export const DESTINATIONS: DestinationRegion[] = [
       },
     ],
     producer: {
-      name: 'Hugues & Marc',
-      role: 'Maraîchers',
+      name: 'Vignerons, arboriculteurs et maraîchers',
+      role: 'Exemples de rencontres possibles',
       description:
-        'Chez Hugues et Marc, vos équipes découvrent le métier du maraîchage : visite des cultures, gestes du quotidien et dégustation. Un moment concret, humain et fédérateur.',
-      image: HOME_PRODUCERS[3].image,
-      imageAlt: 'Hugues et Marc, maraîchers – TerraGo',
+        'Le long de la Loire, nous sélectionnons selon votre brief : domaines viticoles (Muscadet, Anjou, Saumur…), vergers de pommes et poires, ou maraîchers engagés. Une immersion terroir à composer sur mesure.',
+      image:
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/producteur/578192052.jpg',
+      imageAlt: 'Rencontre chez un producteur en Pays de la Loire – TerraGo',
+      generic: true,
     },
     logement: {
       title: 'Domaines et demeures pour séminaires',
@@ -908,12 +922,14 @@ export const DESTINATIONS: DestinationRegion[] = [
       },
     ],
     producer: {
-      name: 'Hugues & Marc',
-      role: 'Maraîchers',
+      name: 'Fromagers, éleveurs de chèvres et apiculteurs',
+      role: 'Exemples de rencontres possibles',
       description:
-        'Plongez dans le quotidien d’Hugues et Marc au potager : récolte, atelier et partage autour des bons produits. Une expérience concrète et fédératrice.',
-      image: HOME_PRODUCERS[3].image,
-      imageAlt: 'Hugues et Marc, maraîchers – TerraGo',
+        'Sur les terres volcaniques, nous sélectionnons selon votre brief : producteurs de fromages AOP (Saint-Nectaire, Cantal…), chèvreries fermières ou ruchers de montagne. Une immersion authentique, à composer sur mesure.',
+      image:
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/EXPERIENCES%20IMG/6427859-fromage.jpg',
+      imageAlt: 'Cave d’affinage de fromages en Auvergne – TerraGo',
+      generic: true,
     },
     logement: {
       title: 'Hébergements nature pour séminaires',
@@ -1021,6 +1037,7 @@ export const DESTINATIONS: DestinationRegion[] = [
         'Rencontrez Marie-Lise et Sabine pour une immersion autour de la noix : visite, atelier et dégustation. Une rencontre humaine, concrète et fédératrice.',
       image: HOME_PRODUCERS[5].image,
       imageAlt: 'Marie-Lise et Sabine, productrices – TerraGo',
+      seminaireSlug: 'avec-sabine-marie-lise',
     },
     logement: {
       title: 'Domaines et maisons de caractère',
@@ -1130,12 +1147,14 @@ export const DESTINATIONS: DestinationRegion[] = [
       },
     ],
     producer: {
-      name: 'Nathalie & Benjamin',
-      role: 'Producteurs engagés',
+      name: 'Vignerons, producteurs d’agrumes et éleveurs',
+      role: 'Exemples de rencontres possibles',
       description:
-        'Une immersion producteur pour comprendre un métier, partager un geste et créer du lien — au cœur d’un territoire corse authentique.',
-      image: HOME_PRODUCERS[1].image,
-      imageAlt: 'Producteurs partenaires TerraGo',
+        'Sur l’île, nous sélectionnons selon votre brief : domaines viticoles, vergers d’agrumes (clémentines IGP…), élevages et charcuterie artisanale. Une immersion corse authentique, à composer sur mesure.',
+      image:
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/corse/agrumes-6907269-32078454.jpg',
+      imageAlt: 'Agrumes corses – TerraGo',
+      generic: true,
     },
     logement: {
       title: 'Lieux de caractère en Corse',

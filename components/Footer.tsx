@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useModal } from '../context/ModalContext';
@@ -111,11 +112,13 @@ const GUARANTEES = [
   {
     src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/atoutfrance.png',
     alt: 'Atout France',
+    href: 'https://www.atout-france.fr/',
     larger: true,
   },
   {
     src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/arcus.png',
     alt: 'Arcus Solutions',
+    href: 'https://www.arcus-solutions.fr/',
     rounded: true,
   },
 ];
@@ -258,7 +261,7 @@ const Footer: React.FC = () => {
 
       <div
         className="relative z-[1] mx-auto max-w-[1440px]"
-        style={{ padding: 'clamp(2rem, 4vw, 3.5rem) clamp(1rem, 3vw, 2.5rem) clamp(1rem, 2vw, 1.5rem)' }}
+        style={{ padding: 'clamp(2rem, 4vw, 3.5rem) clamp(1rem, 3vw, 2.5rem) 0' }}
       >
         <div style={{ padding: FRAME_PADDING }}>
           <div className="footer-grid">
@@ -418,37 +421,57 @@ const Footer: React.FC = () => {
               </button>
 
               <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-                <p className="m-0 text-white" style={{ fontSize: 'clamp(18px, 1.5vw, 22px)', letterSpacing: '-0.05em' }}>
+                <Link
+                  href="/mentions-legales"
+                  className="m-0 text-white transition-opacity hover:opacity-80"
+                  style={{ fontSize: 'clamp(18px, 1.5vw, 22px)', letterSpacing: '-0.05em', textDecoration: 'none' }}
+                >
                   Nos <span className="font-bold">garanties</span>
-                </p>
+                </Link>
                 {GUARANTEES.map((logo) =>
                   'rounded' in logo && logo.rounded ? (
-                    <span
+                    <a
                       key={logo.src}
-                      className="inline-block h-14 w-14 overflow-hidden rounded-[18px] sm:h-16 sm:w-16 sm:rounded-[20px] lg:h-[4.5rem] lg:w-[4.5rem] lg:rounded-[22px]"
+                      href={logo.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={logo.alt}
+                      className="relative inline-block h-14 w-14 overflow-hidden rounded-[18px] transition-opacity hover:opacity-80 sm:h-16 sm:w-16 sm:rounded-[20px] lg:h-[4.5rem] lg:w-[4.5rem] lg:rounded-[22px]"
                     >
-                      <img
+                      <Image
                         src={logo.src}
                         alt={logo.alt}
-                        className="h-full w-full scale-[1.42] object-cover"
+                        fill
+                        className="scale-[1.42] object-cover"
+                        sizes="72px"
                         onError={(e) => {
                           const wrap = e.currentTarget.parentElement;
                           if (wrap) wrap.style.display = 'none';
                         }}
                       />
-                    </span>
+                    </a>
                   ) : (
-                    <img
+                    <a
                       key={logo.src}
-                      src={logo.src}
-                      alt={logo.alt}
-                      className={
-                        'larger' in logo && logo.larger
-                          ? 'h-16 w-auto object-contain sm:h-[4.5rem] lg:h-20'
-                          : 'h-14 w-auto object-contain sm:h-16 lg:h-[4.5rem]'
-                      }
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                    />
+                      href={logo.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={logo.alt}
+                      className="inline-block transition-opacity hover:opacity-80"
+                    >
+                      <Image
+                        src={logo.src}
+                        alt={logo.alt}
+                        width={160}
+                        height={80}
+                        className={
+                          'larger' in logo && logo.larger
+                            ? 'h-16 w-auto object-contain sm:h-[4.5rem] lg:h-20'
+                            : 'h-14 w-auto object-contain sm:h-16 lg:h-[4.5rem]'
+                        }
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      />
+                    </a>
                   ),
                 )}
               </div>
@@ -462,7 +485,7 @@ const Footer: React.FC = () => {
           style={{
             paddingTop: 'clamp(1.25rem, 2vw, 1.75rem)',
             paddingLeft: FRAME_PADDING,
-            paddingBottom: 'clamp(1.5rem, 3vw, 2rem)',
+            paddingBottom: 'max(1.2rem, env(safe-area-inset-bottom, 0px))',
             lineHeight: 1.45,
           }}
         >
@@ -508,10 +531,12 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Étoile orange — coin bas droit, derrière le texte */}
-      <img
+      <Image
         src={ORANGE_STAR}
         alt=""
         aria-hidden
+        width={416}
+        height={416}
         className="pointer-events-none absolute bottom-0 right-0 z-0 h-40 w-40 translate-x-[48%] translate-y-[48%] object-contain opacity-90 sm:h-[22rem] sm:w-[22rem] sm:translate-x-[40%] sm:translate-y-[40%] sm:opacity-100 lg:h-[26rem] lg:w-[26rem]"
       />
     </footer>

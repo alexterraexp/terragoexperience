@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { HOME_COLORS, HOME_RADIUS } from '../components/home/homeStyles';
 import { HOME_EMOJI } from '../lib/homeStorage';
@@ -29,10 +30,12 @@ const Confidentialite: React.FC = () => {
       }}
     >
       <div className="relative mx-auto w-full max-w-6xl px-5 pb-24 pt-[calc(7.5rem+env(safe-area-inset-top))] sm:px-8 sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10rem+env(safe-area-inset-top))]">
-        <img
+        <Image
           src={EMOJI.branche}
           alt=""
           aria-hidden
+          width={288}
+          height={288}
           className="pointer-events-none absolute right-2 top-[calc(7.8rem+env(safe-area-inset-top))] z-20 hidden h-40 w-40 rotate-6 object-contain sm:block sm:-left-24 sm:right-auto sm:top-[calc(9.5rem+env(safe-area-inset-top))] sm:h-52 sm:w-52 sm:-rotate-12 lg:-left-32 lg:h-72 lg:w-72"
         />
 
@@ -43,10 +46,12 @@ const Confidentialite: React.FC = () => {
             fontFamily: "'Poppins', sans-serif",
           }}
         >
-          <img
+          <Image
             src={EMOJI.shoes}
             alt=""
             aria-hidden
+            width={288}
+            height={288}
             className="pointer-events-none absolute -bottom-32 -right-2 z-20 h-44 w-44 -rotate-6 object-contain sm:-right-32 sm:bottom-24 sm:h-52 sm:w-52 sm:rotate-6 lg:-right-40 lg:bottom-32 lg:h-72 lg:w-72"
           />
           <Link

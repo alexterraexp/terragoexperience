@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import LazyVideo from '../components/video/LazyVideo';
@@ -87,11 +88,13 @@ const BannerVideo: React.FC<{ src: string; poster?: string; className?: string }
   return (
     <div ref={wrapRef} className={`relative overflow-hidden bg-[#0c1d22] ${className}`}>
       {poster ? (
-        <img
+        <Image
           src={poster}
           alt=""
           aria-hidden
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+          fill
+          sizes="100vw"
+          className={`object-cover transition-opacity duration-500 ${
             ready ? 'opacity-0' : 'opacity-100'
           }`}
         />
@@ -352,6 +355,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
   const conceptCards = [
     {
       image: assets.conceptAgir,
+      alt: 'Pour agir et sensibiliser',
       lead: (
         <>
           Pour agir et
@@ -362,6 +366,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
     },
     {
       image: assets.conceptLien,
+      alt: 'Pour créer du lien',
       lead: (
         <>
           Pour créer
@@ -372,6 +377,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
     },
     {
       image: assets.conceptInspirer,
+      alt: 'Pour inspirer',
       lead: (
         <>
           Pour
@@ -456,10 +462,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
         {/* Mobile : carousel swipable pleine largeur (même pattern que les régions) */}
         <div className="relative sm:mx-auto sm:max-w-6xl sm:px-8">
-          <img
+          <Image
             src={HOME_EMOJI.arbre}
             alt=""
             aria-hidden
+            width={240}
+            height={240}
             className="pointer-events-none absolute left-0 top-0 z-30 h-36 w-36 -translate-x-[18%] -translate-y-[55%] object-contain sm:left-8 sm:h-52 sm:w-52 sm:-translate-x-[42%] sm:-translate-y-[38%] lg:h-60 lg:w-60 lg:-translate-y-[32%]"
           />
 
@@ -479,11 +487,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                 className="relative aspect-[3/3.45] w-[70vw] max-w-[320px] shrink-0 snap-center overflow-hidden"
                 style={{ borderRadius: HOME_RADIUS }}
               >
-                <img
+                <Image
                   src={card.image}
-                  alt=""
-                  className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
-                  loading="lazy"
+                  alt={card.alt}
+                  fill
+                  sizes="70vw"
+                  className="pointer-events-none select-none object-cover"
                   draggable={false}
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
@@ -518,11 +527,13 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                   }`}
                   style={{ borderRadius: HOME_RADIUS }}
                 >
-                  <img
+                  <Image
                     src={card.image}
-                    alt=""
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.1]"
-                    loading="lazy"
+                    alt={card.alt}
+                    fill
+                    sizes="(max-width: 1024px) 50vw, 33vw"
+                    priority={i === 0}
+                    className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.1]"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
                   {getImageCopyright(card.image) ? (
@@ -574,10 +585,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
         {/* Mobile : carousel swipable */}
         <div className="relative">
-          <img
+          <Image
             src={HOME_EMOJI.branche}
             alt=""
             aria-hidden
+            width={176}
+            height={176}
             className="pointer-events-none absolute left-5 top-0 z-30 h-44 w-44 -translate-x-[38%] -translate-y-[48%] object-contain sm:hidden"
           />
 
@@ -627,10 +640,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
             {experiences.map((exp, i) => (
               <div key={i} className="relative overflow-visible">
                 {i === 0 && (
-                  <img
+                  <Image
                     src={HOME_EMOJI.branche}
                     alt=""
                     aria-hidden
+                    width={256}
+                    height={256}
                     className="pointer-events-none absolute left-0 top-0 z-30 h-56 w-56 -translate-x-[38%] -translate-y-[48%] object-contain lg:h-64 lg:w-64"
                   />
                 )}
@@ -697,9 +712,11 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
           </div>
 
           {/* Sticker +1 producteur soutenu — à cheval bas vidéo / haut section rencontres */}
-          <img
+          <Image
             src={HOME_EMOJI.producteurSoutenu}
             alt="+1 producteur soutenu"
+            width={200}
+            height={200}
             className="pointer-events-none absolute bottom-0 right-[6%] z-30 h-32 w-auto translate-y-1/2 rotate-[6deg] object-contain drop-shadow-md sm:right-[10%] sm:h-40 lg:right-[12%] lg:h-48"
           />
         </div>
@@ -724,11 +741,13 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                   className="relative overflow-hidden"
                   style={{ borderRadius: HOME_RADIUS }}
                 >
-                  <img
+                  <Image
                     src={activeProducer.image}
                     alt={`${activeProducer.name} – producteur TerraGo`}
-                    className="aspect-[4/4.35] w-full object-cover"
-                    loading="lazy"
+                    width={800}
+                    height={870}
+                    sizes="(max-width: 1024px) 100vw, 42vw"
+                    className="aspect-[4/4.35] h-auto w-full object-cover"
                   />
 
                   {getImageCopyright(activeProducer.image) ? (
@@ -745,10 +764,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                 </div>
 
                 {/* Emoji rateau — coin bas droit, bien plus grand */}
-                <img
+                <Image
                   src={HOME_EMOJI.rateau}
                   alt=""
                   aria-hidden
+                  width={256}
+                  height={256}
                   className="pointer-events-none absolute -bottom-24 -right-16 z-30 h-40 w-40 rotate-[-18deg] object-contain drop-shadow-md sm:-bottom-32 sm:-right-24 sm:h-56 sm:w-56 lg:-bottom-36 lg:-right-20 lg:h-64 lg:w-64"
                 />
               </div>
@@ -898,11 +919,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
               className="group relative aspect-[3/3.4] w-[62vw] shrink-0 overflow-hidden sm:aspect-[3/4.1] sm:w-[255px] lg:aspect-[3/4.2] lg:w-[280px]"
               style={{ borderRadius: HOME_RADIUS }}
             >
-              <img
+              <Image
                 src={region.image}
                 alt={`Séminaire ${region.prep} ${region.name}`}
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.12]"
-                loading="lazy"
+                fill
+                sizes="(max-width: 640px) 70vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.12]"
               />
               <div
                 className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-500 group-hover:opacity-0"
@@ -938,10 +960,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
         </div>
 
         {/* Sticker chaussures — à cheval régions / étapes, un peu à droite du bord gauche */}
-        <img
+        <Image
           src={HOME_EMOJI.chaussures}
           alt=""
           aria-hidden
+          width={240}
+          height={240}
           className="pointer-events-none absolute bottom-0 left-[14%] z-30 h-40 w-40 translate-y-1/2 rotate-[-8deg] object-contain drop-shadow-md sm:left-[16%] sm:h-52 sm:w-52 lg:left-[18%] lg:h-60 lg:w-60"
         />
       </section>
@@ -957,10 +981,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
         <div className="relative">
           {/* Sticker montagne — déborde en bas à droite */}
-          <img
+          <Image
             src={HOME_EMOJI.montagne}
             alt=""
             aria-hidden
+            width={192}
+            height={192}
             className="pointer-events-none absolute bottom-0 right-5 z-30 h-32 w-32 translate-x-[18%] translate-y-[55%] rotate-[6deg] object-contain drop-shadow-md sm:right-8 sm:h-40 sm:w-40 lg:right-12 lg:h-48 lg:w-48"
           />
 
@@ -992,11 +1018,13 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                   style={{ borderRadius: HOME_RADIUS, border: '1px solid rgba(12,29,34,0.12)' }}
                 >
                   <p className={`${homeH2Class} px-4 font-bold`}>{step.title}</p>
-                  <img
+                  <Image
                     src={step.image}
                     alt={`Étape ${i + 1} : ${step.title}`}
-                    className="pointer-events-none mt-auto aspect-square w-full select-none object-contain"
-                    loading="lazy"
+                    width={800}
+                    height={800}
+                    sizes="70vw"
+                    className="pointer-events-none mt-auto aspect-square h-auto w-full select-none object-contain"
                     draggable={false}
                   />
                 </div>
@@ -1028,11 +1056,13 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                   style={{ borderRadius: HOME_RADIUS, border: '1px solid rgba(12,29,34,0.12)' }}
                 >
                   <p className={`${homeH2Class} px-4 font-bold`}>{step.title}</p>
-                  <img
+                  <Image
                     src={step.image}
                     alt={`Étape ${i + 1} : ${step.title}`}
-                    className="mt-auto aspect-square w-full object-contain"
-                    loading="lazy"
+                    width={800}
+                    height={800}
+                    sizes="(max-width: 1024px) 50vw, 25vw"
+                    className="mt-auto aspect-square h-auto w-full object-contain"
                   />
                 </div>
               </div>
@@ -1047,10 +1077,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#f4f4f4' }}
       >
         {/* Étoile décorative — coupée par le bord gauche de l'écran (overflow-x-hidden du wrapper) */}
-        <img
+        <Image
           src={HOME_EMOJI.etoile}
           alt=""
           aria-hidden
+          width={380}
+          height={380}
           className="pointer-events-none absolute left-0 z-0 hidden h-[300px] w-[300px] -translate-x-[46%] -translate-y-[18%] object-contain lg:block xl:h-[380px] xl:w-[380px]"
           style={{ top: homeSectionPadding }}
         />

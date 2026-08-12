@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
+import Image from 'next/image';
 import { HOME_COLORS } from './home/homeStyles';
 import PhotoCopyright from './PhotoCopyright';
 import { protectedImageProps } from '../lib/protectedImage';
@@ -55,18 +56,16 @@ const FramedHeroImage: React.FC<FramedHeroImageProps> = ({
         </div>
       ) : null}
 
-      <img
-        ref={(el) => {
-          if (el?.complete && el.naturalWidth > 0) markLoaded();
-        }}
+      <Image
         src={src}
         alt={alt}
-        decoding="async"
-        fetchPriority="high"
+        fill
+        priority
+        sizes="100vw"
         onLoad={markLoaded}
         draggable={protectedImageProps.draggable}
         onContextMenu={protectedImageProps.onContextMenu}
-        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out ${className}`}
+        className={`object-cover transition-opacity duration-500 ease-out ${className}`}
         style={{
           ...protectedImageProps.style,
           opacity: loaded ? 1 : 0,

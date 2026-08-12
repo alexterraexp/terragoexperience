@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { useModal } from '../context/ModalContext';
@@ -183,10 +184,12 @@ const SlideCard: React.FC<{
   >
     {/* Image : plein cadre mobile, colonne gauche desktop */}
     <div className="absolute inset-0 lg:relative lg:h-full lg:min-h-0 lg:w-[38%] lg:shrink-0">
-      <img
+      <Image
         src={example.image}
         alt={example.imageAlt}
-        className="absolute inset-0 h-full w-full object-cover"
+        fill
+        sizes="(max-width: 1024px) 100vw, 38vw"
+        className="object-cover"
         draggable={false}
       />
       {getImageCopyright(example.image) ? (
@@ -532,10 +535,12 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
         className="relative"
         style={{ paddingTop: homeSectionPadding, paddingBottom: 'clamp(2.5rem, 5vw, 4rem)', background: '#ffffff' }}
       >
-        <img
+        <Image
           src={EXPERIENCES_ENTREPRISE_ASSETS.etoile}
           alt=""
           aria-hidden
+          width={340}
+          height={340}
           className="pointer-events-none absolute left-0 z-0 hidden h-[280px] w-[280px] -translate-x-[46%] -translate-y-[40%] object-contain lg:block xl:h-[340px] xl:w-[340px]"
           style={{ top: 0 }}
         />
@@ -602,16 +607,20 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
         }}
       >
         <div className="relative mx-auto max-w-5xl px-5 sm:px-8">
-          <img
+          <Image
             src={EXPERIENCES_ENTREPRISE_ASSETS.feu}
             alt=""
             aria-hidden
+            width={208}
+            height={208}
             className="pointer-events-none absolute -left-4 -top-10 z-20 h-28 w-28 object-contain sm:-left-8 sm:-top-14 sm:h-40 sm:w-40 lg:-left-12 lg:-top-16 lg:h-52 lg:w-52"
           />
-          <img
+          <Image
             src={EXPERIENCES_ENTREPRISE_ASSETS.piment}
             alt=""
             aria-hidden
+            width={208}
+            height={208}
             className="pointer-events-none absolute -bottom-10 -right-4 z-20 h-28 w-28 object-contain sm:-bottom-14 sm:-right-8 sm:h-40 sm:w-40 lg:-bottom-16 lg:-right-12 lg:h-52 lg:w-52"
           />
 
@@ -642,10 +651,12 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
         className="relative"
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#f4f4f4' }}
       >
-        <img
+        <Image
           src={EXPERIENCES_ENTREPRISE_ASSETS.etoile}
           alt=""
           aria-hidden
+          width={340}
+          height={340}
           className="pointer-events-none absolute left-0 z-0 hidden h-[280px] w-[280px] -translate-x-[46%] -translate-y-[10%] object-contain lg:block xl:h-[340px] xl:w-[340px]"
           style={{ top: homeSectionPadding }}
         />

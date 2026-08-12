@@ -3,6 +3,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { IMAGES } from '../constants';
 import ParticipantsSelect from '../components/ParticipantsSelect';
@@ -251,8 +252,8 @@ const SeminarDomains: React.FC = () => {
             </div>
           </div>
           <div className="lg:w-1/2 relative">
-             <div className="aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-2">
-                <img src={IMAGES.vineyard} className="w-full h-full object-cover" alt="Domain overview" />
+             <div className="relative aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-2">
+                <Image src={IMAGES.vineyard} fill className="object-cover" alt="Domain overview" sizes="(max-width: 1024px) 100vw, 50vw" />
              </div>
              <div className="absolute -bottom-6 -left-6 bg-primary text-white p-8 rounded-[2rem] shadow-xl">
                 <p className="text-3xl font-display font-bold italic">7</p>
@@ -272,8 +273,8 @@ const SeminarDomains: React.FC = () => {
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {SEMINAR_OFFERS.map((offer) => (
                 <div key={offer.id} className="group cursor-pointer">
-                   <div className="aspect-[16/10] rounded-[2rem] overflow-hidden mb-6 shadow-sm border border-black/5">
-                      <img src={offer.img} className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" alt={offer.title} />
+                   <div className="relative aspect-[16/10] rounded-[2rem] overflow-hidden mb-6 shadow-sm border border-black/5">
+                      <Image src={offer.img} fill className="object-cover transition-transform duration-[1.5s] group-hover:scale-110" alt={offer.title} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
                    </div>
                    <div className="px-2 space-y-2">
                       <div className="flex items-center justify-between">

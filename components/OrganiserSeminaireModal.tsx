@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { frenchPlaceKindLabel, matchFrenchPlaces } from '../lib/frenchCities';
 import {
@@ -515,10 +516,19 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             className="osm-visual"
             style={{
               flex: '0 0 34%', width: '34%',
-              backgroundImage: `url("${image}")`, backgroundSize: 'cover', backgroundPosition: 'center',
-              transition: 'background-image .3s ease',
+              position: 'relative',
+              overflow: 'hidden',
             }}
-          />
+          >
+            <Image
+              key={image}
+              src={image}
+              alt="Visuel formulaire séminaire TerraGo"
+              fill
+              className="object-cover"
+              sizes="(max-width: 860px) 100vw, 34vw"
+            />
+          </div>
 
           <div
             className="osm-body"

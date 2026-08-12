@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { ProducerFull } from '../lib/producerTypes';
 import { HOME_COLORS } from './home/homeStyles';
@@ -199,12 +200,10 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
           height: 100%;
           overflow: hidden;
           background: #e8e8e8;
+          position: relative;
         }
         .pdm-slide-cell img {
-          width: 100%;
-          height: 100%;
           object-fit: cover;
-          display: block;
           pointer-events: none;
           user-select: none;
         }
@@ -281,9 +280,12 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
                         className="pdm-slide-cell"
                         style={pair.length === 1 ? { flex: '1 1 100%' } : undefined}
                       >
-                        <img
+                        <Image
                           src={src}
                           alt={`${producer.name} — photo ${pairIndex * 2 + i + 1}`}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 860px) 100vw, 50vw"
                           draggable={false}
                         />
                       </div>

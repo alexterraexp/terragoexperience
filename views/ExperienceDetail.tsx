@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ALL_EXPERIENCES } from '../constants';
@@ -63,14 +64,14 @@ const ExperienceDetail: React.FC = () => {
         <div className="relative w-full mb-12 group">
           <div className="hidden md:grid grid-cols-4 gap-3 h-[320px] rounded-3xl overflow-hidden shadow-sm">
             <div className="col-span-3 relative overflow-hidden bg-beige-bg">
-               <img src={exp.gallery[0]} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] group-hover:scale-105" alt="Main" />
+               <Image src={exp.gallery[0]} fill className="object-cover transition-transform duration-[2.5s] group-hover:scale-105" alt="Main" sizes="(max-width: 768px) 100vw, 75vw" priority />
             </div>
             <div className="col-span-1 grid grid-rows-2 gap-3">
                <div className="relative overflow-hidden bg-beige-bg">
-                  <img src={exp.gallery[1]} className="absolute inset-0 w-full h-full object-cover" alt="Detail 1" />
+                  <Image src={exp.gallery[1]} fill className="object-cover" alt="Detail 1" sizes="(max-width: 768px) 100vw, 25vw" />
                </div>
                <div className="relative overflow-hidden bg-beige-bg">
-                  <img src={exp.gallery[2]} className="absolute inset-0 w-full h-full object-cover" alt="Detail 2" />
+                  <Image src={exp.gallery[2]} fill className="object-cover" alt="Detail 2" sizes="(max-width: 768px) 100vw, 25vw" />
                   <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
                     <span className="text-white text-[9px] font-bold uppercase tracking-widest bg-black/40 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20">
                       Explorer la galerie
@@ -79,8 +80,8 @@ const ExperienceDetail: React.FC = () => {
                </div>
             </div>
           </div>
-          <div className="md:hidden aspect-[16/9] rounded-2xl overflow-hidden shadow-md">
-             <img src={exp.gallery[0]} className="w-full h-full object-cover" alt={exp.title} />
+          <div className="md:hidden relative aspect-[16/9] rounded-2xl overflow-hidden shadow-md">
+             <Image src={exp.gallery[0]} fill className="object-cover" alt={exp.title} sizes="100vw" priority />
           </div>
         </div>
 
@@ -94,8 +95,8 @@ const ExperienceDetail: React.FC = () => {
                  {/* L'HÔTE : NOM + MÉTIER + LIEU */}
                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-5">
-                       <Link href={`/producteur/${exp.host.id}`} className="size-14 rounded-2xl overflow-hidden border border-black/5 shadow-xl hover:scale-105 transition-transform duration-500">
-                          <img src={exp.host.avatar} className="w-full h-full object-cover" alt={exp.host.name} />
+                       <Link href={`/producteur/${exp.host.id}`} className="relative size-14 rounded-2xl overflow-hidden border border-black/5 shadow-xl hover:scale-105 transition-transform duration-500">
+                          <Image src={exp.host.avatar} fill className="object-cover" alt={exp.host.name} sizes="56px" />
                        </Link>
                        <div className="flex flex-col gap-0.5">
                           <h2 className="text-lg font-display font-bold italic text-primary leading-tight">Proposé par {exp.host.name}</h2>
@@ -164,8 +165,8 @@ const ExperienceDetail: React.FC = () => {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                          {otherExperiences.map((other) => (
                             <Link key={other.id} href={`/experience/${other.id}`} className="flex gap-5 group p-4 rounded-3xl bg-white hover:bg-beige-bg/30 transition-all border border-transparent hover:border-black/5">
-                               <div className="size-24 rounded-2xl overflow-hidden shrink-0 shadow-sm">
-                                  <img src={other.image} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" alt={other.title} />
+                               <div className="relative size-24 rounded-2xl overflow-hidden shrink-0 shadow-sm">
+                                  <Image src={other.image} fill className="object-cover transition-transform group-hover:scale-110 duration-700" alt={other.title} sizes="96px" />
                                </div>
                                <div className="flex flex-col justify-center gap-1">
                                   <h4 className="text-[13px] font-bold text-primary italic leading-tight group-hover:text-orange transition-colors">{other.title}</h4>

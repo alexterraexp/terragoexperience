@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { createPortal } from 'react-dom';
 import type { CSSProperties } from 'react';
 import { Sprout, Ham, Speech, Presentation, Wifi, House, Bike, Users, PartyPopper, MapPin, ChevronLeft, ChevronRight, Sun, Moon } from 'lucide-react';
@@ -206,8 +207,8 @@ function HebergementPhotoCarousel({ images, alt }: { images: string[]; alt: stri
         touchStart.current = null;
       }}
     >
-      <div className="sem-hebergement-photo-frame">
-        <img src={images[photoIndex]} alt={alt} className="sem-hebergement-photo-img" draggable={false} />
+      <div className="sem-hebergement-photo-frame relative">
+        <Image src={images[photoIndex]} alt={alt} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" draggable={false} style={{ pointerEvents: 'none', userSelect: 'none' }} />
         {images.length > 1 && (
           <>
             <div className="sem-hebergement-photo-nav" aria-hidden>
@@ -505,7 +506,7 @@ function MobileProducerSection({ producer, producteurName }: { producer: Produce
       <h2 className="sem-mobile-section-title">À propos du producteur</h2>
       <div className="sem-mobile-producer-head">
         {producer?.avatar && (
-          <img src={producer.avatar} alt={name} className="sem-mobile-producer-avatar" />
+          <Image src={producer.avatar} alt={name} width={52} height={52} className="sem-mobile-producer-avatar" />
         )}
         <div>
           <h3 className="sem-mobile-producer-name">{name}</h3>
@@ -556,7 +557,7 @@ function MobilePartenaireEncart({
     <section className="sem-mobile-partenaire-card" aria-label={`En partenariat avec ${nom}`}>
       <div className="sem-mobile-partenaire-card-head">
         <div className="sem-mobile-partenaire-card-brand">
-          {logo && <img src={logo} alt={nom} />}
+          {logo && <Image src={logo} alt={nom} width={120} height={36} style={{ maxHeight: 36, maxWidth: 120, width: 'auto', height: 'auto', objectFit: 'contain' }} />}
           <span>En partenariat avec {nom}</span>
         </div>
         {siteWeb && (
@@ -602,7 +603,7 @@ function ImageCarousel({ images, titre, region, bestseller, resetKey }: { images
       onTouchEnd={e => { if (touchStart.current === null) return; const dx = e.changedTouches[0].clientX - touchStart.current; if (Math.abs(dx) > 44) goPhoto(dx < 0 ? 'next' : 'prev'); touchStart.current = null; }}
       style={{ position: 'relative', height: 200, overflow: 'hidden', borderRadius: '16px 16px 0 0' }}>
       <div key={photoKey} style={{ position: 'absolute', inset: 0, animation: `photoSlideIn${photoDir === 'right' ? 'Right' : 'Left'} 0.45s cubic-bezier(0.22,1,0.36,1) both` }}>
-        <img src={currentImg} alt={`${titre} – ${region}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none', userSelect: 'none' }} />
+        <Image src={currentImg} alt={`${titre} – ${region}`} fill sizes="(max-width: 768px) 90vw, 320px" className="object-cover" style={{ pointerEvents: 'none', userSelect: 'none' }} />
       </div>
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(12, 29, 34,0.65) 0%, transparent 55%)', pointerEvents: 'none' }} />
       {images.length > 1 && (
@@ -701,23 +702,24 @@ function SeminaireCard({ s, isActive, onSelect }: {
       }}
     >
       <div className="sem-pack-card-visual">
-        <img
+        <Image
           src={s.images[0] ?? ''}
           alt={fmt?.titre ?? s.label}
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover"
           style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
             transition: 'transform 0.45s ease',
             transform: hovered ? 'scale(1.04)' : 'scale(1)',
             filter: isComing ? 'grayscale(35%)' : 'none',
           }}
         />
-        {hasPartenaire && (
-          <img
+        {hasPartenaire && s.partenaire_logo && (
+          <Image
             src={s.partenaire_logo}
-            alt={s.partenaire_nom}
+            alt={s.partenaire_nom ?? s.label}
+            width={72}
+            height={32}
             style={{
               position: 'absolute',
               top: 14,
@@ -909,7 +911,7 @@ function SeminaireCard({ s, isActive, onSelect }: {
 
 // ─── GalleryLightbox ─────────────────────────────────────────────────────────
 
-function GalleryLightbox({ images, initialIndex, onClose }: { images: string[]; initialIndex: number; onClose: () => void }) {
+function GalleryLightbox({ images, initialIndex, onClose, label }: { images: string[]; initialIndex: number; onClose: () => void; label?: string }) {
   const [idx, setIdx] = useState(initialIndex);
   const prev = () => setIdx(i => (i - 1 + images.length) % images.length);
   const next = () => setIdx(i => (i + 1) % images.length);
@@ -935,7 +937,7 @@ function GalleryLightbox({ images, initialIndex, onClose }: { images: string[]; 
         {idx + 1} / {images.length}
       </div>
       <div style={{ position: 'relative', zIndex: 5, width: '100%', maxWidth: '88vw', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 64px' }}>
-        <img src={images[idx]} alt="" style={{ maxWidth: '100%', maxHeight: '75vh', borderRadius: 18, objectFit: 'contain', boxShadow: '0 12px 60px rgba(0,0,0,0.25)' }} />
+        <Image src={images[idx]} alt={label ? `${label} – ${idx + 1}` : ''} width={1600} height={1200} sizes="88vw" style={{ maxWidth: '100%', maxHeight: '75vh', width: 'auto', height: 'auto', borderRadius: 18, objectFit: 'contain', boxShadow: '0 12px 60px rgba(0,0,0,0.25)' }} />
         {images.length > 1 && (
           <>
             <button onClick={prev} style={{ position: 'absolute', left: 0, width: 48, height: 48, borderRadius: '50%', background: '#fff', border: '1px solid rgba(12, 29, 34,0.12)', color: '#0c1d22', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(12, 29, 34,0.1)' }}>‹</button>
@@ -947,8 +949,8 @@ function GalleryLightbox({ images, initialIndex, onClose }: { images: string[]; 
         <div style={{ position: 'relative', zIndex: 5, display: 'flex', gap: 8, marginTop: 18, maxWidth: '88vw', overflowX: 'auto', padding: '4px 0' }}>
           {images.map((img, i) => (
             <div key={i} onClick={() => setIdx(i)}
-              style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: `2.5px solid ${i === idx ? '#0c1d22' : 'rgba(12, 29, 34,0.12)'}`, opacity: i === idx ? 1 : 0.55, transition: 'all 0.15s' }}>
-              <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              style={{ position: 'relative', flexShrink: 0, width: 72, height: 72, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: `2.5px solid ${i === idx ? '#0c1d22' : 'rgba(12, 29, 34,0.12)'}`, opacity: i === idx ? 1 : 0.55, transition: 'all 0.15s' }}>
+              <Image src={img} alt={label ? `${label} – ${i + 1}` : ''} fill sizes="72px" className="object-cover" />
             </div>
           ))}
         </div>
@@ -973,9 +975,11 @@ function PartenaireEncart({ nom, logo }: { nom: string; logo?: string }) {
       }}
     >
       {logo && (
-        <img
+        <Image
           src={logo}
           alt={nom}
+          width={260}
+          height={88}
           style={{ maxHeight: 88, maxWidth: 260, width: 'auto', height: 'auto', objectFit: 'contain', display: 'block', borderRadius: 20 }}
         />
       )}
@@ -1014,9 +1018,11 @@ function PartenaireCard({ nom, logo, description, siteWeb }: { nom: string; logo
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: description ? 12 : 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, flex: 1 }}>
           {logo && (
-            <img
+            <Image
               src={logo}
               alt={nom}
+              width={72}
+              height={28}
               style={{ height: 28, width: 'auto', maxWidth: 72, objectFit: 'contain', flexShrink: 0, display: 'block', borderRadius: 8 }}
             />
           )}
@@ -1171,7 +1177,7 @@ function InfosPratiquesSection({
         >
           {producer?.avatar && (
             <div className="sem-infos-producer-head">
-              <img src={producer.avatar} alt={producerName} className="sem-infos-producer-avatar" />
+              <Image src={producer.avatar} alt={producerName} width={44} height={44} className="sem-infos-producer-avatar" />
               <strong>{producerName}</strong>
             </div>
           )}
@@ -1283,7 +1289,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
 
   return (
     <>
-      {galleryOpen && <GalleryLightbox images={s.images} initialIndex={galleryIdx} onClose={() => setGalleryOpen(false)} />}
+      {galleryOpen && <GalleryLightbox images={s.images} initialIndex={galleryIdx} onClose={() => setGalleryOpen(false)} label={fmt.titre} />}
 
       <div style={{ animation: 'semExpandIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
 
@@ -1295,11 +1301,15 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
           onTouchCancel={handlePhotoTouchCancel}
           style={{ touchAction: 'manipulation' }}
         >
-          <img
+          <Image
             key={mobilePhotoIdx}
             src={s.images[mobilePhotoIdx] ?? mainImage}
             alt={fmt.titre}
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none', userSelect: 'none' }}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+            style={{ pointerEvents: 'none', userSelect: 'none' }}
           />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 45%, transparent 60%, rgba(0,0,0,0.35) 100%)', pointerEvents: 'none' }} />
 
@@ -1342,7 +1352,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
           {s.partenaire_nom && (
             <div className="sem-mobile-hero-partenaire" aria-label={`En partenariat avec ${s.partenaire_nom}`}>
               {s.partenaire_logo && (
-                <img src={s.partenaire_logo} alt={s.partenaire_nom} />
+                <Image src={s.partenaire_logo} alt={s.partenaire_nom} width={72} height={28} style={{ height: 28, width: 'auto', maxWidth: 72, objectFit: 'contain' }} />
               )}
               <span>En partenariat avec {s.partenaire_nom}</span>
             </div>
@@ -1351,16 +1361,16 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
 
         {/* ── Grille photos desktop ── */}
         <div className={`sem-photo-grid sem-photo-grid-desktop ${hasSmall ? 'has-small' : 'no-small'}`}>
-          <div onClick={() => { setGalleryIdx(0); setGalleryOpen(true); }} className="sem-photo-main">
-            <img src={mainImage} alt={fmt.titre} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.3s ease' }}
-              onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.03)')}
-              onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')} />
+          <div onClick={() => { setGalleryIdx(0); setGalleryOpen(true); }} className="sem-photo-main relative">
+            <Image src={mainImage} alt={fmt.titre} fill sizes="(max-width: 900px) 100vw, 60vw" className="object-cover" style={{ transition: 'transform 0.3s ease' }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.03)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }} />
           </div>
           {smallImages.map((img, i) => (
-            <div key={i} onClick={() => { setGalleryIdx(i + 1); setGalleryOpen(true); }} style={{ cursor: 'pointer', overflow: 'hidden' }}>
-              <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.3s ease' }}
-                onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')} />
+            <div key={i} onClick={() => { setGalleryIdx(i + 1); setGalleryOpen(true); }} className="relative" style={{ cursor: 'pointer', overflow: 'hidden' }}>
+              <Image src={img} alt={`${fmt.titre} – ${i + 2}`} fill sizes="(max-width: 900px) 100vw, 30vw" className="object-cover" style={{ transition: 'transform 0.3s ease' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }} />
             </div>
           ))}
           {s.bestseller && (
@@ -1802,13 +1812,16 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
           }}
         >
           <div
-            className="pack-sem-visual"
+            className="pack-sem-visual relative"
             aria-hidden
             style={{
               flex: '0 0 30%', width: '30%',
-              backgroundImage: `url("${visual}")`, backgroundSize: 'cover', backgroundPosition: 'center',
             }}
-          />
+          >
+            {visual ? (
+              <Image src={visual} alt="" fill sizes="30vw" className="object-cover" />
+            ) : null}
+          </div>
 
           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <button
@@ -2157,9 +2170,11 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
           </div>
 
           {/* Sticker producteur — déborde en bas à droite, comme la montagne Home/étapes */}
-          <img
+          <Image
             src={PACK_ASSETS.producteurSoutenu}
             alt="+1 producteur soutenu"
+            width={200}
+            height={200}
             className="pointer-events-none absolute bottom-0 right-5 z-30 h-32 w-auto translate-x-[18%] translate-y-[55%] rotate-[6deg] object-contain drop-shadow-md sm:right-8 sm:h-40 lg:right-12 lg:h-48"
           />
         </div>
@@ -2173,29 +2188,35 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
       >
         {/* S orange — bordure droite, hauteur du titre catalogue */}
-        <img
+        <Image
           src={PACK_ASSETS.sOrange}
           alt=""
           aria-hidden
+          width={260}
+          height={260}
           className="pointer-events-none absolute right-0 z-0 hidden h-[200px] w-[200px] translate-x-[30%] -translate-y-[20%] object-contain opacity-90 lg:block xl:h-[260px] xl:w-[260px]"
           style={{ top: 0 }}
         />
         {/* S orange — bordure gauche, aligné sur la 3ᵉ ligne de cards */}
         {leftPictoTop != null && (
-          <img
+          <Image
             src={PACK_ASSETS.sOrange}
             alt=""
             aria-hidden
+            width={260}
+            height={260}
             className="pointer-events-none absolute left-0 z-0 hidden h-[200px] w-[200px] -translate-x-[30%] -translate-y-1/2 object-contain opacity-90 lg:block xl:h-[260px] xl:w-[260px]"
             style={{ top: leftPictoTop }}
           />
         )}
         {/* Mouton — à droite de la 5ᵉ ligne, centré entre cards et bord */}
         {moutonPos != null && (
-          <img
+          <Image
             src={PACK_ASSETS.mouton}
             alt=""
             aria-hidden
+            width={240}
+            height={240}
             className="pointer-events-none absolute z-20 hidden h-36 w-36 -translate-y-1/2 object-contain sm:h-44 sm:w-44 lg:block lg:h-52 lg:w-52 xl:h-60 xl:w-60"
             style={{ top: moutonPos.top, right: moutonPos.right }}
           />
@@ -2291,10 +2312,12 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
         <div className="relative mx-auto max-w-5xl px-5 sm:px-8">
           <div className="relative">
             {/* Branche — déborde en bas à droite du cadre CTA */}
-            <img
+            <Image
               src={PACK_ASSETS.branche}
               alt=""
               aria-hidden
+              width={208}
+              height={208}
               className="pointer-events-none absolute bottom-0 right-0 z-30 h-32 w-32 translate-x-[22%] translate-y-[48%] rotate-[8deg] object-contain drop-shadow-md sm:h-40 sm:w-40 lg:h-52 lg:w-52"
             />
 

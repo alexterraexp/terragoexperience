@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ALL_EXPERIENCES } from '../constants';
@@ -126,8 +127,8 @@ const Booking: React.FC = () => {
                   Paiement sécurisé
                 </h2>
                 <div className="flex gap-2">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" className="h-4 opacity-40" alt="Visa" />
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" className="h-4 opacity-40" alt="Mastercard" />
+                  <Image src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" width={40} height={16} className="h-4 w-auto opacity-40" alt="Visa" unoptimized />
+                  <Image src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" width={40} height={16} className="h-4 w-auto opacity-40" alt="Mastercard" unoptimized />
                 </div>
               </div>
 
@@ -181,7 +182,7 @@ const Booking: React.FC = () => {
           <div className="lg:col-span-5 lg:sticky lg:top-32">
             <div className="bg-white rounded-[2.5rem] shadow-2xl border border-black/5 overflow-hidden">
               <div className="aspect-[16/9] w-full relative">
-                <img src={exp.image} className="w-full h-full object-cover" alt={exp.title} />
+                <Image src={exp.image} fill className="object-cover" alt={exp.title} sizes="(max-width: 1024px) 100vw, 40vw" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div className="absolute bottom-6 left-6 text-white">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-orange mb-1">{exp.category}</p>

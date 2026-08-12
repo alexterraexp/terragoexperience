@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   HOME_COLORS,
@@ -122,10 +123,12 @@ const CharteRse: React.FC = () => {
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
       {/* ── HERO ── */}
       <section className="relative w-full overflow-x-clip bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
-        <img
+        <Image
           src={ASSETS.sOrange}
           alt=""
           aria-hidden
+          width={384}
+          height={384}
           className="pointer-events-none absolute bottom-0 right-0 z-30 h-52 w-52 translate-x-[42%] translate-y-[42%] object-contain drop-shadow-md sm:h-72 sm:w-72 lg:h-96 lg:w-96"
         />
         <div className="relative mx-auto max-w-6xl px-5 pb-2 sm:px-8">
@@ -133,10 +136,13 @@ const CharteRse: React.FC = () => {
             className="relative aspect-[5/4] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]"
             style={{ borderRadius: HOME_RADIUS }}
           >
-            <img
+            <Image
               src={ASSETS.hero}
               alt="Mains qui portent le globe – charte d’engagement RSE TerraGo"
-              className="absolute inset-0 h-full w-full object-cover"
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 72rem"
             />
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div
@@ -197,10 +203,12 @@ const CharteRse: React.FC = () => {
           </ScrollAnimate>
 
           {/* Arbre — mobile : entre conviction et piliers */}
-          <img
+          <Image
             src={ASSETS.arbre}
             alt=""
             aria-hidden
+            width={144}
+            height={144}
             className="mx-auto mt-10 h-28 w-28 object-contain lg:hidden sm:mt-12 sm:h-36 sm:w-36"
           />
         </div>
@@ -214,10 +222,12 @@ const CharteRse: React.FC = () => {
           background: HOME_COLORS.gray,
         }}
       >
-        <img
+        <Image
           src={ASSETS.arbre}
           alt=""
           aria-hidden
+          width={224}
+          height={224}
           className="pointer-events-none absolute left-12 top-16 z-0 hidden h-56 w-56 object-contain opacity-90 lg:block"
         />
         <div className="relative z-10 mx-auto max-w-3xl px-5 sm:px-8">
@@ -259,10 +269,12 @@ const CharteRse: React.FC = () => {
           background: HOME_COLORS.orange,
         }}
       >
-        <img
+        <Image
           src={ASSETS.goutte}
           alt=""
           aria-hidden
+          width={224}
+          height={224}
           className="pointer-events-none absolute bottom-6 right-4 z-0 hidden h-40 w-40 object-contain opacity-90 sm:block sm:right-8 sm:h-48 sm:w-48 lg:h-56 lg:w-56"
         />
         <div className="relative z-10 mx-auto max-w-3xl px-5 sm:px-8">

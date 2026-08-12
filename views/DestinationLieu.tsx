@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useModal } from '../context/ModalContext';
@@ -242,10 +243,12 @@ const LogementCarousel: React.FC<{
         >
           {images.map((img) => (
             <div key={img.src} className="relative aspect-[4/3] w-full shrink-0 snap-center">
-              <img
+              <Image
                 src={img.src}
                 alt={img.alt}
-                className="absolute inset-0 h-full w-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
                 {...protectedImageProps}
               />
               {img.copyright || getImageCopyright(img.src) ? (
@@ -308,18 +311,22 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
       {/* ── HERO (image encadrée, largeur header, plus basse) ── */}
       <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
         {/* S orange — coin bas droit du hero */}
-        <img
+        <Image
           src={S_ORANGE}
           alt=""
           aria-hidden
+          width={260}
+          height={260}
           className="pointer-events-none absolute bottom-0 right-0 z-20 hidden h-[200px] w-[200px] translate-x-[30%] translate-y-[35%] object-contain opacity-90 lg:block xl:h-[260px] xl:w-[260px]"
         />
         <div className="relative mx-auto max-w-[1280px] px-5 pb-2 sm:px-8">
           {/* Rateau — coin bas gauche du hero */}
-          <img
+          <Image
             src={RATEAU}
             alt=""
             aria-hidden
+            width={224}
+            height={224}
             className="pointer-events-none absolute bottom-0 left-0 z-30 h-36 w-36 -translate-x-[35%] translate-y-[42%] object-contain drop-shadow-md sm:h-48 sm:w-48 lg:h-56 lg:w-56"
           />
           <div
@@ -446,10 +453,12 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                   className="relative aspect-[4/5] w-full max-w-[420px] overflow-hidden sm:max-w-[480px] lg:max-w-none lg:w-full"
                   style={{ borderRadius: '28px' }}
                 >
-                  <img
+                  <Image
                     src={lieu.prosImage}
                     alt={lieu.prosImageAlt}
-                    className="absolute inset-0 h-full w-full object-cover"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover"
                     {...protectedImageProps}
                   />
                   {lieu.prosImageCopyright || getImageCopyright(lieu.prosImage) ? (
@@ -515,10 +524,12 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
         }}
       >
         {/* Étoile — bordure droite, à l’intersection avec le programme type */}
-        <img
+        <Image
           src={ETOILE}
           alt=""
           aria-hidden
+          width={380}
+          height={380}
           className="pointer-events-none absolute right-0 z-0 hidden h-[300px] w-[300px] translate-x-[46%] -translate-y-1/2 object-contain lg:block xl:h-[380px] xl:w-[380px]"
           style={{ top: 0 }}
         />
@@ -541,10 +552,12 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                 className="relative aspect-[4/3] w-full overflow-hidden lg:aspect-auto lg:h-full lg:min-h-[360px]"
                 style={{ borderRadius: HOME_RADIUS }}
               >
-                <img
+                <Image
                   src={lieu.producer.image}
                   alt={lieu.producer.imageAlt}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
                   {...protectedImageProps}
                 />
                 {lieu.producer.imageCopyright || getImageCopyright(lieu.producer.image) ? (
@@ -630,10 +643,12 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
         }}
       >
         {/* Shoes — bas droit FAQ (ex-abeille) */}
-        <img
+        <Image
           src={SHOES}
           alt=""
           aria-hidden
+          width={224}
+          height={224}
           className="pointer-events-none absolute bottom-8 right-4 z-20 hidden h-32 w-32 object-contain sm:block sm:bottom-10 sm:right-8 sm:h-44 sm:w-44 lg:bottom-12 lg:right-12 lg:h-56 lg:w-56"
         />
         <div className="relative z-10 mx-auto max-w-3xl px-5 sm:px-8">
@@ -683,10 +698,12 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                   className="group relative block aspect-[21/9] overflow-hidden sm:aspect-[2.2/1]"
                   style={{ borderRadius: HOME_RADIUS }}
                 >
-                  <img
+                  <Image
                     src={other.heroImage}
                     alt={other.eyebrow}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
                     {...protectedImageProps}
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '../lib/supabase';
 import {
@@ -249,8 +250,9 @@ const ProducerDetailPage: React.FC = () => {
           grid-template-columns: 1fr;
           grid-template-rows: clamp(300px, 36vw, 440px);
         }
-        .prod-photo-main { cursor: pointer; overflow: hidden; }
+        .prod-photo-main { cursor: pointer; overflow: hidden; position: relative; }
         .prod-photo-grid.has-small .prod-photo-main { grid-row: 1 / 3; }
+        .prod-photo-thumb { cursor: pointer; overflow: hidden; position: relative; }
         @media (max-width: 600px) {
           .prod-photo-grid.has-small {
             grid-template-columns: 1fr;
@@ -288,26 +290,27 @@ const ProducerDetailPage: React.FC = () => {
         {/* Grille photos d’abord (comme fiche offre) */}
         <div className={`prod-photo-grid ${hasSmall ? 'has-small' : 'no-small'}`}>
           <div onClick={() => setActiveImg(0)} className="prod-photo-main">
-            <img
+            <Image
               src={mainImage}
               alt={producer.name}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.3s ease' }}
-              onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.03)')}
-              onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+              fill
+              className="object-cover transition-transform duration-300 hover:scale-[1.03]"
+              sizes="(max-width: 600px) 100vw, 60vw"
+              priority
             />
           </div>
           {smallImages.map((img, i) => (
             <div
               key={i}
               onClick={() => setActiveImg(i + 1)}
-              style={{ cursor: 'pointer', overflow: 'hidden' }}
+              className="prod-photo-thumb"
             >
-              <img
+              <Image
                 src={img}
-                alt=""
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.3s ease' }}
-                onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+                alt={`${producer.name} — photo ${i + 2}`}
+                fill
+                className="object-cover transition-transform duration-300 hover:scale-105"
+                sizes="(max-width: 600px) 100vw, 30vw"
               />
             </div>
           ))}
@@ -546,10 +549,12 @@ const ProducerDetailPage: React.FC = () => {
                   >
                     Devis personnalisé
                   </div>
-                  <img
+                  <Image
                     src={`${HOME_ASSETS}/emoji/picto-devis.png`}
                     alt=""
                     aria-hidden
+                    width={140}
+                    height={140}
                     style={{ display: 'block', width: 140, height: 'auto', margin: '20px auto 0' }}
                   />
                 </div>
@@ -694,11 +699,13 @@ const ProducerDetailPage: React.FC = () => {
             onClick={(e) => { e.stopPropagation(); setActiveImg((activeImg - 1 + allImages.length) % allImages.length); }}
             style={{ position: 'absolute', left: isMobile ? 10 : 24, background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', borderRadius: '50%', width: 44, height: 44, fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >‹</button>
-          <img
+          <Image
             src={allImages[activeImg]}
-            alt=""
+            alt={`${producer.name} — photo ${activeImg + 1}`}
+            width={1600}
+            height={1200}
             onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: isMobile ? '85vw' : '80vw', maxHeight: '85vh', borderRadius: 12, objectFit: 'contain' }}
+            style={{ maxWidth: isMobile ? '85vw' : '80vw', maxHeight: '85vh', width: 'auto', height: 'auto', borderRadius: 12, objectFit: 'contain' }}
           />
           <button
             type="button"

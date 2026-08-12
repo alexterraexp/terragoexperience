@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 
 const INK = '#0c1d22';
 const ORANGE = '#ec6435';
@@ -326,11 +327,18 @@ const DevenirPartenaireModal: React.FC<Props> = ({ isOpen, onClose }) => {
             style={{
               flex: '0 0 34%',
               width: '34%',
-              backgroundImage: `url("${VISUAL}")`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              position: 'relative',
+              overflow: 'hidden',
             }}
-          />
+          >
+            <Image
+              src={VISUAL}
+              alt="Récolte d’olives – TerraGo"
+              fill
+              className="object-cover"
+              sizes="(max-width: 860px) 100vw, 34vw"
+            />
+          </div>
 
           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <button

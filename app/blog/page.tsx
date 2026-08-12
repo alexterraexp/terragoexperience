@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { supabaseServer as supabase } from '../../lib/supabase';
 import {
   HOME_COLORS,
@@ -78,10 +79,13 @@ export default async function BlogPage() {
     <div className="min-h-screen overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
       {/* ── HERO pleine largeur ── */}
       <section className="relative flex min-h-[480px] h-[68vh] w-full items-end justify-center overflow-hidden sm:h-[72vh]">
-        <img
+        <Image
           src={HERO_IMAGE}
           alt="Ostréiculteur au travail – Journal TerraGo"
-          className="absolute inset-0 h-full w-full object-cover"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
         />
         <div
           className="absolute inset-0"

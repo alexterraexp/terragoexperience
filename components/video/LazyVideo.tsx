@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import Image from 'next/image';
 import { acquireVideoSlot, releaseVideoSlot } from '../../lib/videoLoadQueue';
 
 interface LazyVideoProps {
@@ -133,14 +134,16 @@ const LazyVideo: React.FC<LazyVideoProps> = ({
       onBlur={playOnHover ? () => setIsHovered(false) : undefined}
     >
       {poster && (
-        <img
+        <Image
           src={poster}
           alt=""
           aria-hidden
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+          fill
+          className={`object-cover transition-opacity duration-300 ${
             hasFrame ? 'opacity-0' : 'opacity-100'
           }`}
-          loading={priority ? 'eager' : 'lazy'}
+          sizes="100vw"
+          priority={priority}
         />
       )}
       <video

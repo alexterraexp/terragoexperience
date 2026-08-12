@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import {
@@ -69,13 +70,14 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
       {/* Conteneur pleine largeur — hauteur viewport sur mobile */}
       <div className="relative h-[100svh] min-h-[640px] w-full sm:min-h-[600px] lg:h-screen lg:max-h-[100svh]">
         {posterSrc ? (
-          <img
+          <Image
             src={posterSrc}
             alt=""
             aria-hidden
-            fetchPriority="high"
-            decoding="async"
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+            fill
+            priority
+            sizes="100vw"
+            className={`object-cover transition-opacity duration-500 ${
               videoReady ? 'opacity-0' : 'opacity-100'
             }`}
           />

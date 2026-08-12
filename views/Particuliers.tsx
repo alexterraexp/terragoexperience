@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   HOME_COLORS,
@@ -428,10 +429,12 @@ const Particuliers: React.FC = () => {
         className="relative"
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
       >
-        <img
+        <Image
           src={ASSETS.ble}
           alt=""
           aria-hidden
+          width={176}
+          height={176}
           className="pointer-events-none absolute right-3 top-0 z-20 h-24 w-24 -translate-y-1/2 object-contain sm:right-8 sm:h-36 sm:w-36 lg:right-12 lg:h-44 lg:w-44"
         />
 
@@ -495,10 +498,12 @@ const Particuliers: React.FC = () => {
                   className="group relative flex h-full min-h-[300px] flex-col items-center justify-center overflow-hidden px-5 text-center sm:min-h-[340px]"
                   style={{ borderRadius: HOME_RADIUS }}
                 >
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.alt}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                   <div
                     className="absolute inset-0"

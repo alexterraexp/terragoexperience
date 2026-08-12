@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Image from 'next/image';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { supabase } from '../lib/supabase';
 import { useModal } from '../context/ModalContext';
@@ -167,10 +168,12 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
       aria-label={producer.name}
     >
       {producer.cover ? (
-        <img
+        <Image
           src={producer.cover}
           alt=""
+          fill
           className="prod-mini-card-img"
+          sizes="(max-width: 640px) 72vw, (max-width: 1024px) 280px, 300px"
           draggable={false}
         />
       ) : (
@@ -448,9 +451,11 @@ const ProducersPage: React.FC = () => {
               </div>
             </div>
           </div>
-          <img
+          <Image
             src={PRODUCER_ASSETS.producteurSoutenu}
             alt="+1 producteur soutenu"
+            width={192}
+            height={192}
             className="pointer-events-none absolute bottom-0 right-5 z-30 h-32 w-auto translate-x-[18%] translate-y-[55%] rotate-[6deg] object-contain drop-shadow-md sm:right-8 sm:h-40 lg:right-12 lg:h-48"
           />
         </div>
@@ -528,10 +533,12 @@ const ProducersPage: React.FC = () => {
           )}
 
           {/* Mains dans la terre — à cheval catalogue / CTA */}
-          <img
+          <Image
             src={PRODUCER_ASSETS.mainsDansLaTerre}
             alt=""
             aria-hidden
+            width={208}
+            height={208}
             className="pointer-events-none absolute bottom-0 left-[4%] z-30 h-32 w-32 translate-y-1/2 object-contain drop-shadow-md sm:left-[6%] sm:h-44 sm:w-44 lg:left-[8%] lg:h-52 lg:w-52"
           />
         </div>
@@ -546,10 +553,12 @@ const ProducersPage: React.FC = () => {
         }}
       >
         <div className="relative mx-auto max-w-5xl px-5 sm:px-8">
-          <img
+          <Image
             src={PRODUCER_ASSETS.rateau}
             alt=""
             aria-hidden
+            width={208}
+            height={208}
             className="pointer-events-none absolute -bottom-10 -right-4 z-20 h-28 w-28 object-contain sm:-bottom-14 sm:-right-8 sm:h-40 sm:w-40 lg:-bottom-16 lg:-right-12 lg:h-52 lg:w-52"
           />
           <div

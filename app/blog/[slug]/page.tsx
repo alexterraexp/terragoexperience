@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -192,11 +193,14 @@ function MarkdownRenderer({ content }: { content: string }) {
             className="relative my-8 block overflow-hidden"
             style={{ borderRadius: HOME_RADIUS }}
           >
-            <img
+            <Image
               src={src ?? ''}
               alt={alt ?? ''}
-              className="block w-full"
+              width={1200}
+              height={800}
+              className="block h-auto w-full"
               style={{ borderRadius: HOME_RADIUS }}
+              sizes="(max-width: 768px) 100vw, 720px"
             />
             {alt && (
               <span className="absolute bottom-3 right-3 block rounded-full bg-white/80 px-3 py-1 text-[10px] font-semibold tracking-[0.06em] text-[#0c1d22] backdrop-blur-md">
@@ -284,10 +288,13 @@ export default async function BlogArticlePage({
 
       {/* ── HERO ── */}
       <section className="relative flex min-h-[420px] h-[58vh] w-full items-end overflow-hidden sm:h-[62vh]">
-        <img
+        <Image
           src={cover}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
+          alt={post.title}
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
         />
         <div
           className="absolute inset-0"
@@ -379,10 +386,12 @@ export default async function BlogArticlePage({
             style={{ background: HOME_COLORS.primary, borderRadius: HOME_RADIUS }}
           >
             <div className="relative min-h-[220px] lg:min-h-[320px]">
-              <img
+              <Image
                 src={CTA_IMAGE}
                 alt="Séminaire au vert"
-                className="absolute inset-0 h-full w-full object-cover"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 55vw"
               />
             </div>
             <div className="flex flex-col justify-center px-7 py-10 sm:px-10 sm:py-12 lg:px-12">
