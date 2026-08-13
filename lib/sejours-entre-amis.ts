@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { isSupabaseConfigured, supabaseAdmin, supabaseServer } from './supabase';
+import { getNotifyEmails } from './team-notify';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -223,8 +224,8 @@ export async function processSejoursEntreAmis(body: unknown): Promise<ProcessSej
     };
   }
 
-  if (process.env.NOTIFY_EMAIL) {
-    const notifyTo = process.env.NOTIFY_EMAIL;
+  const notifyTo = getNotifyEmails();
+  if (notifyTo.length > 0) {
     const subjectInternal = `[Nouvelle demande] Séjour : ${typeSejourDisplay} — ${
       participantsDisplay !== '—' ? `${participantsDisplay} pers.` : 'pers.'
     } — ${periodeDisplay}`;

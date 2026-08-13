@@ -273,11 +273,11 @@ const Confidentialite: React.FC = () => {
               <p className="mt-3">
                 Pour exercer ces droits, vous pouvez nous contacter à :{' '}
                 <a
-                  href="mailto:terragoexperiences@gmail.com"
+                  href="mailto:contact@terragoexperiences.fr"
                   className={linkClass}
                   style={{ color: HOME_COLORS.orange }}
                 >
-                  terragoexperiences@gmail.com
+                  contact@terragoexperiences.fr
                 </a>
               </p>
               <p className="mt-3">
@@ -398,11 +398,11 @@ const Confidentialite: React.FC = () => {
               <p>
                 Email :{' '}
                 <a
-                  href="mailto:terragoexperiences@gmail.com"
+                  href="mailto:contact@terragoexperiences.fr"
                   className={linkClass}
                   style={{ color: HOME_COLORS.orange }}
                 >
-                  terragoexperiences@gmail.com
+                  contact@terragoexperiences.fr
                 </a>
               </p>
               <p className="mt-3">

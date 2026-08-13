@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { getNotifyEmails } from './team-notify';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -223,13 +224,14 @@ export async function sendDemandeSeminaireEmails(body: DemandeSeminairePayload):
     clientEmailFailed = true;
   }
 
-  if (process.env.NOTIFY_EMAIL) {
+  const notifyTo = getNotifyEmails();
+  if (notifyTo.length > 0) {
     try {
       await resend.emails.send({
         from:
           process.env.EMAIL_FROM ||
           'TerraGo Expériences <contact@mail.terragoexperiences.fr>',
-        to: process.env.NOTIFY_EMAIL,
+        to: notifyTo,
         subject: `[Nouvelle demande de devis] ${entrepriseStr} — ${selectionLabel !== '—' ? selectionLabel : `${participantsStr} pers.`}`,
         text: [
           `Nouvelle demande de devis (offre séminaire)`,

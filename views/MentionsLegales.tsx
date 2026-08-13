@@ -187,11 +187,11 @@ const MentionsLegales: React.FC = () => {
               <p className="mt-3">
                 Pour exercer ces droits, vous pouvez adresser votre demande par email à :{' '}
                 <a
-                  href="mailto:terragoexperiences@gmail.com"
+                  href="mailto:contact@terragoexperiences.fr"
                   className="font-medium underline decoration-1 underline-offset-2 transition-colors hover:opacity-80"
                   style={{ color: HOME_COLORS.orange }}
                 >
-                  terragoexperiences@gmail.com
+                  contact@terragoexperiences.fr
                 </a>
               </p>
             </section>
@@ -259,11 +259,11 @@ const MentionsLegales: React.FC = () => {
               <p className="mt-3">
                 Email :{' '}
                 <a
-                  href="mailto:terragoexperiences@gmail.com"
+                  href="mailto:contact@terragoexperiences.fr"
                   className="font-medium underline decoration-1 underline-offset-2 transition-colors hover:opacity-80"
                   style={{ color: HOME_COLORS.orange }}
                 >
-                  terragoexperiences@gmail.com
+                  contact@terragoexperiences.fr
                 </a>
               </p>
             </section>

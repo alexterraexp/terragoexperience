@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import { isSupabaseConfigured, supabaseAdmin, supabaseServer } from './supabase';
+import { getNotifyEmails } from './team-notify';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -207,13 +208,14 @@ export async function processReservation(
     };
   }
 
-  if (process.env.NOTIFY_EMAIL) {
+  const notifyTo = getNotifyEmails();
+  if (notifyTo.length > 0) {
     try {
       await resend.emails.send({
         from:
           process.env.EMAIL_FROM ||
           'TerraGo Expériences <contact@mail.terragoexperiences.fr>',
-        to: process.env.NOTIFY_EMAIL,
+        to: notifyTo,
         subject: `[Nouvelle demande séminaire] ${nomStr} — ${participants} pers. — ${periode}`,
         text: [
           `Nouvelle demande de séminaire`,

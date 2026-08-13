@@ -26,7 +26,7 @@ const ASSETS = {
 const sectionTitleClass =
   'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
 
-const CONTACT_EMAIL = 'terragoexperiences@gmail.com';
+const CONTACT_EMAIL = 'contact@terragoexperiences.fr';
 const MIN_PARTICIPANTS = 8;
 
 const TYPE_DEMANDE_OPTIONS = [

@@ -301,12 +301,12 @@ const Footer: React.FC = () => {
             <div>
               <h6 style={sectionTitle}>Contact</h6>
               <a
-                href="mailto:contact@terragoexperience.fr"
+                href="mailto:contact@terragoexperiences.fr"
                 style={linkStyle}
                 onMouseEnter={hoverWhite}
                 onMouseLeave={hoverReset}
               >
-                contact@terragoexperience.fr
+                contact@terragoexperiences.fr
               </a>
               <div className="mt-5 flex gap-4">
                 {SOCIALS.map(({ href, label, icon }) => (

@@ -7,7 +7,20 @@ function isValidEmail(e: string) {
 }
 
 /**
- * Notification équipe (texte brut) via Resend → NOTIFY_EMAIL.
+ * Destinataires équipe depuis NOTIFY_EMAIL (séparés par virgule ou point-virgule).
+ * Ex. : terragoexperiences@gmail.com,contact@terragoexperiences.fr
+ */
+export function getNotifyEmails(): string[] {
+  const raw = process.env.NOTIFY_EMAIL;
+  if (!raw) return [];
+  return raw
+    .split(/[,;]/)
+    .map((e) => e.trim())
+    .filter((e) => e && isValidEmail(e));
+}
+
+/**
+ * Notification équipe (texte brut) via Resend → NOTIFY_EMAIL (une ou plusieurs adresses).
  */
 export async function notifyTeam(params: {
   subject: string;
@@ -18,8 +31,8 @@ export async function notifyTeam(params: {
     console.error('[TerraGo] RESEND_API_KEY manquant — notifyTeam');
     return { ok: false, message: 'Service de notification indisponible.' };
   }
-  const to = process.env.NOTIFY_EMAIL;
-  if (!to) {
+  const to = getNotifyEmails();
+  if (to.length === 0) {
     console.warn('[TerraGo] NOTIFY_EMAIL non défini — notifyTeam');
     return { ok: false, message: 'Service de notification indisponible.' };
   }
