@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import CharteRse from '../../../views/CharteRse';
 
-const SITE = 'https://terragoexperiences.fr';
+const SITE = 'https://www.terragoexperiences.fr';
 const PATH = '/notre-approche/charte-rse';
 
 export async function generateMetadata(): Promise<Metadata> {

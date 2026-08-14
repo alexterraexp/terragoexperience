@@ -20,10 +20,10 @@ export const metadata: Metadata = {
     title: 'Blog séminaires & terroir – TerraGo',
     description:
       'Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français.',
-    url: 'https://terragoexperiences.fr/blog',
+    url: 'https://www.terragoexperiences.fr/blog',
     type: 'website',
   },
-  alternates: { canonical: 'https://terragoexperiences.fr/blog' },
+  alternates: { canonical: 'https://www.terragoexperiences.fr/blog' },
 };
 
 interface BlogPost {

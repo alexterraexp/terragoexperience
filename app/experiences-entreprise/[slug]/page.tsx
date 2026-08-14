@@ -33,14 +33,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: 'https://terragoexperiences.fr/experiences-entreprise',
+      url: 'https://www.terragoexperiences.fr/experiences-entreprise',
       siteName: 'TerraGo',
       locale: 'fr_FR',
       type: 'website',
       images: [{ url: category.intro.image }],
     },
     alternates: {
-      canonical: 'https://terragoexperiences.fr/experiences-entreprise',
+      canonical: 'https://www.terragoexperiences.fr/experiences-entreprise',
     },
   };
 }

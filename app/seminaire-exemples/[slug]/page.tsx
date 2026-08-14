@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const { title, description } = buildSeminairePageMetadata(seminaire, all);
-  const url = `https://terragoexperiences.fr/seminaire-exemples/${slug}`;
+  const url = `https://www.terragoexperiences.fr/seminaire-exemples/${slug}`;
 
   return {
     title,

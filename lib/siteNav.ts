@@ -1,5 +1,5 @@
 /** Pages que Google doit privilégier en sitelinks, dans cet ordre. */
-export const SITE_URL = 'https://terragoexperiences.fr';
+export const SITE_URL = 'https://www.terragoexperiences.fr';
 
 export const SITELINK_PAGES = [
   {

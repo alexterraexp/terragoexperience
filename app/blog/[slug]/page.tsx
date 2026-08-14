@@ -93,7 +93,7 @@ export async function generateMetadata({
       images: data.cover_url ? [data.cover_url] : [],
       type: 'article',
     },
-    alternates: { canonical: `https://terragoexperiences.fr/blog/${slug}` },
+    alternates: { canonical: `https://www.terragoexperiences.fr/blog/${slug}` },
   };
 }
 

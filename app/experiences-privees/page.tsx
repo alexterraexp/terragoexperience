@@ -12,13 +12,13 @@ export async function generateMetadata(): Promise<Metadata> {
       title: 'Expériences privées sur demande – TerraGo',
       description:
         'Sur demande, dès 8 personnes : séjours, immersions et repas guinguette ouverts aux particuliers.',
-      url: 'https://terragoexperiences.fr/experiences-privees',
+      url: 'https://www.terragoexperiences.fr/experiences-privees',
       siteName: 'TerraGo',
       locale: 'fr_FR',
       type: 'website',
     },
     alternates: {
-      canonical: 'https://terragoexperiences.fr/experiences-privees',
+      canonical: 'https://www.terragoexperiences.fr/experiences-privees',
     },
   };
 }

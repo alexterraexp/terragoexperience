@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   title: "TerraGo - L'immersion au cœur du terroir français",
   description:
     'Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français.',
-  metadataBase: new URL('https://terragoexperiences.fr'),
+  metadataBase: new URL('https://www.terragoexperiences.fr'),
   openGraph: {
     title: "TerraGo - L'immersion au cœur du terroir français",
     description:
       'Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français.',
-    url: 'https://terragoexperiences.fr',
+    url: 'https://www.terragoexperiences.fr',
     siteName: 'TerraGo',
     locale: 'fr_FR',
     type: 'website',

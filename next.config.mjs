@@ -15,6 +15,18 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/',
+        has: [{ type: 'host', value: 'terragoexperiences.fr' }],
+        destination: 'https://www.terragoexperiences.fr/',
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'terragoexperiences.fr' }],
+        destination: 'https://www.terragoexperiences.fr/:path*',
+        permanent: true,
+      },
+      {
         source: '/mission-engagements',
         destination: '/notre-approche',
         permanent: true,

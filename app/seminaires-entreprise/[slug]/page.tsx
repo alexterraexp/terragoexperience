@@ -12,7 +12,7 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-const SITE = 'https://terragoexperiences.fr';
+const SITE = 'https://www.terragoexperiences.fr';
 
 export function generateStaticParams() {
   return SEMINAIRE_ENJEU_SLUGS.map((slug) => ({ slug }));
