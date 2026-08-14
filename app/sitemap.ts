@@ -123,24 +123,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.6,
     },
-    {
-      url: `${SITE_URL}/experiences-entreprise/1`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.65,
-    },
-    {
-      url: `${SITE_URL}/experiences-entreprise/2`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.65,
-    },
-    {
-      url: `${SITE_URL}/experiences-entreprise/3`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.65,
-    },
     ...blogPages,
   ];
 }

@@ -29,18 +29,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    robots: { index: true, follow: true },
+    robots: { index: false, follow: true },
     openGraph: {
       title,
       description,
-      url: `https://terragoexperiences.fr/experiences-entreprise/${slug}`,
+      url: 'https://terragoexperiences.fr/experiences-entreprise',
       siteName: 'TerraGo',
       locale: 'fr_FR',
       type: 'website',
       images: [{ url: category.intro.image }],
     },
     alternates: {
-      canonical: `https://terragoexperiences.fr/experiences-entreprise/${slug}`,
+      canonical: 'https://terragoexperiences.fr/experiences-entreprise',
     },
   };
 }
