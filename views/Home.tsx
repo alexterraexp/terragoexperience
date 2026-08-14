@@ -120,7 +120,7 @@ const BannerVideo: React.FC<{ src: string; poster?: string; className?: string }
 const FAQ_ITEMS = [
   {
     q: 'Pourquoi choisir TerraGo pour organiser un événement d\'entreprise ?',
-    a: 'TerraGo imagine des expériences professionnelles qui sortent du cadre classique des séminaires. Grâce à notre réseau de producteurs, artisans et lieux authentiques, nous créons des événements qui favorisent la cohésion, la découverte et le partage.',
+    a: 'TerraGo imagine des expériences professionnelles qui sortent du cadre classique des séminaires. Nous vous emmenons chez celles et ceux qui font vivre les territoires : producteurs, artisans, agriculteurs et lieux engagés.\n\nVisite d\'une ferme, déjeuner chez un producteur, grande tablée au milieu des champs, atelier autour d\'un savoir-faire… Chaque événement est pensé pour créer de vrais moments de partage, favoriser la cohésion et faire découvrir autrement un territoire.\n\nNotre rôle : vous accompagner de A à Z pour construire une expérience authentique, conviviale et sur mesure, qui laisse autre chose qu\'un simple souvenir de séminaire.',
   },
   {
     q: 'Quels types d\'événements accompagnez-vous ?',
@@ -136,11 +136,11 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Quel budget prévoir pour un événement d\'entreprise ?',
-    a: 'Le budget dépend de nombreux critères : nombre de participants, durée du séjour, destination, hébergement, restauration et activités choisies. Nous vous accompagnons pour construire un projet cohérent avec vos attentes.',
+    a: 'Le budget dépend du nombre de participants, de la durée, de la destination, de l\'hébergement, de la restauration et des expériences choisies. Pour vous donner un ordre d\'idée, nos événements commencent à partir de 80 € par personne pour une journée ou une expérience, 150 € par personne pour une journée avec repas et activités, et 350 € par personne pour un séminaire avec nuitée.\n\nChaque projet est ensuite construit sur mesure selon vos envies et votre cahier des charges. Nous vous accompagnons pour trouver le juste équilibre entre expérience, qualité et budget.',
   },
   {
     q: 'Combien de participants pouvez-vous accompagner ?',
-    a: 'De quelques collaborateurs à plusieurs centaines de participants, nous adaptons l\'organisation, les lieux et les expériences pour répondre aux besoins de chaque groupe.',
+    a: 'De quelques collaborateurs à plusieurs centaines de participants, nous adaptons l\'organisation, les lieux et les expériences à la taille de votre groupe. Petite équipe, séminaire d\'entreprise ou événement de grande ampleur : nous construisons un format adapté à votre groupe, à votre destination et à vos objectifs.',
   },
   {
     q: 'Quel délai faut-il prévoir pour organiser un événement ?',
@@ -190,7 +190,7 @@ const FaqAccordion: React.FC = () => {
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`${homeParagraphClass} pb-4 pr-8`}>{item.a}</p>
+                <p className={`${homeParagraphClass} whitespace-pre-line pb-4 pr-8`}>{item.a}</p>
               </div>
             </div>
           </div>
@@ -672,7 +672,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
           <div className="mt-10 flex justify-center sm:mt-12">
             <Link
-              href="/experiences"
+              href="/experiences-entreprise"
               className={homeCtaOutlineClass}
             >
               <span aria-hidden>→</span>

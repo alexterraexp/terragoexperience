@@ -501,10 +501,8 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
             />
 
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl font-sans text-[clamp(1.7rem,5.2vw,3.4rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
-                Des expériences <span className="font-bold">authentiques,</span>
-                <br />
-                qui ont <span className="font-bold">du sens.</span>
+              <h1 className="max-w-3xl font-sans text-[clamp(1.7rem,5.2vw,3.4rem)] font-bold leading-[1.05] tracking-[-0.075em] text-white">
+                Nos expériences
               </h1>
               <p className={`${homeParagraphClass} mt-4 max-w-xl text-[15px] leading-relaxed text-white/90 sm:mt-6 sm:text-[16px]`}>
                 Team building, séminaires RSE et événements d&apos;entreprise chez des producteurs engagés, partout en France.

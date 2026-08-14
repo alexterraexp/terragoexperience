@@ -1198,6 +1198,20 @@ export function getDestination(slug: string): DestinationRegion | undefined {
   return DESTINATIONS.find((d) => d.slug === slug);
 }
 
+/** Title SEO : la région en premier pour éviter un sitelink du type « D'entreprise ». */
+export function destinationSeoTitle(
+  destination: Pick<DestinationRegion, 'name'>,
+): string {
+  return `${destination.name} : séminaire chez un producteur | TerraGo`;
+}
+
+/** H1 d’un seul tenant, sans fragment orphelin. */
+export function destinationHeroHeading(
+  destination: Pick<DestinationRegion, 'prep' | 'name'>,
+): string {
+  return `Séminaire ${destination.prep} ${destination.name} chez un producteur`;
+}
+
 export function getRelatedDestinations(
   slug: DestinationSlug,
   count = 2,

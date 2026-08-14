@@ -64,7 +64,7 @@ const DESTINATION_LIEUX: DropdownItem[] = [
 // ─── Structure du menu ────────────────────────────────────────────────────────
 
 const SEMINAIRE_MAIN: DropdownItem[] = [
-  { label: 'Séminaires d\'entreprise avec TerraGo', description: 'Du sens, du vrai, et du vivant', path: '/seminaires-entreprise', emoji: '🌿' },
+  { label: 'Séminaires d\'entreprise engagés', description: 'Du sens, du vrai, et du vivant', path: '/seminaires-entreprise', emoji: '🌿' },
   { label: 'Exemples de séminaire d\'entreprise', description: 'À la journée, sur 2 jours, ou sur mesure', path: '/seminaire-exemples', emoji: '📦' },
   { label: 'Séminaires réalisés', description: 'Retours d\'expérience sur le terrain', path: '#', comingSoon: true, emoji: '✨' },
 ];
@@ -111,7 +111,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     label: 'Nos expériences',
-    path: '/experiences',
+    path: '/experiences-entreprise',
     dropdown: [
       { label: 'Expériences entreprise', description: 'Team building, RSE & événements', path: '/experiences-entreprise', emoji: '✨' },
       { label: 'Expériences privées', description: 'Sur demande dès 8 pers. — séjours, immersions & repas', path: '/experiences-privees', emoji: '🌿' },
@@ -124,7 +124,7 @@ const NAV_ITEMS: NavItem[] = [
     dropdown: [
       { label: 'Approche', description: 'La mission et la vision TerraGo', path: '/notre-approche', emoji: '🌱' },
       { label: 'Charte RSE', description: 'Engagements responsables', path: '/notre-approche/charte-rse', emoji: '♻️' },
-      { label: 'Producteurs partenaires', description: 'Le réseau TerraGo', path: '/partenaires', emoji: '🌾' },
+      { label: 'Nos producteurs partenaires', description: 'Le réseau TerraGo', path: '/partenaires', emoji: '🌾' },
     ],
     footer: [
       { label: 'Devenir partenaire', description: 'Rejoindre le réseau TerraGo', path: '#', modal: 'partenaire', emoji: '🤝' },
@@ -447,7 +447,7 @@ const Header: React.FC = () => {
         (pathname?.startsWith('/partenaires/') ?? false)
       );
     }
-    if (nav.path === '/experiences') {
+    if (nav.path === '/experiences-entreprise') {
       return (
         pathname === '/experiences' ||
         (pathname?.startsWith('/experience/') ?? false) ||

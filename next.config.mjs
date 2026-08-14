@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // Next 16 bloque supabase.co en local (DNS NAT64 vu comme IP privée).
+    dangerouslyAllowLocalIP: process.env.NODE_ENV === 'development',
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'plus.unsplash.com' },
@@ -70,6 +72,11 @@ const nextConfig = {
       {
         source: '/recommander-un-producteur',
         destination: '/partenaires',
+        permanent: true,
+      },
+      {
+        source: '/experiences',
+        destination: '/experiences-entreprise',
         permanent: true,
       },
     ];

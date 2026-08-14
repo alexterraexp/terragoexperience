@@ -1,27 +1,35 @@
 import type { Metadata } from 'next';
 import ExperiencesEntreprise from '../../views/ExperiencesEntreprise';
+import HubJsonLd from '../../components/HubJsonLd';
+import { getSitelinkPage, sitelinkTitle, SITE_URL } from '../../lib/siteNav';
+
+const page = getSitelinkPage('/experiences-entreprise');
+const title = sitelinkTitle(page.name);
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Expériences entreprise – Team building, RSE & événements – TerraGo',
-    description:
-      'Team building, séminaires RSE et conventions d’entreprise chez des producteurs engagés. Des expériences authentiques qui ont du sens.',
+    title,
+    description: page.description,
     robots: { index: true, follow: true },
     openGraph: {
-      title: 'Expériences entreprise – TerraGo',
-      description:
-        'Team building, séminaires RSE et conventions d’entreprise chez des producteurs engagés.',
-      url: 'https://terragoexperiences.fr/experiences-entreprise',
+      title,
+      description: page.description,
+      url: `${SITE_URL}${page.path}`,
       siteName: 'TerraGo',
       locale: 'fr_FR',
       type: 'website',
     },
     alternates: {
-      canonical: 'https://terragoexperiences.fr/experiences-entreprise',
+      canonical: `${SITE_URL}${page.path}`,
     },
   };
 }
 
 export default function ExperiencesEntreprisePage() {
-  return <ExperiencesEntreprise />;
+  return (
+    <>
+      <HubJsonLd name={page.name} path={page.path} description={page.description} />
+      <ExperiencesEntreprise />
+    </>
+  );
 }

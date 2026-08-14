@@ -49,6 +49,8 @@ export type SeminaireEnjeu = {
   lead: string;
   body: string[];
   experiences: string[];
+  /** Intro de la section « déroulé type ». Si absent, texte générique. */
+  programIntro?: string;
   programHighlights: SeminaireEnjeuProgrammeStep[];
   exampleSeminar: SeminaireEnjeuExample;
   faq: SeminaireEnjeuFAQ[];
@@ -441,36 +443,38 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       'Temps de recul et d\u2019alignement pour le comité',
       'Restitution et priorisation des prochaines décisions',
     ],
+    programIntro:
+      'une journée où l\u2019on prend de la hauteur, où l\u2019on travaille autrement et où l\u2019on partage une vraie expérience du territoire. Du café chez le producteur à la grande tablée, chaque temps est pensé pour faire avancer le collectif.',
     programHighlights: [
       {
-        title: 'Accueil café & viennoiseries locales',
+        title: 'Café d\u2019accueil chez le producteur',
         description:
-          'Accueil discret dans un lieu privatisé : café, viennoiseries artisanales et mise en condition pour un CODIR hors les murs, loin des salles de réunion habituelles.',
+          'Café, viennoiseries locales et première rencontre avec celles et ceux qui font vivre le lieu.',
       },
       {
-        title: 'Visite guidée de l\u2019exploitation',
+        title: 'Immersion dans le territoire',
         description:
-          'Échange privilégié avec le producteur sur ses arbitrages, sa vision et sa résilience — un prisme rare pour nourrir vos propres décisions de direction.',
+          'Visite de l\u2019exploitation, découverte d\u2019un savoir-faire et échanges avec le producteur.',
       },
       {
-        title: 'Session stratégique & immersion',
+        title: 'CODIR au vert',
         description:
-          'Temps de travail confidentiel en comité, ponctué d\u2019une immersion terrain courte pour sortir des postures habituelles et fluidifier les échanges.',
+          'Votre temps de travail stratégique dans un cadre qui change des salles de réunion traditionnelles.',
       },
       {
-        title: 'Repas local en mode guinguette',
+        title: 'Grande tablée & déjeuner guinguette',
         description:
-          'Déjeuner intimiste aux produits du lieu : un moment de convivialité soigné qui favorise les conversations franches entre membres du comité.',
+          'Un repas local, convivial et généreux pour prolonger les échanges autrement.',
       },
       {
-        title: 'Synthèse & priorisation des décisions',
+        title: 'Prendre de la hauteur',
         description:
-          'Clôture structurée : décisions retenues, prochains pas et alignement du CODIR avant le retour en entreprise — sur une journée ou un format résidentiel 2 jours.',
+          'Une activité ou une expérience collective pour sortir du cadre, créer du lien et faire émerger de nouvelles perspectives.',
       },
       {
-        title: 'Mot de fin et cadeau du terroir à emporter',
+        title: 'Décisions & souvenir du terroir',
         description:
-          'Mot de clôture discret et présent du producteur pour chaque membre du comité — une touche d\u2019attention qui scelle une journée hors cadre.',
+          'Synthèse des décisions, mot de fin et produit local à emporter pour prolonger l\u2019expérience.',
       },
     ],
     exampleSeminar: {

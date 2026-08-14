@@ -617,10 +617,8 @@ const Seminaires: React.FC = () => {
             />
 
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl text-center font-sans text-[clamp(1.75rem,5.2vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
-                Des séminaires d&apos;entreprise
-                <br />
-                avec un <span className="font-bold">vrai impact.</span>
+              <h1 className="max-w-3xl text-center font-sans text-[clamp(1.75rem,5.2vw,3.75rem)] font-bold leading-[1.02] tracking-[-0.075em] text-white">
+                Séminaires d&apos;entreprise engagés
               </h1>
               <h2 className="mt-4 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
                 Reconnectez vos équipes à la terre, aux producteurs et au sens — loin des salles de réunion.
@@ -1112,7 +1110,7 @@ const Seminaires: React.FC = () => {
                 onClick={() => openModal()}
                 className="inline-flex min-w-[180px] items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
               >
-                Envoyer mon brief
+                Parlons de votre projet
               </button>
               <Link
                 href="/seminaire-exemples"

@@ -350,11 +350,10 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-8 px-4 pb-14 pt-10 text-center sm:gap-0 sm:px-10 sm:pb-8 sm:pt-12 lg:pb-10 lg:pt-14">
               <div className="flex flex-col items-center sm:flex-1 sm:justify-center">
                 <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
-                  {lieu.eyebrow}
+                  {lieu.name}
                 </p>
-                <h1 className="mt-2 max-w-4xl font-sans text-[clamp(1.65rem,5vw,3rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
-                  Organisez <span className="font-bold">votre séminaire</span> d&apos;entreprise{' '}
-                  <span className="font-bold">{lieu.phrase}</span>.
+                <h1 className="mt-2 max-w-4xl font-sans text-[clamp(1.65rem,5vw,3rem)] font-bold leading-[1.05] tracking-[-0.075em] text-white">
+                  {`Séminaire ${lieu.phrase}`}
                 </h1>
               </div>
               <button

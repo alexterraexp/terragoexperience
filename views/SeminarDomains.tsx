@@ -247,7 +247,7 @@ const SeminarDomains: React.FC = () => {
                 <span className="text-[10px] font-bold uppercase tracking-widest text-primary">Équipé & Connecté</span>
               </div>
               <button onClick={openModal} className="bg-primary text-white px-5 py-2 rounded-2xl text-[9px] font-bold uppercase tracking-widest shadow-lg hover:bg-black transition-all font-sans sm:px-8 sm:py-3 sm:text-[10px]">
-                Organiser mon séminaire
+                Parlons de votre projet
               </button>
             </div>
           </div>

@@ -20,6 +20,7 @@ import FramedHeroImage from '../components/FramedHeroImage';
 import PhotoCopyright from '../components/PhotoCopyright';
 import { regionDestinationPath } from '../lib/homeStorage';
 import {
+  destinationHeroHeading,
   getRelatedDestinations,
   type DestinationRegion as DestinationData,
 } from '../lib/destinations';
@@ -383,14 +384,10 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-8 px-4 pb-14 pt-10 text-center sm:gap-0 sm:px-10 sm:pb-8 sm:pt-12 lg:pb-10 lg:pt-14">
               <div className="flex flex-col items-center sm:flex-1 sm:justify-center">
                 <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
-                  Séminaire {destination.prep} {destination.name}
+                  {destination.name}
                 </p>
-                <h1 className="mt-2 max-w-4xl font-sans text-[clamp(1.65rem,5vw,3rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
-                  Organisez <span className="font-bold">votre séminaire</span> d&apos;entreprise{' '}
-                  <span className="font-bold">
-                    {destination.prep} {destination.name}
-                  </span>
-                  .
+                <h1 className="mt-2 max-w-4xl font-sans text-[clamp(1.65rem,5vw,3rem)] font-bold leading-[1.05] tracking-[-0.075em] text-white">
+                  {destinationHeroHeading(destination)}
                 </h1>
               </div>
               <button

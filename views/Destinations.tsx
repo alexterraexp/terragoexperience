@@ -90,7 +90,7 @@ const Destinations: React.FC = () => {
               Destinations TerraGo
             </p>
             <h1 className={`mt-3 max-w-3xl ${sectionTitleClass}`}>
-              Toutes nos <span className="font-bold">destinations</span>.
+              Nos <span className="font-bold">destinations</span>
             </h1>
             <p className={`mt-4 max-w-2xl ${homeParagraphClass}`}>
               Organisez votre séminaire d&apos;entreprise partout en France, au plus près des
@@ -251,7 +251,7 @@ const Destinations: React.FC = () => {
               une expérience sur mesure, au cœur des territoires.
             </p>
             <span className="mt-7 inline-flex items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors group-hover:bg-[#0c1d22] group-hover:text-white sm:mt-8 sm:px-7 sm:py-2.5 sm:text-[11px]">
-              Organiser mon séminaire
+              Parlons de votre projet
             </span>
           </button>
         </div>

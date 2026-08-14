@@ -640,8 +640,8 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
                 <span className="font-semibold text-[#0c1d22] underline decoration-[#ec6435] decoration-2 underline-offset-[4px]">
                   Pour résumer :
                 </span>{' '}
-                une journée riche et fluide, du café d&apos;accueil au repas guinguette — modulable
-                selon la taille du groupe et déclinable en format résidentiel 2&nbsp;jours.
+                {enjeu.programIntro ??
+                  'une journée riche et fluide, du café d\u2019accueil au repas guinguette — modulable selon la taille du groupe et déclinable en format résidentiel 2\u00a0jours.'}
               </p>
             </ScrollAnimate>
 

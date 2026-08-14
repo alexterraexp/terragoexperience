@@ -8,10 +8,9 @@ import {
 } from '../lib/seminaireEnjeux';
 import { fetchSeminaires, generateSlug } from '../lib/seminaires';
 import { isSupabaseConfigured, supabaseServer } from '../lib/supabase';
+import { SITE_URL, SITELINK_PAGES } from '../lib/siteNav';
 
 export const dynamic = 'force-static';
-
-const SITE = 'https://terragoexperiences.fr';
 
 async function fetchBlogSlugs(): Promise<string[]> {
   if (!isSupabaseConfigured) return [];
@@ -42,128 +41,106 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchSeminaireExempleSlugs(),
   ]);
 
-  const destinationPages: MetadataRoute.Sitemap = [
-    {
-      url: `${SITE}/destinations`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    ...DESTINATION_SLUGS.map((slug) => ({
-      url: `${SITE}${regionDestinationPath(slug)}`,
-      lastModified: now,
-      changeFrequency: 'monthly' as const,
-      priority: 0.85,
-    })),
-    ...LIEU_SLUGS.map((slug) => ({
-      url: `${SITE}${lieuDestinationPath(slug)}`,
-      lastModified: now,
-      changeFrequency: 'monthly' as const,
-      priority: 0.85,
-    })),
-  ];
-
-  const enjeuPages: MetadataRoute.Sitemap = SEMINAIRE_ENJEU_SLUGS.map((slug) => ({
-    url: `${SITE}${seminaireEnjeuPath(slug)}`,
+  const hubPages: MetadataRoute.Sitemap = SITELINK_PAGES.map((page) => ({
+    url: `${SITE_URL}${page.path}`,
     lastModified: now,
-    changeFrequency: 'monthly' as const,
+    changeFrequency: 'weekly' as const,
     priority: 0.9,
   }));
 
-  const blogPages: MetadataRoute.Sitemap = [
-    {
-      url: `${SITE}/blog`,
+  const destinationPages: MetadataRoute.Sitemap = [
+    ...DESTINATION_SLUGS.map((slug) => ({
+      url: `${SITE_URL}${regionDestinationPath(slug)}`,
       lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    ...blogSlugs.map((slug) => ({
-      url: `${SITE}/blog/${slug}`,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
+    ...LIEU_SLUGS.map((slug) => ({
+      url: `${SITE_URL}${lieuDestinationPath(slug)}`,
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
   ];
 
-  const seminaireExemplePages: MetadataRoute.Sitemap = [
+  const enjeuPages: MetadataRoute.Sitemap = SEMINAIRE_ENJEU_SLUGS.map((slug) => ({
+    url: `${SITE_URL}${seminaireEnjeuPath(slug)}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
+
+  const blogPages: MetadataRoute.Sitemap = [
     {
-      url: `${SITE}/seminaire-exemples`,
+      url: `${SITE_URL}/blog`,
       lastModified: now,
       changeFrequency: 'weekly',
-      priority: 0.9,
+      priority: 0.6,
+    },
+    ...blogSlugs.map((slug) => ({
+      url: `${SITE_URL}/blog/${slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    })),
+  ];
+
+  const seminaireExemplePages: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/seminaire-exemples`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.7,
     },
     ...seminaireExempleSlugs.map((slug) => ({
-      url: `${SITE}/seminaire-exemples/${slug}`,
+      url: `${SITE_URL}/seminaire-exemples/${slug}`,
       lastModified: now,
       changeFrequency: 'weekly' as const,
-      priority: 0.8,
+      priority: 0.65,
     })),
   ];
 
   return [
     {
-      url: `${SITE}/`,
+      url: `${SITE_URL}/`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 1.0,
     },
-    {
-      url: `${SITE}/seminaires-entreprise`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
+    ...hubPages,
     ...enjeuPages,
     ...seminaireExemplePages,
+    ...destinationPages,
     {
-      url: `${SITE}/partenaires`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${SITE}/experiences-privees`,
+      url: `${SITE_URL}/experiences-privees`,
       lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.6,
     },
     {
-      url: `${SITE}/notre-approche`,
+      url: `${SITE_URL}/notre-approche/charte-rse`,
       lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.6,
     },
     {
-      url: `${SITE}/notre-approche/charte-rse`,
+      url: `${SITE_URL}/experiences-entreprise/1`,
       lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.75,
+      priority: 0.65,
     },
     {
-      url: `${SITE}/experiences-entreprise`,
+      url: `${SITE_URL}/experiences-entreprise/2`,
       lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.85,
+      priority: 0.65,
     },
     {
-      url: `${SITE}/experiences-entreprise/1`,
+      url: `${SITE_URL}/experiences-entreprise/3`,
       lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${SITE}/experiences-entreprise/2`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${SITE}/experiences-entreprise/3`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.65,
     },
     ...blogPages,
-    ...destinationPages,
   ];
 }

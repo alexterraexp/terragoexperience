@@ -36,12 +36,12 @@ const sectionTitle: React.CSSProperties = {
 
 type FooterLink = { to: string; label: string };
 
-/** Ordre : Séminaires → Destinations → TerraGo → Expériences. Liens en listes horizontales (2 lignes). */
+/** Ordre : Séminaires → Destinations → Expériences → TerraGo. */
 const NAV_GROUPS: { title: string; links: FooterLink[] }[] = [
   {
     title: 'Séminaires',
     links: [
-      { to: '/seminaires-entreprise', label: 'Nos séminaires' },
+      { to: '/seminaires-entreprise', label: "Séminaires d'entreprise engagés" },
       { to: '/seminaire-exemples', label: 'Exemples de séminaire' },
       ...SEMINAIRE_ENJEUX.map((enjeu) => ({
         to: seminaireEnjeuPath(enjeu.slug),
@@ -52,11 +52,18 @@ const NAV_GROUPS: { title: string; links: FooterLink[] }[] = [
   {
     title: 'Destinations',
     links: [
-      { to: '/destinations', label: 'Toutes les destinations' },
+      { to: '/destinations', label: 'Nos destinations' },
       ...REGION_IMAGES.map((region) => ({
         to: regionDestinationPath(region.slug),
         label: region.name,
       })),
+    ],
+  },
+  {
+    title: 'Expériences',
+    links: [
+      { to: '/experiences-entreprise', label: 'Nos expériences' },
+      { to: '/experiences-privees', label: 'Expériences privées' },
     ],
   },
   {
@@ -66,13 +73,6 @@ const NAV_GROUPS: { title: string; links: FooterLink[] }[] = [
       { to: '/notre-approche/charte-rse', label: 'Notre charte RSE' },
       { to: '/partenaires', label: 'Nos producteurs partenaires' },
       { to: '/blog', label: 'Le Journal TerraGo' },
-    ],
-  },
-  {
-    title: 'Expériences',
-    links: [
-      { to: '/experiences-entreprise', label: 'Expériences entreprise' },
-      { to: '/experiences-privees', label: 'Expériences privées' },
     ],
   },
 ];
@@ -265,7 +265,7 @@ const Footer: React.FC = () => {
       >
         <div style={{ padding: FRAME_PADDING }}>
           <div className="footer-grid">
-            {/* Listings horizontaux : Séminaires → Destinations → TerraGo → Expériences */}
+            {/* Listings horizontaux : Séminaires → Destinations → Expériences → TerraGo */}
             <nav className="footer-nav" aria-label="Pied de page">
               {NAV_GROUPS.map((group) => {
                 const [row1, row2] = splitInTwoRows(group.links);

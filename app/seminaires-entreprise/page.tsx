@@ -1,35 +1,38 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Seminaires from '../../views/Seminaires';
+import HubJsonLd from '../../components/HubJsonLd';
+import { getSitelinkPage, sitelinkTitle, SITE_URL } from '../../lib/siteNav';
+
+const page = getSitelinkPage('/seminaires-entreprise');
+const title = sitelinkTitle(page.name);
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title =
-    "Séminaires d'entreprise à impact – Cohésion, RSE & immersion | TerraGo";
-  const description =
-    "Découvrez les séminaires d'entreprise TerraGo : cohésion, sensibilisation, inspiration et engagement au contact de producteurs et artisans.";
-
   return {
     title,
-    description,
+    description: page.description,
     robots: { index: true, follow: true },
     openGraph: {
       title,
-      description,
-      url: 'https://terragoexperiences.fr/seminaires-entreprise',
+      description: page.description,
+      url: `${SITE_URL}${page.path}`,
       siteName: 'TerraGo',
       locale: 'fr_FR',
       type: 'website',
     },
     alternates: {
-      canonical: 'https://terragoexperiences.fr/seminaires-entreprise',
+      canonical: `${SITE_URL}${page.path}`,
     },
   };
 }
 
 export default function SeminairesEntreprisePage() {
   return (
-    <Suspense fallback={null}>
-      <Seminaires />
-    </Suspense>
+    <>
+      <HubJsonLd name={page.name} path={page.path} description={page.description} />
+      <Suspense fallback={null}>
+        <Seminaires />
+      </Suspense>
+    </>
   );
 }

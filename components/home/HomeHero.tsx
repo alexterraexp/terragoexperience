@@ -135,7 +135,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
               onClick={openModal}
               className="rounded-full bg-white px-7 py-1.5 text-xs font-bold tracking-[0.02em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:min-w-[280px] sm:px-16 sm:py-2 sm:text-sm sm:text-center"
             >
-              Organiser mon séminaire
+              Parlons de votre projet
             </button>
           </div>
           <button

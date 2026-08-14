@@ -1,29 +1,35 @@
 import type { Metadata } from 'next';
 import Destinations from '../../views/Destinations';
+import HubJsonLd from '../../components/HubJsonLd';
+import { getSitelinkPage, sitelinkTitle, SITE_URL } from '../../lib/siteNav';
+
+const page = getSitelinkPage('/destinations');
+const title = sitelinkTitle(page.name);
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "Destinations séminaire d'entreprise en France | TerraGo";
-  const description =
-    "Découvrez nos destinations de séminaire en France : Nouvelle-Aquitaine, Provence, Île-de-France, Normandie, Occitanie et autres territoires.";
-
   return {
     title,
-    description,
+    description: page.description,
     robots: { index: true, follow: true },
     openGraph: {
       title,
-      description,
-      url: 'https://terragoexperiences.fr/destinations',
+      description: page.description,
+      url: `${SITE_URL}${page.path}`,
       siteName: 'TerraGo',
       locale: 'fr_FR',
       type: 'website',
     },
     alternates: {
-      canonical: 'https://terragoexperiences.fr/destinations',
+      canonical: `${SITE_URL}${page.path}`,
     },
   };
 }
 
 export default function DestinationsPage() {
-  return <Destinations />;
+  return (
+    <>
+      <HubJsonLd name={page.name} path={page.path} description={page.description} />
+      <Destinations />
+    </>
+  );
 }
