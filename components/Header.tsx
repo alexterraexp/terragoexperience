@@ -225,9 +225,14 @@ const AccordionSection: React.FC<{
                           key={item.label}
                           type="button"
                           onClick={() => onItemClick(item)}
-                          className="cursor-pointer rounded-[10px] border-none bg-transparent px-3 py-2.5 text-left font-sans text-[13px] font-medium tracking-[-0.02em] text-[#0c1d22]/75 transition-colors duration-150 active:bg-white active:text-[#ec6435]"
+                          className="group inline-flex w-full cursor-pointer items-center gap-6 rounded-[10px] border-none bg-transparent px-3 py-2.5 text-left transition-colors duration-150 active:bg-white"
                         >
-                          {item.label}
+                          <span className="font-sans text-[13px] font-medium tracking-[-0.02em] text-[#0c1d22]/75 transition-colors duration-150 group-active:text-[#ec6435]">
+                            {item.label}
+                          </span>
+                          <span className="shrink-0 text-[#ec6435] opacity-0 transition-all duration-150 group-active:opacity-100" aria-hidden>
+                            →
+                          </span>
                         </button>
                       ),
                     )}
@@ -404,20 +409,6 @@ const Header: React.FC = () => {
     pathname === '/blog' ||
     pathname.startsWith('/blog/')
   );
-  /** Pages à hero image encadrée : header blanc uni, sans séparateur. */
-  const isFramedHeroPage =
-    pathname === '/notre-approche' ||
-    (pathname?.startsWith('/notre-approche/') ?? false) ||
-    pathname === '/partenaires' ||
-    pathname === '/seminaires-entreprise' ||
-    (pathname?.startsWith('/seminaires-entreprise/') ?? false) ||
-    pathname === '/seminaire-exemples' ||
-    (pathname?.startsWith('/seminaire-exemples/') ?? false) ||
-    pathname === '/experiences-entreprise' ||
-    (pathname?.startsWith('/experiences-entreprise/') ?? false) ||
-    pathname === '/experiences-privees' ||
-    pathname === '/destinations' ||
-    (pathname?.startsWith('/destinations/') ?? false);
   const isHeroTransparent = hasHeroTransparent && !isScrolled;
   const isDark = isHeroTransparent;
 
@@ -537,11 +528,12 @@ const Header: React.FC = () => {
             aria-hidden
             className={[
               'pointer-events-none absolute inset-y-0 left-1/2 -z-10 w-screen -translate-x-1/2',
-              'transition-opacity duration-300 ease-out',
+              'border-b bg-white/85 backdrop-blur-[16px]',
+              'transition-[opacity,border-color,box-shadow] duration-300 ease-out',
               isDark ? 'opacity-0' : 'opacity-100',
-              isFramedHeroPage
-                ? 'bg-white'
-                : 'border-b border-black/[0.06] bg-white/85 shadow-[0_4px_24px_rgba(12,29,34,0.07)] backdrop-blur-[16px]',
+              isScrolled
+                ? 'border-black/[0.06] shadow-[0_4px_24px_rgba(12,29,34,0.07)]'
+                : 'border-transparent shadow-none',
               isSeminaireDetailPage && 'max-lg:hidden',
             ].filter(Boolean).join(' ')}
           />
@@ -691,15 +683,15 @@ const Header: React.FC = () => {
                         <p className={sectionTitleCls}>{section.title}</p>
                         <div
                           className={[
-                            'grid gap-x-6 gap-y-0.5',
-                            (section.columns ?? 2) === 1 ? 'grid-cols-1' : 'grid-cols-2',
+                            'grid w-max max-w-full gap-x-10 gap-y-0.5',
+                            (section.columns ?? 2) === 1 ? 'grid-cols-1' : 'grid-cols-[auto_auto]',
                           ].join(' ')}
                         >
                           {section.items.map((item) =>
                             item.comingSoon ? (
                               <div
                                 key={item.label}
-                                className="flex items-center justify-between gap-2 py-2 cursor-default"
+                                className="flex w-full items-center justify-between gap-4 py-2 cursor-default"
                               >
                                 <span
                                   className={[
@@ -718,9 +710,21 @@ const Header: React.FC = () => {
                                 key={item.label}
                                 type="button"
                                 onClick={() => handleItemClick(item)}
-                                className={panelLinkCls}
+                                className={[
+                                  panelLinkCls,
+                                  'flex w-full items-center justify-between gap-4 group',
+                                ].join(' ')}
                               >
-                                {item.label}
+                                <span>{item.label}</span>
+                                <span
+                                  className={[
+                                    'shrink-0 opacity-0 -translate-x-1 transition-all duration-150 group-hover:opacity-100 group-hover:translate-x-0',
+                                    isDark ? 'text-white' : 'text-[#ec6435]',
+                                  ].join(' ')}
+                                  aria-hidden
+                                >
+                                  →
+                                </span>
                               </button>
                             ),
                           )}
@@ -747,7 +751,7 @@ const Header: React.FC = () => {
                   </div>
                 </>
               ) : openNav ? (
-                <div className="flex flex-col gap-1 pt-4 max-w-md">
+                <div className="flex max-w-sm flex-col gap-1 pt-4">
                   {openNav.dropdown.map((item) =>
                     item.comingSoon ? (
                       <div
@@ -773,7 +777,7 @@ const Header: React.FC = () => {
                         onClick={() => handleItemClick(item)}
                         className={[
                           panelLinkCls,
-                          'flex items-center justify-between gap-3 w-full group',
+                          'flex w-full items-center justify-between gap-3 group',
                         ].join(' ')}
                       >
                         <span>

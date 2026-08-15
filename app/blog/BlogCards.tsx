@@ -68,7 +68,7 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
             </div>
 
             <div className="absolute bottom-0 left-0 right-0 z-10 px-5 pb-6 sm:px-7 sm:pb-8">
-              <h3 className="max-w-xl font-sans text-[22px] font-normal leading-[1.12] tracking-[-0.075em] text-white sm:text-[28px] lg:text-[32px]">
+              <h3 className="max-w-xl font-sans text-[22px] font-bold leading-[1.12] tracking-[-0.075em] text-white sm:text-[28px] lg:text-[32px]">
                 {featured.title}
               </h3>
               <p className="mt-3 font-sans text-[13px] tracking-[-0.03em] text-white/70">
@@ -148,7 +148,7 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
                 )}
 
                 <div className="absolute bottom-0 left-0 right-0 z-10 px-4 pb-5 sm:px-5 sm:pb-6">
-                  <h3 className="font-sans text-[18px] font-normal leading-[1.15] tracking-[-0.065em] text-white sm:text-[20px]">
+                  <h3 className="font-sans text-[18px] font-bold leading-[1.15] tracking-[-0.065em] text-white sm:text-[20px]">
                     {post.title}
                   </h3>
                   <p className="mt-2.5 font-sans text-[12px] tracking-[-0.02em] text-white/65">
@@ -166,18 +166,18 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
       {/* ── PROCHAINEMENT ── */}
       {soonPosts.length > 0 && (
         <div>
-          <div className="mb-6 flex items-center gap-3 sm:mb-8">
+          <div className="mb-4 flex items-center gap-3 sm:mb-5">
             <span className="whitespace-nowrap font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#0c1d22]/40">
               Prochainement
             </span>
             <div className="h-px flex-1 bg-[#0c1d22]/10" />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
             {soonPosts.map((post) => (
               <div
                 key={post.slug}
-                className="relative aspect-[3/4] overflow-hidden sm:aspect-[4/5]"
+                className="relative aspect-[16/9] overflow-hidden"
                 style={{ borderRadius: HOME_RADIUS }}
               >
                 <Image
@@ -189,24 +189,24 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
                 />
                 <div className="absolute inset-0 bg-[#0c1d22]/35" />
 
-                <div className="absolute left-4 top-4 z-10 inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#0c1d22]">
+                <div className="absolute left-6 top-5 z-10 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2 py-1 text-[8px] font-bold uppercase tracking-[0.14em] text-[#0c1d22] sm:left-7 sm:top-6">
                   <span
-                    className="h-1.5 w-1.5 rounded-full"
+                    className="h-1 w-1 rounded-full"
                     style={{ background: HOME_COLORS.orange }}
                   />
                   Bientôt
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 z-10 px-4 pb-5 sm:px-5 sm:pb-6">
+                <div className="absolute bottom-0 left-0 right-0 z-10 px-6 pb-7 sm:px-7 sm:pb-8">
                   {post.category && (
                     <p
-                      className="mb-2 font-sans text-[10px] font-bold uppercase tracking-[0.16em]"
+                      className="mb-1 font-sans text-[8px] font-bold uppercase tracking-[0.16em]"
                       style={{ color: HOME_COLORS.orange }}
                     >
                       {post.category}
                     </p>
                   )}
-                  <h3 className="font-sans text-[18px] font-normal leading-[1.15] tracking-[-0.065em] text-white/85 sm:text-[20px]">
+                  <h3 className="line-clamp-2 font-sans text-[13px] font-normal leading-[1.25] tracking-[-0.04em] text-white/90 sm:text-[14px]">
                     {post.title}
                   </h3>
                 </div>

@@ -8,7 +8,6 @@ import {
   HOME_RADIUS,
   bottomImageGradientClass,
   homeCtaOutlineClass,
-  homeHeroOutlineButtonClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
 
@@ -18,7 +17,7 @@ const ASSETS = {
   goutte:
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/goutte-eau.png',
   sOrange:
-    'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/s%20orange.png',
+    'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/s-picto-orange.png',
 } as const;
 
 const sectionTitleClass =
@@ -321,14 +320,7 @@ const CharteRse: React.FC = () => {
               <Link href="/seminaires-entreprise" className={homeCtaOutlineClass}>
                 Nos séminaires
               </Link>
-              <Link
-                href="/partenaires"
-                className={homeHeroOutlineButtonClass}
-                style={{
-                  borderColor: HOME_COLORS.primary,
-                  color: HOME_COLORS.primary,
-                }}
-              >
+              <Link href="/partenaires" className={homeCtaOutlineClass}>
                 Nos producteurs
               </Link>
             </div>

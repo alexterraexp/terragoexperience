@@ -37,7 +37,7 @@ const HOME_ASSETS =
 const PACK_ASSETS = {
   hero: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/LOGEMENTS/TRINQUET-PIMENT/trinquet7.jpg',
   producteurSoutenu: `${HOME_ASSETS}/emoji/producteur-sountenu.png`,
-  sOrange: `${HOME_ASSETS}/emoji/s%20orange.png`,
+  sOrange: `${HOME_ASSETS}/emoji/s-picto-orange.png`,
   branche: `${HOME_ASSETS}/emoji/emoji-branche.png`,
   mouton: `${HOME_ASSETS}/emoji/mouton.png`,
 } as const;
@@ -1123,11 +1123,9 @@ function InfosPratiquesRow({
             onOpen?.();
             return;
           }
-          setOpen(v => {
-            const next = !v;
-            if (next) onOpen?.();
-            return next;
-          });
+          const next = !open;
+          setOpen(next);
+          if (next) onOpen?.();
         }}
       >
         <span className="sem-infos-row-icon" aria-hidden>{icon}</span>
@@ -1164,7 +1162,7 @@ function InfosPratiquesSection({
           subtitle={[s.region, s.producteur].filter(Boolean).join(' · ')}
         >
           <p className="sem-infos-pratiques-copy">
-            Séminaire chez <strong>{s.producteur}</strong>
+            Séminaire <strong>{s.producteur}</strong>
             {s.region ? <> — {s.region}</> : null}.
             Le lieu exact est communiqué après validation du devis.
           </p>

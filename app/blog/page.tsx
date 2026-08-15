@@ -4,7 +4,6 @@ import { supabaseServer as supabase } from '../../lib/supabase';
 import {
   HOME_COLORS,
   HOME_RADIUS,
-  homeParagraphClass,
   homeSectionPadding,
 } from '../../components/home/homeStyles';
 import BlogCards from './BlogCards';
@@ -94,12 +93,13 @@ export default async function BlogPage() {
               'linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.62) 100%)',
           }}
         />
-        <div className="relative z-10 mx-auto max-w-4xl px-5 pb-14 text-center sm:px-8 sm:pb-20">
+        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-3 pb-14 text-center sm:px-5 sm:pb-20 lg:px-8">
           <h1 className="font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
-            Sortir du <span className="font-bold">cadre.</span>
+            Le goût des <span className="font-bold">choses vraies.</span>
           </h1>
-          <h2 className="mt-4 font-sans text-[clamp(1.05rem,2.4vw,1.5rem)] font-normal leading-[1.25] tracking-[-0.04em] text-white/85 sm:mt-5">
-            Rencontres. Territoires. Inspiration.
+          <h2 className="mx-auto mt-4 max-w-lg font-sans text-[13px] font-normal leading-[1.45] tracking-[-0.03em] text-white/75 sm:mt-5 sm:text-[14px]">
+            Conseils, guides et inspirations pour organiser des expériences inoubliables au cœur des
+            terroirs français.
           </h2>
         </div>
       </section>
@@ -108,15 +108,11 @@ export default async function BlogPage() {
       <section
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
       >
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="mb-8 text-center sm:mb-10">
+        <div className="mx-auto max-w-[1280px] px-3 sm:px-5 lg:px-8">
+          <div className="mb-8 sm:mb-10">
             <h2 className={sectionTitleClass}>
               Articles <span className="font-bold">à la une.</span>
             </h2>
-            <p className={`${homeParagraphClass} mx-auto mt-4 max-w-xl text-[15px] text-[#0c1d22]/65 sm:text-[16px]`}>
-              Conseils, guides et inspirations pour organiser des expériences inoubliables au cœur du
-              terroir français.
-            </p>
           </div>
 
           <BlogCards featured={featured} latestPosts={latestPosts} soonPosts={soonPosts} />
@@ -125,7 +121,7 @@ export default async function BlogPage() {
 
       {/* ── NEWSLETTER ── */}
       <section style={{ paddingBottom: homeSectionPadding, background: '#ffffff' }}>
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="mx-auto max-w-[1280px] px-3 sm:px-5 lg:px-8">
           <div
             className="flex flex-col items-start justify-between gap-8 px-6 py-10 sm:flex-row sm:items-center sm:px-10 sm:py-12"
             style={{ background: HOME_COLORS.primary, borderRadius: HOME_RADIUS }}

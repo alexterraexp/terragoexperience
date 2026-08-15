@@ -304,7 +304,7 @@ export default async function BlogArticlePage({
           }}
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-[1400px] px-5 pb-10 sm:px-8 sm:pb-14">
+        <div className="relative z-10 mx-auto w-full max-w-[1280px] px-3 pb-10 sm:px-5 sm:pb-14 lg:px-8">
           <div className="mb-5">
             <Link href="/blog" className="blog-hero-back">
               <span aria-hidden style={{ fontSize: 11, letterSpacing: 0, opacity: 0.92 }}>
@@ -331,7 +331,7 @@ export default async function BlogArticlePage({
 
       {/* ── BODY ── */}
       <div
-        className="mx-auto max-w-[1400px] px-5 sm:px-8"
+        className="mx-auto max-w-[1280px] px-3 sm:px-5 lg:px-8"
         style={{
           paddingTop: 'clamp(2.5rem, 5vw, 4rem)',
           paddingBottom: homeSectionPadding,
@@ -380,7 +380,7 @@ export default async function BlogArticlePage({
 
       {/* ── CTA ── */}
       <section style={{ paddingBottom: homeSectionPadding, background: '#ffffff' }}>
-        <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
+        <div className="mx-auto max-w-[1280px] px-3 sm:px-5 lg:px-8">
           <div
             className="grid overflow-hidden lg:grid-cols-[1.1fr_1fr]"
             style={{ background: HOME_COLORS.primary, borderRadius: HOME_RADIUS }}

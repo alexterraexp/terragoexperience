@@ -25,7 +25,7 @@ const ASSETS = {
   hero: `${HOME}/arrivee-randonnee.png`,
   ble: `${HOME}/emoji/ble.png`,
   etoile: `${HOME}/etoilecouleurfoncee.png`,
-  sOrange: `${HOME}/emoji/s%20orange.png`,
+  sOrange: `${HOME}/emoji/s-picto-orange.png`,
   feu: `${HOME}/emoji/feu.png`,
   piment: `${HOME}/emoji/piment.png`,
   lieux: `${HOME}/eleveuse.png`,
