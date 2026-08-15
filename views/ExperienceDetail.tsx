@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ALL_EXPERIENCES } from '../constants';
+import { jumpToTop } from '../components/ScrollToTop';
 
 const ExperienceDetail: React.FC = () => {
   const params = useParams();
@@ -20,7 +21,7 @@ const ExperienceDetail: React.FC = () => {
   const timeSlots = ["09:30", "14:00", "16:30"];
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    jumpToTop();
   }, [id]);
 
   if (!exp) {

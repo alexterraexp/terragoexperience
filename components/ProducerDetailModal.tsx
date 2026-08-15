@@ -19,8 +19,10 @@ type ProducerDetailModalProps = {
 function attachHorizontalDrag(el: HTMLElement) {
   let pointerId: number | null = null;
   let startX = 0;
+  let startY = 0;
   let startScroll = 0;
   let moved = false;
+  let axis: 'h' | 'v' | null = null;
 
   const snap = () => {
     const w = el.clientWidth || 1;
@@ -33,21 +35,38 @@ function attachHorizontalDrag(el: HTMLElement) {
     if ((e.target as HTMLElement | null)?.closest?.('button')) return;
     pointerId = e.pointerId;
     startX = e.clientX;
+    startY = e.clientY;
     startScroll = el.scrollLeft;
     moved = false;
-    el.style.scrollSnapType = 'none';
-    el.setPointerCapture(e.pointerId);
+    axis = null;
   };
   const onMove = (e: PointerEvent) => {
     if (pointerId !== e.pointerId) return;
     const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (!axis) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      if (Math.abs(dy) > Math.abs(dx)) {
+        axis = 'v';
+        pointerId = null;
+        return;
+      }
+      axis = 'h';
+      el.style.scrollSnapType = 'none';
+      el.setPointerCapture(e.pointerId);
+    }
+    if (axis !== 'h') return;
     if (Math.abs(dx) > 4) moved = true;
     el.scrollLeft = startScroll - dx;
   };
   const onUp = (e: PointerEvent) => {
     if (pointerId !== e.pointerId) return;
+    const wasHorizontal = axis === 'h';
     pointerId = null;
+    axis = null;
     el.style.scrollSnapType = '';
+    if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+    if (!wasHorizontal) return;
     snap();
     if (moved) {
       const block = (ev: Event) => {
@@ -181,7 +200,7 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
           -webkit-overflow-scrolling: touch;
           scrollbar-width: none;
           cursor: grab;
-          touch-action: pan-x;
+          touch-action: pan-x pan-y;
         }
         .pdm-track::-webkit-scrollbar { display: none }
         .pdm-track:active { cursor: grabbing }
@@ -208,9 +227,25 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
           user-select: none;
         }
         @media (max-width: 860px) {
-          .pdm-wrapper { padding: 0 !important }
-          .pdm-panel { width: 100% !important; max-width: none !important; height: 100dvh !important; border-radius: 0 !important }
-          .pdm-scroll { padding-left: 40px !important; padding-right: 40px !important }
+          .pdm-wrapper { padding: 0 !important; align-items: stretch !important }
+          .pdm-panel {
+            display: block !important; width: 100% !important; max-width: none !important;
+            height: 100% !important; height: 100dvh !important; height: 100svh !important;
+            max-height: 100svh !important; border-radius: 0 !important;
+            overflow-x: hidden !important; overflow-y: scroll !important;
+            -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+          }
+          .pdm-gallery {
+            flex: none !important; height: 220px !important; min-height: 220px !important;
+          }
+          .pdm-scroll {
+            flex: none !important; min-height: 0 !important; overflow: visible !important;
+            padding: 24px 22px max(28px, env(safe-area-inset-bottom)) !important;
+          }
+          .pdm-close {
+            position: fixed !important; top: max(12px, env(safe-area-inset-top)) !important;
+            right: 16px !important;
+          }
         }
       `}</style>
 
@@ -262,6 +297,7 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
         >
           {/* ── Haut : carrousel swipable pleine largeur ── */}
           <div
+            className="pdm-gallery"
             style={{
               position: 'relative',
               flex: '0 0 36%',
@@ -311,13 +347,14 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
 
             <button
               type="button"
+              className="pdm-close"
               onClick={handleClose}
               aria-label="Fermer"
               style={{
                 position: 'absolute',
                 top: 14,
                 right: 14,
-                zIndex: 2,
+                zIndex: 3,
                 width: 36,
                 height: 36,
                 border: 'none',

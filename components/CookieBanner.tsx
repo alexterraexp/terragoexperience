@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { applyCookieConsent, COOKIE_CONSENT_KEY } from '../lib/analytics';
 
 const INK = '#0c1d22';
@@ -41,6 +42,7 @@ const leadStyle: React.CSSProperties = {
 };
 
 const CookieBanner: React.FC = () => {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState<Step>(1);
   const [stat, setStat] = useState(false);
@@ -65,6 +67,7 @@ const CookieBanner: React.FC = () => {
     if (!visible) return;
 
     const scrollY = window.scrollY;
+    const lockedPath = pathname;
     const { style: bodyStyle } = document.body;
     const { style: htmlStyle } = document.documentElement;
     const prev = {
@@ -87,9 +90,10 @@ const CookieBanner: React.FC = () => {
       bodyStyle.position = prev.bodyPosition;
       bodyStyle.top = prev.bodyTop;
       bodyStyle.width = prev.bodyWidth;
-      window.scrollTo(0, scrollY);
+      // Ne pas restaurer l’ancien scroll si on a changé de page (ex. lien Confidentialité).
+      window.scrollTo(0, window.location.pathname === lockedPath ? scrollY : 0);
     };
-  }, [visible]);
+  }, [visible, pathname]);
 
   const applyConsent = (s: boolean, m: boolean, p: boolean) => {
     applyCookieConsent({ stat: s, mktg: m, pref: p });

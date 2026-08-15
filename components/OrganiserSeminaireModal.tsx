@@ -77,6 +77,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
   const [email, setEmail] = useState('');
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const lieuWrapRef = useRef<HTMLDivElement>(null);
 
   const lieuSuggestions = useMemo(() => matchFrenchPlaces(lieu, 8), [lieu]);
@@ -91,18 +92,19 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
+    panelRef.current?.scrollTo({ top: 0 });
   }, [step]);
 
   const lockScrollWhileDragging = () => {
     const el = scrollRef.current;
-    if (!el) return;
-    el.style.overflowY = 'hidden';
+    if (el) el.style.overflowY = 'hidden';
+    panelRef.current?.classList.add('osm-panel--noscroll');
   };
 
   const unlockScrollAfterDragging = () => {
     const el = scrollRef.current;
-    if (!el) return;
-    el.style.overflowY = 'auto';
+    if (el) el.style.overflowY = 'auto';
+    panelRef.current?.classList.remove('osm-panel--noscroll');
   };
 
   useEffect(() => {
@@ -329,12 +331,16 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           margin: -6px 0;
         }
 
+        .osm-panel--noscroll { overflow: hidden !important }
+
         @media (max-width: 860px) {
-          .osm-wrapper:not(.osm-wrapper--confirm) { padding:0 !important }
+          .osm-wrapper:not(.osm-wrapper--confirm) { padding:0 !important; align-items:stretch !important }
           .osm-panel:not(.osm-panel--confirm) {
-            width:100% !important; max-width:none !important;
-            height:100svh !important; max-height:100svh !important;
-            border-radius:0 !important; flex-direction:column !important;
+            display:block !important; width:100% !important; max-width:none !important;
+            height:100% !important; height:100dvh !important; height:100svh !important;
+            max-height:100svh !important; border-radius:0 !important;
+            overflow-x:hidden !important; overflow-y:scroll !important;
+            -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y;
           }
           .osm-panel--confirm {
             width:calc(100% - 32px) !important;
@@ -343,15 +349,22 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             max-height:min(88svh, 560px) !important;
             border-radius:20px !important;
           }
-          .osm-visual { width:100% !important; height:140px !important; flex:0 0 140px !important }
-          .osm-body { flex:1 1 auto !important; min-height:0 !important; overflow:hidden !important }
-          .osm-content { padding:36px 22px 0 !important }
+          .osm-visual { width:100% !important; height:140px !important; flex:none !important }
+          .osm-body { display:block !important; flex:none !important; min-height:0 !important; overflow:visible !important }
+          .osm-content {
+            flex:none !important; min-height:0 !important; overflow:visible !important;
+            padding:36px 22px 0 !important;
+          }
           .osm-content--confirm { padding:48px 24px 28px !important }
           .osm-footer {
             flex-shrink:0 !important;
-            padding:12px 22px max(16px, env(safe-area-inset-bottom)) !important;
+            padding:18px 22px max(28px, env(safe-area-inset-bottom)) !important;
             background:#fff;
-            border-top:1px solid rgba(12,29,34,0.06);
+          }
+          .osm-close {
+            position:fixed !important; top:max(12px, env(safe-area-inset-top)) !important;
+            right:16px !important; background:rgba(255,255,255,.88) !important;
+            border-radius:50% !important; backdrop-filter:blur(8px);
           }
           .osm-title { font-size:24px !important }
           .osm-confirm-title { font-size:24px !important }
@@ -497,6 +510,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           </div>
         ) : (
         <div
+          ref={panelRef}
           className="osm-panel"
           role="dialog"
           aria-modal="true"
@@ -535,6 +549,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             style={{ flex: 1, minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}
           >
             <button
+              className="osm-close"
               onClick={handleClose}
               aria-label="Fermer"
               style={{

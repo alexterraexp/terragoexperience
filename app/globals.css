@@ -209,3 +209,10 @@ a[href^="tel:"], a[href^="mailto:"] {
 }
 
 .text-balance { text-wrap: balance; }
+
+/* Masque le nom de ligature (ex. « menu ») tant que la police d’icônes n’est pas chargée */
+.material-symbols-outlined {
+  overflow: hidden;
+  max-width: 1.25em;
+  white-space: nowrap;
+}

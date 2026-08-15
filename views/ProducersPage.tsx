@@ -271,8 +271,9 @@ const ProducersPage: React.FC = () => {
           scrollbar-width: none;
           padding: 4px 0 16px;
           margin: 0 -1.5rem;
-          padding-left: 1.5rem;
+          padding-left: 1.25rem;
           padding-right: 4.5rem;
+          scroll-padding-left: 1.25rem;
         }
         .prod-swipe::-webkit-scrollbar { display: none; }
         @media (min-width: 640px) {
@@ -281,6 +282,7 @@ const ProducersPage: React.FC = () => {
             margin: 0 -2rem;
             padding-left: 2rem;
             padding-right: 5.5rem;
+            scroll-padding-left: 2rem;
           }
         }
         @media (min-width: 1024px) {
@@ -288,6 +290,7 @@ const ProducersPage: React.FC = () => {
             margin: 0 -2.5rem;
             padding-left: 2.5rem;
             padding-right: 6rem;
+            scroll-padding-left: 2.5rem;
           }
         }
         .prod-swipe-fade {
@@ -295,18 +298,25 @@ const ProducersPage: React.FC = () => {
           top: 0;
           right: -1.5rem;
           bottom: 16px;
-          width: clamp(4.5rem, 12vw, 7rem);
+          width: 2.25rem;
           background: linear-gradient(
             to right,
             rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.55) 45%,
-            #ffffff 100%
+            rgba(255, 255, 255, 0.12) 100%
           );
           pointer-events: none;
           z-index: 3;
         }
         @media (min-width: 640px) {
-          .prod-swipe-fade { right: -2rem; }
+          .prod-swipe-fade {
+            right: -2rem;
+            width: 3.5rem;
+            background: linear-gradient(
+              to right,
+              rgba(255, 255, 255, 0) 0%,
+              rgba(255, 255, 255, 0.22) 100%
+            );
+          }
         }
         @media (min-width: 1024px) {
           .prod-swipe-fade { right: -2.5rem; }
@@ -431,10 +441,10 @@ const ProducersPage: React.FC = () => {
               <h2 className="mt-4 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
                 Des hôtes engagés pour accueillir vos groupes en séminaire ou séjour immersif.
               </h2>
-              <div className="mt-7 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:gap-4">
+              <div className="mx-auto mt-7 flex w-max max-w-full flex-col items-stretch gap-3 sm:mt-9 sm:flex-row sm:items-center sm:gap-4">
                 <a
                   href="#producteurs"
-                  className={homeHeroOutlineButtonClass}
+                  className={`${homeHeroOutlineButtonClass} w-full sm:w-auto`}
                   style={{ background: 'rgba(12, 29, 34, 0.12)' }}
                 >
                   Explorer les producteurs partenaires
@@ -442,7 +452,7 @@ const ProducersPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={openPartenaireModal}
-                  className="inline-flex items-center justify-center rounded-full border-2 border-[#ec6435] bg-[#ec6435] px-5 py-1.5 text-xs font-bold tracking-[0.04em] text-white transition-colors hover:border-[#d9552a] hover:bg-[#d9552a] sm:px-8 sm:py-2 sm:text-sm"
+                  className="inline-flex w-full items-center justify-center rounded-full border-2 border-[#ec6435] bg-[#ec6435] px-5 py-1.5 text-xs font-bold tracking-[0.04em] text-white transition-colors hover:border-[#d9552a] hover:bg-[#d9552a] sm:w-auto sm:px-8 sm:py-2 sm:text-sm"
                 >
                   Devenir partenaire
                 </button>
@@ -569,18 +579,18 @@ const ProducersPage: React.FC = () => {
             <p className="mx-auto mt-4 max-w-xl font-sans text-[14px] font-normal leading-[1.7] tracking-[-0.04em] text-white/80 sm:mt-5 sm:text-[15px]">
               Rejoignez le réseau TerraGo ou faites-nous découvrir un hôte exceptionnel du terroir.
             </p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
+            <div className="mx-auto mt-8 flex w-max max-w-full flex-col items-stretch gap-3 sm:mt-10 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
               <button
                 type="button"
                 onClick={openPartenaireModal}
-                className="inline-flex min-w-[180px] items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
+                className="inline-flex w-full items-center justify-center rounded-full border-2 border-white bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:border-[#ec6435] hover:bg-[#ec6435] hover:text-white sm:w-auto sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
               >
                 Devenir partenaire
               </button>
               <button
                 type="button"
                 onClick={openRecommanderModal}
-                className="inline-flex min-w-[180px] items-center justify-center rounded-full border-2 border-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-white transition-colors hover:bg-white/15 sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
+                className="inline-flex w-full items-center justify-center rounded-full border-2 border-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-white transition-colors hover:bg-white/15 sm:w-auto sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
               >
                 Recommander un producteur
               </button>

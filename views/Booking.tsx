@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ALL_EXPERIENCES } from '../constants';
+import { jumpToTop } from '../components/ScrollToTop';
 
 const Booking: React.FC = () => {
   const router = useRouter();
@@ -21,7 +22,7 @@ const Booking: React.FC = () => {
   const exp = expId ? ALL_EXPERIENCES.find(e => e.id === expId) : null;
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    jumpToTop();
     if (!expId || !exp) {
       const timer = setTimeout(() => {
         if (!isSuccess) router.push('/');
@@ -36,7 +37,7 @@ const Booking: React.FC = () => {
     setTimeout(() => {
       setIsProcessing(false);
       setIsSuccess(true);
-      window.scrollTo(0, 0);
+      jumpToTop();
     }, 2500);
   };
 

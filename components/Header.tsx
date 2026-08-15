@@ -554,7 +554,11 @@ const Header: React.FC = () => {
                 'relative flex items-center group shrink-0',
                 isSeminaireDetailPage && 'max-lg:hidden',
               ].filter(Boolean).join(' ')}
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={() => {
+                if (pathname === '/') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
             >
               <Image src="/logo-white.png" alt="" aria-hidden width={116} height={90} className="hidden" />
               <Image
@@ -645,9 +649,15 @@ const Header: React.FC = () => {
                       ].join(' '),
                 ].join(' ')}
               >
-                <span className="material-symbols-outlined text-2xl">
-                  {isMenuOpen ? 'close' : 'menu'}
-                </span>
+                {isMenuOpen ? (
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+                    <path d="M6 6 18 18M18 6 6 18" />
+                  </svg>
+                ) : (
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+                    <path d="M5 7h14M5 12h14M5 17h14" />
+                  </svg>
+                )}
               </button>
             </div>
           </div>

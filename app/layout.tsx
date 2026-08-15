@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CookieBanner from '../components/CookieBanner';
 import GoogleTagManager from '../components/GoogleTagManager';
+import ScrollToTop from '../components/ScrollToTop';
 import { ModalProvider } from '../context/ModalContext';
 
 export const metadata: Metadata = {
@@ -56,12 +57,13 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
           rel="stylesheet"
         />
         <link rel="icon" type="image/png" href="/logo.png" />
       </head>
       <body className="bg-beige-bg text-primary">
+        <ScrollToTop />
         <CookieBanner />
         <GoogleTagManager />
         <ModalProvider>

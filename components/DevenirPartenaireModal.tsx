@@ -268,12 +268,27 @@ const DevenirPartenaireModal: React.FC<Props> = ({ isOpen, onClose }) => {
         }
 
         @media (max-width: 860px) {
-          .dp-wrapper { padding:0 !important }
-          .dp-panel { width:100% !important; max-width:none !important; height:100dvh !important; border-radius:0 !important; flex-direction:column !important }
-          .dp-visual { width:100% !important; height:132px !important; flex:0 0 132px !important }
-          .dp-content { padding:26px 22px 0 !important }
-          .dp-footer { padding:0 22px max(18px, env(safe-area-inset-bottom)) !important }
+          .dp-wrapper { padding:0 !important; align-items:stretch !important }
+          .dp-panel {
+            display:block !important; width:100% !important; max-width:none !important;
+            height:100% !important; height:100dvh !important; height:100svh !important;
+            max-height:100svh !important; border-radius:0 !important;
+            overflow-x:hidden !important; overflow-y:scroll !important;
+            -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y;
+          }
+          .dp-visual { width:100% !important; height:132px !important; flex:none !important }
+          .dp-body { display:block !important; flex:none !important; min-height:0 !important; overflow:visible !important }
+          .dp-content {
+            flex:none !important; min-height:0 !important; overflow:visible !important;
+            padding:26px 22px 0 !important;
+          }
+          .dp-footer { padding:18px 22px max(28px, env(safe-area-inset-bottom)) !important }
           .dp-title { font-size:22px !important }
+          .dp-close {
+            position:fixed !important; top:max(12px, env(safe-area-inset-top)) !important;
+            right:16px !important; background:rgba(255,255,255,.88) !important;
+            border-radius:50% !important; backdrop-filter:blur(8px);
+          }
         }
       `}</style>
 
@@ -340,8 +355,9 @@ const DevenirPartenaireModal: React.FC<Props> = ({ isOpen, onClose }) => {
             />
           </div>
 
-          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div className="dp-body" style={{ flex: 1, minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <button
+              className="dp-close"
               onClick={handleClose}
               aria-label="Fermer"
               style={{

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { fetchSeminaires } from '../lib/seminaires';
 import type { Seminaire } from '../lib/seminaires';
 import SeminaireDetailLoading from '../components/SeminaireDetailLoading';
+import { jumpToTop } from '../components/ScrollToTop';
 import { ExpandedSeminaireView, SeminaireModal } from './Seminaires-pack';
 
 // ─── Page détail d'un séminaire ───────────────────────────────────────────────
@@ -22,7 +23,7 @@ export default function SeminaireDetailPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    jumpToTop();
     setLoading(true);
     setNotFound(false);
     let cancelled = false;
