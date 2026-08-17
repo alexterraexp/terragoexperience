@@ -40,7 +40,7 @@ interface BlogPost {
 }
 
 const HERO_IMAGE =
-  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/ostreiculteur.png';
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/univers/photo-1473973266408-ed4e27abdd47.avif';
 
 const sectionTitleClass =
   'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
@@ -80,7 +80,7 @@ export default async function BlogPage() {
       <section className="relative flex min-h-[480px] h-[68vh] w-full items-end justify-center overflow-hidden sm:h-[72vh]">
         <Image
           src={HERO_IMAGE}
-          alt="Ostréiculteur au travail – Journal TerraGo"
+          alt="Apiculteur au rucher – Journal TerraGo"
           fill
           priority
           className="object-cover"
@@ -90,7 +90,7 @@ export default async function BlogPage() {
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.62) 100%)',
+              'linear-gradient(to bottom, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.16) 55%, rgba(0,0,0,0.38) 100%)',
           }}
         />
         <div className="relative z-10 mx-auto w-full max-w-[1280px] px-3 pb-14 text-center sm:px-5 sm:pb-20 lg:px-8">

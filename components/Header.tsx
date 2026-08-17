@@ -935,7 +935,7 @@ const Header: React.FC = () => {
                 Organiser votre séminaire
               </button>
               <p className="mt-3 text-center font-sans text-[11px] tracking-[-0.02em] text-[#0c1d22]/40">
-                Fabriqué avec passion pour nos territoires.
+                Fabriqué avec tout notre 🧡 pour nos territoires.
               </p>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import type { ComponentProps } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
@@ -129,90 +130,198 @@ function NotFoundPage() {
   );
 }
 
-// ── MarkdownRenderer ───────────────────────────────────────────────────────────
+// ── Markdown ───────────────────────────────────────────────────────────────────
 
-function MarkdownRenderer({ content }: { content: string }) {
-  return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      components={{
-        h2: ({ children }) => (
-          <h2
-            id={slugify(String(children))}
-            className="mb-3 mt-10 border-b border-[#0c1d22]/08 pb-2.5 font-sans text-[20px] font-bold leading-[1.25] tracking-[-0.04em] text-[#0c1d22] sm:text-[22px]"
-          >
-            {children}
-          </h2>
-        ),
-        h3: ({ children }) => (
-          <h3 className="mb-2.5 mt-7 font-sans text-[16px] font-bold leading-[1.3] tracking-[-0.03em] text-[#0c1d22] sm:text-[17px]">
-            {children}
-          </h3>
-        ),
-        p: ({ children }) => (
-          <p className="mb-4 font-sans text-[15px] font-normal leading-[1.8] tracking-[-0.02em] text-[#0c1d22]/75 sm:text-[16px]">
-            {children}
-          </p>
-        ),
-        strong: ({ children }) => (
-          <strong className="font-bold text-[#0c1d22]">{children}</strong>
-        ),
-        a: ({ href, children }) => (
-          <a
-            href={href}
-            className="underline decoration-[#ec6435]/40 underline-offset-2 transition-colors hover:text-[#ec6435]"
-            style={{ color: HOME_COLORS.orange }}
-          >
-            {children}
-          </a>
-        ),
-        ul: ({ children }) => (
-          <ul className="mb-4 flex list-disc flex-col gap-1.5 pl-5 font-sans text-[15px] leading-[1.75] text-[#0c1d22]/75 sm:text-[16px]">
-            {children}
-          </ul>
-        ),
-        ol: ({ children }) => (
-          <ol className="mb-4 flex list-decimal flex-col gap-1.5 pl-5 font-sans text-[15px] leading-[1.75] text-[#0c1d22]/75 sm:text-[16px]">
-            {children}
-          </ol>
-        ),
-        li: ({ children }) => <li className="pl-1">{children}</li>,
-        blockquote: ({ children }) => (
-          <blockquote
-            className="my-6 rounded-r-[16px] border-l-4 py-3.5 pl-5 pr-4 font-sans text-[14px] italic leading-[1.7] tracking-[-0.02em] text-[#0c1d22]/65 sm:text-[15px]"
-            style={{
-              borderColor: HOME_COLORS.orange,
-              background: HOME_COLORS.gray,
-            }}
-          >
-            {children}
-          </blockquote>
-        ),
-        img: ({ src, alt }) => (
-          <span
-            className="relative my-8 block overflow-hidden"
-            style={{ borderRadius: HOME_RADIUS }}
-          >
-            <Image
-              src={src ?? ''}
-              alt={alt ?? ''}
-              width={1200}
-              height={800}
-              className="block h-auto w-full"
-              style={{ borderRadius: HOME_RADIUS }}
-              sizes="(max-width: 768px) 100vw, 720px"
-            />
-            {alt && (
-              <span className="absolute bottom-3 right-3 block rounded-full bg-white/80 px-3 py-1 text-[10px] font-semibold tracking-[0.06em] text-[#0c1d22] backdrop-blur-md">
-                © {alt}
-              </span>
-            )}
-          </span>
-        ),
+const IMAGE_RE = /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/;
+
+function splitMarkdownSections(markdown: string): {
+  intro: string;
+  sections: { heading: string; body: string }[];
+} {
+  const lines = markdown.replace(/\r\n/g, '\n').split('\n');
+  const intro: string[] = [];
+  const sections: { heading: string; body: string }[] = [];
+  let current: { heading: string; body: string[] } | null = null;
+
+  for (const line of lines) {
+    if (/^## /.test(line)) {
+      if (current) {
+        sections.push({ heading: current.heading, body: current.body.join('\n') });
+      }
+      current = { heading: line.replace(/^## /, '').trim(), body: [] };
+    } else if (current) {
+      current.body.push(line);
+    } else {
+      intro.push(line);
+    }
+  }
+  if (current) {
+    sections.push({ heading: current.heading, body: current.body.join('\n') });
+  }
+
+  return { intro: intro.join('\n').trim(), sections };
+}
+
+function extractFirstImage(body: string): { src: string; alt: string; rest: string } | null {
+  const match = body.match(IMAGE_RE);
+  if (!match) return null;
+  return {
+    alt: match[1] ?? '',
+    src: match[2] ?? '',
+    rest: body.replace(match[0], '').replace(/^\n+/, '').trim(),
+  };
+}
+
+const markdownComponents: NonNullable<ComponentProps<typeof ReactMarkdown>['components']> = {
+  h2: ({ children }) => (
+    <h2
+      id={slugify(String(children))}
+      className="mb-3 mt-14 border-b border-[#0c1d22]/08 pb-2.5 font-sans text-[20px] font-bold leading-[1.25] tracking-[-0.04em] text-[#0c1d22] sm:text-[22px]"
+    >
+      {children}
+    </h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="mb-2.5 mt-7 font-sans text-[16px] font-bold leading-[1.3] tracking-[-0.03em] text-[#0c1d22] sm:text-[17px]">
+      {children}
+    </h3>
+  ),
+  p: ({ children, node }) => {
+    const onlyChild = node?.children?.[0];
+    const isImageOnly =
+      node?.children?.length === 1 &&
+      onlyChild &&
+      'tagName' in onlyChild &&
+      onlyChild.tagName === 'img';
+    if (isImageOnly) return <>{children}</>;
+    return (
+      <p className="mb-4 font-sans text-[15px] font-normal leading-[1.8] tracking-[-0.02em] text-[#0c1d22]/75 sm:text-[16px]">
+        {children}
+      </p>
+    );
+  },
+  strong: ({ children }) => (
+    <strong className="font-bold text-[#0c1d22]">{children}</strong>
+  ),
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      className="underline decoration-[#ec6435]/40 underline-offset-2 transition-colors hover:text-[#ec6435]"
+      style={{ color: HOME_COLORS.orange }}
+    >
+      {children}
+    </a>
+  ),
+  ul: ({ children }) => (
+    <ul className="mb-4 flex list-disc flex-col gap-1.5 pl-5 font-sans text-[15px] leading-[1.75] text-[#0c1d22]/75 sm:text-[16px]">
+      {children}
+    </ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="mb-4 flex list-decimal flex-col gap-1.5 pl-5 font-sans text-[15px] leading-[1.75] text-[#0c1d22]/75 sm:text-[16px]">
+      {children}
+    </ol>
+  ),
+  li: ({ children }) => <li className="pl-1">{children}</li>,
+  blockquote: ({ children }) => (
+    <blockquote
+      className="my-6 rounded-r-[16px] border-l-4 px-5 py-3 font-sans text-[14px] italic leading-[1.7] tracking-[-0.02em] text-[#0c1d22]/65 [&_p]:mb-0 sm:text-[15px]"
+      style={{
+        borderColor: HOME_COLORS.orange,
+        background: HOME_COLORS.gray,
       }}
     >
+      {children}
+    </blockquote>
+  ),
+  img: ({ src, alt }) => (
+    <span className="relative my-4 block overflow-hidden" style={{ borderRadius: HOME_RADIUS }}>
+      <Image
+        src={src ?? ''}
+        alt={alt ?? ''}
+        width={1200}
+        height={800}
+        className="block h-auto w-full"
+        style={{ borderRadius: HOME_RADIUS }}
+        sizes="(max-width: 768px) 100vw, 720px"
+      />
+    </span>
+  ),
+};
+
+function MarkdownBody({ content }: { content: string }) {
+  if (!content.trim()) return null;
+  return (
+    <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
       {content}
     </ReactMarkdown>
+  );
+}
+
+function SectionHeading({ heading, besideImage }: { heading: string; besideImage?: boolean }) {
+  return (
+    <h2
+      id={slugify(heading)}
+      className={
+        besideImage
+          ? 'mb-3 mt-0 border-b border-[#0c1d22]/08 pb-2.5 font-sans text-[20px] font-bold leading-[1.25] tracking-[-0.04em] text-[#0c1d22] sm:text-[22px]'
+          : 'mb-3 mt-14 border-b border-[#0c1d22]/08 pb-2.5 font-sans text-[20px] font-bold leading-[1.25] tracking-[-0.04em] text-[#0c1d22] sm:text-[22px]'
+      }
+    >
+      {heading}
+    </h2>
+  );
+}
+
+function MarkdownRenderer({ content }: { content: string }) {
+  const { intro, sections } = splitMarkdownSections(content);
+  let imageIndex = 0;
+
+  return (
+    <div className="blog-article-body">
+      {intro ? <MarkdownBody content={intro} /> : null}
+
+      {sections.map((section) => {
+        const image = extractFirstImage(section.body);
+
+        if (!image) {
+          return (
+            <div key={section.heading}>
+              <SectionHeading heading={section.heading} />
+              <MarkdownBody content={section.body} />
+            </div>
+          );
+        }
+
+        const side = imageIndex++ % 2 === 0 ? 'left' : 'right';
+
+        return (
+          <article
+            key={section.heading}
+            className={`blog-idea${side === 'right' ? ' blog-idea--right' : ''}`}
+          >
+            <div className="blog-idea-photo" style={{ borderRadius: HOME_RADIUS }}>
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover"
+                sizes="(max-width: 639px) 100vw, 300px"
+              />
+              {image.alt && (
+                <span className="absolute bottom-2 right-2 z-10 block rounded-full bg-white/80 px-2.5 py-0.5 text-[9px] font-semibold tracking-[0.06em] text-[#0c1d22] backdrop-blur-md">
+                  © {image.alt}
+                </span>
+              )}
+            </div>
+            <div className="blog-idea-copy min-w-0">
+              <SectionHeading heading={section.heading} besideImage />
+              <MarkdownBody content={image.rest} />
+            </div>
+          </article>
+        );
+      })}
+    </div>
   );
 }
 
@@ -283,6 +392,38 @@ export default async function BlogArticlePage({
         .blog-hero-back:hover {
           background: rgba(255,255,255,0.14);
           border-color: rgba(255,255,255,0.28);
+        }
+        .blog-idea {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.15rem;
+          margin-top: 3.75rem;
+          align-items: stretch;
+        }
+        .blog-idea-photo {
+          position: relative;
+          overflow: hidden;
+          aspect-ratio: 16 / 10;
+        }
+        .blog-idea-copy > *:last-child {
+          margin-bottom: 0;
+        }
+        @media (min-width: 640px) {
+          .blog-idea {
+            grid-template-columns: 300px minmax(0, 1fr);
+            gap: 1.75rem;
+          }
+          .blog-idea--right {
+            grid-template-columns: minmax(0, 1fr) 300px;
+          }
+          .blog-idea--right .blog-idea-photo {
+            order: 2;
+          }
+          .blog-idea-photo {
+            aspect-ratio: unset;
+            height: 100%;
+            min-height: 0;
+          }
         }
       `}</style>
 

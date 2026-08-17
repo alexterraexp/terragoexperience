@@ -130,7 +130,7 @@ export const LIEUX: DestinationLieu[] = [
     ],
     formatsLead: 'Nous organisons notamment :',
     formats: [
-      'Séminaire résidentiel chez le producteur (2 ou 3 jours)',
+      'Séminaire résidentiel chez le producteur (2 jours ou plus)',
       'Journée d’étude + atelier immersion',
       'Team building producteur et dégustation',
       'Convention RSE autour du vivant',
