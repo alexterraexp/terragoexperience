@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useModal } from '../context/ModalContext';
@@ -75,8 +75,91 @@ const ScrollAnimate: React.FC<{
   );
 };
 
+/** Index actif d’un track horizontal + goTo (pastilles orange). */
+function useSwipeTrack(trackRef: React.RefObject<HTMLDivElement | null>, length: number) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const isScrollingRef = useRef(false);
+
+  const goTo = useCallback((index: number, behavior: ScrollBehavior = 'smooth') => {
+    const track = trackRef.current;
+    if (!track || length === 0) return;
+    const clamped = ((index % length) + length) % length;
+    const slide = track.children[clamped] as HTMLElement | undefined;
+    if (!slide) return;
+    isScrollingRef.current = true;
+    const targetLeft = slide.offsetLeft - (track.firstElementChild as HTMLElement).offsetLeft;
+    track.scrollTo({ left: targetLeft, behavior });
+    setActiveIndex(clamped);
+    window.setTimeout(() => {
+      isScrollingRef.current = false;
+    }, behavior === 'smooth' ? 450 : 50);
+  }, [trackRef, length]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let raf = 0;
+    const onScroll = () => {
+      if (isScrollingRef.current) return;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const center = track.scrollLeft + track.clientWidth / 2;
+        let best = 0;
+        let bestDist = Infinity;
+        Array.from(track.children).forEach((child, i) => {
+          const el = child as HTMLElement;
+          const mid = el.offsetLeft - track.offsetLeft + el.offsetWidth / 2;
+          const dist = Math.abs(mid - center);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = i;
+          }
+        });
+        setActiveIndex((prev) => (prev === best ? prev : best));
+      });
+    };
+
+    track.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      track.removeEventListener('scroll', onScroll);
+    };
+  }, [trackRef]);
+
+  return { activeIndex, goTo };
+}
+
+const SwipeDots: React.FC<{
+  count: number;
+  activeIndex: number;
+  onSelect: (index: number) => void;
+  className?: string;
+  label?: string;
+}> = ({ count, activeIndex, onSelect, className = '', label = 'Élément' }) => (
+  <div className={`flex items-center justify-center gap-2 ${className}`}>
+    {Array.from({ length: count }, (_, i) => (
+      <button
+        key={i}
+        type="button"
+        aria-label={`${label} ${i + 1}`}
+        onClick={() => onSelect(i)}
+        className="h-2 rounded-full transition-all duration-300"
+        style={{
+          width: i === activeIndex ? 28 : 8,
+          background: i === activeIndex ? HOME_COLORS.orange : 'rgba(12,29,34,0.18)',
+        }}
+      />
+    ))}
+  </div>
+);
+
 const Destinations: React.FC = () => {
   const { openModal } = useModal();
+  const regionsScrollRef = useRef<HTMLDivElement>(null);
+  const lieuxScrollRef = useRef<HTMLDivElement>(null);
+  const regionsSwipe = useSwipeTrack(regionsScrollRef, DESTINATIONS.length);
+  const lieuxSwipe = useSwipeTrack(lieuxScrollRef, LIEUX.length);
 
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -130,39 +213,96 @@ const Destinations: React.FC = () => {
             </p>
           </ScrollAnimate>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-            {DESTINATIONS.map((region, i) => (
-              <ScrollAnimate key={region.slug} delay={Math.min(i * 50, 200)}>
-                <Link
-                  href={regionDestinationPath(region.slug)}
-                  className="group relative block aspect-[16/10] overflow-hidden"
-                  style={{ borderRadius: HOME_RADIUS }}
-                >
-                  <Image
-                    src={region.heroImage}
-                    alt={`Séminaire ${region.prep} ${region.name}`}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    priority={i < 3}
-                    className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
-                    {...protectedImageProps}
+        </div>
+
+        {/* Mobile : carousel swipable (même pattern que Home « partout en France ») */}
+        <div
+          ref={regionsScrollRef}
+          className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            scrollPaddingInline: '1.25rem',
+            paddingLeft: '1.25rem',
+            paddingRight: '1.25rem',
+          }}
+        >
+          {DESTINATIONS.map((region, i) => (
+            <Link
+              key={region.slug}
+              href={regionDestinationPath(region.slug)}
+              className="group relative aspect-[3/4.4] w-[62vw] shrink-0 snap-center overflow-hidden"
+              style={{ borderRadius: HOME_RADIUS }}
+            >
+              <Image
+                src={region.heroImage}
+                alt={`Séminaire ${region.prep} ${region.name}`}
+                fill
+                sizes="70vw"
+                priority={i < 2}
+                className="pointer-events-none select-none object-cover"
+                draggable={false}
+                {...protectedImageProps}
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+              {getImageCopyright(region.heroImage) ? (
+                <PhotoCopyright
+                  className="z-[2]"
+                  label={getImageCopyright(region.heroImage)!}
+                />
+              ) : null}
+              <p className="pointer-events-none absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white">
+                <span className="font-normal">Séminaire {region.prep}</span>
+                <br />
+                <span className="font-bold">{region.name}</span>
+              </p>
+            </Link>
+          ))}
+        </div>
+
+        <SwipeDots
+          count={DESTINATIONS.length}
+          activeIndex={regionsSwipe.activeIndex}
+          onSelect={regionsSwipe.goTo}
+          label="Région"
+          className="mt-5 sm:hidden"
+        />
+
+        {/* Desktop / tablet : grille */}
+        <div className="mx-auto hidden max-w-6xl px-5 sm:grid sm:grid-cols-2 sm:gap-5 sm:px-8 lg:grid-cols-3">
+          {DESTINATIONS.map((region, i) => (
+            <ScrollAnimate key={region.slug} delay={Math.min(i * 50, 200)}>
+              <Link
+                href={regionDestinationPath(region.slug)}
+                className="group relative block aspect-[16/10] overflow-hidden"
+                style={{ borderRadius: HOME_RADIUS }}
+              >
+                <Image
+                  src={region.heroImage}
+                  alt={`Séminaire ${region.prep} ${region.name}`}
+                  fill
+                  sizes="(max-width: 1024px) 50vw, 33vw"
+                  priority={i < 3}
+                  className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                  {...protectedImageProps}
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                {getImageCopyright(region.heroImage) ? (
+                  <PhotoCopyright
+                    className="z-[2]"
+                    label={getImageCopyright(region.heroImage)!}
                   />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
-                  {getImageCopyright(region.heroImage) ? (
-                    <PhotoCopyright
-                      className="z-[2]"
-                      label={getImageCopyright(region.heroImage)!}
-                    />
-                  ) : null}
-                  <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
-                    <span className="font-normal">Séminaire {region.prep}</span>
-                    <br />
-                    <span className="font-bold">{region.name}</span>
-                  </p>
-                </Link>
-              </ScrollAnimate>
-            ))}
-          </div>
+                ) : null}
+                <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
+                  <span className="font-normal">Séminaire {region.prep}</span>
+                  <br />
+                  <span className="font-bold">{region.name}</span>
+                </p>
+              </Link>
+            </ScrollAnimate>
+          ))}
+        </div>
+
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
 
           <ScrollAnimate className="mt-14 sm:mt-16">
             <CategoryHeading className="mb-3 sm:mb-4">
@@ -175,39 +315,91 @@ const Destinations: React.FC = () => {
             </p>
           </ScrollAnimate>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-            {LIEUX.map((lieu, i) => (
-              <ScrollAnimate key={lieu.slug} delay={Math.min(i * 50, 200)}>
-                <Link
-                  href={lieuDestinationPath(lieu.slug)}
-                  className="group relative block aspect-[16/10] overflow-hidden"
-                  style={{ borderRadius: HOME_RADIUS }}
-                >
-                  <Image
-                    src={lieu.heroImage}
-                    alt={lieu.heroImageAlt}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
-                    {...protectedImageProps}
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
-                  {lieu.heroImageCopyright || getImageCopyright(lieu.heroImage) ? (
-                    <PhotoCopyright
-                      className="z-[2]"
-                      label={lieu.heroImageCopyright || getImageCopyright(lieu.heroImage)!}
-                    />
-                  ) : null}
-                  <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
-                    <span className="font-normal">Séminaire</span>
-                    <br />
-                    <span className="font-bold">{lieu.name}</span>
-                  </p>
-                </Link>
-              </ScrollAnimate>
-            ))}
-          </div>
+        </div>
 
+        {/* Mobile : carousel swipable */}
+        <div
+          ref={lieuxScrollRef}
+          className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            scrollPaddingInline: '1.25rem',
+            paddingLeft: '1.25rem',
+            paddingRight: '1.25rem',
+          }}
+        >
+          {LIEUX.map((lieu) => (
+            <Link
+              key={lieu.slug}
+              href={lieuDestinationPath(lieu.slug)}
+              className="group relative aspect-[3/4.4] w-[62vw] shrink-0 snap-center overflow-hidden"
+              style={{ borderRadius: HOME_RADIUS }}
+            >
+              <Image
+                src={lieu.heroImage}
+                alt={lieu.heroImageAlt}
+                fill
+                sizes="70vw"
+                className="pointer-events-none select-none object-cover"
+                draggable={false}
+                {...protectedImageProps}
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+              {lieu.heroImageCopyright || getImageCopyright(lieu.heroImage) ? (
+                <PhotoCopyright
+                  className="z-[2]"
+                  label={lieu.heroImageCopyright || getImageCopyright(lieu.heroImage)!}
+                />
+              ) : null}
+              <p className="pointer-events-none absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white">
+                <span className="font-normal">Séminaire</span>
+                <br />
+                <span className="font-bold">{lieu.name}</span>
+              </p>
+            </Link>
+          ))}
+        </div>
+
+        <SwipeDots
+          count={LIEUX.length}
+          activeIndex={lieuxSwipe.activeIndex}
+          onSelect={lieuxSwipe.goTo}
+          label="Lieu"
+          className="mt-5 sm:hidden"
+        />
+
+        {/* Desktop / tablet : grille */}
+        <div className="mx-auto hidden max-w-6xl px-5 sm:grid sm:grid-cols-2 sm:gap-5 sm:px-8 lg:grid-cols-3">
+          {LIEUX.map((lieu, i) => (
+            <ScrollAnimate key={lieu.slug} delay={Math.min(i * 50, 200)}>
+              <Link
+                href={lieuDestinationPath(lieu.slug)}
+                className="group relative block aspect-[16/10] overflow-hidden"
+                style={{ borderRadius: HOME_RADIUS }}
+              >
+                <Image
+                  src={lieu.heroImage}
+                  alt={lieu.heroImageAlt}
+                  fill
+                  sizes="(max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
+                  {...protectedImageProps}
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                {lieu.heroImageCopyright || getImageCopyright(lieu.heroImage) ? (
+                  <PhotoCopyright
+                    className="z-[2]"
+                    label={lieu.heroImageCopyright || getImageCopyright(lieu.heroImage)!}
+                  />
+                ) : null}
+                <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
+                  <span className="font-normal">Séminaire</span>
+                  <br />
+                  <span className="font-bold">{lieu.name}</span>
+                </p>
+              </Link>
+            </ScrollAnimate>
+          ))}
         </div>
       </section>
 
