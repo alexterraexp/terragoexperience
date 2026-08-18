@@ -227,11 +227,12 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
           user-select: none;
         }
         @media (max-width: 860px) {
+          /* Plein écran : pas d’overlay visible (sinon liseré flouté sous 100svh / barre iOS). */
+          .pdm-overlay { display: none !important }
           .pdm-wrapper { padding: 0 !important; align-items: stretch !important }
           .pdm-panel {
             display: block !important; width: 100% !important; max-width: none !important;
-            height: 100% !important; height: 100dvh !important; height: 100svh !important;
-            max-height: 100svh !important; border-radius: 0 !important;
+            height: 100% !important; max-height: none !important; border-radius: 0 !important;
             overflow-x: hidden !important; overflow-y: scroll !important;
             -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
           }
@@ -250,6 +251,7 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
       `}</style>
 
       <div
+        className="pdm-overlay"
         onClick={handleClose}
         style={{
           position: 'fixed',
