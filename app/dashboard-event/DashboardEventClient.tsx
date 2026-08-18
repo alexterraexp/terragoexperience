@@ -262,7 +262,8 @@ function groupScheduleByDay(items: ScheduleItem[]) {
 
 function transportGroupTitle(type?: string) {
   const t = (type ?? '').toLowerCase();
-  if (t === 'train') return 'Train';
+  if (t === 'train') return 'Trajets en train';
+  if (t === 'bus') return 'Transferts en bus';
   if (t === 'navette' || t === 'shuttle' || t === 'navettes') return 'Navettes';
   return transportTypeLabel(type) || 'Transport';
 }
@@ -373,8 +374,8 @@ function groupTransports(items: TransportItem[]) {
 function transportTypeLabel(type?: string) {
   if (!type) return null;
   const t = type.toLowerCase();
-  if (t === 'train') return 'Train';
-  if (t === 'bus') return 'Bus';
+  if (t === 'train') return 'Trajets en train';
+  if (t === 'bus') return 'Transferts en bus';
   if (t === 'car' || t === 'coach') return 'Car';
   if (t === 'plane' || t === 'avion' || t === 'flight') return 'Avion';
   if (t === 'taxi') return 'Taxi';
@@ -995,7 +996,7 @@ export default function DashboardEventClient() {
           border-radius: ${HOME_RADIUS};
           border: 1px solid rgba(12, 29, 34, 0.08);
           padding: 20px 16px;
-          margin: 8px 0 24px;
+          margin: 20px 0 24px;
         }
         .dash-infos-row-trigger {
           padding: 14px;
@@ -1261,6 +1262,30 @@ export default function DashboardEventClient() {
               </section>
             )}
 
+            {transport.length > 0 && (
+              <section className="dash-section">
+                <h2 className="dash-section-title">Transport</h2>
+                <AccordionList>
+                  {groupTransports(transport).map((group) => (
+                    <InfosRow
+                      key={group.key}
+                      id={`transport-${group.key}`}
+                      icon={transportGroupIcon(group.key)}
+                      title={group.title}
+                    >
+                      <ul className="dash-transport-lines">
+                        {group.items.flatMap((slot) =>
+                          transportDisplayLines(slot).map((line, i) => (
+                            <li key={`${slot.id}-${i}`}>{line}</li>
+                          )),
+                        )}
+                      </ul>
+                    </InfosRow>
+                  ))}
+                </AccordionList>
+              </section>
+            )}
+
             {schedule.length > 0 && (
               <section className="dash-section">
                 <h2 className="dash-section-title">Planning</h2>
@@ -1337,30 +1362,6 @@ export default function DashboardEventClient() {
                     {activity.description && <p className="dash-copy">{activity.description}</p>}
                   </article>
                 ))}
-              </section>
-            )}
-
-            {transport.length > 0 && (
-              <section className="dash-section">
-                <h2 className="dash-section-title">Transport</h2>
-                <AccordionList>
-                  {groupTransports(transport).map((group) => (
-                    <InfosRow
-                      key={group.key}
-                      id={`transport-${group.key}`}
-                      icon={transportGroupIcon(group.key)}
-                      title={group.title}
-                    >
-                      <ul className="dash-transport-lines">
-                        {group.items.flatMap((slot) =>
-                          transportDisplayLines(slot).map((line, i) => (
-                            <li key={`${slot.id}-${i}`}>{line}</li>
-                          )),
-                        )}
-                      </ul>
-                    </InfosRow>
-                  ))}
-                </AccordionList>
               </section>
             )}
           </div>
