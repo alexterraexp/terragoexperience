@@ -908,47 +908,49 @@ const Header: React.FC = () => {
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-5 sm:px-6">
-              <nav className="flex flex-col gap-2.5" aria-label="Navigation mobile">
-                {NAV_ITEMS.map((nav) => (
-                  <AccordionSection
-                    key={nav.path}
-                    nav={nav}
-                    isOpen={mobileOpenSection === nav.label}
-                    onToggle={() =>
-                      setMobileOpenSection((prev) =>
-                        prev === nav.label ? null : nav.label,
-                      )
-                    }
-                    onItemClick={(item) => {
-                      setIsMenuOpen(false);
-                      setMobileOpenSection(null);
-                      handleItemClick(item);
-                    }}
-                    onNavigate={(path) => {
-                      setIsMenuOpen(false);
-                      setMobileOpenSection(null);
-                      router.push(path);
-                    }}
-                  />
-                ))}
-              </nav>
-            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+              <div className="flex min-h-full flex-col px-5 py-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:px-6">
+                <nav className="flex flex-col gap-2.5" aria-label="Navigation mobile">
+                  {NAV_ITEMS.map((nav) => (
+                    <AccordionSection
+                      key={nav.path}
+                      nav={nav}
+                      isOpen={mobileOpenSection === nav.label}
+                      onToggle={() =>
+                        setMobileOpenSection((prev) =>
+                          prev === nav.label ? null : nav.label,
+                        )
+                      }
+                      onItemClick={(item) => {
+                        setIsMenuOpen(false);
+                        setMobileOpenSection(null);
+                        handleItemClick(item);
+                      }}
+                      onNavigate={(path) => {
+                        setIsMenuOpen(false);
+                        setMobileOpenSection(null);
+                        router.push(path);
+                      }}
+                    />
+                  ))}
+                </nav>
 
-            <div className="shrink-0 bg-white px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2 sm:px-6">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  openModal();
-                }}
-                className="flex w-full items-center justify-center rounded-[12px] bg-[#0c1d22] py-4 font-sans text-[16px] font-bold tracking-[-0.03em] text-white transition-colors duration-200 active:bg-[#163039]"
-              >
-                Organiser votre séminaire
-              </button>
-              <p className="mt-3 text-center font-sans text-[11px] tracking-[-0.02em] text-[#0c1d22]/40">
-                Fabriqué avec tout notre 🧡 pour nos territoires.
-              </p>
+                <div className="mt-auto pt-24">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      openModal();
+                    }}
+                    className="flex w-full items-center justify-center rounded-full bg-[#0c1d22] py-3 font-sans text-[14px] font-bold tracking-[-0.03em] text-white transition-colors duration-200 active:bg-[#163039]"
+                  >
+                    Organiser votre séminaire
+                  </button>
+                  <p className="mt-3 text-center font-sans text-[11px] tracking-[-0.02em] text-[#0c1d22]/40">
+                    Fabriqué avec tout notre 🧡 pour nos territoires.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
