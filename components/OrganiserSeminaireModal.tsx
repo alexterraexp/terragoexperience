@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { frenchPlaceKindLabel, matchFrenchPlaces } from '../lib/frenchCities';
 import {
   MiniDateRangeCalendar,
-  SEMINAIRE_PERIODS,
   fmtDayShort,
 } from './MiniDateRangeCalendar';
 import { trackGenerateLead } from '../lib/analytics';
@@ -37,7 +36,12 @@ const EVENT_TYPES = [
   'Autre',
 ];
 
-const PERIODS = SEMINAIRE_PERIODS;
+const PERIODS = [
+  'Janvier – Mars',
+  'Avril – Juin',
+  'Juillet – Septembre',
+  'Octobre – Décembre',
+] as const;
 
 const BUDGET_MIN = 2_000;
 const BUDGET_MAX = 100_000;

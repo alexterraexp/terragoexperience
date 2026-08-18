@@ -574,13 +574,16 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                 {lieu.producer.role}
               </p>
               <p className={`mt-4 ${homeParagraphClass}`}>{lieu.producer.description}</p>
-              <button
-                type="button"
-                onClick={() => openModal()}
+              <Link
+                href={
+                  lieu.producer.seminaireSlug
+                    ? `/seminaire-exemples/${lieu.producer.seminaireSlug}`
+                    : '/seminaire-exemples'
+                }
                 className={`mt-7 self-start ${homeCtaOutlineClass}`}
               >
                 Découvrir cette expérience
-              </button>
+              </Link>
             </ScrollAnimate>
           </div>
         </div>

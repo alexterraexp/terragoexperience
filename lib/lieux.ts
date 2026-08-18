@@ -63,6 +63,8 @@ export type DestinationLieu = {
     image: string;
     imageAlt: string;
     imageCopyright?: string;
+    /** Slug `/seminaire-exemples/[slug]` pour ce producteur */
+    seminaireSlug?: string;
   };
   logement: {
     title: string;
@@ -177,6 +179,7 @@ export const LIEUX: DestinationLieu[] = [
       image: HOME_PRODUCERS[1].image,
       imageAlt: 'Nathalie et Benjamin, producteurs partenaires TerraGo',
       imageCopyright: 'Marine Van-den-Broek',
+      seminaireSlug: 'avec-nathalie-benjamin',
     },
     logement: {
       title: 'Hébergements proches des exploitations',
@@ -293,6 +296,7 @@ export const LIEUX: DestinationLieu[] = [
         'Chez Jean-François, vos équipes plongent dans l’univers du Cognac : visite des chais, transmission du geste et dégustation. Une immersion vignoble élégante et fédératrice, au plus près du savoir-faire.',
       image: '/images/producteurs/cognacJF.png',
       imageAlt: 'Jean-François, distillateur et vigneron – séminaire au vignoble TerraGo',
+      seminaireSlug: 'avec-jean-francois',
     },
     logement: {
       title: 'Domaines et chambres d’hôtes viticoles',
@@ -410,6 +414,7 @@ export const LIEUX: DestinationLieu[] = [
         'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.jpg',
       imageAlt: 'Benoît, producteur maraîcher – séminaire à la ferme TerraGo',
       imageCopyright: 'Pierine di Giacomo',
+      seminaireSlug: 'avec-louise-benoit',
     },
     logement: {
       title: 'Gîtes et fermes adaptées aux groupes',
@@ -527,6 +532,7 @@ export const LIEUX: DestinationLieu[] = [
         'Complétez le cadre aquatique par une rencontre producteur forte. Baptiste accueille vos équipes pour une immersion vive et fédératrice, idéale en duo avec un séjour au bord de l’eau.',
       image: HOME_PRODUCERS[0].image,
       imageAlt: 'Producteur partenaire TerraGo – séminaire bord de l’eau',
+      seminaireSlug: 'avec-baptiste',
     },
     logement: {
       title: 'Lodges et maisons face à l’eau',
@@ -640,6 +646,7 @@ export const LIEUX: DestinationLieu[] = [
         'Rencontrez Hugues et Marc pour une immersion jardin et terroir : un contrepoint vivant au cadre montagne, pour ancrer votre séminaire dans le geste et le partage.',
       image: HOME_PRODUCERS[3].image,
       imageAlt: 'Producteurs partenaires TerraGo – séminaire montagne',
+      seminaireSlug: 'avec-hugues-marc',
     },
     logement: {
       title: 'Chalets, lodges et maisons de caractère',
@@ -748,12 +755,14 @@ export const LIEUX: DestinationLieu[] = [
       },
     ],
     producer: {
-      name: 'Suzanna',
-      role: 'Éleveuse de bufflones',
+      name: 'Nathalie & Benjamin',
+      role: 'Producteurs engagés',
       description:
-        'Rencontrez Suzanna pour une immersion singulière en pleine nature : visite de l’élevage, découverte du métier et dégustation. Une expérience authentique et fédératrice au grand air.',
-      image: HOME_PRODUCERS[4].image,
-      imageAlt: 'Suzanna, éleveuse – séminaire en pleine nature TerraGo',
+        'Rencontrez Nathalie et Benjamin pour une immersion en pleine nature : visite de l’exploitation, atelier concret et dégustation. Une expérience authentique et fédératrice, au grand air et au plus près du vivant.',
+      image: HOME_PRODUCERS[1].image,
+      imageAlt: 'Nathalie et Benjamin, producteurs – séminaire en pleine nature TerraGo',
+      imageCopyright: 'Marine Van-den-Broek',
+      seminaireSlug: 'avec-nathalie-benjamin',
     },
     logement: {
       title: 'Écolodges et maisons au calme',
@@ -863,12 +872,14 @@ export const LIEUX: DestinationLieu[] = [
       },
     ],
     producer: {
-      name: 'Suzanna',
-      role: 'Productrice de bufflones',
+      name: 'Marie-Sophie & Thomas',
+      role: 'Vignerons – domaine au pied du Ventoux',
       description:
-        'Ajoutez une rencontre producteur singulière à votre séjour dans un domaine d’exception. Suzanna propose une immersion authentique, surprenante et très fédératrice.',
-      image: HOME_PRODUCERS[4].image,
-      imageAlt: 'Suzanna, productrice – séminaire domaine TerraGo',
+        'Sur le domaine de Marie-Sophie et Thomas, au pied du Mont Ventoux, vos équipes plongent dans l’univers du vin en amphore : visite, vendanges selon saison et dégustation. Une immersion élégante et fédératrice, à la hauteur d’un séjour dans un domaine d’exception.',
+      image:
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/Combe%20au%20mas/mariesophie-julien.jpg',
+      imageAlt: 'Marie-Sophie et Thomas, vignerons – séminaire domaine TerraGo',
+      seminaireSlug: 'avec-marie-sophie-thomas',
     },
     logement: {
       title: 'Demeures et domaines pour vos équipes',
@@ -981,6 +992,7 @@ export const LIEUX: DestinationLieu[] = [
         'Rencontrez Baptiste pour une immersion colorée et fédératrice au cœur des terroirs : visite, atelier et dégustation. Une expérience vive, concrète et pleine d’énergie pour vos équipes.',
       image: HOME_PRODUCERS[0].image,
       imageAlt: 'Baptiste, producteur de piments – séminaire au cœur des terroirs TerraGo',
+      seminaireSlug: 'avec-baptiste',
     },
     logement: {
       title: 'Maisons et domaines ancrés localement',
