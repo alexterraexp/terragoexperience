@@ -159,6 +159,7 @@ function syncSeminarUrl(name: string) {
   const next = `/dashboard-event/${slug}`;
   if (window.location.pathname !== next) {
     window.history.replaceState(window.history.state, '', next);
+    window.dispatchEvent(new Event('terrago:pathchange'));
   }
 }
 
@@ -1004,6 +1005,8 @@ export default function DashboardEventClient() {
         }
         .dash-infos-row-body { padding: 0 14px 12px 14px; }
         .dash-input { font-size: 16px; }
+        .dash-unlock-code { font-size: 13px; letter-spacing: 0.12em; }
+        .dash-cta { font-size: 10px; padding: 14px 18px; }
         .dash-unlock {
           flex-direction: column-reverse;
           min-height: 0;

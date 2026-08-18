@@ -343,16 +343,39 @@ const Header: React.FC = () => {
   const [isMenuOpen,   setIsMenuOpen]   = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpenSection, setMobileOpenSection] = useState<string | null>(null);
+  const [locationPath, setLocationPath] = useState(pathname);
   const [isScrolled,   setIsScrolled]   = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    setLocationPath(pathname);
+  }, [pathname]);
+
+  useEffect(() => {
+    const syncPath = () => setLocationPath(window.location.pathname);
+    window.addEventListener('popstate', syncPath);
+    window.addEventListener('terrago:pathchange', syncPath);
+    return () => {
+      window.removeEventListener('popstate', syncPath);
+      window.removeEventListener('terrago:pathchange', syncPath);
+    };
+  }, []);
+
+  useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 24);
     onScroll();
+    const frame = requestAnimationFrame(onScroll);
+    const t1 = window.setTimeout(onScroll, 50);
+    const t2 = window.setTimeout(onScroll, 160);
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [pathname, locationPath]);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)');
@@ -412,13 +435,14 @@ const Header: React.FC = () => {
     /^\/seminaires\/offres\/[^/]+$/.test(pathname ?? '') ||
     /^\/seminaires-entreprise\/offres\/[^/]+$/.test(pathname ?? '');
 
-  const isDashboardEventHeroPage = /^\/dashboard-event\/[^/]+/.test(pathname ?? '');
+  const routePath = locationPath || pathname || '';
+  const isDashboardEventHeroPage = routePath === '/dashboard-event' || routePath.startsWith('/dashboard-event/');
 
   const hasHeroTransparent = (
-    pathname === '/' ||
-    pathname === '/demande-seminaire' ||
-    pathname === '/blog' ||
-    pathname.startsWith('/blog/') ||
+    routePath === '/' ||
+    routePath === '/demande-seminaire' ||
+    routePath === '/blog' ||
+    routePath.startsWith('/blog/') ||
     (isDashboardEventHeroPage && isMobileViewport)
   );
   const isHeroTransparent = hasHeroTransparent && !isScrolled;
