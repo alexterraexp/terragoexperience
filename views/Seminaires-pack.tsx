@@ -30,6 +30,7 @@ import {
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
 import { trackGenerateLead } from '../lib/analytics';
+import { useModal } from '../context/ModalContext';
 
 const HOME_ASSETS =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
@@ -1986,6 +1987,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
 
 export default function SeminairesPage({ initialSeminaires }: { initialSeminaires: Seminaire[] }) {
   const router = useRouter();
+  const { openModal } = useModal();
   const [seminaires,    setSeminaires]    = useState<Seminaire[]>(initialSeminaires);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -2332,10 +2334,10 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
                 <button
                   type="button"
-                  onClick={() => setModalOpen(true)}
+                  onClick={() => openModal()}
                   className="inline-flex min-w-[180px] items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
                 >
-                  Demander un devis
+                  Parlons de votre projet
                 </button>
                 <Link
                   href="/partenaires"

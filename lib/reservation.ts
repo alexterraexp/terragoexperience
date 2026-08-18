@@ -59,9 +59,10 @@ function buildEmailHtml(data: ReservationEmailData) {
     .replace(/{{REFERENCE}}/g, escapeHtml(data.reference))
     .replace(/{{LIEN_SITE}}/g, 'https://www.terragoexperiences.fr')
     .replace(/{{LIEN_OFFRES}}/g, 'https://www.terragoexperiences.fr/seminaire-exemples')
+    .replace(/{{LIEN_APPROCHE}}/g, 'https://www.terragoexperiences.fr/notre-approche')
     .replace(/{{LIEN_CONTACT}}/g, 'https://www.terragoexperiences.fr/contact')
     .replace(/{{LIEN_DESABONNEMENT}}/g, 'https://www.terragoexperiences.fr/desabonnement')
-    .replace(/{{LIEN_CONFIDENTIALITE}}/g, 'https://www.terragoexperiences.fr/confidentialite');
+    .replace(/{{LIEN_MENTIONS_LEGALES}}/g, 'https://www.terragoexperiences.fr/mentions-legales');
 }
 
 export type ProcessReservationResult = {
