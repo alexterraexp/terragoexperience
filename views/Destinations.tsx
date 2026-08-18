@@ -240,7 +240,6 @@ const Destinations: React.FC = () => {
                 sizes="70vw"
                 priority={i < 2}
                 className="pointer-events-none select-none object-cover"
-                draggable={false}
                 {...protectedImageProps}
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
@@ -341,7 +340,6 @@ const Destinations: React.FC = () => {
                 fill
                 sizes="70vw"
                 className="pointer-events-none select-none object-cover"
-                draggable={false}
                 {...protectedImageProps}
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
