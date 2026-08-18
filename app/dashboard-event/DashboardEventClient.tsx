@@ -858,7 +858,19 @@ export default function DashboardEventClient() {
         margin: 0 0 6px;
         line-height: 1.3;
       }
-      .dash-team-block + .dash-team-block { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(12, 29, 34, 0.06); }
+      .dash-teams-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px 24px;
+        align-items: start;
+      }
+      .dash-team-block {
+        min-width: 0;
+        padding: 12px 14px;
+        border: 1px solid rgba(12, 29, 34, 0.08);
+        border-radius: 10px;
+        background: rgba(12, 29, 34, 0.02);
+      }
       .dash-team-name {
         font-size: 13px;
         font-weight: 700;
@@ -1292,16 +1304,18 @@ export default function DashboardEventClient() {
                         title={day.title}
                         subtitle={`${day.teams.length} équipe${day.teams.length > 1 ? 's' : ''}`}
                       >
-                        {day.teams.map((team) => (
-                          <div key={team.name} className="dash-team-block">
-                            <p className="dash-team-name">{team.name}</p>
-                            <ul className="dash-team-members">
-                              {team.members.map((member) => (
-                                <li key={member.id}>{member.name}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
+                        <div className="dash-teams-grid">
+                          {day.teams.map((team) => (
+                            <div key={team.name} className="dash-team-block">
+                              <p className="dash-team-name">{team.name}</p>
+                              <ul className="dash-team-members">
+                                {team.members.map((member) => (
+                                  <li key={member.id}>{member.name}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </InfosRow>
                     ))}
                 </AccordionList>
