@@ -466,8 +466,8 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                   margin: '0 0 20px',
                 }}
               >
-                <strong style={{ fontWeight: 700 }}>Merci !</strong> votre demande est{' '}
-                <strong style={{ fontWeight: 700 }}>bien reçue</strong>.
+                <strong style={{ fontWeight: 700 }}>Merci !</strong> Votre demande a{' '}
+                <strong style={{ fontWeight: 700 }}>bien été envoyée</strong>.
               </h2>
               <p
                 style={{
