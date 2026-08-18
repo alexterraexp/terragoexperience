@@ -125,7 +125,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
           <div className="mt-12 flex flex-col items-center gap-3 sm:mt-24 sm:flex-row sm:gap-5">
             <Link
               href="/seminaires-entreprise"
-              className="hidden rounded-full border-2 border-white px-7 py-1.5 text-xs font-bold tracking-[0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:inline-flex sm:min-w-[280px] sm:items-center sm:justify-center sm:px-16 sm:py-2 sm:text-sm sm:text-center"
+              className="hidden rounded-full border border-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.08em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:inline-flex sm:items-center sm:justify-center sm:px-10 sm:py-2.5 sm:text-xs"
               style={{ background: 'rgba(12, 29, 34, 0.1)' }}
             >
               Découvrir nos séminaires
@@ -133,7 +133,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
             <button
               type="button"
               onClick={openModal}
-              className="rounded-full bg-white px-7 py-1.5 text-xs font-bold tracking-[0.02em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:min-w-[280px] sm:px-16 sm:py-2 sm:text-sm sm:text-center"
+              className="rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-xs"
             >
               Parlons de votre projet
             </button>

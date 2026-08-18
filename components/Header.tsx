@@ -344,6 +344,7 @@ const Header: React.FC = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpenSection, setMobileOpenSection] = useState<string | null>(null);
   const [isScrolled,   setIsScrolled]   = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -351,6 +352,14 @@ const Header: React.FC = () => {
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    const sync = () => setIsMobileViewport(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
   }, []);
 
   useEffect(() => {
@@ -403,11 +412,14 @@ const Header: React.FC = () => {
     /^\/seminaires\/offres\/[^/]+$/.test(pathname ?? '') ||
     /^\/seminaires-entreprise\/offres\/[^/]+$/.test(pathname ?? '');
 
+  const isDashboardEventHeroPage = /^\/dashboard-event\/[^/]+/.test(pathname ?? '');
+
   const hasHeroTransparent = (
     pathname === '/' ||
     pathname === '/demande-seminaire' ||
     pathname === '/blog' ||
-    pathname.startsWith('/blog/')
+    pathname.startsWith('/blog/') ||
+    (isDashboardEventHeroPage && isMobileViewport)
   );
   const isHeroTransparent = hasHeroTransparent && !isScrolled;
   const isDark = isHeroTransparent;
