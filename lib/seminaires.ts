@@ -139,17 +139,17 @@ export function buildSeminairePageMetadata(
     return other.regionName.toLowerCase() === regionName.toLowerCase();
   });
 
-  const base = `Séminaire chez un producteur en ${regionName}`;
+  const label = seminaire.label?.trim();
+  const base = label
+    ? label
+    : `Séminaire chez un producteur en ${regionName}`;
   const title =
-    sameRegion.length > 1
+    sameRegion.length > 1 && !label
       ? `${base} – ${producerShortName(seminaire.producteur)} | TerraGo`
       : `${base} | TerraGo`;
 
-  const labelBit = seminaire.label?.trim()
-    ? ` (${seminaire.label.trim()})`
-    : '';
   const description = [
-    `Séminaire d'entreprise ${seminaire.producteur}${labelBit} en ${seminaire.region}.`,
+    `Séminaire d'entreprise ${label || seminaire.producteur} en ${seminaire.region}.`,
     'Immersion terroir, cohésion d’équipe et engagement RSE avec TerraGo.',
   ].join(' ');
 

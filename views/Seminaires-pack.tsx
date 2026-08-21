@@ -705,7 +705,7 @@ function SeminaireCard({ s, isActive, onSelect }: {
       <div className="sem-pack-card-visual">
         <Image
           src={s.images[0] ?? ''}
-          alt={fmt?.titre ?? s.label}
+          alt={s.label}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
           className="object-cover"
@@ -802,7 +802,7 @@ function SeminaireCard({ s, isActive, onSelect }: {
             marginBottom: 4,
           }}
         >
-          {fmt?.titre ?? s.label}
+          {s.label}
         </div>
         {isComing ? (
           <div
@@ -914,48 +914,157 @@ function SeminaireCard({ s, isActive, onSelect }: {
 
 function GalleryLightbox({ images, initialIndex, onClose, label }: { images: string[]; initialIndex: number; onClose: () => void; label?: string }) {
   const [idx, setIdx] = useState(initialIndex);
+  const panelRef = useRef<HTMLDivElement>(null);
   const prev = () => setIdx(i => (i - 1 + images.length) % images.length);
   const next = () => setIdx(i => (i + 1) % images.length);
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowRight') next();
-      if (e.key === 'ArrowLeft')  prev();
+      if (window.matchMedia('(max-width: 900px)').matches) {
+        if (e.key === 'ArrowRight') next();
+        if (e.key === 'ArrowLeft') prev();
+      }
     };
     document.addEventListener('keydown', h);
     document.body.style.overflow = 'hidden';
     return () => { document.removeEventListener('keydown', h); document.body.style.overflow = ''; };
   }, [idx]);
 
+  const scrollImageToTop = (index: number) => {
+    const panel = panelRef.current;
+    if (!panel) return;
+    const el = panel.querySelector(`[data-gal-idx="${index}"]`);
+    if (!(el instanceof HTMLElement)) return;
+    const top = el.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+    panel.scrollTo({ top: Math.max(0, top - 24), behavior: 'auto' });
+  };
+
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const run = () => scrollImageToTop(initialIndex);
+    run();
+    const raf = requestAnimationFrame(run);
+
+    const imgs = panel.querySelectorAll('img');
+    const onLoad = () => run();
+    imgs.forEach((img) => {
+      if (!img.complete) img.addEventListener('load', onLoad);
+    });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      imgs.forEach((img) => img.removeEventListener('load', onLoad));
+    };
+  }, [initialIndex]);
+
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 2000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#ffffff' }}>
-      <button onClick={onClose}
-        style={{ position: 'absolute', top: 20, right: 20, zIndex: 10, width: 44, height: 44, borderRadius: '50%', background: '#fff', border: '1px solid rgba(12, 29, 34,0.12)', color: '#0c1d22', fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 300, boxShadow: '0 2px 10px rgba(12, 29, 34,0.08)' }}>
-        ×
-      </button>
-      <div style={{ position: 'absolute', top: 26, left: '50%', transform: 'translateX(-50%)', zIndex: 10, background: '#fff', border: '1px solid rgba(12, 29, 34,0.1)', borderRadius: 9999, padding: '4px 14px', fontSize: 11, color: '#0c1d22', fontWeight: 700, boxShadow: '0 2px 8px rgba(12, 29, 34,0.07)' }}>
-        {idx + 1} / {images.length}
-      </div>
-      <div style={{ position: 'relative', zIndex: 5, width: '100%', maxWidth: '88vw', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 64px' }}>
-        <Image src={images[idx]} alt={label ? `${label} – ${idx + 1}` : ''} width={1600} height={1200} sizes="88vw" style={{ maxWidth: '100%', maxHeight: '75vh', width: 'auto', height: 'auto', borderRadius: 18, objectFit: 'contain', boxShadow: '0 12px 60px rgba(0,0,0,0.25)' }} />
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={label ? `Photos — ${label}` : 'Photos'}
+      style={{ position: 'fixed', inset: 0, zIndex: 2000, background: '#ffffff' }}
+    >
+      <style>{`
+        .gal-close {
+          position: absolute; top: 28px; right: 80px; z-index: 20;
+          width: 44px; height: 44px; border-radius: 50%; background: #fff;
+          border: 1px solid rgba(12, 29, 34, 0.12); color: #0c1d22; font-size: 22px;
+          cursor: pointer; display: flex; align-items: center; justify-content: center;
+          font-weight: 300; box-shadow: 0 2px 10px rgba(12, 29, 34, 0.08);
+        }
+        .gal-single {
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          height: 100%; padding: 72px 16px 24px;
+        }
+        .gal-panel {
+          display: none; height: 100%; overflow-y: auto;
+          padding: 88px 80px 80px;
+          box-sizing: border-box;
+          scrollbar-gutter: stable both-edges;
+        }
+        .gal-panel-inner {
+          max-width: 1100px; width: 100%; margin: 0 auto; padding: 0;
+          column-count: 2;
+          column-gap: 24px;
+        }
+        .gal-panel-item {
+          break-inside: avoid;
+          page-break-inside: avoid;
+          display: inline-block;
+          width: 100%;
+          margin: 0 0 24px;
+          border-radius: 10px;
+          overflow: hidden;
+          vertical-align: top;
+          cursor: pointer;
+        }
+        .gal-panel-item img {
+          display: block;
+          width: 100%;
+          height: auto;
+          border-radius: 10px;
+        }
+        @media (max-width: 900px) {
+          .gal-panel { display: none !important; }
+          .gal-single { display: flex !important; }
+        }
+        @media (min-width: 901px) {
+          .gal-single { display: none !important; }
+          .gal-panel { display: block !important; }
+        }
+      `}</style>
+
+      <button type="button" className="gal-close" onClick={onClose} aria-label="Fermer">×</button>
+
+      <div className="gal-single">
+        <div style={{ position: 'absolute', top: 22, left: '50%', transform: 'translateX(-50%)', zIndex: 10, background: '#fff', border: '1px solid rgba(12, 29, 34,0.1)', borderRadius: 9999, padding: '4px 14px', fontSize: 11, color: '#0c1d22', fontWeight: 700, boxShadow: '0 2px 8px rgba(12, 29, 34,0.07)' }}>
+          {idx + 1} / {images.length}
+        </div>
+        <div style={{ position: 'relative', zIndex: 5, width: '100%', maxWidth: '88vw', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 48px' }}>
+          <Image src={images[idx]} alt={label ? `${label} – ${idx + 1}` : ''} width={1600} height={1200} sizes="88vw" style={{ maxWidth: '100%', maxHeight: '70vh', width: 'auto', height: 'auto', borderRadius: 18, objectFit: 'contain', boxShadow: '0 12px 60px rgba(0,0,0,0.25)' }} />
+          {images.length > 1 && (
+            <>
+              <button type="button" onClick={prev} aria-label="Photo précédente" style={{ position: 'absolute', left: 0, width: 44, height: 44, borderRadius: '50%', background: '#fff', border: '1px solid rgba(12, 29, 34,0.12)', color: '#0c1d22', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(12, 29, 34,0.1)' }}>‹</button>
+              <button type="button" onClick={next} aria-label="Photo suivante" style={{ position: 'absolute', right: 0, width: 44, height: 44, borderRadius: '50%', background: '#fff', border: '1px solid rgba(12, 29, 34,0.12)', color: '#0c1d22', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(12, 29, 34,0.1)' }}>›</button>
+            </>
+          )}
+        </div>
         {images.length > 1 && (
-          <>
-            <button onClick={prev} style={{ position: 'absolute', left: 0, width: 48, height: 48, borderRadius: '50%', background: '#fff', border: '1px solid rgba(12, 29, 34,0.12)', color: '#0c1d22', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(12, 29, 34,0.1)' }}>‹</button>
-            <button onClick={next} style={{ position: 'absolute', right: 0, width: 48, height: 48, borderRadius: '50%', background: '#fff', border: '1px solid rgba(12, 29, 34,0.12)', color: '#0c1d22', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(12, 29, 34,0.1)' }}>›</button>
-          </>
+          <div style={{ position: 'relative', zIndex: 5, display: 'flex', gap: 8, marginTop: 16, maxWidth: '88vw', overflowX: 'auto', padding: '4px 0' }}>
+            {images.map((img, i) => (
+              <div key={i} onClick={() => setIdx(i)}
+                style={{ position: 'relative', flexShrink: 0, width: 64, height: 64, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', border: `2.5px solid ${i === idx ? '#0c1d22' : 'rgba(12, 29, 34,0.12)'}`, opacity: i === idx ? 1 : 0.55 }}>
+                <Image src={img} alt={label ? `${label} – ${i + 1}` : ''} fill sizes="64px" className="object-cover" />
+              </div>
+            ))}
+          </div>
         )}
       </div>
-      {images.length > 1 && (
-        <div style={{ position: 'relative', zIndex: 5, display: 'flex', gap: 8, marginTop: 18, maxWidth: '88vw', overflowX: 'auto', padding: '4px 0' }}>
+
+      <div className="gal-panel" ref={panelRef}>
+        <div className="gal-panel-inner">
           {images.map((img, i) => (
-            <div key={i} onClick={() => setIdx(i)}
-              style={{ position: 'relative', flexShrink: 0, width: 72, height: 72, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: `2.5px solid ${i === idx ? '#0c1d22' : 'rgba(12, 29, 34,0.12)'}`, opacity: i === idx ? 1 : 0.55, transition: 'all 0.15s' }}>
-              <Image src={img} alt={label ? `${label} – ${i + 1}` : ''} fill sizes="72px" className="object-cover" />
+            <div
+              key={i}
+              data-gal-idx={i}
+              className="gal-panel-item"
+              onClick={() => scrollImageToTop(i)}
+            >
+              <Image
+                src={img}
+                alt={label ? `${label} – ${i + 1}` : ''}
+                width={2400}
+                height={1600}
+                sizes="526px"
+                style={{ width: '100%', height: 'auto', aspectRatio: 'auto' }}
+              />
             </div>
           ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -1198,7 +1307,6 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
   const [mobileFormatId, setMobileFormatId] = useState<MobileFormatId>(defaultMobileFormat);
   const mobileActiveFmt =
     (mobileFormatId === 'journee' ? fmtJour : fmt2j) ?? pillFmt;
-  const mobileTitle = mobileActiveFmt?.titre ?? s.label;
 
   useEffect(() => {
     let next: MobileFormatId = fmtJour ? 'journee' : 'residentiel';
@@ -1254,7 +1362,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
 
   return (
     <>
-      {galleryOpen && <GalleryLightbox images={s.images} initialIndex={galleryIdx} onClose={() => setGalleryOpen(false)} label={fmt.titre} />}
+      {galleryOpen && <GalleryLightbox images={s.images} initialIndex={galleryIdx} onClose={() => setGalleryOpen(false)} label={s.label} />}
 
       <div style={{ animation: 'semExpandIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
 
@@ -1269,7 +1377,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
           <Image
             key={mobilePhotoIdx}
             src={s.images[mobilePhotoIdx] ?? mainImage}
-            alt={fmt.titre}
+            alt={s.label}
             fill
             priority
             sizes="100vw"
@@ -1327,13 +1435,13 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
         {/* ── Grille photos desktop ── */}
         <div className={`sem-photo-grid sem-photo-grid-desktop ${hasSmall ? 'has-small' : 'no-small'}`}>
           <div onClick={() => { setGalleryIdx(0); setGalleryOpen(true); }} className="sem-photo-main relative">
-            <Image src={mainImage} alt={fmt.titre} fill sizes="(max-width: 900px) 100vw, 60vw" className="object-cover" style={{ transition: 'transform 0.3s ease' }}
+            <Image src={mainImage} alt={s.label} fill sizes="(max-width: 900px) 100vw, 60vw" className="object-cover" style={{ transition: 'transform 0.3s ease' }}
               onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.03)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }} />
           </div>
           {smallImages.map((img, i) => (
             <div key={i} onClick={() => { setGalleryIdx(i + 1); setGalleryOpen(true); }} className="relative" style={{ cursor: 'pointer', overflow: 'hidden' }}>
-              <Image src={img} alt={`${fmt.titre} – ${i + 2}`} fill sizes="(max-width: 900px) 100vw, 30vw" className="object-cover" style={{ transition: 'transform 0.3s ease' }}
+              <Image src={img} alt={`${s.label} – ${i + 2}`} fill sizes="(max-width: 900px) 100vw, 30vw" className="object-cover" style={{ transition: 'transform 0.3s ease' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }} />
             </div>
@@ -1375,7 +1483,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
           {/* Intro mobile */}
           <div className="sem-detail-mobile-only">
             <OfferIntroBlock
-              title={mobileTitle}
+              title={s.label}
               producteur={s.producteur}
               region={s.region}
             />
@@ -1407,7 +1515,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
         <div className="sem-detail-cols sem-detail-desktop-only">
           <div>
             <OfferIntroBlock
-              title={fmt.titre}
+              title={s.label}
               producteur={s.producteur}
               region={s.region}
             />
@@ -1591,7 +1699,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   const handleSubmit = async () => {
     setSubmit(true);
     const selectionLine = selectedSeminaire && selectedFormat
-      ? `${selectedSeminaire.producteur} — ${formatLabel} (${selectedFormat.titre})`
+      ? `${selectedSeminaire.label} — ${formatLabel} (${selectedFormat.titre})`
       : formatLabel;
     try {
       const res = await fetch('/api/demande-seminaire', {
