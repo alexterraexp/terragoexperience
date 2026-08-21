@@ -26,6 +26,7 @@ import {
   type ExperienceEntrepriseSlug,
 } from '../lib/experiencesEntreprise';
 import { getImageCopyright } from '../lib/imageCopyrights';
+import FaqExcerpt from '../components/FaqExcerpt';
 
 /** Titre avec gras uniquement sur les segments `**…**`. */
 const EmphasizedTitle: React.FC<{ title: string }> = ({ title }) => (
@@ -675,6 +676,10 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
           </div>
         </div>
       </section>
+
+      <FaqExcerpt
+        excerpt={slug === '2' ? 'rse' : slug === '1' ? 'team-building-original' : 'rse'}
+      />
     </div>
   );
 };

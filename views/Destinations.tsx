@@ -14,6 +14,7 @@ import PhotoCopyright from '../components/PhotoCopyright';
 import { REGION_TAGS, regionDestinationPath } from '../lib/homeStorage';
 import { DESTINATIONS } from '../lib/destinations';
 import { LIEUX, lieuDestinationPath } from '../lib/lieux';
+import { VILLES_SEMINAIRE, villeSeminairePath } from '../lib/villesSeminaire';
 import { protectedImageProps } from '../lib/protectedImage';
 import { getImageCopyright } from '../lib/imageCopyrights';
 
@@ -25,7 +26,7 @@ const CategoryHeading: React.FC<{ children: React.ReactNode; className?: string 
   className = '',
 }) => (
   <div className={`flex items-center gap-4 sm:gap-5 ${className}`}>
-    <h2 className="shrink-0 font-sans text-[15px] font-normal leading-[1.2] tracking-[-0.04em] text-[#0c1d22] sm:text-[17px] lg:text-[18px]">
+    <h2 className="shrink-0 font-sans text-[17px] font-normal leading-[1.2] tracking-[-0.04em] text-[#0c1d22] sm:text-[19px] lg:text-[21px]">
       {children}
     </h2>
     <div
@@ -178,7 +179,15 @@ const Destinations: React.FC = () => {
             <p className={`mt-4 max-w-2xl ${homeParagraphClass}`}>
               Organisez votre séminaire d&apos;entreprise partout en France, au plus près des
               producteurs et des terroirs. Explorez par région ou par type de lieu : programme type,
-              expériences et idées de logement.
+              expériences et idées de logement. Vous partez d&apos;une grande ville ? Consultez
+              aussi nos pages{' '}
+              <a
+                href="#seminaires-par-ville"
+                className="font-semibold text-[#ec6435] underline decoration-[#ec6435]/40 underline-offset-2 hover:text-[#0c1d22]"
+              >
+                séminaire près des villes
+              </a>
+              .
             </p>
           </ScrollAnimate>
 
@@ -398,6 +407,36 @@ const Destinations: React.FC = () => {
               </Link>
             </ScrollAnimate>
           ))}
+        </div>
+
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <ScrollAnimate className="mt-14 sm:mt-16">
+            <div id="seminaires-par-ville">
+              <CategoryHeading className="mb-3 sm:mb-4">
+                En fonction des <span className="font-bold">villes</span>
+              </CategoryHeading>
+              <p className={`mb-5 max-w-none sm:mb-6 ${homeParagraphClass}`}>
+                Toutes vos expériences, séminaires, événements d&apos;entreprise à moins d&apos;1h30 de
+                votre métropole. Sélectionnez votre ville : nous imaginons votre séminaire, team
+                building ou événement chez des producteurs et acteurs ruraux, autour de votre
+                métropole.
+              </p>
+              <nav
+                aria-label="Séminaires près des villes"
+                className="flex flex-wrap gap-x-8 gap-y-3 sm:gap-x-10 sm:gap-y-4"
+              >
+                {VILLES_SEMINAIRE.map((ville) => (
+                  <Link
+                    key={ville.slug}
+                    href={villeSeminairePath(ville.slug)}
+                    className="font-sans text-[16px] font-semibold tracking-[-0.04em] text-[#0c1d22] underline decoration-[rgba(12,29,34,0.25)] underline-offset-4 transition-colors hover:text-[#ec6435] hover:decoration-[#ec6435] sm:text-[18px]"
+                  >
+                    {ville.name}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </ScrollAnimate>
         </div>
       </section>
 

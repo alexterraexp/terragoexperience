@@ -23,6 +23,7 @@ import {
 import FramedHeroImage from '../components/FramedHeroImage';
 import { HOME_EMOJI } from '../lib/homeStorage';
 import ProducerDetailModal from '../components/ProducerDetailModal';
+import FaqExcerpt from '../components/FaqExcerpt';
 
 const HOME_ASSETS =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
@@ -598,6 +599,8 @@ const ProducersPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <FaqExcerpt excerpt="producteur" />
     </div>
   );
 };

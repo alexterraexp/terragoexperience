@@ -12,6 +12,35 @@ const nextConfig = {
       { protocol: 'https', hostname: 'www.google.com' },
     ],
   },
+  async rewrites() {
+    const villes = [
+      'paris',
+      'lyon',
+      'marseille',
+      'bordeaux',
+      'toulouse',
+      'nantes',
+      'rennes',
+      'lille',
+      'strasbourg',
+      'montpellier',
+      'nice',
+      'grenoble',
+      'aix-en-provence',
+      'angers',
+      'tours',
+      'valence',
+      'reims',
+      'clermont-ferrand',
+      'annecy',
+      'la-rochelle',
+      'biarritz',
+    ];
+    return villes.map((ville) => ({
+      source: `/seminaire-${ville}`,
+      destination: `/seminaire/${ville}`,
+    }));
+  },
   async redirects() {
     return [
       {

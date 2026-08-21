@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { DESTINATION_SLUGS } from '../lib/destinations';
 import { LIEU_SLUGS, lieuDestinationPath } from '../lib/lieux';
+import { VILLE_SEMINAIRE_SLUGS, villeSeminairePath } from '../lib/villesSeminaire';
 import { regionDestinationPath } from '../lib/homeStorage';
 import {
   SEMINAIRE_ENJEU_SLUGS,
@@ -61,6 +62,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
+    ...VILLE_SEMINAIRE_SLUGS.map((slug) => ({
+      url: `${SITE_URL}${villeSeminairePath(slug)}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
   ];
 
   const enjeuPages: MetadataRoute.Sitemap = SEMINAIRE_ENJEU_SLUGS.map((slug) => ({
@@ -111,6 +118,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...enjeuPages,
     ...seminaireExemplePages,
     ...destinationPages,
+    {
+      url: `${SITE_URL}/faq`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
     {
       url: `${SITE_URL}/experiences-privees`,
       lastModified: now,

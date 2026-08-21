@@ -73,6 +73,7 @@ const NAV_GROUPS: { title: string; links: FooterLink[] }[] = [
       { to: '/notre-approche/charte-rse', label: 'Notre charte RSE' },
       { to: '/partenaires', label: 'Nos producteurs partenaires' },
       { to: '/blog', label: 'Le Journal TerraGo' },
+      { to: '/faq', label: 'FAQ' },
     ],
   },
 ];
@@ -206,10 +207,10 @@ const Footer: React.FC = () => {
     }
   };
 
-  /** Pages enjeux : dernière section orange → fond orange derrière les coins arrondis du footer. */
-  const blendOrangeCorners = SEMINAIRE_ENJEU_SLUGS.some(
-    (slug) => pathname === seminaireEnjeuPath(slug),
-  );
+  /** Dernière section orange → fond orange derrière les coins arrondis du footer. */
+  const blendOrangeCorners =
+    pathname === '/faq' ||
+    SEMINAIRE_ENJEU_SLUGS.some((slug) => pathname === seminaireEnjeuPath(slug));
 
   return (
     <div style={{ background: blendOrangeCorners ? HOME_COLORS.orange : undefined }}>

@@ -17,6 +17,7 @@ import {
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
 import { seminaireEnjeuPath } from '../lib/seminaireEnjeux';
+import FaqExcerpt from '../components/FaqExcerpt';
 
 const HOME =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
@@ -910,10 +911,10 @@ const Seminaires: React.FC = () => {
 
           <div className="mt-8 flex justify-center sm:mt-10">
             <Link
-              href="/experiences-entreprise"
+              href="/seminaire-exemples"
               className="inline-flex items-center justify-center rounded-full border border-[#ec6435] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-8 sm:py-2.5 sm:text-[12px]"
             >
-              Découvrir nos expériences entreprise
+              Découvrir nos exemples de séminaire d&apos;entreprise
             </Link>
           </div>
         </div>
@@ -998,10 +999,10 @@ const Seminaires: React.FC = () => {
               tout est orchestré pour que vous n&apos;ayez qu&apos;à vivre le moment.
             </p>
             <Link
-              href="/seminaire-exemples"
+              href="/destinations"
               className="mt-8 inline-flex items-center justify-center rounded-full border border-[#ec6435] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-8 sm:py-2.5 sm:text-[12px]"
             >
-              Découvrir nos lieux partenaires
+              Découvrir toutes nos destinations
             </Link>
           </ScrollAnimate>
         </div>
@@ -1164,6 +1165,7 @@ const Seminaires: React.FC = () => {
         </div>
       </section>
 
+      <FaqExcerpt excerpt="budget" />
     </div>
   );
 };

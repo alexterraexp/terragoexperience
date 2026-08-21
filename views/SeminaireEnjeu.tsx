@@ -25,6 +25,8 @@ import {
   type SeminaireEnjeuExample,
 } from '../lib/seminaireEnjeux';
 import { getImageCopyright } from '../lib/imageCopyrights';
+import FaqExcerpt from '../components/FaqExcerpt';
+import type { FaqExcerptKey } from '../lib/faq';
 import {
   SEMINAIRE_FORMAT_LABELS,
   fetchSeminaires,
@@ -35,6 +37,11 @@ import {
 
 const S_ORANGE =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/s-picto-orange.png';
+
+const ENJEU_FAQ_EXCERPT: Partial<Record<string, FaqExcerptKey>> = {
+  cohesion: 'team-building-original',
+  'sensibilisation-rse': 'rse',
+};
 
 const sectionTitleClass =
   'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
@@ -721,6 +728,10 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
           </div>
         </div>
       </section>
+
+      {ENJEU_FAQ_EXCERPT[enjeu.slug] ? (
+        <FaqExcerpt excerpt={ENJEU_FAQ_EXCERPT[enjeu.slug]!} />
+      ) : null}
 
       {/* ── AUTRES ENJEUX ── */}
       {related.length > 0 && (

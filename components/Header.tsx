@@ -465,7 +465,9 @@ const Header: React.FC = () => {
     if (nav.path === '/destinations') {
       return (
         pathname === '/destinations' ||
-        (pathname?.startsWith('/destinations/') ?? false)
+        (pathname?.startsWith('/destinations/') ?? false) ||
+        (/^\/seminaire-/.test(pathname ?? '') &&
+          !(pathname?.startsWith('/seminaire-exemples') ?? false))
       );
     }
     if (nav.path === '/partenaires') {

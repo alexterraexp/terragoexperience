@@ -25,6 +25,8 @@ import {
 } from '../lib/lieux';
 import { protectedImageProps } from '../lib/protectedImage';
 import { getImageCopyright } from '../lib/imageCopyrights';
+import FaqExcerpt from '../components/FaqExcerpt';
+import type { FaqExcerptKey } from '../lib/faq';
 
 /** Même format que les titres de section Home / Séminaires. */
 const sectionTitleClass =
@@ -38,6 +40,13 @@ const S_ORANGE =
 
 const ETOILE =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/etoilecouleurfoncee.png';
+
+const LIEU_FAQ_EXCERPT: Partial<Record<string, FaqExcerptKey>> = {
+  'chez-le-producteur': 'producteur',
+  'a-la-ferme': 'producteur',
+  'au-coeur-des-terroirs': 'producteur',
+  'en-pleine-nature': 'au-vert',
+};
 
 const RATEAU =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/rateau.png';
@@ -673,6 +682,10 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
           </div>
         </div>
       </section>
+
+      {LIEU_FAQ_EXCERPT[lieu.slug] ? (
+        <FaqExcerpt excerpt={LIEU_FAQ_EXCERPT[lieu.slug]!} />
+      ) : null}
 
       {/* ── AUTRES LIEUX ── */}
       <section
