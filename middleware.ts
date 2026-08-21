@@ -9,8 +9,8 @@ import {
 
 const VILLE_SLUGS = new Set<string>(VILLE_SEMINAIRE_SLUGS);
 
-const REGION_BY_PUBLIC = new Map(
-  REGION_IMAGES.map((r) => [`${r.prep}-${r.slug}`, r.slug] as const),
+const REGION_BY_PUBLIC = new Map<string, string>(
+  REGION_IMAGES.map((r) => [`${r.prep}-${r.slug}`, r.slug]),
 );
 
 const LIEU_BY_PUBLIC = new Map<string, string>(
