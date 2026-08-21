@@ -1553,7 +1553,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'rgba(12, 29, 34, 0.55)' }}>
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                      {fmt.duree}
+                      À la journée ou en résidentiel
                     </span>
                     <span style={{ color: 'rgba(12, 29, 34, 0.25)', fontSize: 12 }}>·</span>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'rgba(12, 29, 34, 0.55)' }}>

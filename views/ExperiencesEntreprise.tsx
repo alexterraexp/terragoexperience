@@ -12,6 +12,7 @@ import {
   homeParagraphClass,
   homeSectionPadding,
   bottomImageGradientClass,
+  homeCtaOutlineGhostClass,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
 import PhotoCopyright from '../components/PhotoCopyright';
@@ -26,7 +27,7 @@ import {
   type ExperienceEntrepriseSlug,
 } from '../lib/experiencesEntreprise';
 import { getImageCopyright } from '../lib/imageCopyrights';
-import FaqExcerpt from '../components/FaqExcerpt';
+import { FAQ_PATH } from '../lib/faq';
 
 /** Titre avec gras uniquement sur les segments `**…**`. */
 const EmphasizedTitle: React.FC<{ title: string }> = ({ title }) => (
@@ -671,15 +672,14 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
               <p className={`${homeParagraphClass} mt-4 max-w-sm`}>
                 Une question sur nos expériences entreprise ? Parcourez la FAQ ou contactez-nous directement.
               </p>
+              <Link href={FAQ_PATH} className={`${homeCtaOutlineGhostClass} mt-6 sm:mt-8`}>
+                Voir toutes les questions
+              </Link>
             </div>
             <FaqAccordion />
           </div>
         </div>
       </section>
-
-      <FaqExcerpt
-        excerpt={slug === '2' ? 'rse' : slug === '1' ? 'team-building-original' : 'rse'}
-      />
     </div>
   );
 };

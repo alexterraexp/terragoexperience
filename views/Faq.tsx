@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { ChevronRight } from 'lucide-react';
 import { useModal } from '../context/ModalContext';
 import { FaqAnswerBody } from '../components/FaqAnswer';
 import {
@@ -8,7 +10,71 @@ import {
   homeParagraphClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
-import { FAQ_SECTIONS } from '../lib/faq';
+import { FAQ_SECTIONS, type FaqItem } from '../lib/faq';
+
+function FaqSectionAccordion({ items }: { items: FaqItem[] }) {
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const applyHash = () => {
+      const hash = window.location.hash.replace(/^#/, '');
+      if (hash && items.some((item) => item.id === hash)) {
+        setOpenId(hash);
+      }
+    };
+    applyHash();
+    window.addEventListener('hashchange', applyHash);
+    return () => window.removeEventListener('hashchange', applyHash);
+  }, [items]);
+
+  return (
+    <div className="flex flex-col gap-3">
+      {items.map((item) => {
+        const isOpen = openId === item.id;
+        return (
+          <div
+            key={item.id}
+            id={item.id}
+            className="scroll-mt-28 overflow-hidden bg-white px-5 py-1 sm:px-6"
+            style={{
+              borderRadius: HOME_RADIUS,
+              border: '1px solid rgba(12,29,34,0.08)',
+            }}
+          >
+            <button
+              type="button"
+              className="flex w-full items-center gap-3 py-4 text-left"
+              onClick={() => setOpenId(isOpen ? null : item.id)}
+              aria-expanded={isOpen}
+            >
+              <span className="min-w-0 flex-1 font-sans text-[15px] font-bold leading-[1.35] tracking-[-0.03em] text-[#0c1d22]">
+                {item.question}
+              </span>
+              <ChevronRight
+                size={18}
+                strokeWidth={1.8}
+                aria-hidden
+                className="shrink-0 transition-[transform,color] duration-[220ms] ease-out"
+                style={{
+                  color: isOpen ? HOME_COLORS.orange : 'rgba(12,29,34,0.35)',
+                  transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+                }}
+              />
+            </button>
+            <div
+              className="grid transition-all duration-300"
+              style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
+            >
+              <div className="overflow-hidden">
+                <FaqAnswerBody item={item} className="pb-4 pr-2" />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function Faq() {
   const { openModal } = useModal();
@@ -57,24 +123,7 @@ export default function Faq() {
               <span aria-hidden>{section.emoji} </span>
               {section.title}
             </h2>
-            <div className="flex flex-col gap-3">
-              {section.items.map((item) => (
-                <details
-                  key={item.id}
-                  id={item.id}
-                  className="bg-white px-5 py-1 open:pb-4 sm:px-6"
-                  style={{
-                    borderRadius: HOME_RADIUS,
-                    border: '1px solid rgba(12,29,34,0.08)',
-                  }}
-                >
-                  <summary className="cursor-pointer list-none py-4 font-sans text-[15px] font-bold leading-[1.35] tracking-[-0.03em] text-[#0c1d22] marker:content-none [&::-webkit-details-marker]:hidden">
-                    {item.question}
-                  </summary>
-                  <FaqAnswerBody item={item} />
-                </details>
-              ))}
-            </div>
+            <FaqSectionAccordion items={section.items} />
           </div>
         </section>
       ))}

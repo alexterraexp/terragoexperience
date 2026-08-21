@@ -27,7 +27,7 @@ export const homeH2Class =
   'font-sans text-base leading-[1.35] tracking-normal text-[#0c1d22]';
 
 export const homeParagraphClass =
-  'font-sans font-normal text-sm leading-[1.7] tracking-[-0.075em] text-[#0c1d22]/70';
+  'font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:text-[16px]';
 
 /** Respiration verticale unique : même valeur en haut et en bas de chaque section. */
 export const homeSectionPadding = 'clamp(5.5rem, 11vw, 8.5rem)';
@@ -70,8 +70,8 @@ export const homeH2Style: CSSProperties = {
 
 export const homeParagraphStyle: CSSProperties = {
   fontFamily: "'Poppins', sans-serif",
-  fontSize: 14,
+  fontSize: 15,
   fontWeight: 400,
-  letterSpacing: '-0.075em',
+  letterSpacing: '-0.04em',
   lineHeight: 1.7,
 };

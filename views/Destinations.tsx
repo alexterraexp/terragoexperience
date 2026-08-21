@@ -180,7 +180,7 @@ const Destinations: React.FC = () => {
               Organisez votre séminaire d&apos;entreprise partout en France, au plus près des
               producteurs et des terroirs. Explorez par région ou par type de lieu : programme type,
               expériences et idées de logement. Vous partez d&apos;une grande ville ? Consultez
-              aussi nos pages{' '}
+              aussi notre section{' '}
               <a
                 href="#seminaires-par-ville"
                 className="font-semibold text-[#ec6435] underline decoration-[#ec6435]/40 underline-offset-2 hover:text-[#0c1d22]"

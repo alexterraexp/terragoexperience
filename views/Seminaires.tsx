@@ -671,11 +671,11 @@ const Seminaires: React.FC = () => {
           <ScrollAnimate delay={80}>
             <div className="mt-6 grid gap-6 sm:mt-8 sm:grid-cols-2 sm:gap-10">
               <div className="space-y-5">
-                <p className="font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:text-[16px]">
+                <p className={homeParagraphClass}>
                   Au-delà de la cohésion d&apos;équipe, chaque séminaire TerraGo génère un impact concret
                   sur le territoire qui vous accueille.
                 </p>
-                <p className="font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:text-[16px]">
+                <p className={homeParagraphClass}>
                   En choisissant de vivre cette expérience au cœur des exploitations, ateliers et domaines,
                   votre entreprise soutient directement les producteurs, agriculteurs, artisans et
                   entrepreneurs locaux qui transmettent leur savoir-faire avec passion. Chaque rencontre,
@@ -683,7 +683,7 @@ const Seminaires: React.FC = () => {
                   essentiels et un patrimoine vivant.
                 </p>
               </div>
-              <p className="font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:text-[16px]">
+              <p className={homeParagraphClass}>
                 Pour vos collaborateurs, cette immersion donne du sens au séminaire. Ils ne repartent pas
                 seulement avec de bons souvenirs, mais avec le sentiment d&apos;avoir découvert des femmes
                 et des hommes engagés, d&apos;avoir contribué à faire vivre leur activité et d&apos;avoir
@@ -990,11 +990,11 @@ const Seminaires: React.FC = () => {
             <h2 className={sectionTitleClass}>
               Avec <span className="font-bold">des lieux qui transforment</span> votre expérience.
             </h2>
-            <p className="mt-5 font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:text-[16px]">
+            <p className={`mt-5 ${homeParagraphClass}`}>
               Fermes, domaines agricoles, espaces verdoyants : nos lieux partenaires sont choisis pour leur
               authenticité et leur capacité à accueillir vos équipes dans un cadre ressourçant.
             </p>
-            <p className="mt-4 font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:text-[16px]">
+            <p className={`mt-4 ${homeParagraphClass}`}>
               Hébergement, restauration locale, salles de réunion discrètes et activités immersives —
               tout est orchestré pour que vous n&apos;ayez qu&apos;à vivre le moment.
             </p>
@@ -1071,7 +1071,7 @@ const Seminaires: React.FC = () => {
       {/* ── CTA + PLAQUETTE ── */}
       <section
         style={{
-          paddingTop: 'clamp(2rem, 4vw, 3rem)',
+          paddingTop: homeSectionPadding,
           paddingBottom: homeSectionPadding,
           background: HOME_COLORS.gray,
         }}

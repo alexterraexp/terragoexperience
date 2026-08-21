@@ -1209,7 +1209,7 @@ export function destinationSeoTitle(
 export function destinationHeroHeading(
   destination: Pick<DestinationRegion, 'prep' | 'name'>,
 ): string {
-  return `Séminaire ${destination.prep} ${destination.name} chez un producteur`;
+  return `Séminaire au vert ${destination.prep} ${destination.name} à la rencontre de producteurs`;
 }
 
 export function getRelatedDestinations(

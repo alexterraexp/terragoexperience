@@ -7,6 +7,7 @@ import { useModal } from '../context/ModalContext';
 import {
   HOME_COLORS,
   HOME_RADIUS,
+  homeParagraphClass,
 } from '../components/home/homeStyles';
 import {
   getVilleSeminaire,
@@ -135,8 +136,6 @@ function aroundPhrase(city: string, title: string): string {
 }
 
 const sectionPad = 'clamp(3.5rem, 7vw, 5.5rem)';
-const villeParagraphClass =
-  'font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/65 sm:text-[16px]';
 
 export default function SeminaireVille({ ville }: { ville: VilleSeminaire }) {
   const { openModal } = useModal();
@@ -163,7 +162,7 @@ export default function SeminaireVille({ ville }: { ville: VilleSeminaire }) {
           <h1 className="mt-3 font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[44px]">
             <H1WithCity title={ville.h1} city={ville.name} />
           </h1>
-          <p className={`mt-6 ${villeParagraphClass}`}>
+          <p className={`mt-6 ${homeParagraphClass}`}>
             <RichText text={ville.intro} />
           </p>
         </div>
@@ -180,7 +179,7 @@ export default function SeminaireVille({ ville }: { ville: VilleSeminaire }) {
                 <h3 className="font-sans text-[17px] font-bold tracking-[-0.04em] text-[#0c1d22]">
                   {i + 1}. {arg.title}
                 </h3>
-                <p className={`mt-2 ${villeParagraphClass}`}>
+                <p className={`mt-2 ${homeParagraphClass}`}>
                   <RichText text={arg.text} />
                 </p>
               </div>
@@ -198,7 +197,7 @@ export default function SeminaireVille({ ville }: { ville: VilleSeminaire }) {
             {ville.activities.map((act) => (
               <div key={act.title}>
                 <h3 className="font-sans text-[17px] font-bold tracking-[-0.04em] text-[#0c1d22]">{act.title}</h3>
-                <p className={`mt-2 ${villeParagraphClass}`}>
+                <p className={`mt-2 ${homeParagraphClass}`}>
                   <RichText text={act.text} />
                 </p>
               </div>
@@ -221,7 +220,7 @@ export default function SeminaireVille({ ville }: { ville: VilleSeminaire }) {
           <h2 className="mb-5 font-sans text-[28px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[34px]">
             <BoldPhrase text={ville.rseTitle} phrases={['Un séminaire RSE', ville.name]} />
           </h2>
-          <p className={villeParagraphClass}>
+          <p className={homeParagraphClass}>
             <RichText text={ville.rse} />
           </p>
         </div>
@@ -245,7 +244,7 @@ export default function SeminaireVille({ ville }: { ville: VilleSeminaire }) {
                 <summary className="cursor-pointer list-none py-4 font-sans text-[15px] font-bold leading-[1.35] tracking-[-0.03em] text-[#0c1d22] marker:content-none [&::-webkit-details-marker]:hidden">
                   {item.q}
                 </summary>
-                <p className={`pb-2 ${villeParagraphClass}`}>{item.a}</p>
+                <p className={`pb-2 ${homeParagraphClass}`}>{item.a}</p>
               </details>
             ))}
           </div>

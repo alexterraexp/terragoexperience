@@ -1,4 +1,8 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 import { FAQ_PATH, getFaqExcerptItems, type FaqExcerptKey } from '../lib/faq';
 import { HOME_COLORS, HOME_RADIUS, homeCtaOutlineGhostClass, homeParagraphClass } from './home/homeStyles';
 import { FaqAnswerBody } from './FaqAnswer';
@@ -10,6 +14,8 @@ type Props = {
 
 export default function FaqExcerpt({ excerpt, intro }: Props) {
   const items = getFaqExcerptItems(excerpt, 3);
+  const [openId, setOpenId] = useState<string | null>(null);
+
   if (items.length === 0) return null;
 
   return (
@@ -30,18 +36,45 @@ export default function FaqExcerpt({ excerpt, intro }: Props) {
         ) : null}
 
         <div className="mt-8 flex flex-col gap-3">
-          {items.map((item) => (
-            <details
-              key={item.id}
-              className="group bg-white px-5 py-1 open:pb-4 sm:px-6"
-              style={{ borderRadius: HOME_RADIUS, border: '1px solid rgba(12,29,34,0.08)' }}
-            >
-              <summary className="cursor-pointer list-none py-4 font-sans text-[14px] font-bold leading-[1.3] tracking-[-0.03em] text-[#0c1d22] marker:content-none sm:text-[15px] [&::-webkit-details-marker]:hidden">
-                {item.question}
-              </summary>
-              <FaqAnswerBody item={item} />
-            </details>
-          ))}
+          {items.map((item) => {
+            const isOpen = openId === item.id;
+            return (
+              <div
+                key={item.id}
+                className="overflow-hidden bg-white px-5 py-1 sm:px-6"
+                style={{ borderRadius: HOME_RADIUS, border: '1px solid rgba(12,29,34,0.08)' }}
+              >
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-3 py-4 text-left"
+                  onClick={() => setOpenId(isOpen ? null : item.id)}
+                  aria-expanded={isOpen}
+                >
+                  <span className="min-w-0 flex-1 font-sans text-[14px] font-bold leading-[1.3] tracking-[-0.03em] text-[#0c1d22] sm:text-[15px]">
+                    {item.question}
+                  </span>
+                  <ChevronRight
+                    size={18}
+                    strokeWidth={1.8}
+                    aria-hidden
+                    className="shrink-0 transition-[transform,color] duration-[220ms] ease-out"
+                    style={{
+                      color: isOpen ? HOME_COLORS.orange : 'rgba(12,29,34,0.35)',
+                      transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+                    }}
+                  />
+                </button>
+                <div
+                  className="grid transition-all duration-300"
+                  style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
+                >
+                  <div className="overflow-hidden">
+                    <FaqAnswerBody item={item} className="pb-4 pr-2" />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         <div className="mt-8 flex justify-center">
