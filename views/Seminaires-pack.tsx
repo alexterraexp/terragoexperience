@@ -960,37 +960,6 @@ function GalleryLightbox({ images, initialIndex, onClose, label }: { images: str
   );
 }
 
-// ─── Encart partenaire compact (au-dessus des photos) ───────────────────────
-
-function PartenaireEncart({ nom, logo }: { nom: string; logo?: string }) {
-  return (
-    <div
-      aria-label={`En partenariat avec ${nom}`}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-end',
-        gap: 8,
-        flexShrink: 0,
-        textAlign: 'right',
-      }}
-    >
-      {logo && (
-        <Image
-          src={logo}
-          alt={nom}
-          width={260}
-          height={88}
-          style={{ maxHeight: 88, maxWidth: 260, width: 'auto', height: 'auto', objectFit: 'contain', display: 'block', borderRadius: 20 }}
-        />
-      )}
-      <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(12, 29, 34, 0.40)', lineHeight: 1.2 }}>
-        En partenariat avec
-      </span>
-    </div>
-  );
-}
-
 // ─── Carte partenaire (sous le bloc devis) ────────────────────────────────────
 
 const SEM_DETAIL_CARD: React.CSSProperties = {
@@ -1067,12 +1036,10 @@ function OfferIntroBlock({
   title,
   producteur,
   region,
-  partenaireSlot,
 }: {
   title: string;
   producteur: string;
   region: string;
-  partenaireSlot?: React.ReactNode;
 }) {
   return (
     <header className="sem-offer-intro">
@@ -1089,7 +1056,6 @@ function OfferIntroBlock({
             )}
           </div>
         </div>
-        {partenaireSlot}
       </div>
     </header>
   );
@@ -1444,11 +1410,6 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
               title={fmt.titre}
               producteur={s.producteur}
               region={s.region}
-              partenaireSlot={
-                s.partenaire_nom
-                  ? <PartenaireEncart nom={s.partenaire_nom} logo={s.partenaire_logo} />
-                  : undefined
-              }
             />
             <InfosPratiquesSection
               s={s}
