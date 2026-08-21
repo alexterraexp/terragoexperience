@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useModal } from '../context/ModalContext';
-import { REGION_IMAGES, regionDestinationPath } from '../lib/homeStorage';
+import { REGION_IMAGES, regionDestinationPath, lieuDestinationPath, type LieuSlug } from '../lib/homeStorage';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -50,16 +50,22 @@ const DESTINATION_REGIONS: DropdownItem[] = REGION_IMAGES.map((region) => ({
   path: regionDestinationPath(region.slug),
 }));
 
-const DESTINATION_LIEUX: DropdownItem[] = [
-  { label: 'Chez le producteur',           description: 'Savoir-faire et terroir vivant',  path: '/destinations/lieux/chez-le-producteur' },
-  { label: 'Au vignoble',                  description: 'Terroirs & dégustations',         path: '/destinations/lieux/au-vignoble' },
-  { label: 'À la ferme',                   description: 'Immersion chez l’exploitant',     path: '/destinations/lieux/a-la-ferme' },
-  { label: 'Au bord de l’eau',             description: 'Lacs, rivières ou océan',         path: '/destinations/lieux/au-bord-de-leau' },
-  { label: 'En montagne',                  description: 'Altitude et grands espaces',      path: '/destinations/lieux/en-montagne' },
-  { label: 'En pleine nature',             description: 'Forêts et paysages sauvages',     path: '/destinations/lieux/en-pleine-nature' },
-  { label: 'Dans un domaine d’exception',  description: 'Lieux rares et inspirants',       path: '/destinations/lieux/domaine-d-exception' },
-  { label: 'Au cœur des terroirs',         description: 'Immersion locale authentique',    path: '/destinations/lieux/au-coeur-des-terroirs' },
+const LIEU_MENU: { slug: LieuSlug; label: string; description: string }[] = [
+  { slug: 'chez-le-producteur', label: 'Chez le producteur', description: 'Savoir-faire et terroir vivant' },
+  { slug: 'au-vignoble', label: 'Au vignoble', description: 'Terroirs & dégustations' },
+  { slug: 'a-la-ferme', label: 'À la ferme', description: 'Immersion chez l’exploitant' },
+  { slug: 'au-bord-de-leau', label: 'Au bord de l’eau', description: 'Lacs, rivières ou océan' },
+  { slug: 'en-montagne', label: 'En montagne', description: 'Altitude et grands espaces' },
+  { slug: 'en-pleine-nature', label: 'En pleine nature', description: 'Forêts et paysages sauvages' },
+  { slug: 'domaine-d-exception', label: 'Dans un domaine d’exception', description: 'Lieux rares et inspirants' },
+  { slug: 'au-coeur-des-terroirs', label: 'Au cœur des terroirs', description: 'Immersion locale authentique' },
 ];
+
+const DESTINATION_LIEUX: DropdownItem[] = LIEU_MENU.map((lieu) => ({
+  label: lieu.label,
+  description: lieu.description,
+  path: lieuDestinationPath(lieu.slug),
+}));
 
 // ─── Structure du menu ────────────────────────────────────────────────────────
 
@@ -466,8 +472,7 @@ const Header: React.FC = () => {
       return (
         pathname === '/destinations' ||
         (pathname?.startsWith('/destinations/') ?? false) ||
-        (/^\/seminaire-/.test(pathname ?? '') &&
-          !(pathname?.startsWith('/seminaire-exemples') ?? false))
+        /^\/seminaire-entreprise-/.test(pathname ?? '')
       );
     }
     if (nav.path === '/partenaires') {

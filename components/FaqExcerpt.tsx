@@ -79,7 +79,7 @@ export default function FaqExcerpt({ excerpt, intro }: Props) {
 
         <div className="mt-8 flex justify-center">
           <Link href={FAQ_PATH} className={homeCtaOutlineGhostClass}>
-            Voir toutes les questions
+            Toutes les questions fréquentes
           </Link>
         </div>
       </div>

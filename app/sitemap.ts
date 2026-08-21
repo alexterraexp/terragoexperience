@@ -1,8 +1,11 @@
 import type { MetadataRoute } from 'next';
 import { DESTINATION_SLUGS } from '../lib/destinations';
-import { LIEU_SLUGS, lieuDestinationPath } from '../lib/lieux';
+import {
+  LIEU_SLUGS,
+  lieuDestinationPath,
+  regionDestinationPath,
+} from '../lib/homeStorage';
 import { VILLE_SEMINAIRE_SLUGS, villeSeminairePath } from '../lib/villesSeminaire';
-import { regionDestinationPath } from '../lib/homeStorage';
 import {
   SEMINAIRE_ENJEU_SLUGS,
   seminaireEnjeuPath,

@@ -96,11 +96,11 @@ const FaqAccordion: React.FC = () => {
           <div key={item.q} className="overflow-hidden">
             <button
               type="button"
-              className="flex w-full items-center gap-3 py-3.5 text-left transition-colors hover:bg-[rgba(12,29,34,0.02)] sm:gap-4 sm:py-4"
+              className="group flex w-full items-center gap-3 py-3.5 text-left sm:gap-4 sm:py-4"
               onClick={() => setOpenIndex(isOpen ? null : i)}
               aria-expanded={isOpen}
             >
-              <span className="min-w-0 flex-1 font-sans text-[14px] font-bold leading-[1.3] tracking-[-0.03em] text-[#0c1d22] sm:text-[15px]">
+              <span className="min-w-0 flex-1 font-sans text-[14px] font-bold leading-[1.3] tracking-[-0.03em] text-[#0c1d22] transition-opacity group-hover:opacity-70 sm:text-[15px]">
                 {item.q}
               </span>
               <ChevronRight
@@ -673,7 +673,7 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
                 Une question sur nos expériences entreprise ? Parcourez la FAQ ou contactez-nous directement.
               </p>
               <Link href={FAQ_PATH} className={`${homeCtaOutlineGhostClass} mt-6 sm:mt-8`}>
-                Voir toutes les questions
+                Toutes les questions fréquentes
               </Link>
             </div>
             <FaqAccordion />

@@ -1,20 +1,9 @@
-import { HOME_PRODUCERS, REGION_IMAGES } from './homeStorage';
+import { HOME_PRODUCERS, REGION_IMAGES, type LieuSlug } from './homeStorage';
+
+export { LIEU_SLUGS, type LieuSlug, LIEU_PATH_SLUGS, lieuDestinationPath } from './homeStorage';
 
 const HOME =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
-
-export const LIEU_SLUGS = [
-  'chez-le-producteur',
-  'au-vignoble',
-  'a-la-ferme',
-  'au-bord-de-leau',
-  'en-montagne',
-  'en-pleine-nature',
-  'domaine-d-exception',
-  'au-coeur-des-terroirs',
-] as const;
-
-export type LieuSlug = (typeof LIEU_SLUGS)[number];
 
 export type LieuPro = {
   title: string;
@@ -74,10 +63,6 @@ export type DestinationLieu = {
   };
   faq: LieuFaqItem[];
 };
-
-export function lieuDestinationPath(slug: string): string {
-  return `/destinations/lieux/${slug}`;
-}
 
 const SHARED_FAQ_TAIL: LieuFaqItem[] = [
   {

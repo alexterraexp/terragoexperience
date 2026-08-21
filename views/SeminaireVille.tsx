@@ -1,18 +1,21 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 import { useModal } from '../context/ModalContext';
 import {
   HOME_COLORS,
   HOME_RADIUS,
+  homeCtaOutlineClass,
   homeParagraphClass,
 } from '../components/home/homeStyles';
 import {
   getVilleSeminaire,
   villeFaqItems,
   villeSeminairePath,
+  type VilleFaq,
   type VilleSeminaire,
   type VilleSeminaireSlug,
 } from '../lib/villesSeminaire';
@@ -137,6 +140,57 @@ function aroundPhrase(city: string, title: string): string {
 
 const sectionPad = 'clamp(3.5rem, 7vw, 5.5rem)';
 
+function VilleFaqAccordion({ items }: { items: VilleFaq[] }) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <div className="flex flex-col gap-3">
+      {items.map((item, i) => {
+        const isOpen = openIndex === i;
+        return (
+          <div
+            key={item.q}
+            className="overflow-hidden bg-white px-5 py-1 sm:px-6"
+            style={{
+              borderRadius: HOME_RADIUS,
+              border: '1px solid rgba(12,29,34,0.08)',
+            }}
+          >
+            <button
+              type="button"
+              className="flex w-full items-center gap-3 py-4 text-left"
+              onClick={() => setOpenIndex(isOpen ? null : i)}
+              aria-expanded={isOpen}
+            >
+              <span className="min-w-0 flex-1 font-sans text-[15px] font-bold leading-[1.35] tracking-[-0.03em] text-[#0c1d22]">
+                {item.q}
+              </span>
+              <ChevronRight
+                size={18}
+                strokeWidth={1.8}
+                aria-hidden
+                className="shrink-0 transition-[transform,color] duration-[220ms] ease-out"
+                style={{
+                  color: isOpen ? HOME_COLORS.orange : 'rgba(12,29,34,0.35)',
+                  transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+                }}
+              />
+            </button>
+            <div
+              className="grid transition-all duration-300"
+              style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
+            >
+              <div className="overflow-hidden">
+                <p className={`pb-4 pr-2 ${homeParagraphClass}`}>{item.a}</p>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function SeminaireVille({ ville }: { ville: VilleSeminaire }) {
   const { openModal } = useModal();
   const nearby = (NEARBY[ville.slug] ?? [])
@@ -203,6 +257,12 @@ export default function SeminaireVille({ ville }: { ville: VilleSeminaire }) {
               </div>
             ))}
           </div>
+          <div className="mt-10 flex justify-center sm:mt-12">
+            <Link href="/experiences-entreprise" className={homeCtaOutlineClass}>
+              <span aria-hidden>→</span>
+              Découvrir nos expériences pour les entreprises
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -220,9 +280,25 @@ export default function SeminaireVille({ ville }: { ville: VilleSeminaire }) {
           <h2 className="mb-5 font-sans text-[28px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[34px]">
             <BoldPhrase text={ville.rseTitle} phrases={['Un séminaire RSE', ville.name]} />
           </h2>
-          <p className={homeParagraphClass}>
-            <RichText text={ville.rse} />
-          </p>
+          <div className="flex flex-col gap-4">
+            {ville.rse.map((block, i) =>
+              block.type === 'h3' ? (
+                <h3
+                  key={i}
+                  className="mt-4 font-sans text-[20px] font-normal leading-[1.2] tracking-[-0.05em] text-[#0c1d22] first:mt-0 sm:text-[22px]"
+                >
+                  <BoldPhrase
+                    text={block.text}
+                    phrases={['RSE qui se vit', 'moment d’équipe', "moment d'équipe"]}
+                  />
+                </h3>
+              ) : (
+                <p key={i} className={homeParagraphClass}>
+                  <RichText text={block.text} />
+                </p>
+              ),
+            )}
+          </div>
         </div>
       </section>
 
@@ -231,23 +307,7 @@ export default function SeminaireVille({ ville }: { ville: VilleSeminaire }) {
           <h2 className="mb-6 font-sans text-[28px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[34px]">
             <BoldPhrase text={ville.faqTitle} phrases={['Vos questions', ville.name]} />
           </h2>
-          <div className="flex flex-col gap-3">
-            {villeFaqItems(ville).map((item) => (
-              <details
-                key={item.q}
-                className="bg-white px-5 py-1 open:pb-4 sm:px-6"
-                style={{
-                  borderRadius: HOME_RADIUS,
-                  border: '1px solid rgba(12,29,34,0.08)',
-                }}
-              >
-                <summary className="cursor-pointer list-none py-4 font-sans text-[15px] font-bold leading-[1.35] tracking-[-0.03em] text-[#0c1d22] marker:content-none [&::-webkit-details-marker]:hidden">
-                  {item.q}
-                </summary>
-                <p className={`pb-2 ${homeParagraphClass}`}>{item.a}</p>
-              </details>
-            ))}
-          </div>
+          <VilleFaqAccordion items={villeFaqItems(ville)} />
         </div>
       </section>
 

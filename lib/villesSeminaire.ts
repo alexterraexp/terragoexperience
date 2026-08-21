@@ -30,6 +30,8 @@ export type VilleArgument = { title: string; text: string };
 
 export type VilleActivite = { title: string; text: string };
 
+export type VilleRseBlock = { type: 'p'; text: string } | { type: 'h3'; text: string };
+
 export type VilleSeminaire = {
   slug: VilleSeminaireSlug;
   name: string;
@@ -42,7 +44,7 @@ export type VilleSeminaire = {
   experiencesTitle: string;
   activities: VilleActivite[];
   rseTitle: string;
-  rse: string;
+  rse: VilleRseBlock[];
   faqTitle: string;
   faq: [VilleFaq, VilleFaq, VilleFaq];
   cta: string;
@@ -51,7 +53,32 @@ export type VilleSeminaire = {
 };
 
 export function villeSeminairePath(slug: string): string {
-  return `/seminaire-${slug}`;
+  return `/seminaire-entreprise-${slug}`;
+}
+
+const RSE_CONTRIB =
+  'Votre entreprise contribue directement à faire vivre une activité locale, en rémunérant justement le producteur pour son accueil et son savoir-faire.';
+
+const RSE_CLOSING =
+  'TerraGo construit ces séminaires avec des producteurs sélectionnés pour la qualité de leur lieu, leur envie de transmettre et leurs pratiques engagées.';
+
+/** Gabarit RSE multi-paragraphes, même ton pour chaque page ville. */
+function villeRse(parts: {
+  lead: string;
+  discovery: string;
+  concrete: string;
+  team: string;
+}): VilleRseBlock[] {
+  return [
+    { type: 'p', text: parts.lead },
+    { type: 'p', text: parts.discovery },
+    { type: 'h3', text: 'Une RSE qui se vit, pas qui se raconte' },
+    { type: 'p', text: parts.concrete },
+    { type: 'p', text: RSE_CONTRIB },
+    { type: 'h3', text: 'Et surtout, un vrai moment d’équipe' },
+    { type: 'p', text: parts.team },
+    { type: 'p', text: RSE_CLOSING },
+  ];
 }
 
 export const VILLES_SEMINAIRE: VilleSeminaire[] = [
@@ -96,20 +123,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Paris',
-    rse: 'La RSE d’un séminaire n’est pas un discours projeté sur un écran. C’est le choix du lieu : entreprise parisienne, producteur, repas issu autant que possible des circuits courts, activité utile à la ferme. L’alimentation, le travail agricole et l’économie locale se tiennent. TerraGo organise ce fil, sans promesse chiffrée ni label inventé.',
+    rse: villeRse({
+      lead:
+        'Entreprise, ferme, sol, fromage, pain, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Paris, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font encore vivre les campagnes franciliennes.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent une ferme maraîchère, une fromagerie, un boulanger-paysan ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail du sol, une production de saison, des choix agricoles, parfois des difficultés aussi — à quelques kilomètres de la capitale.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée en maraîchage, un atelier fromage, un pain cuit au four ou une rencontre avec un apiculteur : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui entoure Paris.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Paris',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Paris ?',
-        a: 'Selon le site, nous combinons gare de départ, correspondance Transilien ou RER, puis transfert groupé. Le brief précise effectif et horaires pour éviter l’éparpillement en voiture.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Paris ?',
+        a: 'Paris accueille des séminaires toute l’année. Privilégiez le printemps et l’automne pour profiter des parcs, des balades et des activités en extérieur dans de bonnes conditions. L’hiver se prête davantage aux expériences chez les artisans, aux ateliers et aux formats indoor.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Paris ?',
-        a: 'Fermes maraîchères, fromageries, exploitations céréalières, ateliers de transformation et maisons de producteurs en Seine-et-Marne, Yvelines, Val-d’Oise ou Essonne, selon disponibilités.',
+        q: 'Quels cadres choisir pour un séminaire près de Paris ?',
+        a: 'Autour de Paris, sortez des salles de réunion pour rejoindre une ferme, une exploitation maraîchère, une brasserie artisanale ou un domaine à la campagne. À moins d’une heure de la capitale, ces lieux permettent de combiner facilement travail, activité collective, repas et découverte d’un savoir-faire local.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Oui : le repas s’appuie autant que possible sur les productions de l’hôte et de ses voisins — légumes, fromages, pain, miel — plutôt que sur un traiteur hors-sol.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Paris ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -155,20 +191,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Lyon',
-    rse: 'Entreprise lyonnaise, producteur, territoire, assiette, geste collectif : la chaîne est courte. La RSE se joue dans le choix d’acheter une journée de travail agricole plutôt qu’une location de salle. TerraGo relie ces maillons sans inventer d’indicateurs.',
+    rse: villeRse({
+      lead:
+        'Entreprise, vignoble, élevage, assiette, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Lyon, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre le Beaujolais, les Monts du Lyonnais ou la Dombes.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un domaine viticole, une ferme d’élevage, un maraîcher ou un artisan engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de la vigne, une volaille élevée sur place, une saison de maraîchage, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée dans les vignes du Beaujolais, un atelier à la ferme, un repas de terroir ou une récolte sur les coteaux : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Lyon',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Lyon ?',
-        a: 'Départ groupé depuis une gare ou un parking relais, puis transfert. Beaujolais, monts du Lyonnais ou Dombes se prêtent à des combinaisons train + navette selon le site retenu.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Lyon ?',
+        a: 'La région lyonnaise accueille des séminaires toute l’année. Pour profiter des vignes du Beaujolais, des monts et des activités outdoor, privilégiez avril à octobre. L’automne et l’hiver se prêtent bien aux ateliers à la ferme, à la gastronomie locale et aux formats plus indoor.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Lyon ?',
-        a: 'Domaines viticoles, fermes d’élevage, maraîchers, ateliers de transformation et salles rustiques chez le producteur — pas des centres de congrès.',
+        q: 'Quels cadres choisir pour un séminaire près de Lyon ?',
+        a: 'Autour de Lyon, les séminaires trouvent leur place dans un domaine du Beaujolais, une ferme d’élevage, chez un maraîcher des coteaux ou en pleine nature dans les monts. La journée peut mêler temps de travail, découverte du métier, activité collective et repas chez le producteur.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Le repas suit les productions du lieu et du voisinage : vin, volaille, légumes, fromages. On travaille avec ce qui est disponible, sans carte figée hors saison.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Lyon ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -214,20 +259,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Marseille',
-    rse: 'De l’entreprise marseillaise à l’exploitation, le circuit est géographique et alimentaire. Choisir un producteur, c’est relier RSE, assiette et économie rurale. L’activité n’est pas un à-côté : elle est le contenu de la journée.',
+    rse: villeRse({
+      lead:
+        'Entreprise, oliveraie, garrigue, huile, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Marseille, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre l’arrière-pays provençal, les Alpilles ou la Camargue.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un domaine oléicole, un vigneron, un éleveur ou un producteur d’herbes aromatiques. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de l’olivier, une récolte de saison, des choix agricoles face à la sécheresse, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée sous les oliviers, un atelier plantes aromatiques, un repas à la ferme ou une rencontre avec un vigneron : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Marseille',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Marseille ?',
-        a: 'Rendez-vous gare ou parking, puis autocar vers Alpilles, Camargue ou arrière-pays. Nous calons les horaires sur les contraintes de vos collaborateurs, y compris ceux qui viennent d’Aix.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Marseille ?',
+        a: 'Marseille se prête aux séminaires toute l’année grâce à son climat doux. Pour profiter des calanques, de la mer et des activités outdoor, privilégiez avril à juin puis septembre-octobre. L’hiver permet de profiter plus tranquillement du territoire, des producteurs et des activités indoor.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Marseille ?',
-        a: 'Oliveraies, domaines viticoles, fermes maraîchères, élevages camarguais, ateliers d’herboristerie — des lieux de production, pas des palaces.',
+        q: 'Quels cadres choisir pour un séminaire près de Marseille ?',
+        a: 'Autour de Marseille, les séminaires prennent place entre mer et arrière-pays : domaines viticoles, oliveraies, fermes, producteurs et lieux en pleine nature. Une journée peut ainsi alterner réunion, découverte du territoire, activité outdoor et repas avec les producteurs.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Huile, légumes, vin, riz, fromages de chèvre : le menu s’écrit avec l’hôte et les producteurs voisins, selon la saison.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Marseille ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -273,20 +327,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Bordeaux',
-    rse: 'Entreprise, domaine, sol, bouteille, repas, village : tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] bordelais, ici, c’est payer le travail agricole et rester à table avec ceux qui l’ont fait. TerraGo organise cette rencontre.',
+    rse: villeRse({
+      lead:
+        'Entreprise, domaine, sol, bouteille, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Bordeaux, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre le territoire.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un domaine viticole, une ferme, un producteur ou un artisan engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail du sol, une production, une saison, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée dans les vignes, un atelier chez un producteur, un repas à la ferme ou une rencontre avec un artisan : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Bordeaux',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Bordeaux ?',
-        a: 'Départ Saint-Jean ou périphérie, puis navette vers Entre-deux-Mers, Médoc ou campagnes de l’estuaire. Nous évitons le « chacun sa voiture » dès que l’effectif le permet.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Bordeaux ?',
+        a: 'La région bordelaise se prête aux séminaires toute l’année. Pour profiter pleinement des vignes, des activités en plein air et du littoral, privilégiez avril à octobre. Septembre et octobre offrent un cadre particulièrement agréable, avec les vendanges et une fréquentation plus douce.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Bordeaux ?',
-        a: 'Propriétés viticoles à taille humaine, fermes, serres, ateliers de transformation — des lieux de travail, pas uniquement des châteaux de réception.',
+        q: 'Quels cadres choisir pour un séminaire près de Bordeaux ?',
+        a: 'Autour de Bordeaux, les domaines viticoles sont évidemment incontournables, mais pas seulement : fermes, maraîchers, producteurs du bassin et lieux en pleine nature permettent aussi d’imaginer des séminaires très différents. De la visite des vignes au repas partagé chez le producteur, chaque lieu peut devenir le cadre d’une vraie expérience d’équipe.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Oui, autour du vin du domaine, des légumes voisins, des fromages et du pain : une table girondine collée à la production du jour.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Bordeaux ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -332,20 +395,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Toulouse',
-    rse: 'Le siège toulousain, le producteur, le champ, l’assiette et le village forment une seule chaîne. Organiser le séminaire chez l’agriculteur, c’est déjà une décision RSE. TerraGo la met en programme, sans greenwashing chiffré.',
+    rse: villeRse({
+      lead:
+        'Entreprise, champ, blé, canard, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Toulouse, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre le Lauragais, le Frontonnais ou les portes du Gers.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent une exploitation céréalière, un vignoble, une ferme d’élevage ou un artisan engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail du sol, une culture de saison, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée à la ferme, un atelier au chai, une cuisine de ferme ou une rencontre avec un céréalier : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Toulouse',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Toulouse ?',
-        a: 'Point de rassemblement Matabiau ou parking d’entreprise, puis transfert vers Lauragais, Frontonnais ou campagnes de Haute-Garonne.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Toulouse ?',
+        a: 'Le bassin toulousain accueille des séminaires presque toute l’année. Pour profiter des champs du Lauragais, du Frontonnais et des activités outdoor, privilégiez avril à octobre. L’automne et l’hiver restent intéressants pour les rencontres chez les producteurs, la cuisine de ferme et les formats plus abrités.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Toulouse ?',
-        a: 'Fermes céréalières, domaines du Frontonnais, élevages, ateliers de transformation et salles chez le producteur.',
+        q: 'Quels cadres choisir pour un séminaire près de Toulouse ?',
+        a: 'Autour de Toulouse, vous pouvez organiser votre séminaire dans un domaine viticole, une ferme, chez un producteur local ou dans un lieu en pleine nature. Selon le format recherché, la journée peut mêler temps de travail, découverte du savoir-faire, activité collective et repas guinguette directement chez le producteur.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Oui : légumes, fromages, vins, viandes, etc : tous nos séminaires privilégient des repas locaux & de saison plutôt que des buffets standards de centre d’affaires.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Toulouse ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -391,20 +463,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Nantes',
-    rse: 'De l’entreprise nantaise à la parcelle, le lien est alimentaire et économique. La RSE tient dans le choix d’un hôte producteur, d’un repas local et d’une activité qui sert la ferme. TerraGo assemble ces trois éléments.',
+    rse: villeRse({
+      lead:
+        'Entreprise, parcelle, Muscadet, mâche, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Nantes, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre le vignoble nantais, le bocage et la Loire agricole.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un domaine viticole, une ferme maraîchère, un élevage laitier ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de la vigne, une production de saison, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée en maraîchage, un atelier à la ferme laitière, un repas local ou une rencontre avec un vigneron : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Nantes',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Nantes ?',
-        a: 'Un départ proche de Nantes ou depuis une gare ? Aucun problème ! Nous organisons les navettes selon vos contraintes, pour vous rendre sur les lieux de votre séminaire.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Nantes ?',
+        a: 'La région nantaise se prête aux séminaires toute l’année. Pour profiter du vignoble, du bocage et des activités en extérieur, privilégiez mai à octobre. L’hiver, plus doux qu’ailleurs, convient bien aux ateliers à la ferme, au maraîchage sous serre et aux formats indoor.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Nantes ?',
-        a: 'Domaines du muscadet, serres et champs, fermes d’élevage, domaine proche de l’océan — des lieux de production ligériens.',
+        q: 'Quels cadres choisir pour un séminaire près de Nantes ?',
+        a: 'Autour de Nantes, les cadres vont du domaine de Muscadet à la ferme maraîchère, de l’élevage laitier aux lieux en pleine nature le long de la Loire. On y combine facilement réunion, atelier, activité outdoor et repas préparé avec les produits du lieu.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Légumes, fromages, vins : tous nos séminaires privilégient des repas locaux & de saison. Lorsque cela est possible nous proposons des repas en grandes tablées généreuses (déjeuner dans les champs, pique-nique en pleine nature, etc) pour favoriser les échanges et l’immersion.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Nantes ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -450,20 +531,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Rennes',
-    rse: 'Entreprise rennaise, éleveur, haie, lait, repas, commune : la RSE est cette continuité. Pas de promesse carbone inventée. Un choix d’hôte, un repas de ferme, une activité utile.',
+    rse: villeRse({
+      lead:
+        'Entreprise, éleveur, haie, lait, cidre, commune : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Rennes, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre le bocage d’Ille-et-Vilaine.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent une ferme laitière, un verger à cidre, un maraîcher ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de l’élevage, une production laitière, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée à la ferme, un atelier fromage ou beurre, un repas de bocage ou une rencontre avec un cidriculteur : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Rennes',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Rennes ?',
-        a: 'Un départ proche de Rennes ou depuis une gare ? Aucun problème ! Nous organisons les navettes selon vos contraintes, pour vous rendre sur les lieux de votre séminaire.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Rennes ?',
+        a: 'La Bretagne intérieure accueille des séminaires presque toute l’année. Pour profiter du bocage, des vergers et des activités outdoor, privilégiez mai à octobre. L’automne et l’hiver se prêtent aux ateliers laitiers, au cidre et aux rencontres plus intimistes chez les producteurs.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Rennes ?',
-        a: 'Fermes laitières, cidreries, maraîchers, ateliers de transformation : des exploitations, pas des salles de séminaire urbaines.',
+        q: 'Quels cadres choisir pour un séminaire près de Rennes ?',
+        a: 'Autour de Rennes, le bocage accueille des séminaires à la ferme laitière, chez un cidriculteur, dans une exploitation maraîchère ou en pleine nature. Ces lieux permettent d’enchaîner travail, immersion dans le savoir-faire, activité collective et repas de ferme.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Produits de la mer ou de la terre : tous nos séminaires privilégient des repas locaux & de saison. Lorsque cela est possible nous proposons des repas en grandes tablées généreuses (déjeuner dans les champs, pique-nique en bord de mer, etc) pour favoriser les échanges et l’immersion.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Rennes ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -509,20 +599,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Lille',
-    rse: 'Du siège lillois au champ de Pévèle, la RSE est un trajet court et un repas local. Producteurs, territoire, alimentation, activité, facture : TerraGo tient ce fil, sans indicateur inventé.',
+    rse: villeRse({
+      lead:
+        'Entreprise, champ, endive, bière, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Lille, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre la Flandre intérieure, la Pévèle ou l’Artois.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent une ferme maraîchère, une brasserie fermière, un élevage ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail du sol, une culture de saison, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée en maraîchage, un atelier brasserie, un repas de ferme ou une rencontre avec un éleveur : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Lille',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Lille ?',
-        a: 'Rendez-vous Flandres ou Lille-Europe, puis navette vers le logement ou le producteur, selon le lieu d’accueil.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Lille ?',
+        a: 'Les Hauts-de-France accueillent des séminaires toute l’année. Pour profiter des champs de Flandre, de la Pévèle et des activités outdoor, privilégiez avril à octobre. L’hiver convient bien aux brasseries fermières, aux ateliers et aux formats indoor autour des producteurs.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Lille ?',
-        a: 'Fermes maraîchères, élevages, brasseries à la ferme, etc : des lieux de production des Hauts-de-France.',
+        q: 'Quels cadres choisir pour un séminaire près de Lille ?',
+        a: 'Autour de Lille, quittez les salles classiques pour une ferme de Flandre, une brasserie artisanale, un élevage ou un lieu en pleine nature en Pévèle. La journée peut mêler temps de travail, atelier, découverte du producteur et repas local.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Produits de la mer ou de la terre : tous nos séminaires privilégient des repas locaux & de saison. Lorsque cela est possible nous proposons des repas en grandes tablées généreuses (déjeuner dans les champs, dîner sous la serre, etc) pour favoriser les échanges et l’immersion.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Lille ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -568,20 +667,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Strasbourg',
-    rse: 'Entreprise strasbourgeoise, producteur, plaine ou coteau, assiette, geste collectif : la RSE est locale. TerraGo refuse les discours vagues ; le programme est une rencontre agricole.',
+    rse: villeRse({
+      lead:
+        'Entreprise, coteau, riesling, choucroute, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Strasbourg, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre le vignoble alsacien et la plaine du Rhin.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un domaine viticole, une ferme maraîchère, un artisan ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de la vigne, une production de saison, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée dans les vignes, un atelier choucroute, un repas de plaine ou une rencontre avec un maraîcher : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Strasbourg',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Strasbourg ?',
-        a: 'Départ gare, puis TER ou autocar vers un village viticole ou une commune maraîchère. Nous regroupons les arrivées transfrontalières si besoin.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Strasbourg ?',
+        a: 'L’Alsace se prête aux séminaires toute l’année. Pour profiter du vignoble, de la plaine et des activités outdoor, privilégiez avril à octobre. Septembre-octobre sont particulièrement agréables avec les vendanges ; l’hiver se prête aux formats indoor, à la gastronomie et aux rencontres chez les producteurs.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Strasbourg ?',
-        a: 'Domaines alsaciens, fermes de plaine, ateliers de transformation, maisons de producteurs.',
+        q: 'Quels cadres choisir pour un séminaire près de Strasbourg ?',
+        a: 'Autour de Strasbourg, les séminaires se déroulent dans un domaine alsacien, une ferme de plaine, chez un artisan transformateur ou en pleine nature sur les coteaux. Travail, visite, activité collective et repas chez le producteur s’y articulent naturellement.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Vin du domaine, légumes, fromages, charcuterie artisanale : nous favorison de repas locaux et de saison.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Strasbourg ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -627,20 +735,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Montpellier',
-    rse: 'De l’entreprise montpelliéraine à la garrigue, la RSE est un choix d’hôte et d’assiette. Circuits courts, savoir-faire, économie villageoise : TerraGo les met dans le programme, sans chiffre inventé.',
+    rse: villeRse({
+      lead:
+        'Entreprise, garrigue, olivier, raisin, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Montpellier, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre le Pic Saint-Loup et l’arrière-pays héraultais.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un domaine viticole, une oliveraie, un élevage ovin ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de la garrigue, une production de saison, des choix agricoles face au climat, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée au Pic Saint-Loup, un atelier à l’oliveraie, un repas de ferme ou une rencontre avec un berger : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Montpellier',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Montpellier ?',
-        a: 'Départ depuis Paris, ou Montpellier et ses alentours ? Aucun problème, nous organisons le train et les navette vers Pic Saint-Loup, ou arrière-pays selon le lieu de séminaire sélectionné.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Montpellier ?',
+        a: 'L’Hérault accueille des séminaires toute l’année grâce à un climat souvent clément. Pour profiter de la garrigue, du Pic Saint-Loup et des activités outdoor sans trop de chaleur, privilégiez avril-juin et septembre-octobre. L’hiver permet de travailler plus tranquillement avec les producteurs et les formats indoor.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Montpellier ?',
-        a: 'Domaines viticoles, oliveraies, fermes d’élevage, maraîchers — des exploitations méditerranéennes.',
+        q: 'Quels cadres choisir pour un séminaire près de Montpellier ?',
+        a: 'Autour de Montpellier, les cadres s’étendent du Pic Saint-Loup à la garrigue : domaines viticoles, oliveraies, fermes d’élevage, producteurs et lieux en pleine nature. Une journée peut alterner réunion, immersion agricole, activité outdoor et repas partagé.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Vin, huile, légumes, fromages de brebis : le repas s’appuie sur l’hôte et les producteurs voisins.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Montpellier ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -686,20 +803,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Nice',
-    rse: 'Entreprise niçoise, producteur de l’intérieur, colline, alimentation, économie villageoise : la RSE est cette remontée vers ceux qui cultivent encore. TerraGo la programme sans slogan touristique.',
+    rse: villeRse({
+      lead:
+        'Entreprise, colline, olive, agrume, fromage, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Nice, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre le moyen pays et l’intérieur des Alpes-Maritimes.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent une oliveraie, un verger d’agrumes, une fromagerie de montagne ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de l’olivier, une production de coteau, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée à l’oliveraie, un atelier agrumes, un repas de colline ou une rencontre avec un éleveur : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Nice',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Nice ?',
-        a: 'Départ depuis Nice ou ailleurs ? Aucun problème, nous organisons le train et les navette vers le lieu de séminaire sélectionné.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Nice ?',
+        a: 'Le moyen pays niçois se prête aux séminaires toute l’année grâce à un climat doux. Pour profiter des collines, des oliveraies et des activités outdoor, privilégiez avril à juin puis septembre-octobre. L’hiver reste favorable aux ateliers, aux fromages de montagne et aux rencontres chez les producteurs.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Nice ?',
-        a: 'Oliveraies, vergers d’agrumes, fermes d’élevage, ateliers — des lieux de production des Alpes-Maritimes.',
+        q: 'Quels cadres choisir pour un séminaire près de Nice ?',
+        a: 'Autour de Nice, montez vers le moyen pays : oliveraies, vergers d’agrumes, fermes d’élevage, artisans et lieux en pleine nature sur les collines. Ces cadres permettent de lier travail, découverte du territoire, activité et repas chez le producteur.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Huile, agrumes, légumes, fromages : le menu suit ce que l’arrière-pays produit réellement. Tous nos séminaires privilégient des repas locaux & de saison. Lorsque cela est possible nous proposons des repas en grandes tablées généreuses (déjeuner dans les champs, dîner sous la grange, etc) pour favoriser les échanges et l’immersion.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Nice ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -745,20 +871,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Grenoble',
-    rse: 'Du campus ou du siège grenoblois à l’exploitation de massif, la RSE est un choix de territoire. Alimentation de montagne, savoir-faire, économie locale : TerraGo les relie dans le programme.',
+    rse: villeRse({
+      lead:
+        'Entreprise, massif, noix, fromage, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Grenoble, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre le Vercors, la Chartreuse ou le Grésivaudan.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent une nuciculture, une fromagerie de montagne, un élevage ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de la noix, une production de massif, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée autour de la noix, un atelier fromage, un repas d’alpage ou une rencontre avec un éleveur : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Grenoble',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Grenoble ?',
-        a: 'Départ depuis Grenoble ou ailleurs ? Aucun problème, nous organisons le train et les navette vers le lieu de séminaire sélectionné.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Grenoble ?',
+        a: 'Les massifs autour de Grenoble accueillent des séminaires une bonne partie de l’année. Pour profiter du Vercors, de la Chartreuse et des activités outdoor, privilégiez mai à octobre. L’automne et l’hiver se prêtent aux ateliers noix, fromage et aux formats plus abrités chez les producteurs.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Grenoble ?',
-        a: 'Vergers de noyers, fromageries, fermes d’élevage :  des lieux de production en pleine nature.',
+        q: 'Quels cadres choisir pour un séminaire près de Grenoble ?',
+        a: 'Autour de Grenoble, les séminaires trouvent leur place dans une nuceraie, une fromagerie de massif, une ferme d’élevage ou en pleine nature dans le Vercors et la Chartreuse. On y combine temps de travail, atelier, immersion et repas de montagne.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Noix, fromages, viandes d’élevage local : tous nos séminaires privilégient des repas locaux & de saison. Lorsque cela est possible nous proposons des repas en grandes tablées généreuses (déjeuner dans les champs, dîner sous la serre, etc) pour favoriser les échanges et l’immersion.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Grenoble ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -804,20 +939,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près d’Aix-en-Provence',
-    rse: 'Entreprise aixoise, producteur, garrigue, assiette, village : la RSE est locale. TerraGo refuse le séminaire « Provence » décoratif ; le contenu, c’est le métier agricole.',
+    rse: villeRse({
+      lead:
+        'Entreprise, garrigue, oliveraie, lavande, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près d’Aix-en-Provence, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre le Pays d’Aix.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un domaine oléicole, un vigneron, un producteur de plantes aromatiques ou un artisan engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de l’olivier, une production de saison, des choix agricoles, parfois des difficultés aussi — loin d’une Provence décorative.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée au moulin, un atelier plantes aromatiques, un repas de garrigue ou une rencontre avec un vigneron : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près d’Aix-en-Provence',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Aix-en-Provence ?',
-        a: 'Point de rendez-vous centre ou TGV, puis navette vers le lieu du séminaire au pays d’Aix. ',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Aix-en-Provence ?',
+        a: 'Le Pays d’Aix se prête aux séminaires toute l’année grâce à un climat doux. Pour profiter de la garrigue, des oliviers et des activités outdoor sans les fortes chaleurs, privilégiez avril-juin et septembre-octobre. L’hiver permet de profiter plus tranquillement des producteurs et des formats indoor.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour d’Aix-en-Provence ?',
-        a: 'Oliveraies, domaines viticoles, fermes, ateliers de plantes : des lieux de production provençaux.',
+        q: 'Quels cadres choisir pour un séminaire près d’Aix-en-Provence ?',
+        a: 'Autour d’Aix-en-Provence, les séminaires s’installent dans une oliveraie, un domaine viticole, chez un producteur de plantes aromatiques ou en pleine nature dans la garrigue. Réunion, découverte du savoir-faire, activité outdoor et repas chez le producteur composent la journée.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Huile, légumes, vin, fromages de chèvre : tous nos séminaires privilégient des repas locaux & de saison. Lorsque cela est possible nous proposons des repas en grandes tablées généreuses (déjeuner au milieu des lavandes, dîner sous les oliviers, etc) pour favoriser les échanges et transformer l’expérience.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Aix-en-Provence ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -863,20 +1007,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près d’Angers',
-    rse: 'Du siège angevin à la parcelle, la RSE est végétale et alimentaire. TerraGo relie entreprise, producteur, Loire agricole et repas local, sans promesse chiffrée.',
+    rse: villeRse({
+      lead:
+        'Entreprise, parcelle, chenin, verger, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près d’Angers, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre l’Anjou, le Layon et le Saumurois.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un domaine viticole, une exploitation horticole, un verger ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de la vigne, une production végétale, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée dans les vignes d’Anjou, un atelier horticulture, un repas de Loire ou une rencontre avec un arboriculteur : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près d’Angers',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Angers ?',
-        a: 'Rendez-vous gare, puis transfert vers Layon, Saumurois ou communes maraîchères selon le lieu du séminaire.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Angers ?',
+        a: 'L’Anjou accueille des séminaires toute l’année. Pour profiter des vignes, des vergers et des activités outdoor, privilégiez avril à octobre. L’automne, avec les vendanges et les récoltes, est particulièrement intéressant ; l’hiver se prête aux ateliers et aux formats plus indoor.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour d’Angers ?',
-        a: 'Domaines d’Anjou, serres horticoles, vergers, fermes — des lieux de production, pas des salles urbaines.',
+        q: 'Quels cadres choisir pour un séminaire près d’Angers ?',
+        a: 'Autour d’Angers, les cadres vont du domaine d’Anjou aux serres horticoles, des vergers aux fermes et lieux en pleine nature le long de la Loire. Ces lieux permettent d’imaginer travail, atelier, immersion et repas directement chez le producteur.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Vin d’Anjou, fruits, légumes, fromages : tous nos séminaires privilégient des repas locaux & de saison. Lorsque cela est possible nous proposons des repas en grandes tablées généreuses (déjeuner dans les vignes, dîner sous la serre, etc) pour favoriser les échanges et enrichir l’expérience.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Angers ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -922,20 +1075,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Tours',
-    rse: 'Entreprise tourangelle, producteur, Loire, assiette, village : la RSE est un circuit court géographique. TerraGo l’organise en programme de journée.',
+    rse: villeRse({
+      lead:
+        'Entreprise, Loire, Vouvray, chèvre, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Tours, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre la Touraine et les varennes.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un domaine viticole, une fromagerie de chèvre, un maraîcher ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de la vigne, une production de saison, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée dans les vignes tourangelles, un atelier fromage de chèvre, un repas de Loire ou une rencontre avec un maraîcher : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Tours',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Tours ?',
-        a: 'Départ Tours ou Saint-Pierre-des-Corps, puis navette vers une commune viticole ou agricole de Touraine.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Tours ?',
+        a: 'La Touraine se prête aux séminaires toute l’année. Pour profiter de la Loire, des vignobles et des activités outdoor, privilégiez avril à octobre. Septembre-octobre offrent un cadre agréable avec les vendanges ; l’hiver convient aux ateliers fromage, aux caves et aux formats indoor.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Tours ?',
-        a: 'Domaines, fermes caprines, maraîchers, ateliers — des lieux de production tourangeaux.',
+        q: 'Quels cadres choisir pour un séminaire près de Tours ?',
+        a: 'Autour de Tours, les séminaires prennent place dans un domaine tourangeau, une fromagerie de chèvre, chez un maraîcher des varennes ou en pleine nature le long de la Loire. La journée peut mêler travail, découverte, activité collective et repas chez le producteur.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Vin de Loire, rillettes, fromages, légumes : tous nos séminaires privilégient des repas locaux & de saison. Lorsque cela est possible nous proposons des repas en grandes tablées généreuses (déjeuner dans les vignes, dîner sous la serre, etc) pour favoriser les échanges et enrichir l’expérience.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Tours ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -981,20 +1143,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Valence',
-    rse: 'Du siège valentinois au verger, la RSE est fruitière et locale. TerraGo relie entreprise, producteur, colline, alimentation et économie villageoise.',
+    rse: villeRse({
+      lead:
+        'Entreprise, verger, abricot, noix, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Valence, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre la Drôme des collines et la vallée du Rhône.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un verger, une nuciculture, un producteur de plantes aromatiques ou un artisan engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail du fruit, une saison de récolte, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée au verger, un atelier noix, un repas de colline ou une rencontre avec un distillateur : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Valence',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Valence ?',
-        a: 'Rendez-vous Valence-Ville ou TGV, puis transfert vers Drôme des collines ou Ardèche proche selon le site.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Valence ?',
+        a: 'La Drôme des collines accueille des séminaires presque toute l’année. Pour profiter des vergers, des collines et des activités outdoor, privilégiez avril à octobre. L’été des récoltes fruitières et l’automne sont particulièrement riches ; l’hiver se prête aux ateliers et aux rencontres chez les producteurs.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Valence ?',
-        a: 'Vergers, nuceraies, fermes de plantes, domaines viticoles — des exploitations drômoises et ardéchoises.',
+        q: 'Quels cadres choisir pour un séminaire près de Valence ?',
+        a: 'Autour de Valence, les cadres s’ouvrent sur les vergers, les nuceraies, les fermes de plantes aromatiques, les domaines des collines ou la pleine nature drômoise. On y enchaîne facilement réunion, immersion, activité outdoor et repas avec les producteurs.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Fruits, noix, vins, fromages de chèvre : le repas suit les productions du lieu.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Valence ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -1040,20 +1211,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Reims',
-    rse: 'Entreprise rémoise, producteur, craie, assiette, village : la RSE est un choix d’hôte. TerraGo évite le cliché champagne-only et relie événement et économie agricole.',
+    rse: villeRse({
+      lead:
+        'Entreprise, coteau, craie, blé, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Reims, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre la Montagne de Reims et la plaine champenoise — au-delà du seul cliché champagne.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un vigneron indépendant, une ferme céréalière, un apiculteur ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de la vigne ou du champ, une production de saison, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée chez un vigneron indépendant, un atelier à la ferme, un repas de plaine ou une rencontre avec un apiculteur : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Reims',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Reims ?',
-        a: 'Départ gare centre ou TGV, puis navette vers un village viticole ou une exploitation de plaine. Les groupes parisiens se calent sur les trains du matin.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Reims ?',
+        a: 'La Champagne accueille des séminaires toute l’année. Pour profiter des coteaux, de la plaine et des activités outdoor, privilégiez avril à octobre. Septembre-octobre sont marqués par les vendanges ; l’hiver se prête aux chais, aux fermes et aux formats plus indoor.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Reims ?',
-        a: 'Domaines indépendants, fermes céréalières, ruchers, ateliers — des lieux de production de la Marne.',
+        q: 'Quels cadres choisir pour un séminaire près de Reims ?',
+        a: 'Autour de Reims, au-delà des caves, vous pouvez organiser votre séminaire chez un vigneron indépendant, dans une ferme céréalière, chez un apiculteur ou en pleine nature sur les coteaux. Travail, visite, activité collective et repas chez le producteur s’y combinent.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Vins du producteur, pain, fromages, produits de plaine : le repas s’écrit avec l’hôte.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Reims ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -1099,20 +1279,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Clermont-Ferrand',
-    rse: 'Du siège clermontois à l’estive, la RSE est pastorale. TerraGo relie entreprise, éleveur, fromage, territoire et économie de village, sans promesse environnementale inventée.',
+    rse: villeRse({
+      lead:
+        'Entreprise, estive, fromage, lentille, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Clermont-Ferrand, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre les volcans, les Combrailles et le Livradois.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent une fromagerie, une estive, une ferme d’élevage ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail pastoral, une production de plateau, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée en fromagerie, une rencontre d’estive, un repas de ferme ou un atelier autour des lentilles : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Clermont-Ferrand',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Clermont-Ferrand ?',
-        a: 'Rendez-vous gare, puis autocar vers une commune d’élevage. Nous anticipons la météo de plateau.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Clermont-Ferrand ?',
+        a: 'L’Auvergne accueille des séminaires une bonne partie de l’année. Pour profiter des estives, des plateaux et des activités outdoor, privilégiez mai à octobre. L’automne et l’hiver se prêtent bien aux fromageries, aux fermes et aux formats plus abrités chez les producteurs.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Clermont-Ferrand ?',
-        a: 'Fermes d’élevage, fromageries, exploitations de plateau — des lieux de production auvergnats.',
+        q: 'Quels cadres choisir pour un séminaire près de Clermont-Ferrand ?',
+        a: 'Autour de Clermont-Ferrand, les séminaires trouvent leur place dans une fromagerie, une ferme d’estive, une exploitation de plateau ou en pleine nature sur les volcans. Ces cadres permettent de mêler travail, immersion pastorale, activité outdoor et repas de ferme.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Fromages, viandes d’élevage, lentilles, pain : le repas s’appuie sur l’hôte et ses voisins.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Clermont-Ferrand ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -1158,20 +1347,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près d’Annecy',
-    rse: 'Entreprise annecienne, producteur, alpage, fromage, commune de montagne : la RSE est pastorale. TerraGo l’inscrit dans le programme, sans cliché lacustre.',
+    rse: villeRse({
+      lead:
+        'Entreprise, alpage, reblochon, tome, repas, commune : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près d’Annecy, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre les massifs — loin du seul cliché lacustre.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent une fromagerie d’alpage, une ferme d’élevage, un apiculteur de montagne ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail pastoral, une production d’alpage, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée en fromagerie, une rencontre d’élevage savoyard, un repas de montagne ou une visite chez un apiculteur : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près d’Annecy',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Annecy ?',
-        a: 'Départ gare, puis navette vers une vallée d’élevage. Nous tenons compte des équipes basées à Genève ou Grenoble pour un point unique si besoin.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Annecy ?',
+        a: 'Les massifs autour d’Annecy accueillent des séminaires surtout hors cœur d’hiver en altitude. Pour profiter des alpages et des activités outdoor, privilégiez mai à octobre. L’automne et l’hiver se prêtent aux fromageries, aux ateliers et aux formats indoor chez les producteurs de montagne.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour d’Annecy ?',
-        a: 'Fromageries, fermes d’alpage, ruchers — des lieux de production de Haute-Savoie.',
+        q: 'Quels cadres choisir pour un séminaire près d’Annecy ?',
+        a: 'Autour d’Annecy, privilégiez les massifs plutôt que le seul bord de lac : fromageries d’alpage, fermes d’élevage, ruchers et lieux en pleine nature. Une journée peut alterner réunion, découverte du savoir-faire, activité outdoor et repas chez le producteur.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Fromages, viandes d’élevage, miel : le repas suit l’hôte et la saison d’alpage.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Annecy ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -1217,20 +1415,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de La Rochelle',
-    rse: 'Du siège rochelais au parc à huîtres ou au champ, la RSE est littorale et agricole. TerraGo relie entreprise, producteur, marais, assiette et économie locale.',
+    rse: villeRse({
+      lead:
+        'Entreprise, marais, huître, sel, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de La Rochelle, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre le littoral, Marennes et les terres intérieures charentaises.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent un parc à huîtres, un marais salant, un maraîcher ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de l’estran ou du marais, une production de saison, des choix professionnels, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée en ostréiculture, un atelier au marais, un repas local ou une rencontre avec un vigneron charentais : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de La Rochelle',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis La Rochelle ?',
-        a: 'Rendez-vous gare, puis transfert vers un site ostréicole, un marais ou une commune viticole. Les marées peuvent influer sur l’horaire d’une visite de parcs.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à La Rochelle ?',
+        a: 'La Charente-Maritime se prête aux séminaires toute l’année grâce à un climat souvent doux. Pour profiter des marais, du littoral et des activités outdoor, privilégiez avril à octobre. L’hiver reste intéressant pour l’ostréiculture, les producteurs et les formats plus abrités.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de La Rochelle ?',
-        a: 'Cabanes ostréicoles, fermes de marais, domaines, élevages de l’intérieur — des lieux de production charentais.',
+        q: 'Quels cadres choisir pour un séminaire près de La Rochelle ?',
+        a: 'Autour de La Rochelle, les séminaires se déroulent entre cabanes ostréicoles, fermes de marais, domaines de l’intérieur et lieux en pleine nature. On y combine temps de travail, découverte du métier, activité outdoor et repas avec les producteurs.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Huîtres, légumes de marais, vins : le repas s’écrit avec l’hôte et la marée, sans carte hors-sol.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à La Rochelle ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -1276,20 +1483,29 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     rseTitle: 'Un séminaire RSE près de Biarritz',
-    rse: 'De l’entreprise côtière à la ferme de l’intérieur, la RSE est un déplacement volontaire. TerraGo relie siège, éleveur, piment, fromage et économie villageoise, sans folklore.',
+    rse: villeRse({
+      lead:
+        'Entreprise, colline, piment, fromage de brebis, repas, village : ici, tout se tient. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] près de Biarritz, c’est l’occasion de sortir du cadre habituel pour aller à la rencontre de celles et ceux qui font vivre l’intérieur du Pays Basque — loin du seul folklore côtier.',
+      discovery:
+        'Avec TerraGo, vos équipes découvrent une ferme de piment d’Espelette, une fromagerie de brebis, un élevage ou un producteur engagé. On visite, on met les mains dans le travail, on échange sur les pratiques agricoles et on partage un repas préparé avec des produits du territoire.',
+      concrete:
+        'Pas de conférence sur la transition écologique dans une salle de réunion. Ici, on voit concrètement ce que l’on soutient : le travail de la colline, une production de saison, des choix agricoles, parfois des difficultés aussi.',
+      team:
+        'La RSE devient alors un prétexte pour vivre quelque chose ensemble. Une journée autour du piment d’Espelette, un atelier fromage de brebis, un repas de ferme ou une rencontre avec un éleveur : les équipes découvrent, échangent et repartent avec une autre façon de regarder ce qu’elles mangent, ce qu’elles achètent et le territoire qui les entoure.',
+    }),
     faqTitle: 'Vos questions sur l’organisation d’un séminaire près de Biarritz',
     faq: [
       {
-        q: 'Comment rejoindre un lieu de séminaire depuis Biarritz ?',
-        a: 'Rendez-vous gare de Biarritz ou Bayonne, puis navette vers une commune de l’intérieur. Nous regroupons les équipes Côte Basque sur un seul départ.',
+        q: 'Quelle est la meilleure saison pour organiser un séminaire à Biarritz ?',
+        a: 'Le Pays Basque accueille des séminaires toute l’année. Pour profiter des collines de l’intérieur, des fermes et des activités outdoor, privilégiez avril à octobre. L’automne et l’hiver, souvent doux, se prêtent aux ateliers fromage, piment et aux rencontres chez les producteurs.',
       },
       {
-        q: 'Quels types de lieux peut-on trouver autour de Biarritz ?',
-        a: 'Fermes d’élevage, producteurs de piment, fromageries, ateliers — des lieux de production du Pays Basque.',
+        q: 'Quels cadres choisir pour un séminaire près de Biarritz ?',
+        a: 'Autour de Biarritz, quittez la côte pour l’intérieur basque : fermes d’élevage, producteurs de piment d’Espelette, fromageries de brebis et lieux en pleine nature. Ces cadres permettent de lier travail, immersion, activité collective et repas chez le producteur.',
       },
       {
-        q: 'Peut-on organiser une restauration locale pour un séminaire ?',
-        a: 'Fromages de brebis, piment, cidre, viandes d’élevage : le repas suit l’hôte et la saison.',
+        q: 'Comment se déroule un séminaire chez un producteur ?',
+        a: 'Un séminaire chez un producteur peut alterner temps de cohésion, activité manuelle, dégustation et repas autour d’une grande tablée. Lorsque nécessaire, le lieu peut aussi proposer une salle pour travailler dans de bonnes conditions. Le programme est construit sur mesure selon le producteur, vos objectifs et le rythme souhaité.',
       },
     ],
     cta: 'Vous préparez un séminaire à Biarritz ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
@@ -1308,41 +1524,6 @@ export function getVilleSeminaire(slug: string): VilleSeminaire | undefined {
   return BY_SLUG[slug as VilleSeminaireSlug];
 }
 
-const DINER_CADRE: Record<VilleSeminaireSlug, string> = {
-  paris: 'dîner sous les arbres',
-  lyon: 'dîner sous la treille',
-  marseille: 'dîner sous les oliviers',
-  bordeaux: 'dîner au chai',
-  toulouse: 'dîner sous les platanes',
-  nantes: 'dîner sous la serre',
-  rennes: 'dîner sous les pommiers',
-  lille: 'dîner sous la serre',
-  strasbourg: 'dîner sous la treille',
-  montpellier: 'dîner sous les oliviers',
-  nice: 'dîner sous les oliviers',
-  grenoble: 'dîner sous les noyers',
-  'aix-en-provence': 'dîner sous les oliviers',
-  angers: 'dîner sous la serre',
-  tours: 'dîner sous les tilleuls',
-  valence: 'dîner sous les vergers',
-  reims: 'dîner au chai',
-  'clermont-ferrand': 'dîner sous les arbres',
-  annecy: 'dîner en alpage',
-  'la-rochelle': 'dîner au bord de l’eau',
-  biarritz: 'dîner sous les chênes',
-};
-
 export function villeFaqItems(ville: VilleSeminaire): VilleFaq[] {
-  const diner = DINER_CADRE[ville.slug];
-  return [
-    {
-      q: ville.faq[0].q,
-      a: `Vous êtes proche de ${ville.name} ou arrivez d’une autre ville ? Nous privilégions le train dans la plus grande partie de nos séminaires. Une fois arrivés à la gare, nous organisons des navettes pour rejoindre les lieux du séminaire, logement typique ou domaine des producteurs.`,
-    },
-    ville.faq[1],
-    {
-      q: ville.faq[2].q,
-      a: `Tous nos séminaires privilégient à chaque fois des repas locaux & de saison. Lorsque cela est possible nous proposons des repas en grandes tablées généreuses (déjeuner dans les champs, pique-nique en pleine nature, ${diner}) pour favoriser les échanges et l’immersion.`,
-    },
-  ];
+  return [ville.faq[0], ville.faq[1], ville.faq[2]];
 }

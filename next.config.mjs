@@ -1,4 +1,54 @@
 /** @type {import('next').NextConfig} */
+const VILLE_SEMINAIRE_SLUGS = [
+  'paris',
+  'lyon',
+  'marseille',
+  'bordeaux',
+  'toulouse',
+  'nantes',
+  'rennes',
+  'lille',
+  'strasbourg',
+  'montpellier',
+  'nice',
+  'grenoble',
+  'aix-en-provence',
+  'angers',
+  'tours',
+  'valence',
+  'reims',
+  'clermont-ferrand',
+  'annecy',
+  'la-rochelle',
+  'biarritz',
+];
+
+/** Régions : URL publique `seminaire-entreprise-{prep}-{slug}` → `/destinations/{slug}` */
+const DESTINATION_REGIONS = [
+  { slug: 'nouvelle-aquitaine', prep: 'en' },
+  { slug: 'provence', prep: 'en' },
+  { slug: 'ile-de-france', prep: 'en' },
+  { slug: 'normandie', prep: 'en' },
+  { slug: 'occitanie', prep: 'en' },
+  { slug: 'bretagne', prep: 'en' },
+  { slug: 'pays-de-la-loire', prep: 'en' },
+  { slug: 'auvergne', prep: 'en' },
+  { slug: 'bourgogne', prep: 'en' },
+  { slug: 'corse', prep: 'en' },
+];
+
+/** Lieux : URL publique `seminaire-entreprise-{pathSlug}` → `/destinations/lieux/{slug}` */
+const DESTINATION_LIEUX = [
+  { slug: 'chez-le-producteur', pathSlug: 'chez-producteur' },
+  { slug: 'au-vignoble', pathSlug: 'vignoble' },
+  { slug: 'a-la-ferme', pathSlug: 'ferme' },
+  { slug: 'au-bord-de-leau', pathSlug: 'bord-eau' },
+  { slug: 'en-montagne', pathSlug: 'montagne' },
+  { slug: 'en-pleine-nature', pathSlug: 'pleine-nature' },
+  { slug: 'domaine-d-exception', pathSlug: 'domaine-exception' },
+  { slug: 'au-coeur-des-terroirs', pathSlug: 'coeur-terroirs' },
+];
+
 const nextConfig = {
   images: {
     // Next 16 bloque supabase.co en local (DNS NAT64 vu comme IP privée).
@@ -13,33 +63,20 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    const villes = [
-      'paris',
-      'lyon',
-      'marseille',
-      'bordeaux',
-      'toulouse',
-      'nantes',
-      'rennes',
-      'lille',
-      'strasbourg',
-      'montpellier',
-      'nice',
-      'grenoble',
-      'aix-en-provence',
-      'angers',
-      'tours',
-      'valence',
-      'reims',
-      'clermont-ferrand',
-      'annecy',
-      'la-rochelle',
-      'biarritz',
+    return [
+      ...VILLE_SEMINAIRE_SLUGS.map((ville) => ({
+        source: `/seminaire-entreprise-${ville}`,
+        destination: `/seminaire/${ville}`,
+      })),
+      ...DESTINATION_REGIONS.map(({ slug, prep }) => ({
+        source: `/destinations/seminaire-entreprise-${prep}-${slug}`,
+        destination: `/destinations/${slug}`,
+      })),
+      ...DESTINATION_LIEUX.map(({ slug, pathSlug }) => ({
+        source: `/destinations/seminaire-entreprise-${pathSlug}`,
+        destination: `/destinations/lieux/${slug}`,
+      })),
     ];
-    return villes.map((ville) => ({
-      source: `/seminaire-${ville}`,
-      destination: `/seminaire/${ville}`,
-    }));
   },
   async redirects() {
     return [
@@ -120,6 +157,21 @@ const nextConfig = {
         destination: '/experiences-entreprise',
         permanent: true,
       },
+      ...VILLE_SEMINAIRE_SLUGS.map((ville) => ({
+        source: `/seminaire-${ville}`,
+        destination: `/seminaire-entreprise-${ville}`,
+        permanent: true,
+      })),
+      ...DESTINATION_REGIONS.map(({ slug, prep }) => ({
+        source: `/destinations/${slug}`,
+        destination: `/destinations/seminaire-entreprise-${prep}-${slug}`,
+        permanent: true,
+      })),
+      ...DESTINATION_LIEUX.map(({ slug, pathSlug }) => ({
+        source: `/destinations/lieux/${slug}`,
+        destination: `/destinations/seminaire-entreprise-${pathSlug}`,
+        permanent: true,
+      })),
     ];
   },
 };

@@ -119,7 +119,41 @@ export const REGION_IMAGES = [
 export type RegionSlug = (typeof REGION_IMAGES)[number]['slug'];
 
 export function regionDestinationPath(slug: string): string {
-  return `/destinations/${slug}`;
+  const region = REGION_IMAGES.find((r) => r.slug === slug);
+  const prep = region?.prep ?? 'en';
+  return `/destinations/seminaire-entreprise-${prep}-${slug}`;
+}
+
+export const LIEU_SLUGS = [
+  'chez-le-producteur',
+  'au-vignoble',
+  'a-la-ferme',
+  'au-bord-de-leau',
+  'en-montagne',
+  'en-pleine-nature',
+  'domaine-d-exception',
+  'au-coeur-des-terroirs',
+] as const;
+
+export type LieuSlug = (typeof LIEU_SLUGS)[number];
+
+/** Segment d’URL public (SEO) pour les pages lieu. */
+export const LIEU_PATH_SLUGS = {
+  'chez-le-producteur': 'chez-producteur',
+  'au-vignoble': 'vignoble',
+  'a-la-ferme': 'ferme',
+  'au-bord-de-leau': 'bord-eau',
+  'en-montagne': 'montagne',
+  'en-pleine-nature': 'pleine-nature',
+  'domaine-d-exception': 'domaine-exception',
+  'au-coeur-des-terroirs': 'coeur-terroirs',
+} as const satisfies Record<LieuSlug, string>;
+
+export type LieuPathSlug = (typeof LIEU_PATH_SLUGS)[LieuSlug];
+
+export function lieuDestinationPath(slug: string): string {
+  const pathSlug = LIEU_PATH_SLUGS[slug as LieuSlug] ?? slug;
+  return `/destinations/seminaire-entreprise-${pathSlug}`;
 }
 
 export const REGION_TAGS = [

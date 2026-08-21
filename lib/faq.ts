@@ -1,3 +1,5 @@
+import { lieuDestinationPath } from './homeStorage';
+
 export const FAQ_PATH = '/faq';
 
 export type FaqExcerptKey =
@@ -27,6 +29,8 @@ export type FaqSection = {
   id: string;
   emoji: string;
   title: string;
+  /** Partie du titre affichée en gras sur la page FAQ */
+  boldPhrase: string;
   items: FaqItem[];
 };
 
@@ -36,8 +40,8 @@ const PATHS = {
   cohesion: '/seminaires-entreprise/cohesion',
   experiences: '/experiences-entreprise',
   destinations: '/destinations',
-  auVert: '/destinations/lieux/en-pleine-nature',
-  producteur: '/destinations/lieux/chez-le-producteur',
+  auVert: lieuDestinationPath('en-pleine-nature'),
+  producteur: lieuDestinationPath('chez-le-producteur'),
   partenaires: '/partenaires',
 } as const;
 
@@ -46,16 +50,19 @@ export const FAQ_SECTIONS: FaqSection[] = [
     id: 'organisation-budget',
     emoji: '🌱',
     title: 'Organisation & budget',
+    boldPhrase: 'Organisation',
     items: [
       {
         id: 'quest-ce-quun-seminaire-entreprise',
-        question: 'Qu’est-ce qu’un séminaire d’entreprise ?',
+        question: 'Qu’est-ce qu’un séminaire d’entreprise TerraGo ?',
         excerpts: [],
         blocks: [
           {
             type: 'p',
             parts: [
-              'Un séminaire d\'entreprise est un événement professionnel hors du cadre habituel du bureau. Il rassemble les collaborateurs pour travailler sur des enjeux stratégiques, renforcer la cohésion d\'équipe ou célébrer des réussites dans un environnement propice à la prise de recul. Chez TerraGo, ce format se vit chez des producteurs engagés : découvrez nos ',
+              'Un séminaire d’entreprise est un événement professionnel organisé hors du cadre habituel du bureau, pour travailler, prendre du recul, renforcer les liens ou simplement partager un moment d’équipe. Chez TerraGo, ce format se vit chez des ',
+              { href: PATHS.partenaires, label: 'producteurs engagés' },
+              ', dans des lieux authentiques où travail et expériences mémorables se mêlent. Découvrez nos ',
               { href: PATHS.seminaires, label: 'séminaires d’entreprise' },
               '.',
             ],
@@ -70,23 +77,10 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Il permet de briser la routine, d\'aligner la vision des équipes, de stimuler la créativité et d\'améliorer la communication interne. C\'est un levier puissant d\'engagement et de fidélisation des collaborateurs. Pour caler le format à vos enjeux, parcourez nos ',
-              { href: PATHS.seminaires, label: 'offres de séminaire' },
-              '.',
-            ],
-          },
-        ],
-      },
-      {
-        id: 'seminaire-combien-ca-coute',
-        question: 'Séminaire entreprise : combien ça coûte ?',
-        excerpts: ['budget'],
-        blocks: [
-          {
-            type: 'p',
-            parts: [
-              'À partir de 120 € par personne pour une journée classique, et à partir de 200 € par jour par personne pour un format résidentiel complet. Pour un chiffrage adapté à votre groupe, lancez une ',
-              { action: 'openSeminaireModal', label: 'demande de séminaire' },
+              'Un séminaire permet de sortir du quotidien, prendre du recul, renforcer la cohésion et créer de nouveaux échanges au sein des équipes. Chez TerraGo, l’expérience vécue ensemble chez un producteur donne aussi un cadre différent pour réfléchir, apprendre et partager. Explorez nos ',
+              { href: PATHS.experiences, label: 'expériences entreprise' },
+              ' et formats de ',
+              { href: PATHS.cohesion, label: 'séminaire de cohésion' },
               '.',
             ],
           },
@@ -94,14 +88,29 @@ export const FAQ_SECTIONS: FaqSection[] = [
       },
       {
         id: 'quel-budget-seminaire',
-        question: 'Quel budget pour un séminaire d’entreprise ?',
+        question: 'Quel budget prévoir pour un séminaire d’entreprise ?',
         excerpts: ['budget'],
         blocks: [
           {
             type: 'p',
             parts: [
-              'Définissez votre budget en fonction de 4 postes clés : transport, hébergement/restauration, location des espaces et activités. Privilégiez la qualité de la restauration et de l\'expérience plutôt que le superflu. Nous construisons la proposition avec vous via une ',
-              { action: 'openSeminaireModal', label: 'demande de séminaire' },
+              'Comptez à partir de 120 € par personne pour une journée classique. Pour un séminaire résidentiel, le budget varie selon le lieu, l’hébergement, les repas, les activités et vos demandes. Chaque projet étant différent, nous construisons le budget avec vous selon votre groupe et vos envies. N’hésitez pas à nous contacter pour ',
+              { action: 'openSeminaireModal', label: 'parler de votre projet' },
+              '.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'delai-organiser-seminaire',
+        question: 'Combien de temps à l’avance faut-il organiser un séminaire ?',
+        excerpts: [],
+        blocks: [
+          {
+            type: 'p',
+            parts: [
+              'Idéalement, prévoyez 2 à 3 mois à l’avance minimum pour avoir davantage de choix sur les lieux et les dates. Mais pas d’inquiétude pour les demandes plus urgentes : nous pouvons aussi rechercher des disponibilités à court terme selon la période et la taille de votre groupe. Parlez-nous de votre projet en ',
+              { action: 'openSeminaireModal', label: 'cliquant ici' },
               '.',
             ],
           },
@@ -113,6 +122,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
     id: 'format-logistique',
     emoji: '💡',
     title: 'Format & logistique',
+    boldPhrase: 'logistique',
     items: [
       {
         id: 'comment-choisir-lieu',
@@ -122,7 +132,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Le choix dépend de vos objectifs, du budget, de l\'accessibilité (transports) et de la taille du groupe. Privilégiez un lieu en adéquation avec la culture de votre entreprise, offrant un bon équilibre entre espaces de travail équipés et zones d\'activités. Explorez nos ',
+              'Le choix dépend de vos objectifs, du budget, de l\'accessibilité (transports) et de la taille du groupe. Privilégiez un lieu en adéquation avec la culture de votre entreprise, offrant un bon équilibre entre espaces de travail équipés et zones d\'activités. Pour vous donner quelques idées, jetez un oeil à nos ',
               { href: PATHS.destinations, label: 'destinations de séminaire en France' },
               '.',
             ],
@@ -137,8 +147,8 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'La durée varie généralement de 1 à 3 jours. Le format journée d\'étude convient aux besoins ponctuels, tandis que le format résidentiel (2 à 3 jours avec nuitée) est idéal pour de la cohésion et un véritable lâcher-prise. Comparez les formats dans une ',
-              { action: 'openSeminaireModal', label: 'demande de séminaire' },
+              'Un séminaire peut durer une journée, deux jours ou plusieurs jours, selon vos objectifs et le format choisi. La journée d’étude convient à un format concentré, tandis qu’un séminaire résidentiel permet de prendre davantage le temps de travailler, partager et profiter pleinement des lieux et des expériences. Pour connaître les possibilités, ',
+              { action: 'openSeminaireModal', label: 'parlons-en ensemble' },
               '.',
             ],
           },
@@ -167,9 +177,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Le format journée est idéal pour passer des messages rapides et limiter les coûts. Le format résidentiel est indispensable pour créer de vrais cohésions, relâcher la pression et permettre des temps informels riches. Nous vous aidons à trancher dans une ',
-              { action: 'openSeminaireModal', label: 'demande de séminaire' },
-              '.',
+              'Le choix dépend surtout de votre objectif, du temps que vous souhaitez consacrer au séminaire et du budget disponible. Une journée permet de réunir les équipes sur un format efficace et plus accessible, tandis qu’un résidentiel sur 2 ou 3 jours laisse davantage de place au travail, aux activités et aux moments informels.  ',
             ],
           },
         ],
@@ -180,6 +188,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
     id: 'idees-team-building',
     emoji: '💡',
     title: 'Idées & team building',
+    boldPhrase: '& team building',
     items: [
       {
         id: 'meilleures-idees-seminaire',
@@ -189,8 +198,10 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Les séminaires les plus marquants misent sur l\'authenticité : ateliers participatifs, immersion dans la nature, activités culinaires du terroir ou défis collectifs axés sur l\'artisanat local plutôt que sur des animations standardisées. Inspirez-vous de nos ',
-              { href: PATHS.cohesion, label: 'séminaires de cohésion originaux' },
+              'Les séminaires les plus marquants sont souvent ceux où l’on fait quelque chose ensemble : atelier chez un producteur, activité manuelle, dégustation, défi collectif, découverte d’un savoir-faire ou immersion en pleine nature. Chez TerraGo, nous privilégions des expériences authentiques, participatives et adaptées à votre équipe, plutôt que des animations standardisées. Inspirez-vous de nos ',
+              { href: PATHS.experiences, label: 'expériences entreprise' },
+              ' et ',
+              { href: PATHS.cohesion, label: 'séminaires de cohésion' },
               '.',
             ],
           },
@@ -198,66 +209,67 @@ export const FAQ_SECTIONS: FaqSection[] = [
       },
       {
         id: '10-idees-seminaire-au-vert',
-        question: '10 idées de séminaire au vert pour une entreprise',
+        question: 'Quelles sont les 10 meilleures idées de séminaire au vert pour une entreprise ?',
         excerpts: ['au-vert'],
         blocks: [
           {
             type: 'p',
             parts: [
-              'Voici dix pistes concrètes pour un ',
-              { href: PATHS.auVert, label: 'séminaire au vert' },
-              ' vraiment immersif :',
+              'Voici 10 idées pour sortir du cadre habituel et créer une vraie expérience d’équipe, ',
+              { href: PATHS.auVert, label: 'au vert' },
+              ' :',
             ],
           },
           {
             type: 'ul',
             items: [
-              'Immersion dans une ferme agroécologique.',
-              'Atelier de co-construction en forêt.',
-              'Rallye d\'orientation en mobilité douce (vélo, marche).',
-              'Bivouac chic et soirée sous les étoiles.',
-              'Vendanges ou récolte participative.',
-              'Retraite bien-être et déconnexion digitale.',
-              'Chantier participatif d\'éco-construction.',
-              'Ateliers zéro déchet et cuisine sauvage.',
-              'Hackathon stratégique au milieu des vignes.',
-              'Escape game grandeur nature en domaine rural.',
+              'Défi agricole : récolte, plantation ou mission collective chez un producteur',
+              'Escape game apicole au cœur d’une exploitation',
+              'Challenge cuisine du terroir en équipe',
+              'Vendanges ou récolte participative',
+              'Atelier manuel chez un artisan ou un producteur',
+              'Rallye nature à pied ou à vélo',
+              'Challenge sportif outdoor en pleine nature',
+              'Défi biodiversité : plantation, restauration de haies ou découverte du vivant',
+              'Dégustation à l’aveugle et découverte des produits locaux',
+              'Jeu grandeur nature ou challenge collectif dans un domaine rural',
             ],
           },
         ],
       },
       {
         id: '10-idees-seminaire-original',
-        question: '10 idées de séminaire original en France',
+        question: 'Quels séminaires originaux peut-on organiser avec TerraGo ?',
         excerpts: ['team-building-original'],
         blocks: [
           {
             type: 'p',
             parts: [
-              'Pour sortir des formats génériques, misez sur un ',
-              { href: PATHS.cohesion, label: 'séminaire original' },
-              ' ancré dans le territoire :',
+              'Chez TerraGo, chaque séminaire est construit autour d’un lieu, d’un producteur et d’une expérience. Les formats peuvent aussi mélanger travail, sport, détente, gastronomie et découverte du territoire :',
             ],
           },
           {
             type: 'ul',
             items: [
-              'Journée d\'immersion dans une ferme engagée.',
-              'Séminaire gourmand et local en itinérance.',
-              'Séminaire et vendange dans un domaine viticole engagé.',
-              'Séminaire dans un domaine oléicole pour fabriquer sa propre huile d’olive.',
-              'Olympiades rurales autour du piment.',
-              'Réunion CODIR dans une grange réhabilitée.',
-              'Séminaire chez un éleveur où l’on apprend à fabriquer son fromage.',
-              'Masterclass de cuisine « du champ à l\'assiette ».',
-              'Séminaire producteur engagé et miroir d’entreprise.',
+              'Séminaire pimenté au Pays Basque : défi autour du piment, activité sportive, repas basque et découverte du territoire.',
+              'Séminaire vélo & terroir : sortie à vélo entre producteurs, étapes gourmandes, dégustations et grande tablée.',
+              'Séminaire vendanges & convivialité : réunion dans un domaine, vendanges participatives, dégustation et dîner au chai.',
+              'Séminaire oléicole : balade à vélo ou randonnée dans les oliviers, atelier autour de l’huile, dégustation et repas.',
+              'Séminaire fromager : immersion dans une ferme, fabrication de fromage, challenge en équipe et repas fermier.',
+              'Séminaire apicole : découverte des ruches, escape game apicole, atelier autour du miel et dégustation.',
+              'Séminaire sport & détente : activité outdoor le matin, temps de relaxation ou bien-être l’après-midi et dîner chez le producteur.',
+              'Séminaire de la ferme à l’assiette : activité manuelle, challenge cuisine en équipe et repas préparé avec les produits de la ferme.',
+              'Séminaire nature & biodiversité : randonnée, défi collectif, activité participative et déjeuner au vert.',
+              'Séminaire terroir & challenge : olympiades rurales, dégustations à l’aveugle, défis entre équipes et soirée conviviale.',
             ],
           },
           {
             type: 'p',
             parts: [
-              'Pour aller plus loin, parcourez ',
+              'Le principe : on ne plaque pas une animation sur un lieu. On construit un séminaire cohérent autour du producteur, du territoire et de vos objectifs d’équipe. Découvrez ',
               { href: PATHS.experiences, label: 'nos expériences entreprise' },
+              ' ou réalisez une ',
+              { action: 'openSeminaireModal', label: 'demande de séminaire' },
               '.',
             ],
           },
@@ -334,8 +346,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Misez sur les activités immersives : vous initier au maraîchage, fabriquer son propre fromage, participer à une cueillette sauvage ou relever un défi d\'éco-conception en équipe. Découvrez nos ',
-              { href: PATHS.experiences, label: 'expériences de team building originales' },
+              'Misez sur les activités immersives et collectives : vous initier au maraîchage, fabriquer son propre fromage, participer à une cueillette sauvage ou relever un défi d\'éco-conception en équipe.',
               '.',
             ],
           },
@@ -362,6 +373,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
     id: 'nature-au-vert',
     emoji: '🌿',
     title: 'Nature & séminaire au vert',
+    boldPhrase: 'séminaire au vert',
     items: [
       {
         id: 'pourquoi-seminaire-au-vert',
@@ -371,9 +383,9 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Le contact avec la nature réduit le stress, favorise la concentration, stimule la créativité et permet une déconnexion rapide des écrans pour reconnecter les collaborateurs entre eux. Organisez un ',
+              'Sortir du bureau permet de changer de rythme, prendre du recul et partager autrement entre collègues. Chez TerraGo, le ',
               { href: PATHS.auVert, label: 'séminaire au vert' },
-              ' avec TerraGo.',
+              ' se vit dans des lieux authentiques, souvent directement chez des producteurs.',
             ],
           },
         ],
@@ -386,9 +398,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Optez pour des activités d\'extérieur équilibrées : balades guidées, observation de la biodiversité, ateliers sensoriels, vélos électriques ou temps de travail en plein air. Voir nos formats ',
-              { href: PATHS.auVert, label: 'séminaire en pleine nature' },
-              '.',
+              'Les possibilités vont bien au-delà de la randonnée : vélo, challenge sportif, activité manuelle, découverte de la biodiversité, atelier sensoriel, dégustation ou moment de détente. On peut aussi alterner activité et temps de travail pour garder un vrai équilibre sur la journée.',
             ],
           },
         ],
@@ -401,10 +411,8 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Privilégiez les territoires ruraux accessibles en train ou en court trajet depuis les grandes métropoles (Périgord, Touraine, Vexin, Normandie, Provence, Beaujolais...). Parcourez nos ',
+              'Il n’est pas nécessaire de partir à l’autre bout de la France : de nombreux lieux accessibles depuis les grandes villes permettent de s’immerger rapidement dans la nature. Fermes, domaines viticoles, oliveraies, forêts ou exploitations agricoles : TerraGo sélectionne des lieux qui permettent de sortir réellement du cadre habituel. Parcourez nos ',
               { href: PATHS.destinations, label: 'destinations' },
-              ' et nos lieux ',
-              { href: PATHS.auVert, label: 'en pleine nature' },
               '.',
             ],
           },
@@ -418,9 +426,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'La randonnée thématique, le Land Art, la reconnaissance des plantes sauvages, les ateliers de jardinage ou la construction collaborative en matériaux naturels. Ces activités s’inscrivent dans un ',
-              { href: PATHS.auVert, label: 'séminaire au vert' },
-              '.',
+              'Rallye nature, randonnée, vélo, défi biodiversité, plantation, découverte des plantes, challenge en forêt ou activité agricole : les activités sont choisies selon le lieu et l’énergie recherchée pour votre équipe. L’objectif est de créer un moment collectif, pas simplement de « faire une activité nature ».',
             ],
           },
         ],
@@ -431,6 +437,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
     id: 'rse-impact',
     emoji: '🌍',
     title: 'RSE, éco-responsabilité & impact',
+    boldPhrase: 'RSE, éco-responsabilité',
     items: [
       {
         id: 'quest-ce-seminaire-eco-responsable',
@@ -440,9 +447,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'C\'est un événement pensé pour limiter son empreinte écologique : transports bas carbone, restauration locale et de saison, gestion rigoureuse des déchets et choix de lieux engagés dans la transition. TerraGo conçoit des ',
-              { href: PATHS.rseEnjeu, label: 'séminaires RSE et team building éco-responsables' },
-              '.',
+              'C’est un séminaire pensé pour limiter son impact environnemental tout en favorisant l’économie locale : mobilité douce, lieu engagé, produits locaux et de saison, gestion raisonnée des ressources… Chez TerraGo, nous privilégions surtout les pratiques concrètes plutôt que les labels seuls.',
             ],
           },
         ],
@@ -455,9 +460,9 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Intégrez la dimension RSE à chaque étape : préférez le train au bus/avion, sélectionnez des lieux certifiés ou éco-conçus, éliminez le plastique à usage unique et proposez des repas à dominante végétale et locale. Notre page ',
+              'La RSE peut être intégrée à toute l’expérience : choix du lieu, transport, alimentation, activités et hébergement. Chez TerraGo, elle passe aussi par la rencontre directe avec des producteurs et la découverte de leurs pratiques. Découvrez nos formats de ',
               { href: PATHS.rseEnjeu, label: 'séminaire RSE' },
-              ' détaille le déroulé type.',
+              '.',
             ],
           },
         ],
@@ -470,9 +475,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'C\'est un séminaire qui va plus loin que le « neutre » en générant un impact positif direct : soutien à l\'économie locale, rémunération juste des producteurs et soutien à des projets écologiques ou sociaux. C’est l’esprit de nos ',
-              { href: PATHS.rseEnjeu, label: 'séminaires à impact' },
-              '.',
+              'Un séminaire à impact cherche à générer des retombées positives et concrètes sur le territoire. En travaillant directement avec des producteurs et des acteurs locaux, votre entreprise contribue à faire vivre leurs activités et leurs savoir-faire.',
             ],
           },
         ],
@@ -485,9 +488,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Vérifiez que l\'activité ne dégrade pas l\'environnement, qu\'elle s\'appuie sur des acteurs locaux et qu\'elle véhicule des valeurs de sobriété, de partage ou de sensibilisation à l\'environnement. Orientations concrètes dans nos ',
-              { href: PATHS.experiences, label: 'team buildings RSE' },
-              '.',
+              'Privilégiez une activité qui a du sens pour le territoire : plantation, découverte de la biodiversité, activité agricole, atelier chez un artisan, cuisine locale ou défi collectif. L’important est que l’activité soit cohérente avec le lieu et réellement utile ou enrichissante pour les participants.',
             ],
           },
         ],
@@ -500,9 +501,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'En mesurant concrètement l\'impact, en privilégiant la preuve par l\'action (partenariats locaux réels, circuits courts) plutôt que les gadgets « verts », et en restant transparent sur la démarche auprès des équipes. Notre approche ',
-              { href: PATHS.rseEnjeu, label: 'séminaire RSE' },
-              ' repose sur des partenaires engagés.',
+              'En privilégiant les actions concrètes plutôt que les gadgets : travailler avec des acteurs locaux, choisir des produits de saison, limiter les déplacements inutiles et pouvoir expliquer clairement ce que votre séminaire apporte au territoire. Chez TerraGo, nous cherchons à rendre cet impact visible et compréhensible.',
             ],
           },
         ],
@@ -515,9 +514,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Des ateliers de sensibilisation (Fresque du Climat, atelier biodiversité), des actions de bénévolat nature (plantation, entretien de sentiers) ou des ateliers d\'artisanat responsable. Voir nos ',
-              { href: PATHS.rseEnjeu, label: 'activités de séminaire engagé' },
-              '.',
+              'Plantation d’arbres ou de haies, découverte d’une ferme engagée, chantier biodiversité, atelier zéro déchet, activité agricole, rencontre avec un producteur ou atelier autour des savoir-faire locaux : les possibilités sont nombreuses et adaptées au territoire comme aux objectifs de l’équipe.',
             ],
           },
         ],
@@ -528,6 +525,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
     id: 'producteurs-terroir',
     emoji: '🌾',
     title: 'Producteurs & terroir',
+    boldPhrase: 'Producteurs',
     items: [
       {
         id: 'pourquoi-seminaire-chez-producteur',
@@ -537,7 +535,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Pour vivre une expérience authentique et incarnée. C\'est l\'occasion de découvrir un savoir-faire, de soutenir l\'économie locale et de partager des moments conviviaux autour de produits de qualité. Découvrez le format ',
+              'Pour vivre une expérience authentique et incarnée, loin des lieux de séminaire traditionnels. On découvre un métier, un savoir-faire et un territoire, tout en partageant des moments simples autour d’une activité ou d’une grande tablée. Découvrez le format ',
               { href: PATHS.producteur, label: 'séminaire chez le producteur' },
               '.',
             ],
@@ -552,9 +550,20 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'C\'est un format où les temps de réunion et d\'activités se déroulent directement au sein d\'une ferme, d\'un domaine viticole, d\'une brasserie ou d\'une exploitation agricole aménagée pour recevoir des entreprises. TerraGo sélectionne ces lieux : voir ',
-              { href: PATHS.producteur, label: 'chez le producteur' },
-              ' et nos ',
+              'C’est un séminaire organisé directement dans une ferme, un domaine viticole, une exploitation agricole, une brasserie ou chez un artisan. Le lieu devient à la fois votre cadre de travail et votre terrain d’expérience, avec des activités, des repas et des rencontres adaptés à votre groupe.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'comment-selectionnez-producteurs',
+        question: 'Comment sélectionnez-vous vos producteurs ?',
+        excerpts: ['producteur'],
+        blocks: [
+          {
+            type: 'p',
+            parts: [
+              'Nous privilégions des lieux charmants, authentiques et adaptés aux groupes, portés par des producteurs qui aiment transmettre leur métier et s’engagent à produire bien et bon. Pas besoin d’un label : nous regardons surtout les pratiques concrètes et l’engagement éco-responsable. Découvrez nos ',
               { href: PATHS.partenaires, label: 'producteurs partenaires' },
               '.',
             ],
@@ -569,9 +578,20 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Visites guidées des exploitations, ateliers de transformation (fromage, vin, pain), dégustations commentées, participation aux travaux de la ferme et repas gourmands « de la ferme à la table ». Exemples sur la page ',
-              { href: PATHS.producteur, label: 'séminaire chez un producteur' },
-              '.',
+              'Les possibilités dépendent du lieu et de la saison : activité manuelle, visite de l’exploitation, dégustation, atelier cuisine, récolte, fabrication, défi ou challenge en équipe. Le tout peut se terminer autour d’une grande tablée avec les produits du lieu ou du territoire.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'logements-chez-producteurs',
+        question: 'Les logements sont-ils forcément chez les producteurs ?',
+        excerpts: ['producteur'],
+        blocks: [
+          {
+            type: 'p',
+            parts: [
+              'Non. Certains producteurs disposent de 15 à 80/90 couchages sur leur domaine. Lorsque ce n’est pas possible, nous proposons des hébergements partenaires à proximité, avec plusieurs options selon le groupe et le format souhaité.',
             ],
           },
         ],
@@ -584,9 +604,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Le terroir rassemble autour de valeurs simples et universelles : la gourmandise, le partage, le respect du vivant et l\'authenticité. C\'est un vecteur immédiat de convivialité. Rencontrez nos ',
-              { href: PATHS.partenaires, label: 'producteurs partenaires' },
-              '.',
+              'Parce que le terroir permet de rassembler autour d’une expérience concrète : découvrir un produit, comprendre un métier, partager un repas typique et rencontrer ceux qui font vivre le territoire. C’est une façon simple de créer des moments de convivialité qui sortent du cadre habituel.',
             ],
           },
         ],
@@ -599,11 +617,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Une animation d\'équipe axée sur les produits locaux : rallye dégustation, concours de cuisine avec produits du marché, ateliers d\'assemblage ou olympiades gastronomiques. À vivre ',
-              { href: PATHS.producteur, label: 'chez le producteur' },
-              ' ou via nos ',
-              { href: PATHS.partenaires, label: 'destinations producteurs' },
-              '.',
+              'C’est un team building qui utilise les produits et savoir-faire locaux comme terrain de jeu : challenge cuisine, rallye dégustation, fabrication de fromage, d’huile ou de parfum, olympiades rurales, récolte ou défi chez un producteur. Les activités sont choisies en fonction du lieu, de la saison et de votre équipe.',
             ],
           },
         ],

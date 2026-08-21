@@ -76,20 +76,32 @@ function FaqSectionAccordion({ items }: { items: FaqItem[] }) {
   );
 }
 
+function TitleWithBold({ title, boldPhrase }: { title: string; boldPhrase: string }) {
+  const index = title.indexOf(boldPhrase);
+  if (index < 0) return <>{title}</>;
+  return (
+    <>
+      {title.slice(0, index)}
+      <span className="font-bold">{boldPhrase}</span>
+      {title.slice(index + boldPhrase.length)}
+    </>
+  );
+}
+
 export default function Faq() {
   const { openModal } = useModal();
 
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
       <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))]">
-        <div className="mx-auto max-w-3xl px-5 pb-10 sm:px-8 sm:pb-14">
+        <div className="mx-auto max-w-4xl px-5 pb-10 sm:px-8 sm:pb-14">
           <p className="text-center font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#ec6435]">
             FAQ
           </p>
           <h1 className="mt-3 text-center font-sans text-[40px] font-normal leading-[1.05] tracking-[-0.075em] text-[#0c1d22] sm:text-[52px]">
             Questions <span className="font-bold">fréquentes</span>
           </h1>
-          <p className={`mx-auto mt-5 max-w-xl text-center ${homeParagraphClass}`}>
+          <p className={`mx-auto mt-5 max-w-2xl text-center ${homeParagraphClass}`}>
             Séminaire d’entreprise, team building original, format au vert, RSE et immersion chez
             les producteurs : les réponses pour concevoir un événement qui a du sens.
           </p>
@@ -118,10 +130,10 @@ export default function Faq() {
             background: index % 2 === 0 ? HOME_COLORS.gray : '#ffffff',
           }}
         >
-          <div className="mx-auto max-w-3xl px-5 sm:px-8">
+          <div className="mx-auto max-w-4xl px-5 sm:px-8">
             <h2 className="mb-6 font-sans text-[28px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[34px]">
               <span aria-hidden>{section.emoji} </span>
-              {section.title}
+              <TitleWithBold title={section.title} boldPhrase={section.boldPhrase} />
             </h2>
             <FaqSectionAccordion items={section.items} />
           </div>
@@ -135,7 +147,7 @@ export default function Faq() {
           background: HOME_COLORS.orange,
         }}
       >
-        <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
+        <div className="mx-auto max-w-4xl px-5 text-center sm:px-8">
           <h2 className="font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-white sm:text-[40px]">
             Une question plus <span className="font-bold">précise</span> ?
           </h2>

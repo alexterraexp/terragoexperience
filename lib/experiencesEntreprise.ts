@@ -95,7 +95,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
         teaser: 'Laine, bois et matières premières du territoire.',
         description:
           'Transformez la matière — laine, bois ou autres fibres locales — et découvrez des savoir-faire artisanaux souvent méconnus.',
-        image:  `${HOME}/EXPERIENCES IMG/1752752952625-43c64bb4b361.avif`,
+        image: `${HOME}/EXPERIENCES IMG/travail-bois.png`,
         imageAlt: 'Travail de produit brut – TerraGo',
       },
       {
@@ -164,7 +164,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
         teaser: 'Vivre le séminaire dans un cadre qui a du sens.',
         description:
           'Fermes, domaines viticoles, ateliers d’artisans : sortez des salles de séminaire classiques pour vivre l’expérience au cœur de lieux qui racontent une histoire et un territoire.',
-        image: `${HOME}/EXPERIENCES IMG/photo-1599817242108-3d88ca5a0494.avif`,
+        image: `${HOME}/Destination/centre-val-de-loire.jpg`,
         imageAlt: 'Lieux typiques et authentiques – TerraGo',
       },
     ],
