@@ -52,7 +52,7 @@ export type DestinationLieu = {
     image: string;
     imageAlt: string;
     imageCopyright?: string;
-    /** Slug `/seminaire-exemples/[slug]` pour ce producteur */
+    /** Slug `/exemples-seminaire-entreprise/[slug]` pour ce producteur */
     seminaireSlug?: string;
   };
   logement: {

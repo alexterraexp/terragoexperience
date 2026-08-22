@@ -71,7 +71,7 @@ const DESTINATION_LIEUX: DropdownItem[] = LIEU_MENU.map((lieu) => ({
 
 const SEMINAIRE_MAIN: DropdownItem[] = [
   { label: 'Séminaires d\'entreprise engagés', description: 'Du sens, du vrai, et du vivant', path: '/seminaires-entreprise', emoji: '🌿' },
-  { label: 'Exemples de séminaire d\'entreprise', description: 'À la journée, sur 2 jours, ou sur mesure', path: '/seminaire-exemples', emoji: '📦' },
+  { label: 'Exemples de séminaire d\'entreprise', description: 'À la journée, sur 2 jours, ou sur mesure', path: '/exemples-seminaire-entreprise', emoji: '📦' },
   { label: 'Séminaires réalisés', description: 'Retours d\'expérience sur le terrain', path: '#', comingSoon: true, emoji: '✨' },
 ];
 
@@ -437,6 +437,7 @@ const Header: React.FC = () => {
   };
 
   const isSeminaireDetailPage =
+    /^\/exemples-seminaire-entreprise\/[^/]+$/.test(pathname ?? '') ||
     /^\/seminaire-exemples\/[^/]+$/.test(pathname ?? '') ||
     /^\/seminaires\/offres\/[^/]+$/.test(pathname ?? '') ||
     /^\/seminaires-entreprise\/offres\/[^/]+$/.test(pathname ?? '');
@@ -464,6 +465,8 @@ const Header: React.FC = () => {
         pathname === '/seminaires-entreprise' ||
         (pathname?.startsWith('/seminaires-entreprise/') ?? false) ||
         (pathname?.startsWith('/seminaires/') ?? false) ||
+        pathname === '/exemples-seminaire-entreprise' ||
+        (pathname?.startsWith('/exemples-seminaire-entreprise/') ?? false) ||
         pathname === '/seminaire-exemples' ||
         (pathname?.startsWith('/seminaire-exemples/') ?? false)
       );

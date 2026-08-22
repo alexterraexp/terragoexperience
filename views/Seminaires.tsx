@@ -17,6 +17,7 @@ import {
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
 import { seminaireEnjeuPath } from '../lib/seminaireEnjeux';
+import { EXEMPLES_SEMINAIRE_ENTREPRISE_PATH } from '../lib/exemplesSeminaireEntreprise';
 import FaqExcerpt from '../components/FaqExcerpt';
 
 const HOME =
@@ -911,7 +912,7 @@ const Seminaires: React.FC = () => {
 
           <div className="mt-8 flex justify-center sm:mt-10">
             <Link
-              href="/seminaire-exemples"
+              href={EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}
               className="inline-flex items-center justify-center rounded-full border border-[#ec6435] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-8 sm:py-2.5 sm:text-[12px]"
             >
               Découvrir nos exemples de séminaire d&apos;entreprise
@@ -1114,7 +1115,7 @@ const Seminaires: React.FC = () => {
                 Parlons de votre projet
               </button>
               <Link
-                href="/seminaire-exemples"
+                href={EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}
                 className="inline-flex min-w-[180px] items-center justify-center rounded-full border-2 border-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-white transition-colors hover:bg-white/15 sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
               >
                 Voir les exemples

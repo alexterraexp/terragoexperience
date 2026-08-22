@@ -10,6 +10,10 @@ import {
   SEMINAIRE_ENJEU_SLUGS,
   seminaireEnjeuPath,
 } from '../lib/seminaireEnjeux';
+import {
+  EXEMPLES_SEMINAIRE_ENTREPRISE_PATH,
+  exempleSeminaireEntreprisePath,
+} from '../lib/exemplesSeminaireEntreprise';
 import { fetchSeminaires, generateSlug } from '../lib/seminaires';
 import { isSupabaseConfigured, supabaseServer } from '../lib/supabase';
 import { SITE_URL, SITELINK_PAGES } from '../lib/siteNav';
@@ -97,13 +101,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const seminaireExemplePages: MetadataRoute.Sitemap = [
     {
-      url: `${SITE_URL}/seminaire-exemples`,
+      url: `${SITE_URL}${EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.7,
     },
     ...seminaireExempleSlugs.map((slug) => ({
-      url: `${SITE_URL}/seminaire-exemples/${slug}`,
+      url: `${SITE_URL}${exempleSeminaireEntreprisePath(slug)}`,
       lastModified: now,
       changeFrequency: 'weekly' as const,
       priority: 0.65,

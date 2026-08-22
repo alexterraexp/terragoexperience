@@ -24,6 +24,11 @@ import {
   type SeminaireEnjeu as EnjeuData,
   type SeminaireEnjeuExample,
 } from '../lib/seminaireEnjeux';
+import {
+  EXEMPLES_SEMINAIRE_ENTREPRISE_PATH,
+  findSeminaireByLinkHint,
+  seminaireExempleHrefFromHints,
+} from '../lib/exemplesSeminaireEntreprise';
 import { getImageCopyright } from '../lib/imageCopyrights';
 import FaqExcerpt from '../components/FaqExcerpt';
 import type { FaqExcerptKey } from '../lib/faq';
@@ -202,6 +207,7 @@ const ExampleSeminarBlock: React.FC<{
   const [seminaire, setSeminaire] = useState<Seminaire | null>(null);
   const [loading, setLoading] = useState(true);
   const [openFormat, setOpenFormat] = useState<SeminaireFormatId | null>(null);
+  const [detailHref, setDetailHref] = useState(EXEMPLES_SEMINAIRE_ENTREPRISE_PATH);
 
   useEffect(() => {
     let cancelled = false;
@@ -210,22 +216,33 @@ const ExampleSeminarBlock: React.FC<{
     fetchSeminaires()
       .then((all) => {
         if (cancelled) return;
-        const found = all.find((s) => s.slug === example.seminaireSlug) ?? null;
+        const found =
+          findSeminaireByLinkHint(
+            all,
+            example.seminaireSlug,
+            example.producerName,
+          ) ?? null;
         setSeminaire(found);
+        setDetailHref(
+          seminaireExempleHrefFromHints(
+            all,
+            example.seminaireSlug,
+            example.producerName,
+          ),
+        );
         setLoading(false);
       })
       .catch(() => {
         if (!cancelled) {
           setSeminaire(null);
+          setDetailHref(EXEMPLES_SEMINAIRE_ENTREPRISE_PATH);
           setLoading(false);
         }
       });
     return () => {
       cancelled = true;
     };
-  }, [example.seminaireSlug]);
-
-  const detailHref = `/seminaire-exemples/${example.seminaireSlug}`;
+  }, [example.seminaireSlug, example.producerName]);
   const formatRows = (['journee', 'residentiel'] as const)
     .map((id) => {
       const fmt = seminaire?.formats[id];

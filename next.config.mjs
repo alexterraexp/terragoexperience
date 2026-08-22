@@ -118,28 +118,38 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/seminaire-exemples',
+        destination: '/exemples-seminaire-entreprise',
+        permanent: true,
+      },
+      {
+        source: '/seminaire-exemples/:slug',
+        destination: '/exemples-seminaire-entreprise/:slug',
+        permanent: true,
+      },
+      {
         source: '/seminaires-entreprise/offres',
-        destination: '/seminaire-exemples',
+        destination: '/exemples-seminaire-entreprise',
         permanent: true,
       },
       {
         source: '/seminaires-entreprise/offres/:slug',
-        destination: '/seminaire-exemples/:slug',
+        destination: '/exemples-seminaire-entreprise/:slug',
         permanent: true,
       },
       {
         source: '/seminaires/offres',
-        destination: '/seminaire-exemples',
+        destination: '/exemples-seminaire-entreprise',
         permanent: true,
       },
       {
         source: '/seminaires/offres/:slug',
-        destination: '/seminaire-exemples/:slug',
+        destination: '/exemples-seminaire-entreprise/:slug',
         permanent: true,
       },
       {
         source: '/entreprises/offres',
-        destination: '/seminaire-exemples',
+        destination: '/exemples-seminaire-entreprise',
         permanent: true,
       },
       {

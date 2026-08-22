@@ -28,7 +28,7 @@ export type SeminaireEnjeuExample = {
   description: string;
   image: string;
   imageAlt: string;
-  /** Slug de l’offre `/seminaire-exemples/[slug]` (généré depuis le producteur Supabase). */
+  /** Slug de l’offre `/exemples-seminaire-entreprise/[slug]` (colonne `slug` Supabase). */
   seminaireSlug: string;
 };
 

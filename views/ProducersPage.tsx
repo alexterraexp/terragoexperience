@@ -35,8 +35,8 @@ const PRODUCER_ASSETS = {
   rateau: HOME_EMOJI.rateau,
 };
 
-const sectionTitleClass =
-  'font-sans text-[clamp(1.05rem,3.1vw,2.25rem)] font-normal leading-[1.15] tracking-[-0.06em] text-[#0c1d22] whitespace-nowrap';
+const catalogueIntroTitleClass =
+  'font-sans text-[clamp(1.05rem,3.1vw,2.25rem)] font-normal leading-[1.2] tracking-[-0.06em] text-[#0c1d22]';
 
 /** Pastilles calées sur le scroll réel (pas une pastille par carte). */
 function useSwipePages(trackRef: React.RefObject<HTMLDivElement | null>, itemCount: number) {
@@ -477,9 +477,12 @@ const ProducersPage: React.FC = () => {
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
       >
         <div className="relative mx-auto max-w-[1280px] px-6 sm:px-8 lg:px-10">
-          <div className="mb-8 sm:mb-10">
-            <h2 className={sectionTitleClass}>
-              <span className="font-bold">Engagés et passionnés</span>, ils vous ouvrent leurs portes.
+          <div className="mb-8 pr-6 sm:mb-10 sm:pr-8 lg:pr-10">
+            <h2 className={catalogueIntroTitleClass}>
+              Voici quelques-uns de nos producteurs partenaires,{' '}
+              <span className="font-bold">engagés</span>,{' '}
+              <span className="font-bold">passionnés</span> et fiers de partager leur{' '}
+              <span className="font-bold">savoir-faire</span>.
             </h2>
           </div>
 

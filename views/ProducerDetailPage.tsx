@@ -11,6 +11,7 @@ import {
 } from '../lib/producerTypes';
 import { fetchSeminaires } from '../lib/seminaires';
 import type { Seminaire } from '../lib/seminaires';
+import { exempleSeminaireEntreprisePath } from '../lib/exemplesSeminaireEntreprise';
 import { HOME_COLORS, HOME_RADIUS } from '../components/home/homeStyles';
 
 const HOME_ASSETS =
@@ -653,7 +654,7 @@ const ProducerDetailPage: React.FC = () => {
                     Devis gratuit · Réponse 48h
                   </div>
                   <a
-                    href={`/seminaire-exemples/${matchingSeminaire.slug}`}
+                    href={exempleSeminaireEntreprisePath(matchingSeminaire.slug)}
                     style={{
                       display: 'flex',
                       alignItems: 'center',

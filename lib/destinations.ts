@@ -48,7 +48,7 @@ export type DestinationRegion = {
     imageAlt: string;
     /** Exemples de métiers (pas un producteur nommé) */
     generic?: boolean;
-    /** Slug `/seminaire-exemples/[slug]` pour un producteur nommé */
+    /** Slug `/exemples-seminaire-entreprise/[slug]` pour un producteur nommé */
     seminaireSlug?: string;
   };
   logement: {

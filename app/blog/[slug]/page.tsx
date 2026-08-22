@@ -11,6 +11,7 @@ import {
   homeSectionPadding,
 } from '../../../components/home/homeStyles';
 import TableOfContents from './TableOfContents';
+import { EXEMPLES_SEMINAIRE_ENTREPRISE_PATH } from '../../../lib/exemplesSeminaireEntreprise';
 
 /** Régénère l’article depuis Supabase au plus toutes les 60 s (ISR). */
 export const revalidate = 60;
@@ -119,7 +120,7 @@ function NotFoundPage() {
             ← Retour au journal
           </Link>
           <Link
-            href="/seminaire-exemples"
+            href={EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}
             className="inline-flex items-center justify-center rounded-full border border-[#0c1d22] px-6 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white"
           >
             Voir nos séminaires
@@ -543,7 +544,7 @@ export default async function BlogArticlePage({
                 De la sélection du producteur à la logistique — on s&apos;occupe de tout.
               </p>
               <Link
-                href="/seminaire-exemples"
+                href={EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}
                 className="mt-8 inline-flex w-fit items-center justify-center rounded-full bg-white px-6 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white"
               >
                 Découvrir nos exemples de séminaire →

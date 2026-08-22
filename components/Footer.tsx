@@ -8,6 +8,9 @@ import { useModal } from '../context/ModalContext';
 import { HOME_COLORS } from './home/homeStyles';
 import { REGION_IMAGES, regionDestinationPath } from '../lib/homeStorage';
 import {
+  EXEMPLES_SEMINAIRE_ENTREPRISE_PATH,
+} from '../lib/exemplesSeminaireEntreprise';
+import {
   SEMINAIRE_ENJEUX,
   SEMINAIRE_ENJEU_SLUGS,
   seminaireEnjeuPath,
@@ -42,7 +45,7 @@ const NAV_GROUPS: { title: string; links: FooterLink[] }[] = [
     title: 'Séminaires',
     links: [
       { to: '/seminaires-entreprise', label: "Séminaires d'entreprise engagés" },
-      { to: '/seminaire-exemples', label: 'Exemples de séminaire' },
+      { to: EXEMPLES_SEMINAIRE_ENTREPRISE_PATH, label: 'Exemples de séminaire' },
       ...SEMINAIRE_ENJEUX.map((enjeu) => ({
         to: seminaireEnjeuPath(enjeu.slug),
         label: enjeu.name,

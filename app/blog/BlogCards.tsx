@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { HOME_COLORS, HOME_RADIUS } from '../../components/home/homeStyles';
+import { EXEMPLES_SEMINAIRE_ENTREPRISE_PATH } from '../../lib/exemplesSeminaireEntreprise';
 
 interface BlogPost {
   id?: string;
@@ -95,7 +96,7 @@ export default function BlogCards({ featured, latestPosts, soonPosts }: Props) {
               </p>
             </div>
             <Link
-              href="/seminaire-exemples"
+              href={EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}
               className="mt-8 inline-flex w-full items-center justify-center rounded-full px-6 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90 sm:mt-10"
               style={{ background: HOME_COLORS.primary }}
               onMouseEnter={(e) => {

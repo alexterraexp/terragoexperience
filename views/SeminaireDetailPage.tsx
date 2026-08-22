@@ -4,7 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { fetchSeminaires } from '../lib/seminaires';
 import type { Seminaire } from '../lib/seminaires';
+import {
+  EXEMPLES_SEMINAIRE_ENTREPRISE_PATH,
+  findSeminaireByPublicSlug,
+  resolveSeminaireSlugRedirect,
+} from '../lib/exemplesSeminaireEntreprise';
 import SeminaireDetailLoading from '../components/SeminaireDetailLoading';
+import SeminaireExempleNotFound from '../components/SeminaireExempleNotFound';
 import { jumpToTop } from '../components/ScrollToTop';
 import { ExpandedSeminaireView, SeminaireModal } from './Seminaires-pack';
 
@@ -12,9 +18,9 @@ import { ExpandedSeminaireView, SeminaireModal } from './Seminaires-pack';
 
 export default function SeminaireDetailPage() {
   const params = useParams();
-  const slug = params.slug as string;
+  const slug = resolveSeminaireSlugRedirect(params.slug as string);
   const router = useRouter();
-  const offresListPath = '/seminaire-exemples';
+  const offresListPath = EXEMPLES_SEMINAIRE_ENTREPRISE_PATH;
   const [seminaire, setSeminaire] = useState<Seminaire | null>(null);
   const [allSeminaires, setAllSeminaires] = useState<Seminaire[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +36,7 @@ export default function SeminaireDetailPage() {
     fetchSeminaires()
       .then(data => {
         if (cancelled) return;
-        const found = data.find(s => s.slug === slug) ?? null;
+        const found = findSeminaireByPublicSlug(data, slug) ?? null;
         setSeminaire(found);
         setAllSeminaires(data);
         setNotFound(!found);
@@ -55,18 +61,7 @@ export default function SeminaireDetailPage() {
   }
 
   if (notFound || !seminaire) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ffffff', flexDirection: 'column', gap: 16 }}>
-        <div style={{ fontSize: 48 }}>🌿</div>
-        <h2 style={{ fontFamily: "'Poppins', sans-serif", fontStyle: 'normal', fontWeight: 400, fontSize: 28, letterSpacing: '-0.075em', color: '#0c1d22', margin: 0 }}>Offre introuvable</h2>
-        <p style={{ color: 'rgba(12, 29, 34, 0.45)', fontSize: 14, margin: 0 }}>Cette offre n'existe pas ou a été supprimée.</p>
-        <button
-          onClick={() => router.push(offresListPath)}
-          style={{ marginTop: 8, background: '#0c1d22', color: '#fff', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', padding: '12px 24px', borderRadius: 9999, border: 'none', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit' }}>
-          ← Toutes nos offres
-        </button>
-      </div>
-    );
+    return <SeminaireExempleNotFound />;
   }
 
   return (

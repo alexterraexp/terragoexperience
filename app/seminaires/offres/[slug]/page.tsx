@@ -1,10 +1,14 @@
 import { permanentRedirect } from 'next/navigation';
+import {
+  exempleSeminaireEntreprisePath,
+  resolveSeminaireSlugRedirect,
+} from '@/lib/exemplesSeminaireEntreprise';
 
-export default async function SeminaireSlugPage({
+export default async function SeminairesOffresSlugRedirectPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  permanentRedirect(`/seminaire-exemples/${slug}`);
+  permanentRedirect(exempleSeminaireEntreprisePath(resolveSeminaireSlugRedirect(slug)));
 }

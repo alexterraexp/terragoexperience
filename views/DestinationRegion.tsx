@@ -26,7 +26,13 @@ import {
 import { protectedImageProps } from '../lib/protectedImage';
 import { getImageCopyright } from '../lib/imageCopyrights';
 import { supabase } from '../lib/supabase';
-import { fetchSeminaireBySlug } from '../lib/seminaires';
+import { fetchSeminaires } from '../lib/seminaires';
+import {
+  EXEMPLES_SEMINAIRE_ENTREPRISE_PATH,
+  exempleSeminaireEntreprisePath,
+  findSeminaireByLinkHint,
+  seminaireExempleHrefFromHints,
+} from '../lib/exemplesSeminaireEntreprise';
 import {
   mapSupabaseRowToFull,
   type SupabaseProducerRow,
@@ -313,22 +319,34 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
   const related = getRelatedDestinations(destination.slug, 2);
   const [producerAbout, setProducerAbout] = useState<string | null>(null);
   const [producerRole, setProducerRole] = useState<string | null>(null);
+  const [producerExempleHref, setProducerExempleHref] = useState(EXEMPLES_SEMINAIRE_ENTREPRISE_PATH);
 
-  const producerSlug = destination.producer.generic
-    ? undefined
-    : destination.producer.seminaireSlug;
+  const producerLinkHints = destination.producer.generic
+    ? []
+    : [destination.producer.seminaireSlug, destination.producer.name];
 
   useEffect(() => {
-    if (!producerSlug) {
+    if (destination.producer.generic || producerLinkHints.length === 0) {
       setProducerAbout(null);
       setProducerRole(null);
+      setProducerExempleHref(EXEMPLES_SEMINAIRE_ENTREPRISE_PATH);
       return;
     }
 
     let cancelled = false;
     (async () => {
-      const { seminaire } = await fetchSeminaireBySlug(producerSlug);
-      if (cancelled || !seminaire) return;
+      const all = await fetchSeminaires();
+      const seminaire = findSeminaireByLinkHint(all, ...producerLinkHints);
+      if (cancelled) return;
+
+      if (!seminaire) {
+        setProducerExempleHref(
+          seminaireExempleHrefFromHints(all, ...producerLinkHints),
+        );
+        return;
+      }
+
+      setProducerExempleHref(exempleSeminaireEntreprisePath(seminaire.slug));
 
       const { data } = await supabase
         .from('producers_full')
@@ -347,7 +365,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
     return () => {
       cancelled = true;
     };
-  }, [producerSlug]);
+  }, [destination.producer.generic, destination.producer.name, destination.producer.seminaireSlug]);
 
   const aboutText = producerAbout || destination.producer.description;
   const roleText = producerRole || destination.producer.role;
@@ -632,16 +650,16 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
               >
                 {aboutText}
               </p>
-              {destination.producer.generic || !producerSlug ? (
+              {destination.producer.generic || producerLinkHints.length === 0 ? (
                 <Link
-                  href="/seminaire-exemples"
+                  href={EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}
                   className={`mt-7 self-start ${homeCtaOutlineClass}`}
                 >
                   Découvrir nos exemples de séminaire
                 </Link>
               ) : (
                 <Link
-                  href={`/seminaire-exemples/${producerSlug}`}
+                  href={producerExempleHref}
                   className={`mt-7 self-start ${homeCtaOutlineClass}`}
                 >
                   Découvrir cet exemple de séminaire

@@ -23,6 +23,11 @@ import {
   lieuDestinationPath,
   type DestinationLieu as LieuData,
 } from '../lib/lieux';
+import {
+  EXEMPLES_SEMINAIRE_ENTREPRISE_PATH,
+  seminaireExempleHrefFromHints,
+} from '../lib/exemplesSeminaireEntreprise';
+import { fetchSeminaires } from '../lib/seminaires';
 import { protectedImageProps } from '../lib/protectedImage';
 import { getImageCopyright } from '../lib/imageCopyrights';
 import FaqExcerpt from '../components/FaqExcerpt';
@@ -314,6 +319,34 @@ type Props = {
 const DestinationLieu: React.FC<Props> = ({ lieu }) => {
   const { openModal } = useModal();
   const related = getRelatedLieux(lieu.slug, 2);
+  const [exempleHref, setExempleHref] = useState(EXEMPLES_SEMINAIRE_ENTREPRISE_PATH);
+
+  useEffect(() => {
+    if (!lieu.producer.seminaireSlug && !lieu.producer.name) {
+      setExempleHref(EXEMPLES_SEMINAIRE_ENTREPRISE_PATH);
+      return;
+    }
+
+    let cancelled = false;
+    fetchSeminaires()
+      .then((all) => {
+        if (cancelled) return;
+        setExempleHref(
+          seminaireExempleHrefFromHints(
+            all,
+            lieu.producer.seminaireSlug,
+            lieu.producer.name,
+          ),
+        );
+      })
+      .catch(() => {
+        if (!cancelled) setExempleHref(EXEMPLES_SEMINAIRE_ENTREPRISE_PATH);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [lieu.producer.name, lieu.producer.seminaireSlug]);
 
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -584,11 +617,7 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
               </p>
               <p className={`mt-4 ${homeParagraphClass}`}>{lieu.producer.description}</p>
               <Link
-                href={
-                  lieu.producer.seminaireSlug
-                    ? `/seminaire-exemples/${lieu.producer.seminaireSlug}`
-                    : '/seminaire-exemples'
-                }
+                href={exempleHref}
                 className={`mt-7 self-start ${homeCtaOutlineClass}`}
               >
                 Découvrir cette expérience

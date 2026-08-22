@@ -31,6 +31,7 @@ import {
 import FramedHeroImage from '../components/FramedHeroImage';
 import { trackGenerateLead } from '../lib/analytics';
 import { useModal } from '../context/ModalContext';
+import { exempleSeminaireEntreprisePath } from '../lib/exemplesSeminaireEntreprise';
 
 const HOME_ASSETS =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
@@ -2387,7 +2388,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
     setDetailNavPending(true);
     // Laisser peindre l’overlay avant la navigation (sinon flash invisible).
     requestAnimationFrame(() => {
-      router.push(`/seminaire-exemples/${s.slug}`);
+      router.push(exempleSeminaireEntreprisePath(s.slug));
     });
   };
 
