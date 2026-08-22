@@ -127,6 +127,9 @@ const GUARANTEES = [
 const ORANGE_STAR =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/etoilecouleurorange.png';
 
+const WHITE_G =
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/gblanc.png';
+
 const LEGAL_LINKS = [
   { to: '/mentions-legales', label: 'Mentions légales' },
   { to: '/confidentialite', label: 'Politique de confidentialité' },
@@ -530,6 +533,16 @@ const Footer: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* G blanc — gauche, desktop uniquement, très transparent */}
+      <Image
+        src={WHITE_G}
+        alt=""
+        aria-hidden
+        width={416}
+        height={416}
+        className="pointer-events-none absolute left-0 z-0 hidden h-auto w-auto object-contain object-left opacity-[0.08] lg:bottom-[20%] lg:block lg:h-[44rem] lg:w-auto xl:bottom-[10%] xl:h-[52rem]"
+      />
 
       {/* Étoile orange — coin bas droit, derrière le texte */}
       <Image

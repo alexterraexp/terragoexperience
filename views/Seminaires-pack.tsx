@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { createPortal } from 'react-dom';
 import type { CSSProperties } from 'react';
@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import type { Seminaire, Format, ProgrammeItem, SeminaireFormatId, SeminaireHebergement } from '../lib/seminaires';
 import { SEMINAIRE_FORMAT_IDS, SEMINAIRE_FORMAT_LABELS } from '../lib/seminaires';
 import { supabase } from '../lib/supabase';
-import { mapSupabaseRowToFull, type ProducerFull, type SupabaseProducerRow } from '../lib/producerTypes';
+import { mapSupabaseRowToFull, type ExperienceItem, type ProducerFull, type SupabaseProducerRow } from '../lib/producerTypes';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useMapboxPublicToken } from '@/components/MapboxTokenProvider';
@@ -934,6 +934,10 @@ function GalleryLightbox({ images, initialIndex, onClose, label }: { images: str
   const scrollImageToTop = (index: number) => {
     const panel = panelRef.current;
     if (!panel) return;
+    if (index <= 0) {
+      panel.scrollTo({ top: 0, behavior: 'auto' });
+      return;
+    }
     const el = panel.querySelector(`[data-gal-idx="${index}"]`);
     if (!(el instanceof HTMLElement)) return;
     const top = el.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
@@ -944,7 +948,14 @@ function GalleryLightbox({ images, initialIndex, onClose, label }: { images: str
     const panel = panelRef.current;
     if (!panel) return;
 
+    panel.scrollTop = 0;
+
     const run = () => scrollImageToTop(initialIndex);
+    if (initialIndex === 0) {
+      run();
+      return;
+    }
+
     run();
     const raf = requestAnimationFrame(run);
 
@@ -1268,6 +1279,249 @@ function InfosPratiquesSection({
   );
 }
 
+function ExperienceDetailModal({
+  experience,
+  producerName,
+  onClose,
+}: {
+  experience: ExperienceItem | null;
+  producerName?: string;
+  onClose: () => void;
+}) {
+  const [closing, setClosing] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  const handleClose = () => {
+    setClosing(true);
+    setTimeout(() => {
+      setClosing(false);
+      onClose();
+    }, 220);
+  };
+
+  useEffect(() => {
+    if (!experience) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose(); };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [experience]);
+
+  if (!mounted || !experience) return null;
+
+  const meta = [experience.duration?.trim(), experience.price?.trim()].filter(Boolean).join(' · ');
+
+  return createPortal(
+    <div
+      className={`sem-exp-modal-backdrop${closing ? ' is-closing' : ''}`}
+      role="presentation"
+      onClick={handleClose}
+    >
+      <div
+        className={`sem-exp-modal-panel${closing ? ' is-closing' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sem-exp-modal-title"
+        onClick={e => e.stopPropagation()}
+      >
+        <button type="button" className="sem-exp-modal-close" onClick={handleClose} aria-label="Fermer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+        <div className="sem-exp-modal-icon" aria-hidden>{experience.icon || '🌿'}</div>
+        <h3 id="sem-exp-modal-title" className="sem-exp-modal-title">{experience.title}</h3>
+        {meta && <p className="sem-exp-modal-meta">{meta}</p>}
+        {producerName && (
+          <p className="sem-exp-modal-producer">Chez {producerName}</p>
+        )}
+        {experience.desc && (
+          <p className="sem-exp-modal-desc">{experience.desc}</p>
+        )}
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+function useExperienceSwipePages(trackRef: React.RefObject<HTMLDivElement | null>, itemCount: number) {
+  const [pageCount, setPageCount] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const isScrollingRef = useRef(false);
+
+  const getMetrics = useCallback((track: HTMLElement) => {
+    const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+    if (maxScroll < 8 || itemCount < 2) {
+      return { pageCount: 0, maxScroll: 0, step: 0 };
+    }
+    const first = track.children[0] as HTMLElement | undefined;
+    const second = track.children[1] as HTMLElement | undefined;
+    const step =
+      first && second
+        ? second.offsetLeft - first.offsetLeft
+        : first
+          ? first.offsetWidth
+          : track.clientWidth;
+    const pages = Math.round(maxScroll / Math.max(step, 1)) + 1;
+    return { pageCount: pages > 1 ? pages : 0, maxScroll, step: Math.max(step, 1) };
+  }, [itemCount]);
+
+  const syncActive = useCallback((track: HTMLElement) => {
+    const { pageCount: pages, maxScroll, step } = getMetrics(track);
+    if (pages <= 1) {
+      setActiveIndex(0);
+      return;
+    }
+    if (track.scrollLeft >= maxScroll - 4) {
+      setActiveIndex(pages - 1);
+      return;
+    }
+    const idx = Math.round(track.scrollLeft / step);
+    setActiveIndex(Math.max(0, Math.min(idx, pages - 1)));
+  }, [getMetrics]);
+
+  const measure = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) {
+      setPageCount(0);
+      return;
+    }
+    const { pageCount: pages } = getMetrics(track);
+    setPageCount(pages);
+    syncActive(track);
+  }, [trackRef, getMetrics, syncActive]);
+
+  const goTo = useCallback((index: number, behavior: ScrollBehavior = 'smooth') => {
+    const track = trackRef.current;
+    if (!track) return;
+    const { pageCount: pages, maxScroll, step } = getMetrics(track);
+    if (pages <= 1) return;
+    const clamped = Math.max(0, Math.min(index, pages - 1));
+    const targetLeft = clamped >= pages - 1 ? maxScroll : clamped * step;
+    isScrollingRef.current = true;
+    track.scrollTo({ left: targetLeft, behavior });
+    setActiveIndex(clamped);
+    window.setTimeout(() => {
+      isScrollingRef.current = false;
+      syncActive(track);
+    }, behavior === 'smooth' ? 450 : 50);
+  }, [trackRef, getMetrics, syncActive]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let raf = 0;
+    const onScroll = () => {
+      if (isScrollingRef.current) return;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => syncActive(track));
+    };
+
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
+    ro?.observe(track);
+    measure();
+
+    track.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', measure);
+    return () => {
+      cancelAnimationFrame(raf);
+      ro?.disconnect();
+      track.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', measure);
+    };
+  }, [trackRef, itemCount, measure, syncActive]);
+
+  return { activeIndex, goTo, pageCount };
+}
+
+function ExperiencesProposeesSection({
+  experiences,
+  producerName,
+}: {
+  experiences: ExperienceItem[];
+  producerName: string;
+}) {
+  const [selected, setSelected] = useState<ExperienceItem | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { activeIndex, goTo, pageCount } = useExperienceSwipePages(scrollRef, experiences.length);
+
+  if (experiences.length === 0) return null;
+
+  const displayName = producerName.replace(/^avec\s+/i, '').trim();
+  const sectionLead = `Partir à la rencontre de ${displayName}, c'est aussi vivre des expériences mémorables.`;
+
+  return (
+    <>
+      <ExperienceDetailModal
+        experience={selected}
+        producerName={producerName}
+        onClose={() => setSelected(null)}
+      />
+      <section className="sem-experiences-proposees" aria-labelledby="sem-experiences-title">
+        <h2 id="sem-experiences-title" className="sem-infos-pratiques-title">
+          Les expériences possibles
+        </h2>
+        <p className="sem-experiences-lead">
+          {sectionLead}
+        </p>
+        <div className={`sem-experiences-swipe-wrap${pageCount > 1 ? ' has-scroll' : ''}`}>
+          <div
+            ref={scrollRef}
+            className="sem-experiences-swipe"
+            role="list"
+            aria-label="Les expériences possibles"
+          >
+            {experiences.map(exp => {
+              const meta = [exp.duration?.trim(), exp.price?.trim()].filter(Boolean).join(' · ');
+              return (
+                <button
+                  key={exp.id}
+                  type="button"
+                  className="sem-exp-card"
+                  role="listitem"
+                  onClick={() => setSelected(exp)}
+                  aria-label={`${exp.title}${meta ? ` — ${meta}` : ''}`}
+                >
+                  <span className="sem-exp-card-icon" aria-hidden>{exp.icon || '🌿'}</span>
+                  <span className="sem-exp-card-body">
+                    <span className="sem-exp-card-content">
+                      <span className="sem-exp-card-title">{exp.title}</span>
+                      <span className="sem-exp-card-meta">{meta || '\u00A0'}</span>
+                    </span>
+                    <span className="sem-exp-card-cta">Voir le détail</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="sem-experiences-swipe-fade" aria-hidden />
+        </div>
+        {pageCount > 1 && (
+          <div className="sem-experiences-dots" role="tablist" aria-label="Navigation du carrousel">
+            {Array.from({ length: pageCount }, (_, i) => (
+              <button
+                key={i}
+                type="button"
+                role="tab"
+                aria-selected={i === activeIndex}
+                aria-label={`Position ${i + 1} sur ${pageCount}`}
+                className={`sem-experiences-dot${i === activeIndex ? ' is-active' : ''}`}
+                onClick={() => goTo(i)}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+    </>
+  );
+}
+
 // ─── ExpandedSeminaireView ────────────────────────────────────────────────────
 
 export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevis, onBack }: {
@@ -1491,6 +1745,10 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
               s={s}
               producer={producer}
             />
+            <ExperiencesProposeesSection
+              experiences={producer?.experiences ?? []}
+              producerName={producer?.name ?? s.producteur}
+            />
             <MobileFormatSwitcher
               fmtJour={fmtJour}
               fmt2j={fmt2j}
@@ -1522,6 +1780,10 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
             <InfosPratiquesSection
               s={s}
               producer={producer}
+            />
+            <ExperiencesProposeesSection
+              experiences={producer?.experiences ?? []}
+              producerName={producer?.name ?? s.producteur}
             />
             <MobileFormatSwitcher
               layout="desktop"

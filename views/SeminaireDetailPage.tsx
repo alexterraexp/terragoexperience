@@ -890,6 +890,275 @@ export default function SeminaireDetailPage() {
           color: #0c1d22;
         }
 
+        /* ── Expériences proposées ── */
+        .sem-experiences-proposees {
+          margin: 28px 0 8px;
+        }
+        .sem-experiences-lead {
+          margin: 0 0 14px;
+          font-size: 13px;
+          font-weight: 500;
+          line-height: 1.45;
+          letter-spacing: -0.03em;
+          color: rgba(12, 29, 34, 0.55);
+        }
+        .sem-experiences-swipe-wrap {
+          position: relative;
+        }
+        .sem-experiences-swipe {
+          display: flex;
+          align-items: stretch;
+          gap: 10px;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          padding: 2px 0 4px;
+          margin: 0 -24px;
+          padding-left: 24px;
+          padding-right: 48px;
+          scroll-padding-left: 24px;
+        }
+        .sem-experiences-swipe::-webkit-scrollbar { display: none; }
+        .sem-experiences-swipe-fade {
+          position: absolute;
+          top: 0;
+          right: -24px;
+          bottom: 4px;
+          width: 2.5rem;
+          background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 85%);
+          pointer-events: none;
+          z-index: 2;
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        }
+        .sem-experiences-swipe-wrap.has-scroll .sem-experiences-swipe-fade {
+          opacity: 1;
+        }
+        .sem-exp-card {
+          flex: 0 0 min(68vw, 220px);
+          width: min(68vw, 220px);
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+          padding: 16px;
+          border: 1px solid rgba(12, 29, 34, 0.10);
+          border-radius: 14px;
+          background: #fff;
+          cursor: pointer;
+          text-align: left;
+          font-family: inherit;
+          scroll-snap-align: start;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .sem-exp-card:hover {
+          border-color: rgba(236, 100, 53, 0.35);
+          box-shadow: 0 4px 18px rgba(12, 29, 34, 0.08);
+          transform: translateY(-1px);
+        }
+        .sem-exp-card-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+          background: rgba(12, 29, 34, 0.05);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 18px;
+          flex-shrink: 0;
+        }
+        .sem-exp-card-body {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+          width: 100%;
+          min-height: 0;
+        }
+        .sem-exp-card-content {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .sem-exp-card-title {
+          font-size: 14px;
+          font-weight: 700;
+          letter-spacing: -0.03em;
+          color: #0c1d22;
+          line-height: 1.3;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .sem-exp-card-meta {
+          font-size: 11px;
+          font-weight: 500;
+          color: rgba(12, 29, 34, 0.45);
+          line-height: 1.35;
+          min-height: 15px;
+        }
+        .sem-exp-card-cta {
+          margin-top: auto;
+          padding-top: 12px;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          color: #ec6435;
+          line-height: 1;
+        }
+        .sem-experiences-dots {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 14px;
+          padding-bottom: 2px;
+        }
+        .sem-experiences-dot {
+          height: 8px;
+          width: 8px;
+          border-radius: 9999px;
+          border: none;
+          padding: 0;
+          cursor: pointer;
+          background: rgba(12, 29, 34, 0.18);
+          transition: width 0.3s ease, background 0.3s ease;
+          font-family: inherit;
+        }
+        .sem-experiences-dot.is-active {
+          width: 28px;
+          background: #ec6435;
+        }
+        @media (min-width: 769px) {
+          .sem-experiences-swipe {
+            margin: 0;
+            padding-left: 0;
+            padding-right: 2.5rem;
+            scroll-padding-left: 0;
+            gap: 12px;
+          }
+          .sem-experiences-swipe-fade { right: 0; }
+          .sem-exp-card {
+            flex: 0 0 200px;
+            width: 200px;
+          }
+        }
+
+        /* Modal expérience */
+        .sem-exp-modal-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 2100;
+          background: rgba(12, 29, 34, 0.45);
+          backdrop-filter: blur(4px);
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          padding: 0;
+          animation: semExpModalIn 0.24s ease both;
+        }
+        .sem-exp-modal-backdrop.is-closing {
+          animation: semExpModalOut 0.22s ease both;
+        }
+        .sem-exp-modal-panel {
+          position: relative;
+          width: 100%;
+          max-width: 480px;
+          background: #fff;
+          border-radius: 20px 20px 0 0;
+          padding: 28px 24px calc(28px + env(safe-area-inset-bottom, 0px));
+          box-shadow: 0 -8px 40px rgba(12, 29, 34, 0.18);
+          animation: semExpPanelIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        .sem-exp-modal-panel.is-closing {
+          animation: semExpPanelOut 0.22s ease both;
+        }
+        @media (min-width: 640px) {
+          .sem-exp-modal-backdrop {
+            align-items: center;
+            padding: 24px;
+          }
+          .sem-exp-modal-panel {
+            border-radius: 18px;
+            padding: 32px 28px;
+          }
+        }
+        .sem-exp-modal-close {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          width: 34px;
+          height: 34px;
+          border-radius: 50%;
+          border: 1px solid rgba(12, 29, 34, 0.10);
+          background: #fff;
+          color: rgba(12, 29, 34, 0.55);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-family: inherit;
+        }
+        .sem-exp-modal-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          background: rgba(12, 29, 34, 0.05);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 22px;
+          margin-bottom: 14px;
+        }
+        .sem-exp-modal-title {
+          font-family: 'Poppins', sans-serif;
+          font-size: 20px;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          color: #0c1d22;
+          margin: 0 0 8px;
+          padding-right: 36px;
+          line-height: 1.2;
+        }
+        .sem-exp-modal-meta {
+          margin: 0 0 6px;
+          font-size: 13px;
+          font-weight: 600;
+          color: #ec6435;
+        }
+        .sem-exp-modal-producer {
+          margin: 0 0 14px;
+          font-size: 12px;
+          font-weight: 500;
+          color: rgba(12, 29, 34, 0.45);
+        }
+        .sem-exp-modal-desc {
+          margin: 0;
+          font-size: 14px;
+          line-height: 1.65;
+          color: rgba(12, 29, 34, 0.65);
+        }
+        @keyframes semExpModalIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes semExpModalOut {
+          from { opacity: 1; }
+          to { opacity: 0; }
+        }
+        @keyframes semExpPanelIn {
+          from { opacity: 0; transform: translateY(24px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes semExpPanelOut {
+          from { opacity: 1; transform: translateY(0); }
+          to { opacity: 0; transform: translateY(16px); }
+        }
+
         /* ── Format / inclus (sous infos pratiques) ── */
         .sem-offer-format {
           margin: 28px 0 8px;

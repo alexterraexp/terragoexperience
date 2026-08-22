@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { HOME_COLORS, HOME_RADIUS } from '../components/home/homeStyles';
 import { HOME_EMOJI } from '../lib/homeStorage';
 
-const EMOJI = {
-  ble: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/ble.png',
-  arbre: HOME_EMOJI.arbre,
+const ASSETS = {
+  sOrange:
+    'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/s-picto-orange.png',
 } as const;
 
 const MentionsLegales: React.FC = () => {
@@ -20,32 +20,36 @@ const MentionsLegales: React.FC = () => {
         background: HOME_COLORS.gray,
       }}
     >
-      <div className="relative mx-auto w-full max-w-6xl px-5 pb-24 pt-[calc(7.5rem+env(safe-area-inset-top))] sm:px-8 sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10rem+env(safe-area-inset-top))]">
-        {/* Stickers décoratifs — côtés du cadre */}
+      <div className="relative pb-24 pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10rem+env(safe-area-inset-top))]">
+        {/* Étoile foncée — bord gauche écran, déborde à l’extérieur */}
         <Image
-          src={EMOJI.ble}
+          src={HOME_EMOJI.etoile}
           alt=""
           aria-hidden
-          width={160}
-          height={160}
-          className="pointer-events-none absolute right-2 top-[calc(7.8rem+env(safe-area-inset-top))] z-20 hidden h-40 w-40 rotate-6 object-contain sm:block sm:-left-7 sm:right-auto sm:top-[calc(10.5rem+env(safe-area-inset-top))] sm:h-24 sm:w-24 sm:-rotate-12 lg:-left-9 lg:h-32 lg:w-32"
+          width={380}
+          height={380}
+          className="pointer-events-none absolute left-0 z-0 hidden h-[300px] w-[300px] -translate-x-[46%] object-contain lg:block xl:h-[380px] xl:w-[380px]"
+          style={{ top: 'clamp(1.75rem, 3vw, 3rem)' }}
         />
 
+        {/* S orange — bord droit écran, déborde à l’extérieur */}
+        <Image
+          src={ASSETS.sOrange}
+          alt=""
+          aria-hidden
+          width={384}
+          height={384}
+          className="pointer-events-none absolute bottom-0 right-0 z-0 hidden h-52 w-52 translate-x-[42%] translate-y-[42%] object-contain lg:block lg:h-96 lg:w-96"
+        />
+
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-5 sm:px-8">
         <div
-          className="relative z-10 overflow-visible bg-white px-6 py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-16"
+          className="overflow-visible bg-white px-6 py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-16"
           style={{
             borderRadius: HOME_RADIUS,
             fontFamily: "'Poppins', sans-serif",
           }}
         >
-          <Image
-            src={EMOJI.arbre}
-            alt=""
-            aria-hidden
-            width={288}
-            height={288}
-            className="pointer-events-none absolute -bottom-20 -right-2 z-20 h-44 w-44 -rotate-6 object-contain sm:-right-32 sm:bottom-24 sm:h-52 sm:w-52 sm:rotate-6 lg:-right-40 lg:bottom-32 lg:h-72 lg:w-72"
-          />
           <Link
             href="/"
             className="mb-8 inline-flex items-center gap-2 font-sans text-[11px] font-bold uppercase tracking-[0.12em] transition-colors hover:opacity-80"
@@ -268,6 +272,7 @@ const MentionsLegales: React.FC = () => {
               </p>
             </section>
           </div>
+        </div>
         </div>
       </div>
     </div>
