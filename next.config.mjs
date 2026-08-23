@@ -51,6 +51,8 @@ const DESTINATION_LIEUX = [
 
 const nextConfig = {
   images: {
+    // Images déjà optimisées sur Supabase (webp/avif) : pas de re-traitement Vercel (/_next/image).
+    unoptimized: true,
     // Next 16 bloque supabase.co en local (DNS NAT64 vu comme IP privée).
     dangerouslyAllowLocalIP: process.env.NODE_ENV === 'development',
     remotePatterns: [
