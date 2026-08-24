@@ -17,11 +17,13 @@ import {
   bottomImageGradientClass,
   homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
+  homeHeroSolidButtonClass,
 } from '../components/home/homeStyles';
 import type { HomeAssetUrls } from '../lib/homeStorage';
 import { HOME_EMOJI, HOME_PRODUCERS, HOME_STEPS, REGION_IMAGES, REGION_TAGS, regionDestinationPath } from '../lib/homeStorage';
 import PhotoCopyright from '../components/PhotoCopyright';
 import { getImageCopyright } from '../lib/imageCopyrights';
+import { useModal } from '../context/ModalContext';
 
 interface HomeProps {
   assets: HomeAssetUrls;
@@ -119,40 +121,44 @@ const BannerVideo: React.FC<{ src: string; poster?: string; className?: string }
 
 const FAQ_ITEMS = [
   {
-    q: 'Pourquoi choisir TerraGo pour organiser un événement d\'entreprise ?',
-    a: 'TerraGo imagine des expériences professionnelles qui sortent du cadre classique des séminaires. Nous vous emmenons chez celles et ceux qui font vivre les territoires : producteurs, artisans, agriculteurs et lieux engagés.\n\nVisite d\'une ferme, déjeuner chez un producteur, grande tablée au milieu des champs, atelier autour d\'un savoir-faire… Chaque événement est pensé pour créer de vrais moments de partage, favoriser la cohésion et faire découvrir autrement un territoire.\n\nNotre rôle : vous accompagner de A à Z pour construire une expérience authentique, conviviale et sur mesure, qui laisse autre chose qu\'un simple souvenir de séminaire.',
+    q: 'Pourquoi choisir TerraGo pour organiser un séminaire d\'entreprise ?',
+    a: 'TerraGo imagine et organise des séminaires d\'entreprise sur mesure, partout en France. Nous sélectionnons des lieux, producteurs et partenaires engagés pour créer des expériences qui mêlent cohésion, découverte, nature et démarche RSE.',
   },
   {
-    q: 'Quels types d\'événements accompagnez-vous ?',
-    a: 'Nous organisons des séminaires d\'entreprise, team building, conventions, lancements de marque, événements clients, soirées corporate et expériences collaborateurs, avec des formats adaptés à chaque entreprise.',
+    q: 'Pourquoi organiser un séminaire chez un producteur ?',
+    a: 'Un séminaire chez un producteur permet de sortir du cadre habituel et de vivre une expérience authentique, avec un peu de terre sur les mains. Vos équipes découvrent un métier, un savoir-faire et un territoire tout en partageant un moment collectif autour d\'une activité concrète.',
   },
   {
-    q: 'Les expériences proposées sont-elles personnalisables ?',
-    a: 'Oui. Chaque projet est construit sur mesure en fonction de vos objectifs, du profil de vos équipes, de votre budget et de l\'ambiance recherchée.',
+    q: 'Où organiser un séminaire au vert ?',
+    a: 'TerraGo organise des séminaires au vert partout en France, dans des fermes, domaines, vignobles, maisons de campagne et lieux en pleine nature. Nous sélectionnons le territoire et le lieu en fonction de vos objectifs, de votre équipe et de votre budget.',
   },
   {
-    q: 'Dans quelles régions intervenez-vous ?',
-    a: 'Nous créons des expériences partout en France en sélectionnant des producteurs, artisans et partenaires locaux capables de faire vivre leur territoire et leurs savoir-faire.',
+    q: 'Comment organiser un séminaire RSE ?',
+    a: 'Un séminaire RSE peut intégrer des rencontres avec des producteurs, des activités autour de l\'agriculture et de l\'alimentation, des ateliers de sensibilisation ou encore des actions concrètes pour les territoires. TerraGo construit ces expériences en fonction de vos engagements et de vos objectifs.',
   },
   {
-    q: 'Quel budget prévoir pour un événement d\'entreprise ?',
-    a: 'Le budget dépend du nombre de participants, de la durée, de la destination, de l\'hébergement, de la restauration et des expériences choisies. Pour vous donner un ordre d\'idée, nos événements commencent à partir de 80 € par personne pour une journée ou une expérience, 150 € par personne pour une journée avec repas et activités, et 350 € par personne pour un séminaire avec nuitée.\n\nChaque projet est ensuite construit sur mesure selon vos envies et votre cahier des charges. Nous vous accompagnons pour trouver le juste équilibre entre expérience, qualité et budget.',
+    q: 'Quelle activité choisir pour un team building original ?',
+    a: 'Tout dépend de votre équipe et de l\'objectif recherché. Atelier cuisine, randonnée, récolte, découverte d\'un savoir-faire, défi collectif, activité sportive ou expérience nature : TerraGo sélectionne des activités qui favorisent la participation et les échanges.',
   },
   {
-    q: 'Combien de participants pouvez-vous accompagner ?',
-    a: 'De quelques collaborateurs à plusieurs centaines de participants, nous adaptons l\'organisation, les lieux et les expériences à la taille de votre groupe. Petite équipe, séminaire d\'entreprise ou événement de grande ampleur : nous construisons un format adapté à votre groupe, à votre destination et à vos objectifs.',
+    q: 'Combien coûte un séminaire d\'entreprise ?',
+    a: 'Le budget dépend du nombre de participants, de la durée, du lieu et des prestations choisies. Chez TerraGo, les expériences commencent autour de 80 € par personne, une journée avec repas et activités autour de 150 € par personne, et un séminaire avec hébergement à partir d\'environ 350 € par personne.',
   },
   {
-    q: 'Quel délai faut-il prévoir pour organiser un événement ?',
-    a: 'Idéalement, nous recommandons d\'anticiper plusieurs mois à l\'avance afin de garantir les meilleurs lieux et partenaires. Nous pouvons également étudier des demandes avec des délais plus courts selon les disponibilités.',
+    q: 'Combien de participants peut accompagner TerraGo ?',
+    a: 'TerraGo accompagne aussi bien les petites équipes que les groupes plus importants. Le nombre de participants dépend du lieu et des activités choisies, mais nous construisons des séminaires adaptés à la taille et aux besoins de chaque entreprise.',
   },
   {
-    q: 'Pouvez-vous gérer l\'ensemble de l\'organisation ?',
-    a: 'Oui. TerraGo peut prendre en charge tout ou partie de votre événement : recherche du lieu, hébergement, restauration, transport, activités, coordination et accompagnement sur place.',
+    q: 'Peut-on organiser un séminaire avec hébergement et transport ?',
+    a: 'Oui. TerraGo peut prendre en charge tout ou partie de l\'organisation de votre séminaire, notamment la recherche du lieu, l\'hébergement, la restauration, le transport, les activités et la coordination sur place.',
   },
   {
-    q: 'Pourquoi intégrer une expérience avec un producteur dans un séminaire ?',
-    a: 'Parce que ces rencontres créent des moments authentiques et fédérateurs. Découvrir un métier, participer à un savoir-faire ou comprendre un territoire permet aux équipes de vivre une expérience différente, plus humaine et plus mémorable.',
+    q: 'Dans quelles régions TerraGo organise-t-il des séminaires ?',
+    a: 'TerraGo organise des séminaires partout en France, notamment en Bretagne, Normandie, Pays de la Loire, Nouvelle-Aquitaine, Occitanie, Provence, Auvergne-Rhône-Alpes, Bourgogne et dans les Alpes. Nous pouvons également construire un projet dans une autre région selon vos besoins.',
+  },
+  {
+    q: 'Peut-on personnaliser entièrement son événement d\'entreprise ?',
+    a: 'Oui. Chaque séminaire TerraGo est construit sur mesure selon vos objectifs, le nombre de participants, votre budget, la durée souhaitée et l\'expérience que vous souhaitez faire vivre à vos équipes. Nous adaptons le lieu, les activités, les repas, l\'hébergement et le programme.',
   },
 ] as const;
 
@@ -203,18 +209,18 @@ const FaqAccordion: React.FC = () => {
 const PRODUCER_POINTS = [
   {
     n: '01',
-    title: 'Des producteurs engagés & passionnés',
-    desc: 'Nous visitons et sélectionnons chaque producteur pour son authenticité, son engagement et l\'unicité de son lieu.',
+    title: 'Des partenaires sélectionnés avec soin',
+    desc: 'Nous sélectionnons des lieux, producteurs et acteurs locaux pour leur savoir-faire, leur histoire, leur engagement et la qualité de leur accueil.',
   },
   {
     n: '02',
-    title: 'Des rencontres vraies',
-    desc: 'Chaque séjour est pensé pour favoriser les échanges, loin des activités artificielles.',
+    title: 'Des expériences qui ont du sens',
+    desc: 'Chaque événement est pensé pour favoriser les échanges, sortir du quotidien et créer de vrais souvenirs collectifs.',
   },
   {
     n: '03',
     title: 'Un impact positif',
-    desc: 'Votre évènement soutient directement l\'économie locale et nos producteurs engagés.',
+    desc: 'Votre événement participe à faire vivre les territoires, les savoir-faire et les acteurs locaux qui vous accueillent.',
   },
 ] as const;
 
@@ -340,6 +346,7 @@ const SwipeDots: React.FC<{
 );
 
 const Home: React.FC<HomeProps> = ({ assets }) => {
+  const { openModal } = useModal();
   const regionScrollRef = useRef<HTMLDivElement>(null);
   const conceptScrollRef = useRef<HTMLDivElement>(null);
   const stepsScrollRef = useRef<HTMLDivElement>(null);
@@ -354,37 +361,39 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
   const conceptCards = [
     {
-      image: assets.conceptAgir,
-      alt: 'Pour agir et sensibiliser',
-      lead: (
-        <>
-          Pour agir et
-          <br />
-        </>
-      ),
-      rest: 'sensibiliser',
-    },
-    {
       image: assets.conceptLien,
       alt: 'Pour créer du lien',
-      lead: (
+      title: (
         <>
-          Pour créer
-          <br />
+          Pour créer <span className="font-bold">du lien.</span>
         </>
       ),
-      rest: 'du lien',
+      hover:
+        'Des expériences collectives pour renforcer la cohésion et partager autre chose que le quotidien du bureau.',
+    },
+    {
+      image: assets.conceptAgir,
+      alt: 'Pour agir ensemble',
+      title: (
+        <>
+          Pour <span className="font-bold">agir</span>
+          <br />
+          <span className="font-bold">ensemble.</span>
+        </>
+      ),
+      hover:
+        'Des activités les mains dans la terre, et de rencontres avec des producteurs engagés pour donner vie à vos engagements RSE et mieux comprendre les enjeux de nos territoires.',
     },
     {
       image: assets.conceptInspirer,
       alt: 'Pour inspirer',
-      lead: (
+      title: (
         <>
-          Pour
-          <br />
+          Pour <span className="font-bold">inspirer.</span>
         </>
       ),
-      rest: 'inspirer',
+      hover:
+        'Un autre cadre pour prendre du recul, réfléchir ensemble et regarder son entreprise autrement.',
     },
   ];
 
@@ -449,13 +458,14 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="mb-10 text-center sm:mb-14">
             <h2 className="mx-auto max-w-4xl font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]">
-              Des évènements <span className="font-bold">clés en main,</span> pensés pour répondre à vos{' '}
-              <span className="font-bold">objectifs d&apos;entreprise.</span>
+              Des séminaires qui font{' '}
+              <span className="font-bold">bien plus</span> que réunir vos équipes.
             </h2>
             <p className="mx-auto mt-5 max-w-3xl font-sans text-[15px] font-normal leading-[1.65] tracking-[-0.04em] text-[#0c1d22]/65 sm:mt-6 sm:text-[17px]">
-              Séminaire, team building, convention, journée RSE :
-              <br />
-              nos propositions sont 100% personnalisées et adaptées à vos objectifs !
+              Chez TerraGo, un séminaire est l&apos;occasion de sortir du cadre, de vivre quelque chose
+              ensemble et de découvrir autrement les territoires qui nous entourent. Chaque expérience
+              est pensée pour répondre à vos objectifs : cohésion d&apos;équipe, démarche RSE, réflexion
+              collective ou simplement l&apos;envie de changer d&apos;air.
             </p>
           </div>
         </div>
@@ -499,10 +509,14 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                 {getImageCopyright(card.image) ? (
                   <PhotoCopyright className="z-[2]" label={getImageCopyright(card.image)!} />
                 ) : null}
-                <p className="pointer-events-none absolute left-6 right-5 top-[50%] z-10 font-sans text-[34px] leading-[1.12] tracking-[-0.075em] text-white">
-                  <span className="font-normal">{card.lead}</span>
-                  <span className="font-bold">{card.rest}</span>
-                </p>
+                <div className="pointer-events-none absolute left-6 right-5 top-[50%] z-10">
+                  <p className="font-sans text-[34px] font-normal leading-[1.12] tracking-[-0.075em] text-white">
+                    {card.title}
+                  </p>
+                  <p className="mt-3 font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.02em] text-white/85">
+                    {card.hover}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
@@ -535,14 +549,18 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                     priority={i === 0}
                     className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.1]"
                   />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent transition-opacity duration-500 group-hover:opacity-95" />
                   {getImageCopyright(card.image) ? (
                     <PhotoCopyright className="z-[2]" label={getImageCopyright(card.image)!} />
                   ) : null}
-                  <p className="absolute left-7 right-6 top-[52%] z-10 font-sans text-[32px] leading-[1.15] tracking-[-0.075em] text-white lg:text-[36px]">
-                    <span className="font-normal">{card.lead}</span>
-                    <span className="font-bold">{card.rest}</span>
-                  </p>
+                  <div className="absolute left-7 right-6 top-[52%] z-10 lg:left-8 lg:right-7">
+                    <p className="font-sans text-[32px] font-normal leading-[1.15] tracking-[-0.075em] text-white lg:text-[36px]">
+                      {card.title}
+                    </p>
+                    <p className="mt-3 max-w-[95%] font-sans text-[14px] font-normal leading-[1.5] tracking-[-0.02em] text-white/90 opacity-0 transition-opacity duration-300 group-hover:opacity-100 lg:text-[15px]">
+                      {card.hover}
+                    </p>
+                  </div>
                 </div>
               );
             })}
@@ -571,10 +589,14 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="mb-8 ml-auto max-w-3xl text-right sm:mb-10">
             <h2 className="font-sans text-[38px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[44px] lg:text-[52px]">
-              Vivez une <span className="font-bold">expérience collective</span> au cœur des savoir-faire français.
+              Des expériences <span className="font-bold">originales</span> à vivre ensemble.
             </h2>
             <p className="mt-7 font-sans text-[15px] font-normal leading-[1.65] tracking-[-0.04em] text-[#0c1d22]/65 sm:mt-9 sm:text-[17px]">
-              Oubliez les activités de team building standardisées. Avec TerraGo, vos équipes deviennent actrices d&apos;une expérience authentique aux côtés de celles et ceux qui font vivre nos territoires. Au contact de producteurs passionnés, vos collaborateurs découvrent des métiers, relèvent des défis collectifs et partagent un moment différent autour du goût, de la nature et du savoir-faire.
+              Oubliez les activités de team building standardisées. Avec TerraGo, vos équipes deviennent
+              actrices d&apos;une expérience authentique aux côtés de celles et ceux qui font vivre nos
+              territoires. Mettre les mains dans la terre, cuisiner ensemble, découvrir un savoir-faire,
+              relever un défi ou partager une grande tablée : nos expériences sont imaginées avec des
+              producteurs passionnés et adaptées à votre équipe.
             </p>
           </div>
 
@@ -806,8 +828,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
             {/* Titre + points */}
             <div className="order-1 lg:order-2">
               <h2 className="font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]">
-                Des <span className="font-bold">rencontres authentiques</span> pour des souvenirs durables.
+                Des <span className="font-bold">rencontres authentiques</span> pour des souvenirs durables
               </h2>
+              <p className="mt-5 font-sans text-[15px] font-normal leading-[1.65] tracking-[-0.04em] text-[#0c1d22]/65 sm:mt-6 sm:text-[17px]">
+                Une autre façon de concevoir vos événements d&apos;entreprise, plus humaine, plus locale et plus
+                responsable.
+              </p>
 
               <ul className="mt-10 space-y-7 sm:mt-12">
                 {PRODUCER_POINTS.map((point) => (
@@ -1071,10 +1097,14 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
         </div>
       </section>
 
-      {/* ── FAQ ── */}
+      {/* ── FAQ + CTA FINAL ── */}
       <section
         className="relative"
-        style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#f4f4f4' }}
+        style={{
+          paddingTop: homeSectionPadding,
+          paddingBottom: homeSectionPadding,
+          background: HOME_COLORS.gray,
+        }}
       >
         {/* Étoile décorative — coupée par le bord gauche de l'écran (overflow-x-hidden du wrapper) */}
         <Image
@@ -1096,10 +1126,47 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                 <span className="font-normal">fréquentes</span>
               </h2>
               <p className={`${homeParagraphClass} mt-10 max-w-sm`}>
-                Vous avez une question ? Consultez notre FAQ ou contactez-nous directement.
+                Vous préparez un séminaire ou un événement d&apos;entreprise ? Voici les réponses aux
+                questions que vous vous posez le plus souvent.
               </p>
             </div>
             <FaqAccordion />
+          </div>
+        </div>
+
+        <div
+          className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8"
+          style={{ marginTop: 'clamp(3.5rem, 8vw, 6rem)' }}
+        >
+          <div className="relative">
+            <Image
+              src={HOME_EMOJI.ble}
+              alt=""
+              aria-hidden
+              width={160}
+              height={160}
+              className="pointer-events-none absolute right-0 top-1/2 z-20 h-20 w-20 -translate-y-1/2 translate-x-1/2 object-contain sm:h-28 sm:w-28 lg:h-36 lg:w-36"
+            />
+            <div
+              className="relative overflow-hidden px-6 py-12 text-center sm:px-12 sm:py-14 lg:py-16"
+              style={{ background: HOME_COLORS.orange, borderRadius: HOME_RADIUS }}
+            >
+              <h2 className="mx-auto max-w-2xl font-sans text-[28px] font-normal leading-[1.1] tracking-[-0.07em] text-white sm:text-[36px] lg:text-[42px]">
+                Prêt à imaginer votre prochain{' '}
+                <span className="font-bold">séminaire d&apos;entreprise</span> ?
+              </h2>
+              <p className="mx-auto mt-4 max-w-xl font-sans text-[14px] font-normal leading-[1.7] tracking-[-0.04em] text-white/85 sm:mt-5 sm:text-[15px]">
+                Parlez-nous de votre équipe, de vos envies et de vos contraintes. Nous vous proposerons une
+                expérience qui vous ressemble.
+              </p>
+              <button
+                type="button"
+                onClick={() => openModal()}
+                className={`mt-8 ${homeHeroSolidButtonClass} bg-white text-[#0c1d22] hover:bg-[#0c1d22] hover:text-white sm:mt-10`}
+              >
+                Construire votre prochain séminaire
+              </button>
+            </div>
           </div>
         </div>
       </section>

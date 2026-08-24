@@ -5,6 +5,7 @@ import {
   SEMINAIRE_ENJEU_SLUGS,
   getSeminaireEnjeu,
   seminaireEnjeuPath,
+  stripInlineLinks,
   type SeminaireEnjeuSlug,
 } from '../../../lib/seminaireEnjeux';
 
@@ -96,7 +97,7 @@ function JsonLd({ slug }: { slug: string }) {
       name: item.question,
       acceptedAnswer: {
         '@type': 'Answer',
-        text: item.answer,
+        text: stripInlineLinks(item.answer),
       },
     })),
   };

@@ -155,7 +155,7 @@ const CharteRse: React.FC = () => {
               <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                 TerraGo
               </p>
-              <h1 className="mt-2 max-w-3xl font-sans text-[clamp(1.85rem,4.5vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
+              <h1 className="mt-2 max-w-3xl font-sans text-[clamp(2.25rem,5.2vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
                 Charte d&apos;engagement <span className="font-bold">RSE</span>
               </h1>
               <p className="mt-3 max-w-xl font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.02em] text-white/85 sm:text-[15px]">

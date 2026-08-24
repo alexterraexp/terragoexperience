@@ -19,7 +19,7 @@ import { protectedImageProps } from '../lib/protectedImage';
 import { getImageCopyright } from '../lib/imageCopyrights';
 
 const sectionTitleClass =
-  'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
+  'font-sans text-[42px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[44px] lg:text-[48px]';
 
 const CategoryHeading: React.FC<{ children: React.ReactNode; className?: string }> = ({
   children,

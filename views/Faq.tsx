@@ -9,6 +9,7 @@ import {
   HOME_RADIUS,
   homeParagraphClass,
   homeSectionPadding,
+  homeHeroSolidButtonClass,
 } from '../components/home/homeStyles';
 import { FAQ_SECTIONS, type FaqItem } from '../lib/faq';
 
@@ -93,8 +94,8 @@ export default function Faq() {
 
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
-      <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))]">
-        <div className="mx-auto max-w-4xl px-5 pb-10 sm:px-8 sm:pb-14">
+      <section className="relative w-full bg-white pt-[calc(10.5rem+env(safe-area-inset-top))] sm:pt-[calc(13rem+env(safe-area-inset-top))]">
+        <div className="mx-auto max-w-4xl px-5 pb-24 sm:px-8 sm:pb-28">
           <p className="text-center font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#ec6435]">
             FAQ
           </p>
@@ -110,7 +111,7 @@ export default function Faq() {
               <a
                 key={section.id}
                 href={`#${section.id}`}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(12,29,34,0.12)] bg-white px-3 py-1.5 font-sans text-[12px] font-semibold tracking-[-0.03em] text-[#0c1d22] transition-colors hover:border-[#ec6435] hover:text-[#ec6435]"
+                className="inline-flex items-center gap-2 rounded-full border border-[rgba(12,29,34,0.12)] bg-white px-4 py-2 font-sans text-[13px] font-semibold tracking-[-0.03em] text-[#0c1d22] transition-colors hover:border-[#ec6435] hover:text-[#ec6435] sm:text-[14px]"
               >
                 <span aria-hidden>{section.emoji}</span>
                 {section.title}
@@ -158,7 +159,7 @@ export default function Faq() {
           <button
             type="button"
             onClick={() => openModal()}
-            className="mt-8 inline-flex items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:mt-10 sm:px-8 sm:py-2.5 sm:text-[12px]"
+            className={`mt-8 ${homeHeroSolidButtonClass} bg-white text-[#0c1d22] hover:bg-[#0c1d22] hover:text-white sm:mt-10`}
           >
             Parlons de votre projet
           </button>

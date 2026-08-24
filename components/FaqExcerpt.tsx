@@ -10,10 +10,12 @@ import { FaqAnswerBody } from './FaqAnswer';
 type Props = {
   excerpt: FaqExcerptKey;
   intro?: string;
+  /** Nombre max d’items (défaut 3). */
+  limit?: number;
 };
 
-export default function FaqExcerpt({ excerpt, intro }: Props) {
-  const items = getFaqExcerptItems(excerpt, 3);
+export default function FaqExcerpt({ excerpt, intro, limit = 3 }: Props) {
+  const items = getFaqExcerptItems(excerpt, limit);
   const [openId, setOpenId] = useState<string | null>(null);
 
   if (items.length === 0) return null;

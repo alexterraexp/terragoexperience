@@ -13,6 +13,7 @@ import {
   homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
   homeHeroOutlineButtonClass,
+  homeOnDarkOutlineButtonClass,
   homeParagraphClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
@@ -22,7 +23,10 @@ import {
   getSeminaireEnjeu,
   seminaireEnjeuPath,
   type SeminaireEnjeu as EnjeuData,
+  type SeminaireEnjeuCta,
   type SeminaireEnjeuExample,
+  type SeminaireEnjeuLinkBlock,
+  type SeminaireEnjeuTheme,
 } from '../lib/seminaireEnjeux';
 import {
   EXEMPLES_SEMINAIRE_ENTREPRISE_PATH,
@@ -30,8 +34,6 @@ import {
   seminaireExempleHrefFromHints,
 } from '../lib/exemplesSeminaireEntreprise';
 import { getImageCopyright } from '../lib/imageCopyrights';
-import FaqExcerpt from '../components/FaqExcerpt';
-import type { FaqExcerptKey } from '../lib/faq';
 import {
   SEMINAIRE_FORMAT_LABELS,
   fetchSeminaires,
@@ -42,11 +44,6 @@ import {
 
 const S_ORANGE =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/s-picto-orange.png';
-
-const ENJEU_FAQ_EXCERPT: Partial<Record<string, FaqExcerptKey>> = {
-  cohesion: 'team-building-original',
-  'sensibilisation-rse': 'rse',
-};
 
 const sectionTitleClass =
   'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
@@ -61,6 +58,7 @@ const HERO_PICTO_BY_SLUG: Record<string, string> = {
   cohesion: `${HOME_EMOJI}/feu.png`,
   'sensibilisation-rse': `${HOME_EMOJI}/emoji-branche.png`,
   'inspiration-miroir': `${HOME_EMOJI}/mains-dans-la-terre.png`,
+  'au-vert': `${HOME_EMOJI}/emoji-arbre.png`,
 };
 
 const ABEILLE =
@@ -84,6 +82,78 @@ function preserveAcronyms(text: string): string {
     if (ACRONYMS.has(upper)) return upper;
     return word;
   });
+}
+
+/** Rend un texte avec liens `[[libellé|/chemin]]`. */
+function LinkedText({
+  text,
+  className,
+  linkClassName = 'font-semibold text-[#0c1d22] underline decoration-[#ec6435]/70 underline-offset-[3px] transition-colors hover:decoration-[#ec6435]',
+}: {
+  text: string;
+  className?: string;
+  linkClassName?: string;
+}) {
+  const parts = text.split(/(\[\[[^\]]+\|[^\]]+\]\])/g);
+  return (
+    <span className={className}>
+      {parts.map((part, i) => {
+        const m = part.match(/^\[\[([^\]|]+)\|([^\]]+)\]\]$/);
+        if (!m) return <React.Fragment key={i}>{preserveAcronyms(part)}</React.Fragment>;
+        return (
+          <Link key={i} href={m[2]} className={linkClassName}>
+            {preserveAcronyms(m[1])}
+          </Link>
+        );
+      })}
+    </span>
+  );
+}
+
+const EnjeuCtaButton: React.FC<{
+  cta: SeminaireEnjeuCta;
+  className: string;
+  onModal: () => void;
+}> = ({ cta, className, onModal }) => {
+  if ('action' in cta && cta.action === 'modal') {
+    return (
+      <button type="button" onClick={onModal} className={className}>
+        {cta.label}
+      </button>
+    );
+  }
+  if ('href' in cta) {
+    return (
+      <Link href={cta.href} className={className}>
+        {cta.label}
+      </Link>
+    );
+  }
+  return null;
+};
+
+/** Rend un titre avec une portion en gras (correspondance exacte après normalisation des sigles). */
+function TitleWithBold({
+  full,
+  bold,
+  boldClassName = 'font-bold',
+}: {
+  full: string;
+  bold?: string;
+  boldClassName?: string;
+}) {
+  const text = preserveAcronyms(full);
+  const boldText = bold ? preserveAcronyms(bold) : '';
+  if (!boldText) return <>{text}</>;
+  const i = text.indexOf(boldText);
+  if (i < 0) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, i)}
+      <span className={boldClassName}>{boldText}</span>
+      {text.slice(i + boldText.length)}
+    </>
+  );
 }
 
 const ScrollAnimate: React.FC<{
@@ -140,8 +210,7 @@ function inclusLabel(key: string): string {
 
 const ExampleFormatPanel: React.FC<{
   fmt: Format;
-  detailHref: string;
-}> = ({ fmt, detailHref }) => {
+}> = ({ fmt }) => {
   return (
     <div className="pt-1">
       {fmt.inclus.length > 0 && (
@@ -189,12 +258,6 @@ const ExampleFormatPanel: React.FC<{
           </div>
         </div>
       )}
-
-      <div className="mt-6">
-        <Link href={detailHref} className={homeCtaOutlineClass}>
-          Voir l&apos;offre en détail
-        </Link>
-      </div>
     </div>
   );
 };
@@ -202,8 +265,8 @@ const ExampleFormatPanel: React.FC<{
 const ExampleSeminarBlock: React.FC<{
   example: SeminaireEnjeuExample;
   displayTitle: string;
-}> = ({ example, displayTitle }) => {
-  const { openModal } = useModal();
+  exampleLead?: string;
+}> = ({ example, displayTitle, exampleLead }) => {
   const [seminaire, setSeminaire] = useState<Seminaire | null>(null);
   const [loading, setLoading] = useState(true);
   const [openFormat, setOpenFormat] = useState<SeminaireFormatId | null>(null);
@@ -263,6 +326,11 @@ const ExampleSeminarBlock: React.FC<{
         <h2 className={`mt-3 max-w-2xl ${sectionTitleClass}`}>
           Un exemple de <span className="font-bold">{displayTitle}</span>.
         </h2>
+        {exampleLead ? (
+          <p className={`mt-4 max-w-2xl ${homeParagraphClass}`}>
+            {preserveAcronyms(exampleLead)}
+          </p>
+        ) : null}
       </ScrollAnimate>
 
       <div className="mt-8 grid grid-cols-1 items-start gap-6 lg:mt-10 lg:grid-cols-2 lg:gap-10">
@@ -302,75 +370,69 @@ const ExampleSeminarBlock: React.FC<{
 
           {loading ? (
             <p className={`mt-8 ${homeParagraphClass}`}>Chargement de l&apos;offre…</p>
-          ) : formatRows.length === 0 ? (
-            <Link href={detailHref} className={`mt-8 self-start ${homeCtaOutlineClass}`}>
-              Voir l&apos;offre en détail
-            </Link>
           ) : (
             <div className="mt-8 flex flex-col">
-              {formatRows.map((row) => {
-                const isOpen = openFormat === row.id;
-                const meta = [row.fmt.duree?.trim(), row.fmt.participants?.trim()]
-                  .filter(Boolean)
-                  .join(' · ');
-                return (
-                  <div
-                    key={row.id}
-                    className="border-b border-[rgba(12,29,34,0.12)] first:border-t"
-                  >
-                    <button
-                      type="button"
-                      className="flex w-full items-center gap-3 py-5 text-left transition-colors hover:bg-[rgba(12,29,34,0.02)] sm:gap-4"
-                      onClick={() => setOpenFormat(isOpen ? null : row.id)}
-                      aria-expanded={isOpen}
-                    >
-                      <span className="min-w-0 flex-1">
-                        <span className="block font-sans text-[15px] font-bold tracking-[-0.03em] text-[#0c1d22] sm:text-[16px]">
-                          {row.title}
-                        </span>
-                        {meta ? (
-                          <span className="mt-1 block font-sans text-[13px] font-normal tracking-[-0.02em] text-[#0c1d22]/55">
-                            {meta}
-                          </span>
-                        ) : null}
-                      </span>
-                      <ChevronDown
-                        size={18}
-                        strokeWidth={1.8}
-                        aria-hidden
-                        className="shrink-0 transition-transform duration-300"
-                        style={{
-                          color: isOpen ? HOME_COLORS.orange : 'rgba(12,29,34,0.4)',
-                          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                        }}
-                      />
-                    </button>
+              {formatRows.length > 0 ? (
+                formatRows.map((row) => {
+                  const isOpen = openFormat === row.id;
+                  const meta = [row.fmt.duree?.trim(), row.fmt.participants?.trim()]
+                    .filter(Boolean)
+                    .join(' · ');
+                  return (
                     <div
-                      className="grid transition-all duration-300"
-                      style={{
-                        gridTemplateRows: isOpen ? '1fr' : '0fr',
-                        opacity: isOpen ? 1 : 0,
-                      }}
+                      key={row.id}
+                      className="border-b border-[rgba(12,29,34,0.12)] first:border-t"
                     >
-                      <div className="overflow-hidden">
-                        <div className="pb-6">
-                          <ExampleFormatPanel
-                            fmt={row.fmt}
-                            detailHref={detailHref}
-                          />
+                      <button
+                        type="button"
+                        className="flex w-full items-center gap-3 py-5 text-left transition-colors hover:bg-[rgba(12,29,34,0.02)] sm:gap-4"
+                        onClick={() => setOpenFormat(isOpen ? null : row.id)}
+                        aria-expanded={isOpen}
+                      >
+                        <span className="min-w-0 flex-1">
+                          <span className="block font-sans text-[15px] font-bold tracking-[-0.03em] text-[#0c1d22] sm:text-[16px]">
+                            {row.title}
+                          </span>
+                          {meta ? (
+                            <span className="mt-1 block font-sans text-[13px] font-normal tracking-[-0.02em] text-[#0c1d22]/55">
+                              {meta}
+                            </span>
+                          ) : null}
+                        </span>
+                        <ChevronDown
+                          size={18}
+                          strokeWidth={1.8}
+                          aria-hidden
+                          className="shrink-0 transition-transform duration-300"
+                          style={{
+                            color: isOpen ? HOME_COLORS.orange : 'rgba(12,29,34,0.4)',
+                            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                          }}
+                        />
+                      </button>
+                      <div
+                        className="grid transition-all duration-300"
+                        style={{
+                          gridTemplateRows: isOpen ? '1fr' : '0fr',
+                          opacity: isOpen ? 1 : 0,
+                        }}
+                      >
+                        <div className="overflow-hidden">
+                          <div className="pb-6">
+                            <ExampleFormatPanel fmt={row.fmt} />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-              <button
-                type="button"
-                onClick={() => openModal()}
+                  );
+                })
+              ) : null}
+              <Link
+                href={detailHref}
                 className={`mt-8 self-start ${homeCtaOutlineGhostClass}`}
               >
-                Demander un devis
-              </button>
+                Découvrir le séminaire chez {example.producerName}
+              </Link>
             </div>
           )}
         </ScrollAnimate>
@@ -413,7 +475,9 @@ const FaqAccordion: React.FC<{ items: EnjeuData['faq'] }> = ({ items }) => {
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`${homeParagraphClass} pb-4 pr-8`}>{preserveAcronyms(item.answer)}</p>
+                <p className={`${homeParagraphClass} pb-4 pr-8`}>
+                  <LinkedText text={item.answer} />
+                </p>
               </div>
             </div>
           </div>
@@ -479,6 +543,136 @@ const ProgramAccordion: React.FC<{ items: EnjeuData['programHighlights'] }> = ({
   );
 };
 
+const LinkBlockGrid: React.FC<{
+  items: SeminaireEnjeuLinkBlock[];
+}> = ({ items }) => (
+  <div className="mt-8 grid grid-cols-1 gap-8 sm:mt-10 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-9">
+    {items.map((item, i) => (
+      <ScrollAnimate key={item.title} delay={i * 50}>
+        <h3 className="font-sans text-[16px] font-bold tracking-[-0.03em] text-[#0c1d22] sm:text-[17px]">
+          {preserveAcronyms(item.title)}
+        </h3>
+        <p className={`mt-2.5 ${homeParagraphClass}`}>{preserveAcronyms(item.text)}</p>
+        <Link
+          href={item.href}
+          className="mt-3 inline-flex font-sans text-[13px] font-semibold tracking-[-0.02em] text-[#ec6435] transition-opacity hover:opacity-70 sm:text-[14px]"
+        >
+          → {item.linkLabel ?? item.title}
+        </Link>
+      </ScrollAnimate>
+    ))}
+  </div>
+);
+
+const formatRowButtonClass =
+  'inline-flex w-fit max-w-full shrink-0 items-center justify-center rounded-full border border-white px-5 py-1.5 text-center text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#0c1d22] sm:px-10 sm:py-2.5 sm:text-[13px]';
+
+const FormatRows: React.FC<{
+  items: SeminaireEnjeuLinkBlock[];
+  dark?: boolean;
+}> = ({ items, dark = false }) => (
+  <div
+    className={`mt-8 flex flex-col border-t sm:mt-10 ${
+      dark ? 'border-white/15' : 'border-[rgba(12,29,34,0.12)]'
+    }`}
+  >
+    {items.map((item) => (
+      <div
+        key={item.title}
+        className={`flex flex-col gap-3 border-b py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-6 ${
+          dark ? 'border-white/15' : 'border-[rgba(12,29,34,0.12)]'
+        }`}
+      >
+        <div className="min-w-0 flex-1">
+          <p
+            className={`font-sans text-[15px] font-bold tracking-[-0.03em] sm:text-[16px] ${
+              dark ? 'text-white' : 'text-[#0c1d22]'
+            }`}
+          >
+            {preserveAcronyms(item.title)}
+          </p>
+          <p
+            className={`mt-1 font-sans text-[13px] font-normal leading-[1.65] tracking-[-0.03em] sm:text-[14px] ${
+              dark ? 'text-white/80' : 'text-[#0c1d22]/65'
+            }`}
+          >
+            {preserveAcronyms(item.text)}
+          </p>
+        </div>
+        <Link href={item.href} className={dark ? formatRowButtonClass : homeCtaOutlineGhostClass}>
+          {preserveAcronyms(item.linkLabel ?? item.title)}
+        </Link>
+      </div>
+    ))}
+  </div>
+);
+
+const ThemesRow: React.FC<{
+  themes: SeminaireEnjeuTheme[];
+  ariaLabel?: string;
+}> = ({ themes, ariaLabel = 'Thématiques' }) => {
+  const gridColsClass =
+    themes.length >= 5
+      ? 'lg:grid-cols-5'
+      : themes.length === 3
+        ? 'lg:grid-cols-3'
+        : 'lg:grid-cols-4';
+
+  return (
+    <div
+      className={`mt-10 grid grid-cols-1 gap-3 sm:mt-12 sm:grid-cols-2 sm:gap-4 ${gridColsClass}`}
+      role="list"
+      aria-label={ariaLabel}
+    >
+      {themes.map((theme, i) => {
+        const cardClass = `group theme-card flex w-full items-start gap-2.5 border bg-white p-4 transition-all duration-300 ease-out sm:gap-3 sm:p-5 ${
+          theme.href ? 'cursor-pointer' : 'cursor-default'
+        } border-[rgba(12,29,34,0.10)] hover:-translate-y-0.5 hover:border-[rgba(236,100,53,0.35)] hover:shadow-[0_8px_28px_rgba(12,29,34,0.12)]`;
+        const cardStyle = { borderRadius: HOME_RADIUS };
+        const cardInner = (
+          <>
+            <span
+              className="shrink-0 text-[14px] leading-[1.55] sm:text-[15px] sm:leading-[1.6]"
+              aria-hidden
+            >
+              {theme.emoji}
+            </span>
+            <div className="min-w-0 flex-1 text-center font-sans text-[14px] leading-[1.55] tracking-[-0.02em] sm:text-[15px] sm:leading-[1.6]">
+              <span className="font-bold text-[#0c1d22]">{preserveAcronyms(theme.title)}</span>
+              <span
+                className="grid overflow-hidden transition-[grid-template-rows,opacity,margin] duration-300 ease-out group-hover:mt-1 group-hover:grid-rows-[1fr] group-hover:opacity-100 group-focus-within:mt-1 group-focus-within:grid-rows-[1fr] group-focus-within:opacity-100 grid-rows-[0fr] opacity-0"
+              >
+                <span className="min-h-0 overflow-hidden font-normal text-[rgba(12,29,34,0.72)]">
+                  {preserveAcronyms(theme.description)}
+                </span>
+              </span>
+            </div>
+          </>
+        );
+
+        return (
+          <ScrollAnimate key={theme.title} delay={i * 50} className="min-w-0">
+            {theme.href ? (
+              <Link
+                href={theme.href}
+                role="listitem"
+                className={cardClass}
+                style={cardStyle}
+              >
+                {cardInner}
+              </Link>
+            ) : (
+              <article role="listitem" className={cardClass} style={cardStyle}>
+                {cardInner}
+              </article>
+            )}
+          </ScrollAnimate>
+        );
+      })}
+    </div>
+  );
+};
+
 type Props = {
   enjeu: EnjeuData;
 };
@@ -489,13 +683,35 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
     .map((slug) => getSeminaireEnjeu(slug))
     .filter((item): item is EnjeuData => Boolean(item));
 
-  const introParagraphs = [enjeu.lead, ...enjeu.body.slice(0, 2)].map(preserveAcronyms);
-  const highlightPros = enjeu.body.slice(2, 4).map((text, i) => ({
-    title: preserveAcronyms(enjeu.experiences[i] ?? `Point fort ${i + 1}`),
-    text: preserveAcronyms(text),
-  }));
+  const introParagraphs = [enjeu.lead, ...enjeu.body.slice(0, 2)]
+    .filter((p) => Boolean(p?.trim()));
+  const highlightPros = (
+    enjeu.whyHighlights ??
+    enjeu.body.slice(2, 4).map((text, i) => ({
+      title: enjeu.experiences[i] ?? `Point fort ${i + 1}`,
+      text,
+    }))
+  );
   const heroPicto = HERO_PICTO_BY_SLUG[enjeu.slug];
   const displayTitle = titleForSentence(enjeu.title);
+  const shortDisplayTitle = titleForSentence(enjeu.shortTitle ?? enjeu.title);
+  const whyCta: SeminaireEnjeuCta = enjeu.whyCta ?? {
+    label: 'Demander un devis',
+    action: 'modal',
+  };
+  const whyCtaIsLink = 'href' in whyCta;
+  const whyCtaOnOrangeBase = whyCtaIsLink
+    ? 'w-fit max-w-full items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-center text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px]'
+    : 'w-fit items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px]';
+  const whyCtaOnOrangeDesktop = `mt-8 hidden ${whyCtaOnOrangeBase} lg:inline-flex sm:mt-9`;
+  const whyCtaOnOrangeMobile = `inline-flex ${whyCtaOnOrangeBase}`;
+  const linkedOnOrange =
+    'font-semibold text-white underline decoration-white/70 underline-offset-[3px] transition-colors hover:decoration-white';
+  const heroCta: SeminaireEnjeuCta = enjeu.heroCta ?? {
+    label: `Parlons de votre ${enjeu.shortTitle ?? titleForSentence(enjeu.title)}`,
+    action: 'modal',
+  };
+  const heroCtaIsModal = !('href' in heroCta);
 
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -526,26 +742,47 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-8 px-4 pb-14 pt-10 text-center sm:gap-0 sm:px-10 sm:pb-8 sm:pt-12 lg:pb-10 lg:pt-14">
-              <div className="flex flex-col items-center sm:flex-1 sm:justify-center">
-                <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
-                  {enjeu.eyebrow}
-                </p>
-                <h1 className="mt-2 max-w-4xl font-sans text-[clamp(1.65rem,5vw,3rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white">
-                  Organisez <span className="font-bold">votre {displayTitle}</span>.
-                </h1>
-                <p className="mt-3 max-w-xl font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.02em] text-white/85 sm:text-[14px]">
-                  {preserveAcronyms(enjeu.subtitle)}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => openModal()}
-                className={`${homeHeroOutlineButtonClass} sm:mt-auto`}
-                style={{ background: 'rgba(12, 29, 34, 0.12)' }}
-              >
-                Réserver mon séminaire
-              </button>
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
+              <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
+                {enjeu.eyebrow}
+              </p>
+              <h1 className="mt-5 max-w-4xl pt-1 font-sans text-[clamp(2.35rem,7vw,3rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white sm:mt-6">
+                {enjeu.shortTitle ? (
+                  <>
+                    Organisez votre{' '}
+                    <span className="font-bold">{shortDisplayTitle}</span>
+                    {displayTitle.startsWith(shortDisplayTitle)
+                      ? displayTitle.slice(shortDisplayTitle.length)
+                      : ''}
+                    .
+                  </>
+                ) : (
+                  <>
+                    Organisez <span className="font-bold">votre {displayTitle}</span>.
+                  </>
+                )}
+              </h1>
+              <p className="mt-3 max-w-xl font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.02em] text-white/85 sm:text-[14px]">
+                {preserveAcronyms(enjeu.subtitle)}
+              </p>
+              {heroCtaIsModal ? (
+                <button
+                  type="button"
+                  onClick={() => openModal()}
+                  className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
+                  style={{ background: 'rgba(12, 29, 34, 0.12)' }}
+                >
+                  {preserveAcronyms(heroCta.label)}
+                </button>
+              ) : (
+                <Link
+                  href={'href' in heroCta ? heroCta.href : '/seminaires-entreprise'}
+                  className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
+                  style={{ background: 'rgba(12, 29, 34, 0.12)' }}
+                >
+                  {preserveAcronyms(heroCta.label)}
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -564,10 +801,36 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
             <div className="space-y-3.5">
               {introParagraphs.map((p) => (
                 <p key={p.slice(0, 40)} className={homeParagraphClass}>
-                  {p}
+                  <LinkedText text={p} />
                 </p>
               ))}
             </div>
+            {enjeu.introCta ? (
+              <div className="mt-8 flex justify-center sm:mt-9">
+                <EnjeuCtaButton
+                  cta={enjeu.introCta}
+                  className={homeCtaOutlineGhostClass}
+                  onModal={() => openModal()}
+                />
+              </div>
+            ) : null}
+            {enjeu.afterIntro ? (
+              <div className="mt-14 sm:mt-16">
+                <h2 className={sectionTitleClass}>
+                  <TitleWithBold
+                    full={enjeu.afterIntro.title}
+                    bold={enjeu.afterIntro.titleBold}
+                  />
+                </h2>
+                <div className="mt-5 space-y-3.5">
+                  {enjeu.afterIntro.paragraphs.map((p) => (
+                    <p key={p.slice(0, 40)} className={homeParagraphClass}>
+                      <LinkedText text={p} />
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </ScrollAnimate>
         </div>
       </section>
@@ -576,73 +839,236 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
       <section className="relative py-3 sm:py-4">
         <div className="relative left-1/2 w-[calc(100vw+16px)] -translate-x-1/2 sm:w-[calc(100vw+20px)]">
           <div
-            className="overflow-hidden px-5 pt-24 pb-16 sm:px-8 sm:py-16 lg:px-10 lg:py-20"
+            className="overflow-hidden px-5 pt-16 pb-0 sm:px-8 lg:px-10 lg:py-20"
             style={{
               background: HOME_COLORS.orange,
               borderRadius: '42px',
             }}
           >
-            <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-10">
-              <ScrollAnimate className="flex flex-col justify-center lg:pr-4">
+            <div className="mx-auto grid max-w-6xl grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,0.7fr)] lg:items-stretch lg:gap-8 xl:gap-10">
+              <ScrollAnimate className="flex flex-col justify-start lg:pr-2">
                 <h2 className={sectionTitleOnOrangeClass}>
-                  Pourquoi choisir ce{' '}
-                  <span className="font-bold">{displayTitle}</span>&nbsp;?
+                  {enjeu.whyTitle ? (
+                    <TitleWithBold full={enjeu.whyTitle} bold={enjeu.whyTitleBold} />
+                  ) : (
+                    <>
+                      Pourquoi choisir ce{' '}
+                      <span className="font-bold">{displayTitle}</span>&nbsp;?
+                    </>
+                  )}
                 </h2>
+                {enjeu.whyLead ? (
+                  <p className="mt-4 max-w-xl font-sans text-[13px] font-normal leading-[1.7] tracking-[-0.03em] text-white/90 sm:text-[14px]">
+                    {preserveAcronyms(enjeu.whyLead)}
+                  </p>
+                ) : null}
 
                 <div className="mt-7 space-y-6 sm:mt-8">
                   {highlightPros.map((pro) => (
                     <div key={pro.title}>
                       <h3 className="inline font-sans text-[15px] font-semibold tracking-[-0.03em] text-white underline decoration-white/80 underline-offset-[5px] sm:text-[16px]">
-                        {pro.title}
+                        {preserveAcronyms(pro.title)}
                       </h3>
-                      <p className="mt-2.5 max-w-md font-sans text-[13px] font-normal leading-[1.7] tracking-[-0.03em] text-white/90 sm:text-[14px]">
-                        {pro.text}
+                      <p className="mt-2.5 max-w-xl font-sans text-[13px] font-normal leading-[1.7] tracking-[-0.03em] text-white/90 sm:text-[14px]">
+                        <LinkedText text={pro.text} linkClassName={linkedOnOrange} />
                       </p>
                     </div>
                   ))}
                 </div>
 
-                <p className="mt-7 font-sans text-[13px] font-normal leading-[1.7] tracking-[-0.03em] text-white/90 sm:text-[14px]">
-                  Ce que vos équipes vont vivre :
-                </p>
-                <ul className="mt-3 space-y-1.5">
-                  {enjeu.experiences.map((f) => (
-                    <li
-                      key={f}
-                      className="font-sans text-[13px] font-normal leading-[1.6] tracking-[-0.03em] text-white/95 before:mr-2 before:content-['•'] sm:text-[14px]"
-                    >
-                      {preserveAcronyms(f)}
-                    </li>
-                  ))}
-                </ul>
+                {!enjeu.experiencesSection ? (
+                  <>
+                    <p className="mt-7 font-sans text-[13px] font-normal leading-[1.7] tracking-[-0.03em] text-white/90 sm:text-[14px]">
+                      Ce que vos équipes vont vivre :
+                    </p>
+                    <ul className="mt-3 space-y-1.5">
+                      {enjeu.experiences.map((f) => (
+                        <li
+                          key={f}
+                          className="font-sans text-[13px] font-normal leading-[1.6] tracking-[-0.03em] text-white/95 before:mr-2 before:content-['•'] sm:text-[14px]"
+                        >
+                          <LinkedText text={f} linkClassName={linkedOnOrange} />
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : null}
 
-                <button
-                  type="button"
-                  onClick={() => openModal()}
-                  className="mt-8 inline-flex w-fit items-center justify-center rounded-full border border-white bg-transparent px-8 py-2.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:mt-9 sm:text-xs"
-                >
-                  Demander un devis
-                </button>
+                {!enjeu.hideWhyCta ? (
+                  <EnjeuCtaButton
+                    cta={whyCta}
+                    className={whyCtaOnOrangeDesktop}
+                    onModal={() => openModal()}
+                  />
+                ) : null}
               </ScrollAnimate>
 
-              <ScrollAnimate delay={80} className="flex items-center justify-center lg:justify-end">
+              <ScrollAnimate delay={80} className="flex h-full justify-center lg:justify-end">
                 <div
-                  className="relative aspect-[4/5] w-full max-w-[420px] overflow-hidden sm:max-w-[480px] lg:max-w-none lg:w-full"
+                  className="relative aspect-[4/5] w-full max-w-[280px] overflow-hidden sm:max-w-[320px] lg:aspect-auto lg:h-full lg:min-h-0 lg:max-w-[300px] xl:max-w-[340px]"
                   style={{ borderRadius: '28px' }}
                 >
                   <Image
                     src={enjeu.whyImage}
                     alt={enjeu.whyImageAlt}
                     fill
-                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    sizes="(max-width: 1024px) 320px, 340px"
                     className="object-cover"
                   />
                 </div>
               </ScrollAnimate>
             </div>
+
+            {!enjeu.hideWhyCta ? (
+              <div className="flex justify-center py-8 lg:hidden">
+                <EnjeuCtaButton
+                  cta={whyCta}
+                  className={whyCtaOnOrangeMobile}
+                  onModal={() => openModal()}
+                />
+              </div>
+            ) : (
+              <div className="pb-16 lg:hidden" aria-hidden />
+            )}
           </div>
         </div>
       </section>
+
+      {/* ── EXPÉRIENCES ── */}
+      {enjeu.experiencesSection ? (
+        <section
+          className="relative"
+          style={{
+            paddingTop: homeSectionPadding,
+            paddingBottom: homeSectionPadding,
+            background: '#ffffff',
+          }}
+        >
+          <div className="mx-auto grid max-w-6xl grid-cols-1 items-start gap-x-8 gap-y-6 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,0.7fr)] xl:gap-x-10">
+            <ScrollAnimate className="lg:col-start-1 lg:row-start-1 lg:pr-2">
+              <h2 className={sectionTitleClass}>
+                <TitleWithBold
+                  full={enjeu.experiencesSection.title}
+                  bold={enjeu.experiencesSection.titleBold}
+                />
+              </h2>
+            </ScrollAnimate>
+
+            <ScrollAnimate className="lg:col-start-1 lg:row-start-2 lg:pr-2">
+              <p className={homeParagraphClass}>
+                {preserveAcronyms(enjeu.experiencesSection.intro)}
+              </p>
+              <div className="mt-5 space-y-3.5">
+                {enjeu.experiencesSection.body.map((p) => (
+                  <p key={p.slice(0, 40)} className={homeParagraphClass}>
+                    <LinkedText text={p} />
+                  </p>
+                ))}
+              </div>
+            </ScrollAnimate>
+
+            <ScrollAnimate delay={80} className="lg:col-start-2 lg:row-start-2">
+              <p className="font-sans text-[16px] font-bold tracking-[-0.03em] text-[#0c1d22] sm:text-[17px]">
+                {preserveAcronyms(
+                  enjeu.experiencesSection.listLead ?? 'Ce que vos équipes peuvent vivre :',
+                )}
+              </p>
+              <ul className="mt-4 space-y-2">
+                {enjeu.experiences.map((f) => (
+                  <li
+                    key={f}
+                    className="font-sans text-[14px] font-normal leading-[1.6] tracking-[-0.03em] text-[#0c1d22]/75 before:mr-2 before:content-['•'] sm:text-[15px]"
+                  >
+                    {preserveAcronyms(f)}
+                  </li>
+                ))}
+              </ul>
+            </ScrollAnimate>
+
+            {enjeu.experiencesSection.cta ? (
+              <div className="flex justify-center lg:col-span-2">
+                <EnjeuCtaButton
+                  cta={enjeu.experiencesSection.cta}
+                  className={homeCtaOutlineGhostClass}
+                  onModal={() => openModal()}
+                />
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
+      {/* ── LIEUX ── */}
+      {enjeu.placesSection ? (
+        <section
+          className="relative"
+          style={{
+            paddingTop: 'clamp(3.5rem, 7vw, 6rem)',
+            paddingBottom: 'clamp(3.5rem, 7vw, 6rem)',
+            background: HOME_COLORS.gray,
+          }}
+        >
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <ScrollAnimate>
+              <h2 className="font-sans text-[26px] font-normal leading-[1.12] tracking-[-0.075em] text-[#0c1d22] sm:text-[32px] md:whitespace-nowrap md:text-[36px] lg:text-[40px]">
+                <TitleWithBold
+                  full={enjeu.placesSection.title}
+                  bold={enjeu.placesSection.titleBold}
+                />
+              </h2>
+              <p className={`mt-4 max-w-2xl sm:mt-5 ${homeParagraphClass}`}>
+                {preserveAcronyms(enjeu.placesSection.intro)}
+              </p>
+            </ScrollAnimate>
+            <LinkBlockGrid items={enjeu.placesSection.items} />
+            {enjeu.placesSection.cta ? (
+              <div className="mt-10 flex justify-center sm:mt-12">
+                <EnjeuCtaButton
+                  cta={enjeu.placesSection.cta}
+                  className={homeCtaOutlineGhostClass}
+                  onModal={() => openModal()}
+                />
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
+      {/* ── FORMATS / ENJEUX ── */}
+      {enjeu.formatsSection ? (
+        <section
+          className="relative"
+          style={{
+            paddingTop: homeSectionPadding,
+            paddingBottom: homeSectionPadding,
+            background: HOME_COLORS.primary,
+          }}
+        >
+          <div className="mx-auto max-w-3xl px-5 sm:px-8">
+            <ScrollAnimate>
+              <h2 className={sectionTitleOnOrangeClass}>
+                <TitleWithBold
+                  full={enjeu.formatsSection.title}
+                  bold={enjeu.formatsSection.titleBold}
+                />
+              </h2>
+              <p className="mt-5 font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-white/80 sm:text-[16px]">
+                {preserveAcronyms(enjeu.formatsSection.intro)}
+              </p>
+            </ScrollAnimate>
+            <FormatRows items={enjeu.formatsSection.items} dark />
+            {enjeu.formatsSection.cta ? (
+              <div className="mt-10 flex justify-center sm:mt-12">
+                <EnjeuCtaButton
+                  cta={enjeu.formatsSection.cta}
+                  className={homeOnDarkOutlineButtonClass}
+                  onModal={() => openModal()}
+                />
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
 
       {/* ── PROGRAMME ── */}
       <section
@@ -658,14 +1084,21 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
             <ScrollAnimate>
               <h2 className={sectionTitleClass}>
                 Votre <span className="font-bold" style={{ color: HOME_COLORS.orange }}>déroulé type</span>{' '}
-                pour un {displayTitle} réussi.
+                pour un {shortDisplayTitle}.
               </h2>
               <p className={`mt-5 ${homeParagraphClass}`}>
-                <span className="font-semibold text-[#0c1d22] underline decoration-[#ec6435] decoration-2 underline-offset-[4px]">
-                  Pour résumer :
-                </span>{' '}
-                {enjeu.programIntro ??
-                  'une journée riche et fluide, du café d\u2019accueil au repas guinguette — modulable selon la taille du groupe et déclinable en format résidentiel 2\u00a0jours.'}
+                {enjeu.programIntro ? (
+                  preserveAcronyms(enjeu.programIntro)
+                ) : (
+                  <>
+                    <span className="font-semibold text-[#0c1d22] underline decoration-[#ec6435] decoration-2 underline-offset-[4px]">
+                      Pour résumer :
+                    </span>{' '}
+                    une journée riche et fluide, du café d&apos;accueil au repas
+                    guinguette — modulable selon la taille du groupe et
+                    déclinable en format résidentiel 2&nbsp;jours.
+                  </>
+                )}
               </p>
             </ScrollAnimate>
 
@@ -703,10 +1136,111 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
         <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
           <ExampleSeminarBlock
             example={enjeu.exampleSeminar}
-            displayTitle={displayTitle}
+            displayTitle={shortDisplayTitle}
+            exampleLead={enjeu.exampleLead}
           />
         </div>
       </section>
+
+      {/* ── THÉMATIQUES ── */}
+      {enjeu.themes && enjeu.themes.length > 0 ? (
+        <section
+          className="relative"
+          style={{
+            paddingTop: homeSectionPadding,
+            paddingBottom: homeSectionPadding,
+            background: '#ffffff',
+          }}
+        >
+          <div className="mx-auto max-w-6xl px-5 sm:px-8">
+            <ScrollAnimate>
+              <h2 className={`max-w-3xl ${sectionTitleClass}`}>
+                <TitleWithBold
+                  full={
+                    enjeu.themesTitle ??
+                    'Quelles thématiques aborder lors d\u2019un séminaire RSE ?'
+                  }
+                  bold={enjeu.themesTitleBold}
+                  boldClassName="font-bold text-[#ec6435]"
+                />
+              </h2>
+              {enjeu.themesIntro ? (
+                <p className={`mt-5 max-w-2xl ${homeParagraphClass}`}>
+                  {preserveAcronyms(enjeu.themesIntro)}
+                </p>
+              ) : null}
+            </ScrollAnimate>
+
+            <ThemesRow
+              themes={enjeu.themes}
+              ariaLabel={enjeu.themesTitle ?? 'Thématiques'}
+            />
+            {enjeu.themesCta ? (
+              <div className="mt-10 flex justify-center sm:mt-12">
+                <EnjeuCtaButton
+                  cta={enjeu.themesCta}
+                  className={homeCtaOutlineGhostClass}
+                  onModal={() => openModal()}
+                />
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
+      {/* ── VILLES ── */}
+      {enjeu.citiesSection ? (
+        <section
+          className="relative"
+          style={{
+            paddingTop: homeSectionPadding,
+            paddingBottom: homeSectionPadding,
+            background: '#ffffff',
+          }}
+        >
+          <div className="mx-auto max-w-6xl px-5 sm:px-8">
+            <ScrollAnimate>
+              <h2 className={`max-w-3xl ${sectionTitleClass}`}>
+                <TitleWithBold
+                  full={enjeu.citiesSection.title}
+                  bold={enjeu.citiesSection.titleBold}
+                />
+              </h2>
+              <p className={`mt-5 max-w-2xl ${homeParagraphClass}`}>
+                {preserveAcronyms(enjeu.citiesSection.intro)}
+              </p>
+            </ScrollAnimate>
+            <nav
+              aria-label="Séminaires au vert près des villes"
+              className="mt-8 flex flex-wrap gap-x-8 gap-y-3 sm:mt-10 sm:gap-x-10 sm:gap-y-4"
+            >
+              {enjeu.citiesSection.cities.map((city) => (
+                <Link
+                  key={city.href}
+                  href={city.href}
+                  className="font-sans text-[16px] font-semibold tracking-[-0.04em] text-[#0c1d22] underline decoration-[rgba(12,29,34,0.25)] underline-offset-4 transition-colors hover:text-[#ec6435] hover:decoration-[#ec6435] sm:text-[18px]"
+                >
+                  {city.name}
+                </Link>
+              ))}
+            </nav>
+            {enjeu.citiesSection.body ? (
+              <p className={`mt-8 max-w-2xl ${homeParagraphClass}`}>
+                {preserveAcronyms(enjeu.citiesSection.body)}
+              </p>
+            ) : null}
+            {enjeu.citiesSection.cta ? (
+              <div className="mt-10 flex justify-center sm:mt-12">
+                <EnjeuCtaButton
+                  cta={enjeu.citiesSection.cta}
+                  className={homeCtaOutlineGhostClass}
+                  onModal={() => openModal()}
+                />
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
 
       {/* ── FAQ ── */}
       <section
@@ -714,7 +1248,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
         style={{
           paddingTop: homeSectionPadding,
           paddingBottom: homeSectionPadding,
-          background: '#ffffff',
+          background: HOME_COLORS.gray,
         }}
       >
         <Image
@@ -728,11 +1262,25 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
         <div className="relative z-10 mx-auto max-w-3xl px-5 sm:px-8">
           <ScrollAnimate>
             <h2 className={`text-center ${sectionTitleClass}`}>
-              <span className="font-bold">Questions</span> fréquentes.
+              {enjeu.faqTitle ? (
+                <TitleWithBold full={enjeu.faqTitle} bold={enjeu.faqTitleBold} />
+              ) : (
+                <>
+                  <span className="font-bold">Questions</span> fréquentes.
+                </>
+              )}
             </h2>
-            <p className={`mx-auto mt-3 max-w-lg text-center ${homeParagraphClass}`}>
-              Une question sur un {displayTitle}&nbsp;? Parcourez la FAQ ou
-              contactez-nous.
+            <p
+              className={`mx-auto mt-2 max-w-xl px-1 text-center ${homeParagraphClass}`}
+            >
+              {enjeu.faqLead ? (
+                <LinkedText text={enjeu.faqLead} />
+              ) : (
+                <>
+                  Une question sur un {shortDisplayTitle}&nbsp;? Parcourez la FAQ ou
+                  contactez-nous.
+                </>
+              )}
             </p>
           </ScrollAnimate>
           <ScrollAnimate delay={60} className="mt-8 sm:mt-10">
@@ -746,12 +1294,34 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
         </div>
       </section>
 
-      {ENJEU_FAQ_EXCERPT[enjeu.slug] ? (
-        <FaqExcerpt excerpt={ENJEU_FAQ_EXCERPT[enjeu.slug]!} />
-      ) : null}
-
-      {/* ── AUTRES ENJEUX ── */}
-      {related.length > 0 && (
+      {/* ── CLÔTURE / AUTRES ENJEUX ── */}
+      {enjeu.closing ? (
+        <section
+          style={{
+            paddingTop: homeSectionPadding,
+            paddingBottom: homeSectionPadding,
+            background: HOME_COLORS.orange,
+          }}
+        >
+          <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
+            <ScrollAnimate>
+              <h2 className={sectionTitleOnOrangeClass}>
+                <TitleWithBold full={enjeu.closing.title} bold={enjeu.closing.titleBold} />
+              </h2>
+              <p className="mx-auto mt-4 max-w-lg font-sans text-[14px] font-normal leading-[1.7] tracking-[-0.03em] text-white/85 sm:text-[15px]">
+                {preserveAcronyms(enjeu.closing.lead)}
+              </p>
+              <div className="mt-8 flex justify-center sm:mt-10">
+                <EnjeuCtaButton
+                  cta={enjeu.closing.cta}
+                  className={homeOnDarkOutlineButtonClass}
+                  onModal={() => openModal()}
+                />
+              </div>
+            </ScrollAnimate>
+          </div>
+        </section>
+      ) : related.length > 0 ? (
         <section
           style={{
             paddingTop: homeSectionPadding,
@@ -796,14 +1366,14 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
             </div>
 
             <div className="mt-10 flex justify-center">
-              <Link href="/seminaires-entreprise" className={homeHeroOutlineButtonClass}>
+              <Link href="/seminaires-entreprise" className={homeOnDarkOutlineButtonClass}>
                 <span aria-hidden>→</span>
                 Voir tous nos séminaires
               </Link>
             </div>
           </div>
         </section>
-      )}
+      ) : null}
     </div>
   );
 };

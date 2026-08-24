@@ -7,7 +7,8 @@ export type FaqExcerptKey =
   | 'au-vert'
   | 'team-building-original'
   | 'producteur'
-  | 'budget';
+  | 'budget'
+  | 'seminaires';
 
 export type FaqInlinePart =
   | string
@@ -40,7 +41,7 @@ const PATHS = {
   cohesion: '/seminaires-entreprise/cohesion',
   experiences: '/experiences-entreprise',
   destinations: '/destinations',
-  auVert: lieuDestinationPath('en-pleine-nature'),
+  auVert: '/seminaires-entreprise/au-vert',
   producteur: lieuDestinationPath('chez-le-producteur'),
   partenaires: '/partenaires',
 } as const;
@@ -89,29 +90,103 @@ export const FAQ_SECTIONS: FaqSection[] = [
       {
         id: 'quel-budget-seminaire',
         question: 'Quel budget prévoir pour un séminaire d’entreprise ?',
-        excerpts: ['budget'],
+        excerpts: ['budget', 'seminaires'],
         blocks: [
           {
             type: 'p',
             parts: [
-              'Comptez à partir de 120 € par personne pour une journée classique. Pour un séminaire résidentiel, le budget varie selon le lieu, l’hébergement, les repas, les activités et vos demandes. Chaque projet étant différent, nous construisons le budget avec vous selon votre groupe et vos envies. N’hésitez pas à nous contacter pour ',
-              { action: 'openSeminaireModal', label: 'parler de votre projet' },
-              '.',
+              'Le budget dépend notamment du nombre de participants, du lieu, de la durée, de l’hébergement, des activités, de la restauration et du transport. TerraGo construit chaque programme sur mesure et vous transmet une proposition adaptée à votre projet.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'types-seminaires-entreprise',
+        question: 'Quels types de séminaires d’entreprise organisez-vous ?',
+        excerpts: ['seminaires'],
+        blocks: [
+          {
+            type: 'p',
+            parts: [
+              'TerraGo organise notamment des séminaires de cohésion, des séminaires au vert, des séminaires de sensibilisation & RSE, des séminaires d’inspiration et des séminaires CODIR.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'ou-organiser-seminaire-entreprise',
+        question: 'Où organiser un séminaire d’entreprise ?',
+        excerpts: ['seminaires'],
+        blocks: [
+          {
+            type: 'p',
+            parts: [
+              'Nous proposons des lieux partout en France : fermes, vignobles, domaines, lieux en pleine nature, montagnes, littoral et autres cadres authentiques.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'combien-participants-seminaire',
+        question: 'Combien de participants pouvez-vous accompagner ?',
+        excerpts: ['seminaires'],
+        blocks: [
+          {
+            type: 'p',
+            parts: [
+              'Les formats sont adaptés à la taille du groupe. Selon le lieu et le programme, nous pouvons accompagner aussi bien de petites équipes que des groupes plus importants.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'personnaliser-seminaire',
+        question: 'Peut-on personnaliser entièrement son séminaire ?',
+        excerpts: ['seminaires'],
+        blocks: [
+          {
+            type: 'p',
+            parts: [
+              'Oui. Le lieu, les activités, la restauration, l’hébergement, le rythme de la journée et les différents temps collectifs peuvent être adaptés à vos objectifs et à vos contraintes.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'seminaire-avec-hebergement',
+        question: 'Pouvez-vous organiser un séminaire avec hébergement ?',
+        excerpts: ['seminaires'],
+        blocks: [
+          {
+            type: 'p',
+            parts: [
+              'Oui. TerraGo peut organiser des formats résidentiels avec hébergement, restauration, activités et coordination.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'transport-seminaire',
+        question: 'TerraGo prend-il en charge le transport ?',
+        excerpts: ['seminaires'],
+        blocks: [
+          {
+            type: 'p',
+            parts: [
+              'Selon votre projet, nous pouvons intégrer le transport à l’organisation et coordonner les différents prestataires nécessaires au bon déroulement du séjour.',
             ],
           },
         ],
       },
       {
         id: 'delai-organiser-seminaire',
-        question: 'Combien de temps à l’avance faut-il organiser un séminaire ?',
-        excerpts: [],
+        question: 'Combien de temps faut-il prévoir pour organiser un séminaire ?',
+        excerpts: ['seminaires'],
         blocks: [
           {
             type: 'p',
             parts: [
-              'Idéalement, prévoyez 2 à 3 mois à l’avance minimum pour avoir davantage de choix sur les lieux et les dates. Mais pas d’inquiétude pour les demandes plus urgentes : nous pouvons aussi rechercher des disponibilités à court terme selon la période et la taille de votre groupe. Parlez-nous de votre projet en ',
-              { action: 'openSeminaireModal', label: 'cliquant ici' },
-              '.',
+              'Plus vous anticipez, plus le choix de lieux et de dates est important. TerraGo peut néanmoins étudier des demandes plus urgentes selon les disponibilités de ses partenaires.',
             ],
           },
         ],

@@ -48,7 +48,6 @@ const ETOILE =
 
 const LIEU_FAQ_EXCERPT: Partial<Record<string, FaqExcerptKey>> = {
   'chez-le-producteur': 'producteur',
-  'a-la-ferme': 'producteur',
   'au-coeur-des-terroirs': 'producteur',
   'en-pleine-nature': 'au-vert',
 };
@@ -389,19 +388,17 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-8 px-4 pb-14 pt-10 text-center sm:gap-0 sm:px-10 sm:pb-8 sm:pt-12 lg:pb-10 lg:pt-14">
-              <div className="flex flex-col items-center sm:flex-1 sm:justify-center">
-                <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
-                  {lieu.name}
-                </p>
-                <h1 className="mt-2 max-w-4xl font-sans text-[clamp(1.65rem,5vw,3rem)] font-bold leading-[1.05] tracking-[-0.075em] text-white">
-                  {`Séminaire ${lieu.phrase}`}
-                </h1>
-              </div>
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
+              <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
+                En fonction des lieux
+              </p>
+              <h1 className="mt-5 max-w-4xl pt-1 font-sans text-[clamp(2.1rem,5.5vw,3rem)] font-bold leading-[1.05] tracking-[-0.075em] text-white sm:mt-6">
+                {`Séminaire ${lieu.phrase}`}
+              </h1>
               <button
                 type="button"
                 onClick={() => openModal()}
-                className={`${homeHeroOutlineButtonClass} sm:mt-auto`}
+                className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
                 style={{ background: 'rgba(12, 29, 34, 0.12)' }}
               >
                 Réserver mon séminaire
@@ -436,7 +433,7 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
       <section className="relative py-3 sm:py-4">
         <div className="relative left-1/2 w-[calc(100vw+16px)] -translate-x-1/2 sm:w-[calc(100vw+20px)]">
           <div
-            className="overflow-hidden px-5 pt-24 pb-16 sm:px-8 sm:py-16 lg:px-10 lg:py-20"
+            className="overflow-hidden px-5 pt-16 pb-0 sm:px-8 lg:px-10 lg:py-20"
             style={{
               background: HOME_COLORS.primary,
               borderRadius: '42px',
@@ -483,7 +480,7 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                 <button
                   type="button"
                   onClick={() => openModal()}
-                  className="mt-8 inline-flex w-fit items-center justify-center rounded-full border border-white bg-transparent px-8 py-2.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white transition-colors hover:bg-white hover:text-[#0c1d22] sm:mt-9 sm:text-xs"
+                  className="mt-8 hidden w-fit items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#0c1d22] sm:px-10 sm:py-2.5 sm:text-[13px] lg:inline-flex"
                 >
                   Demander un devis
                 </button>
@@ -509,6 +506,16 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                   ) : null}
                 </div>
               </ScrollAnimate>
+            </div>
+
+            <div className="flex justify-center py-8 lg:hidden">
+              <button
+                type="button"
+                onClick={() => openModal()}
+                className="inline-flex w-fit items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#0c1d22] sm:px-10 sm:py-2.5 sm:text-[13px]"
+              >
+                Demander un devis
+              </button>
             </div>
           </div>
         </div>

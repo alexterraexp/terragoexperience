@@ -77,9 +77,10 @@ const SEMINAIRE_MAIN: DropdownItem[] = [
 
 const SEMINAIRE_ENJEUX: DropdownItem[] = [
   { label: 'Séminaire cohésion', description: 'Créer des liens autrement', path: '/seminaires-entreprise/cohesion' },
-  { label: 'Séminaire sensibilisation & RSE', description: 'Comprendre les enjeux du vivant', path: '/seminaires-entreprise/sensibilisation-rse' },
+  { label: 'Séminaire RSE & sensibilisation', description: 'Sensibilisation aux enjeux du vivant', path: '/seminaires-entreprise/sensibilisation-rse' },
   { label: 'Séminaire inspiration & miroir d\'entreprise', description: 'Prendre du recul pour mieux avancer', path: '/seminaires-entreprise/inspiration-miroir' },
   { label: 'Séminaire CODIR', description: 'Aligner et inspirer votre comité de direction', path: '/seminaires-entreprise/codir' },
+  { label: 'Séminaire au vert', description: 'Sortez du cadre habituel', path: '/seminaires-entreprise/au-vert' },
 ];
 
 const NAV_ITEMS: NavItem[] = [
@@ -489,7 +490,6 @@ const Header: React.FC = () => {
         pathname === '/experiences' ||
         (pathname?.startsWith('/experience/') ?? false) ||
         pathname === '/experiences-entreprise' ||
-        (pathname?.startsWith('/experiences-entreprise/') ?? false) ||
         pathname === '/experiences-privees' ||
         (pathname?.startsWith('/experiences-privees/') ?? false)
       );

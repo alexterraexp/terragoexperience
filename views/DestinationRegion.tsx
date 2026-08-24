@@ -398,27 +398,25 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-8 px-4 pb-14 pt-10 text-center sm:gap-0 sm:px-10 sm:pb-8 sm:pt-12 lg:pb-10 lg:pt-14">
-              <div className="flex flex-col items-center sm:flex-1 sm:justify-center">
-                <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
-                  {destination.name}
-                </p>
-                <h1 className="mt-5 max-w-4xl pt-1 text-center font-sans text-white sm:mt-6">
-                  <span className="block text-[clamp(1.65rem,5vw,3rem)] leading-[1.05] tracking-[-0.075em]">
-                    <span className="font-normal">Séminaire au vert</span>{' '}
-                    <span className="font-bold">
-                      {destination.prep} {destination.name}
-                    </span>
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
+              <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
+                {destination.name}
+              </p>
+              <h1 className="mt-5 max-w-4xl pt-1 text-center font-sans text-white sm:mt-6">
+                <span className="block text-[clamp(2.1rem,5.5vw,3rem)] leading-[1.05] tracking-[-0.075em]">
+                  <span className="font-normal">Séminaire au vert</span>{' '}
+                  <span className="font-bold">
+                    {destination.prep} {destination.name}
                   </span>
-                  <span className="mt-2 block text-[clamp(0.95rem,2.5vw,1.25rem)] font-normal leading-snug tracking-[-0.02em] text-white/90">
-                    à la rencontre de producteurs
-                  </span>
-                </h1>
-              </div>
+                </span>
+                <span className="mt-2 block text-[clamp(0.95rem,2.5vw,1.25rem)] font-normal leading-snug tracking-[-0.02em] text-white/90">
+                  à la rencontre de producteurs
+                </span>
+              </h1>
               <button
                 type="button"
                 onClick={() => openModal()}
-                className={`${homeHeroOutlineButtonClass} sm:mt-auto`}
+                className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
                 style={{ background: 'rgba(12, 29, 34, 0.12)' }}
               >
                 Réserver mon séminaire
@@ -453,7 +451,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
       <section className="relative py-3 sm:py-4">
         <div className="relative left-1/2 w-[calc(100vw+16px)] -translate-x-1/2 sm:w-[calc(100vw+20px)]">
           <div
-            className="overflow-hidden px-5 pt-24 pb-16 sm:px-8 sm:py-16 lg:px-10 lg:py-20"
+            className="overflow-hidden px-5 pt-16 pb-0 sm:px-8 lg:px-10 lg:py-20"
             style={{
               background: HOME_COLORS.orange,
               borderRadius: '42px',
@@ -503,7 +501,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                 <button
                   type="button"
                   onClick={() => openModal()}
-                  className="mt-8 inline-flex w-fit items-center justify-center rounded-full border border-white bg-transparent px-8 py-2.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:mt-9 sm:text-xs"
+                  className="mt-8 hidden w-fit items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px] lg:inline-flex"
                 >
                   Demander un devis
                 </button>
@@ -527,6 +525,16 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                   ) : null}
                 </div>
               </ScrollAnimate>
+            </div>
+
+            <div className="flex justify-center py-8 lg:hidden">
+              <button
+                type="button"
+                onClick={() => openModal()}
+                className="inline-flex w-fit items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px]"
+              >
+                Demander un devis
+              </button>
             </div>
           </div>
         </div>

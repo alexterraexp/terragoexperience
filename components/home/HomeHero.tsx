@@ -120,12 +120,13 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
             </span>
           </h1>
           <p className={`${homeParagraphClass} mt-5 max-w-5xl px-0 text-[16px] leading-relaxed text-white/95 sm:mt-10 sm:text-lg`}>
-          Team building, séminaires au vert et expériences RSE à la rencontre de producteurs engagés partout en France.
+            Des séminaires d&apos;entreprise au vert, sur mesure et engagés dans une démarche RSE, partout
+            en France.
           </p>
           <div className="mt-12 flex flex-col items-center gap-3 sm:mt-24 sm:flex-row sm:gap-5">
             <Link
               href="/seminaires-entreprise"
-              className="hidden rounded-full border border-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.08em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:inline-flex sm:items-center sm:justify-center sm:px-10 sm:py-2.5 sm:text-xs"
+              className="hidden rounded-full border-2 border-white px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:inline-flex sm:items-center sm:justify-center sm:px-10 sm:py-2.5 sm:text-[13px]"
               style={{ background: 'rgba(12, 29, 34, 0.1)' }}
             >
               Découvrir nos séminaires
@@ -133,7 +134,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
             <button
               type="button"
               onClick={openModal}
-              className="rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-xs"
+              className="rounded-full bg-white px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]"
             >
               Parlons de votre projet
             </button>

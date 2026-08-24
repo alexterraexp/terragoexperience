@@ -36,7 +36,7 @@ export function getHomeAssetUrls(): HomeAssetUrls {
 }
 
 export const PRODUCER_IMAGE =
-  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/potager-chateau-menthon.jpg';
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/prod-menton.png';
 
 export const HOME_EMOJI = {
   arbre:
@@ -55,6 +55,8 @@ export const HOME_EMOJI = {
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/mountain.png',
   etoile:
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/etoilecouleurfoncee.png',
+  ble:
+    'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/ble.png',
 } as const;
 
 const STEPS_BASE_URL =

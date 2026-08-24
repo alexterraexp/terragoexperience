@@ -18,6 +18,7 @@ import {
   homeFramedHeroAspectClass,
   bottomImageGradientClass,
   homeHeroOutlineButtonClass,
+  homeHeroSolidButtonClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
@@ -436,7 +437,7 @@ const ProducersPage: React.FC = () => {
               }}
             />
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl text-center font-sans text-[clamp(1.75rem,5.2vw,3.75rem)] font-bold leading-[1.02] tracking-[-0.075em] text-white">
+              <h1 className="max-w-3xl text-center font-sans text-[clamp(2.2rem,5.5vw,3.75rem)] font-bold leading-[1.02] tracking-[-0.075em] text-white">
                 Nos producteurs partenaires
               </h1>
               <h2 className="mt-4 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
@@ -453,7 +454,7 @@ const ProducersPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={openPartenaireModal}
-                  className="inline-flex w-full items-center justify-center rounded-full border-2 border-[#ec6435] bg-[#ec6435] px-5 py-1.5 text-xs font-bold tracking-[0.04em] text-white transition-colors hover:border-[#d9552a] hover:bg-[#d9552a] sm:w-auto sm:px-8 sm:py-2 sm:text-sm"
+                  className={`${homeHeroSolidButtonClass} w-full border-2 border-[#ec6435] bg-[#ec6435] text-white hover:border-[#d9552a] hover:bg-[#d9552a] sm:w-auto`}
                 >
                   Devenir partenaire
                 </button>
@@ -587,14 +588,14 @@ const ProducersPage: React.FC = () => {
               <button
                 type="button"
                 onClick={openPartenaireModal}
-                className="inline-flex w-full items-center justify-center rounded-full border-2 border-white bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:border-[#ec6435] hover:bg-[#ec6435] hover:text-white sm:w-auto sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
+                className={`${homeHeroSolidButtonClass} w-full border border-white bg-white text-[#0c1d22] hover:border-[#ec6435] hover:bg-[#ec6435] hover:text-white sm:w-auto`}
               >
                 Devenir partenaire
               </button>
               <button
                 type="button"
                 onClick={openRecommanderModal}
-                className="inline-flex w-full items-center justify-center rounded-full border-2 border-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-white transition-colors hover:bg-white/15 sm:w-auto sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
+                className={`${homeHeroSolidButtonClass} w-full border border-white bg-transparent text-white hover:bg-white/15 sm:w-auto`}
               >
                 Recommander un producteur
               </button>

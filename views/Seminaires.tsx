@@ -13,6 +13,8 @@ import {
   homeSectionPadding,
   bottomImageGradientClass,
   homeHeroOutlineButtonClass,
+  homeHeroSolidButtonClass,
+  homeOnDarkOutlineButtonClass,
   homeCtaOutlineClass,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
@@ -250,41 +252,47 @@ type Objectif = {
   subtitle: string;
   lead: string;
   experiences: string[];
+  ctaLabel: string;
 };
 
 const OBJECTIFS: Objectif[] = [
   {
     id: 'cohesion',
     href: seminaireEnjeuPath('cohesion'),
-    title: 'Objectif Cohésion',
+    title: 'Objectif de cohésion',
     subtitle: 'Créer des liens autrement.',
     lead:
       "Sortir du cadre habituel pour vivre une expérience collective authentique, renforcer la cohésion d'équipe et partager des moments qui marquent durablement les collaborateurs.",
     experiences: [
-      'Immersion chez des producteurs passionnés',
-      'Défis collaboratifs autour du terroir',
-      'Ateliers participatifs au cœur des exploitations',
-      "Activités outdoor favorisant l'esprit d'équipe",
+      'Défis collaboratifs',
+      'Activités outdoor',
+      'Immersion chez des producteurs',
+      'Ateliers participatifs',
+      'Randonnées et activités nature',
+      'Moments de convivialité',
     ],
+    ctaLabel: 'Découvrir nos séminaires de cohésion',
   },
   {
     id: 'sensibilisation',
     href: seminaireEnjeuPath('sensibilisation-rse'),
-    title: 'Objectif Sensibilisation',
+    title: 'Objectif de RSE & de sensibilisation',
     subtitle: 'Comprendre les enjeux du vivant.',
     lead:
       'Découvrir les réalités du monde agricole sur le terrain, échanger avec des producteurs engagés et mieux comprendre les défis environnementaux auxquels ils font face au quotidien.',
     experiences: [
       'Rencontres avec des producteurs engagés',
       'Découverte des pratiques agricoles durables',
-      "Comprendre l'adaptation au changement climatique",
-      'Immersion dans les circuits courts et les savoir-faire locaux',
+      'Compréhension des enjeux liés au changement climatique',
+      'Immersion dans les circuits courts',
+      'Découverte des savoir-faire locaux',
     ],
+    ctaLabel: 'Découvrir nos séminaires de RSE & de sensibilisation',
   },
   {
     id: 'inspiration',
     href: seminaireEnjeuPath('inspiration-miroir'),
-    title: 'Objectif Inspiration',
+    title: "Objectif d'inspiration & miroir d'entreprise",
     subtitle: 'Prendre du recul pour mieux avancer.',
     lead:
       "S'inspirer de femmes et d'hommes qui produisent, s'adaptent, innovent et transmettent leur passion. Leurs défis quotidiens (adaptation, résilience, gestion des ressources, prise de décision...) offrent un miroir concret des enjeux auxquels les entreprises font face aujourd'hui.",
@@ -294,6 +302,24 @@ const OBJECTIFS: Objectif[] = [
       'Immersion autour des défis qui résonnent avec votre organisation',
       'Décryptage de vos enjeux à travers des situations réelles',
     ],
+    ctaLabel: "Découvrir nos séminaires d'inspiration & miroir d'entreprise",
+  },
+  {
+    id: 'au-vert',
+    href: seminaireEnjeuPath('au-vert'),
+    title: "Objectif de s'aérer au vert",
+    subtitle: 'Sortez du cadre habituel.',
+    lead:
+      'Quitter les bureaux, prendre l’air et vivre une expérience collective dans un environnement qui change vraiment du quotidien.',
+    experiences: [
+      'Activités outdoor et pleine nature',
+      'Défis et challenges collectifs',
+      'Immersion chez un producteur',
+      'Découverte de la gastronomie locale',
+      'Randonnée et découverte de la nature',
+      'Moments de convivialité en extérieur',
+    ],
+    ctaLabel: 'Découvrir nos séminaires au vert',
   },
 ];
 
@@ -486,8 +512,7 @@ const ObjectifsAccordion: React.FC = () => {
                     </ul>
                     <div className="mt-6">
                       <Link href={obj.href} className={homeCtaOutlineClass}>
-                        Découvrir les séminaires{' '}
-                        {obj.title.replace(/^Objectif\s+/i, '').toLowerCase()}
+                        {obj.ctaLabel}
                       </Link>
                     </div>
                   </div>
@@ -622,8 +647,8 @@ const Seminaires: React.FC = () => {
               <h1 className="max-w-3xl text-center font-sans text-[clamp(1.75rem,5.2vw,3.75rem)] font-bold leading-[1.02] tracking-[-0.075em] text-white">
                 Séminaires d&apos;entreprise engagés
               </h1>
-              <h2 className="mt-4 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
-                Reconnectez vos équipes à la terre, aux producteurs et au sens — loin des salles de réunion.
+              <h2 className="mt-4 max-w-2xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
+                Organisez un séminaire d&apos;entreprise sur mesure, dans des lieux authentiques partout en France, entre nature, terroir, rencontres et expériences collectives.
               </h2>
               <button
                 type="button"
@@ -913,7 +938,7 @@ const Seminaires: React.FC = () => {
           <div className="mt-8 flex justify-center sm:mt-10">
             <Link
               href={EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}
-              className="inline-flex items-center justify-center rounded-full border border-[#ec6435] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-8 sm:py-2.5 sm:text-[12px]"
+              className="inline-flex items-center justify-center rounded-full border border-[#ec6435] px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]"
             >
               Découvrir nos exemples de séminaire d&apos;entreprise
             </Link>
@@ -1001,7 +1026,7 @@ const Seminaires: React.FC = () => {
             </p>
             <Link
               href="/destinations"
-              className="mt-8 inline-flex items-center justify-center rounded-full border border-[#ec6435] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-8 sm:py-2.5 sm:text-[12px]"
+              className="mt-8 inline-flex items-center justify-center rounded-full border border-[#ec6435] px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]"
             >
               Découvrir toutes nos destinations
             </Link>
@@ -1017,54 +1042,61 @@ const Seminaires: React.FC = () => {
               Notre mission
             </p>
             <h3 className="mt-3 font-sans text-[22px] font-bold leading-[1.15] tracking-[-0.05em] text-[#0c1d22] sm:text-[26px]">
-              Des séminaires qui soutiennent le vivant.
+              Des séminaires qui soutiennent les territoires, sans rien laisser au hasard.
             </h3>
-            <ul className="mt-5 flex flex-col gap-3">
-              {[
-                'Offre clé en main : lieu, activités, restauration, coordination',
-                'Lieux d’exception ancrés dans le terroir français',
-                'Soutien direct à l’agriculture locale et engagée',
-                'Expériences accessibles à tous les niveaux de forme',
-              ].map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-3 font-sans text-[14px] font-normal leading-[1.65] tracking-[-0.04em] text-[#0c1d22]/70 sm:text-[15px]"
-                >
-                  <span
-                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
-                    style={{ background: HOME_COLORS.orange }}
-                  />
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <div className="mt-5 flex flex-col gap-4">
+              <p className={homeParagraphClass}>
+                TerraGo imagine des séminaires d&apos;entreprise qui font vivre les territoires tout en
+                simplifiant l&apos;organisation pour votre entreprise.
+              </p>
+              <p className={homeParagraphClass}>
+                Nous sélectionnons des producteurs, agriculteurs, artisans, hébergeurs et acteurs locaux
+                pour construire des expériences authentiques, adaptées à vos objectifs, votre groupe et
+                votre budget.
+              </p>
+              <p className={homeParagraphClass}>
+                Du choix du lieu aux activités, en passant par la restauration, l&apos;hébergement, le
+                transport et la coordination, nous orchestrons chaque étape avec un interlocuteur unique.
+              </p>
+            </div>
           </ScrollAnimate>
           <ScrollAnimate delay={80}>
             <p className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#ec6435]">
               Notre approche
             </p>
-            <h3 className="mt-3 font-sans text-[22px] font-bold leading-[1.15] tracking-[-0.05em] text-[#0c1d22] sm:text-[26px]">
-              Sur mesure, authentique, sans artifice.
-            </h3>
-            <ul className="mt-5 flex flex-col gap-3">
+            <ul className="mt-5 flex flex-col gap-5">
               {[
-                'Brief partagé, proposition adaptée sous 48h',
-                'Formats journée, résidentiel ou programmes plus longs',
-                'Producteurs présents : le cœur de chaque expérience',
-                'Personnalisation selon vos objectifs et la taille du groupe',
+                {
+                  title: 'Sur mesure',
+                  text: 'Un programme construit selon vos objectifs, votre budget, votre nombre de participants et vos contraintes.',
+                },
+                {
+                  title: 'Des partenaires engagés',
+                  text: 'Des producteurs, hébergeurs, restaurateurs et acteurs locaux sélectionnés pour leur savoir-faire et la qualité de leur accueil.',
+                },
+                {
+                  title: 'Une organisation clé en main',
+                  text: 'Nous coordonnons les différents prestataires et assurons le suivi du projet jusqu’au jour J.',
+                },
+                {
+                  title: 'Un impact concret',
+                  text: 'Votre événement contribue directement à faire vivre des savoir-faire, des métiers et une économie locale.',
+                },
               ].map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-3 font-sans text-[14px] font-normal leading-[1.65] tracking-[-0.04em] text-[#0c1d22]/70 sm:text-[15px]"
-                >
-                  <span
-                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
-                    style={{ background: HOME_COLORS.orange }}
-                  />
-                  {item}
+                <li key={item.title}>
+                  <p className="font-sans text-[16px] font-bold leading-snug tracking-[-0.04em] text-[#0c1d22] sm:text-[17px]">
+                    {item.title}
+                  </p>
+                  <p className="mt-1.5 font-sans text-[14px] font-normal leading-[1.65] tracking-[-0.04em] text-[#0c1d22]/70 sm:text-[15px]">
+                    {item.text}
+                  </p>
                 </li>
               ))}
             </ul>
+            <p className={`mt-6 ${homeParagraphClass}`}>
+              L&apos;objectif : vous permettre de vous concentrer sur vos équipes et votre événement,
+              pendant que TerraGo s&apos;occupe du reste.
+            </p>
           </ScrollAnimate>
         </div>
       </section>
@@ -1110,13 +1142,13 @@ const Seminaires: React.FC = () => {
               <button
                 type="button"
                 onClick={() => openModal()}
-                className="inline-flex min-w-[180px] items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
+                className={`${homeHeroSolidButtonClass} border border-white bg-white text-[#0c1d22] hover:bg-[#ec6435] hover:text-white`}
               >
                 Parlons de votre projet
               </button>
               <Link
                 href={EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}
-                className="inline-flex min-w-[180px] items-center justify-center rounded-full border-2 border-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-white transition-colors hover:bg-white/15 sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
+                className={homeOnDarkOutlineButtonClass}
               >
                 Voir les exemples
               </Link>
@@ -1166,7 +1198,7 @@ const Seminaires: React.FC = () => {
         </div>
       </section>
 
-      <FaqExcerpt excerpt="budget" />
+      <FaqExcerpt excerpt="seminaires" limit={8} />
     </div>
   );
 };

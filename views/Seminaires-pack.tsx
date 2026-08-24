@@ -26,6 +26,8 @@ import {
   homeFramedHeroAspectClass,
   bottomImageGradientClass,
   homeHeroOutlineButtonClass,
+  homeHeroSolidButtonClass,
+  homeOnDarkOutlineButtonClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
@@ -2493,7 +2495,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
                 </a>
                 <Link
                   href="/notre-approche"
-                  className="inline-flex items-center justify-center rounded-full border-2 border-white bg-white px-5 py-1.5 text-xs font-bold tracking-[0.04em] text-[#0c1d22] transition-colors hover:border-[#ec6435] hover:bg-white/90 sm:px-8 sm:py-2 sm:text-sm"
+                  className={`${homeHeroSolidButtonClass} border-2 border-white bg-white text-[#0c1d22] hover:border-[#ec6435] hover:bg-white/90`}
                 >
                   Découvrir notre approche
                 </Link>
@@ -2667,13 +2669,13 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
                 <button
                   type="button"
                   onClick={() => openModal()}
-                  className="inline-flex min-w-[180px] items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
+                  className={`${homeHeroSolidButtonClass} border border-white bg-white text-[#0c1d22] hover:bg-[#ec6435] hover:text-white`}
                 >
                   Parlons de votre projet
                 </button>
                 <Link
                   href="/partenaires"
-                  className="inline-flex min-w-[180px] items-center justify-center rounded-full border-2 border-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-white transition-colors hover:bg-white/15 sm:min-w-[220px] sm:px-8 sm:py-2.5 sm:text-[12px]"
+                  className={homeOnDarkOutlineButtonClass}
                 >
                   Voir nos producteurs partenaires
                 </Link>

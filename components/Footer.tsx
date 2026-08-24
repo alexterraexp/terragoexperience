@@ -213,13 +213,18 @@ const Footer: React.FC = () => {
     }
   };
 
-  /** Dernière section orange → fond orange derrière les coins arrondis du footer. */
+  /** Dernière section colorée → même fond derrière les coins arrondis du footer. */
   const blendOrangeCorners =
     pathname === '/faq' ||
     SEMINAIRE_ENJEU_SLUGS.some((slug) => pathname === seminaireEnjeuPath(slug));
+  const footerCornerBlend = blendOrangeCorners
+    ? HOME_COLORS.orange
+    : pathname === '/'
+      ? HOME_COLORS.gray
+      : undefined;
 
   return (
-    <div style={{ background: blendOrangeCorners ? HOME_COLORS.orange : undefined }}>
+    <div style={{ background: footerCornerBlend }}>
     <footer
       className="relative overflow-hidden"
       style={{
@@ -544,7 +549,7 @@ const Footer: React.FC = () => {
         aria-hidden
         width={416}
         height={416}
-        className="pointer-events-none absolute left-0 z-0 hidden h-auto w-auto object-contain object-left opacity-[0.08] lg:bottom-[20%] lg:block lg:h-[44rem] lg:w-auto xl:bottom-[10%] xl:h-[52rem]"
+        className="pointer-events-none absolute left-0 z-0 hidden h-auto w-auto object-contain object-left opacity-[0.04] lg:bottom-[20%] lg:block lg:h-[44rem] lg:w-auto xl:bottom-[10%] xl:h-[52rem]"
       />
 
       {/* Étoile orange — coin bas droit, derrière le texte */}

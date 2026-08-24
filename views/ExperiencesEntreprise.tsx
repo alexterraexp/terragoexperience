@@ -12,7 +12,10 @@ import {
   homeParagraphClass,
   homeSectionPadding,
   bottomImageGradientClass,
+  homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
+  homeHeroOutlineButtonClass,
+  homeHeroSolidButtonClass,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
 import PhotoCopyright from '../components/PhotoCopyright';
@@ -24,7 +27,6 @@ import {
   stripTitleEmphasis,
   type ExperienceCategory,
   type ExperienceExample,
-  type ExperienceEntrepriseSlug,
 } from '../lib/experiencesEntreprise';
 import { getImageCopyright } from '../lib/imageCopyrights';
 import { FAQ_PATH } from '../lib/faq';
@@ -179,18 +181,23 @@ const IntroPanel: React.FC<{
 const SlideCard: React.FC<{
   example: ExperienceExample;
   accent?: string;
-}> = ({ example, accent = HOME_COLORS.orange }) => (
+  imageWide?: boolean;
+}> = ({ example, accent = HOME_COLORS.orange, imageWide = false }) => (
   <article
     className="relative h-full min-h-[320px] w-full overflow-hidden sm:min-h-[340px] lg:flex lg:min-h-[360px] lg:flex-row"
     style={{ borderRadius: HOME_RADIUS }}
   >
     {/* Image : plein cadre mobile, colonne gauche desktop */}
-    <div className="absolute inset-0 lg:relative lg:h-full lg:min-h-0 lg:w-[38%] lg:shrink-0">
+    <div
+      className={`absolute inset-0 lg:relative lg:h-full lg:min-h-0 lg:shrink-0 ${
+        imageWide ? 'lg:w-[48%]' : 'lg:w-[38%]'
+      }`}
+    >
       <Image
         src={example.image}
         alt={example.imageAlt}
         fill
-        sizes="(max-width: 1024px) 100vw, 38vw"
+        sizes={imageWide ? '(max-width: 1024px) 100vw, 48vw' : '(max-width: 1024px) 100vw, 38vw'}
         className="object-cover"
         draggable={false}
       />
@@ -209,7 +216,11 @@ const SlideCard: React.FC<{
     />
 
     {/* Texte : bas du carré mobile ; panneau uni desktop */}
-    <div className="relative z-10 flex h-full min-w-0 flex-col justify-end bg-transparent px-6 py-7 lg:h-full lg:flex-1 lg:justify-center lg:px-9 lg:py-9">
+    <div
+      className={`relative z-10 flex h-full min-w-0 flex-col justify-end bg-transparent px-6 py-7 lg:h-full lg:flex-1 lg:justify-center ${
+        imageWide ? 'lg:px-5 lg:py-7' : 'lg:px-9 lg:py-9'
+      }`}
+    >
       <div
         className="pointer-events-none absolute inset-0 -z-10 hidden lg:block"
         style={{ background: accent }}
@@ -314,6 +325,7 @@ const PillDots: React.FC<{
 const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) => {
   const { openModal } = useModal();
   const introLeft = category.imageLeft;
+  const isOrangeSection1 = category.slug === '1';
   const accent = category.slug === '2' ? HOME_COLORS.primary : HOME_COLORS.orange;
   /** Sur mobile les pilules restent orange ; le panneau 2 garde son accent sombre. */
   const pillAccent = HOME_COLORS.orange;
@@ -352,7 +364,7 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
             </div>
             {category.examples.map((example) => (
               <div key={example.id} className="flex w-full shrink-0 snap-center flex-col">
-                <SlideCard example={example} accent={accent} />
+                <SlideCard example={example} accent={accent} imageWide={isOrangeSection1} />
               </div>
             ))}
           </div>
@@ -369,9 +381,13 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
 
         {/* Desktop : intro fixe + carrousel d’exemples */}
         <div
-          className={`hidden gap-x-5 gap-y-4 lg:grid ${
+          className={`hidden gap-y-4 lg:grid ${
+            isOrangeSection1 ? 'gap-x-2.5' : 'gap-x-5'
+          } ${
             introLeft
-              ? 'lg:grid-cols-[minmax(300px,38%)_minmax(0,1fr)]'
+              ? isOrangeSection1
+                ? 'lg:grid-cols-[minmax(280px,34%)_minmax(0,1fr)]'
+                : 'lg:grid-cols-[minmax(300px,38%)_minmax(0,1fr)]'
               : 'lg:grid-cols-[minmax(0,1fr)_minmax(300px,38%)]'
           }`}
         >
@@ -392,7 +408,7 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
                 >
                   {category.examples.map((example) => (
                     <div key={example.id} className="h-full w-full shrink-0 snap-center">
-                      <SlideCard example={example} accent={accent} />
+                      <SlideCard example={example} accent={accent} imageWide={isOrangeSection1} />
                     </div>
                   ))}
                 </div>
@@ -420,7 +436,7 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
                 >
                   {category.examples.map((example) => (
                     <div key={example.id} className="h-full w-full shrink-0 snap-center">
-                      <SlideCard example={example} accent={accent} />
+                      <SlideCard example={example} accent={accent} imageWide={isOrangeSection1} />
                     </div>
                   ))}
                 </div>
@@ -446,8 +462,8 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
             onClick={openModal}
             className={
               category.slug === '2'
-                ? 'inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#0c1d22] hover:text-white sm:px-10 sm:py-2.5 sm:text-[12px]'
-                : 'inline-flex items-center justify-center gap-2 rounded-full border border-[#ec6435] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[12px]'
+                ? homeCtaOutlineClass
+                : 'inline-flex items-center justify-center gap-2 rounded-full border border-[#ec6435] bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]'
             }
           >
             <span aria-hidden>→</span>
@@ -459,22 +475,8 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
   );
 };
 
-type Props = {
-  slug?: ExperienceEntrepriseSlug;
-};
-
-const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
+const ExperiencesEntreprise: React.FC = () => {
   const { openModal } = useModal();
-
-  useEffect(() => {
-    if (!slug) return;
-    const el = document.getElementById(`categorie-${slug}`);
-    if (!el) return;
-    const t = window.setTimeout(() => {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 120);
-    return () => window.clearTimeout(t);
-  }, [slug]);
 
   const scrollToExperiences = () => {
     document.getElementById('experiences')?.scrollIntoView({ behavior: 'smooth' });
@@ -503,7 +505,7 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
             />
 
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl font-sans text-[clamp(1.7rem,5.2vw,3.4rem)] font-bold leading-[1.05] tracking-[-0.075em] text-white">
+              <h1 className="max-w-3xl font-sans text-[clamp(2.15rem,5.5vw,3.4rem)] font-bold leading-[1.05] tracking-[-0.075em] text-white">
                 Nos expériences
               </h1>
               <p className={`${homeParagraphClass} mt-4 max-w-xl text-[15px] leading-relaxed text-white/90 sm:mt-6 sm:text-[16px]`}>
@@ -513,14 +515,14 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
                 <button
                   type="button"
                   onClick={scrollToExperiences}
-                  className="inline-flex min-w-[180px] items-center justify-center rounded-full border-2 border-[#ec6435] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.06em] text-white transition-colors hover:bg-[#ec6435]/15 sm:min-w-[240px] sm:px-7 sm:py-2.5 sm:text-[12px]"
+                  className={`${homeHeroOutlineButtonClass} border-[#ec6435] hover:border-[#ec6435]`}
+                  style={{ background: 'rgba(12, 29, 34, 0.12)' }}
                 >
                   Découvrir nos expériences
                 </button>
                 <Link
                   href="/seminaires-entreprise"
-                  className="inline-flex min-w-[180px] items-center justify-center rounded-full px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.06em] text-white transition-colors hover:brightness-110 sm:min-w-[240px] sm:px-7 sm:py-2.5 sm:text-[12px]"
-                  style={{ background: HOME_COLORS.orange }}
+                  className={`${homeHeroSolidButtonClass} bg-[#ec6435] text-white hover:brightness-110`}
                 >
                   Nos séminaires d&apos;entreprise
                 </Link>
@@ -638,7 +640,7 @@ const ExperiencesEntreprise: React.FC<Props> = ({ slug }) => {
             <button
               type="button"
               onClick={openModal}
-              className="mt-8 inline-flex items-center justify-center rounded-full bg-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:mt-10 sm:px-8 sm:py-2.5 sm:text-[12px]"
+              className={`mt-8 ${homeHeroSolidButtonClass} bg-white text-[#0c1d22] hover:bg-[#ec6435] hover:text-white sm:mt-10`}
             >
               Parlons de votre projet
             </button>

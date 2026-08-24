@@ -240,10 +240,6 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
   },
 ];
 
-export function getExperienceEntreprise(slug: string): ExperienceCategory | undefined {
-  return EXPERIENCES_ENTREPRISE.find((e) => e.slug === slug);
-}
-
 /** Retire les marqueurs `**…**` pour titres plats (SEO, aria-label…). */
 export function stripTitleEmphasis(title: string): string {
   return title.replace(/\*\*(.+?)\*\*/g, '$1');
