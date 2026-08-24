@@ -32,7 +32,6 @@ const ASSETS = {
   sOrange: `${HOME}/emoji/s-picto-orange.png`,
   feu: `${HOME}/emoji/feu.png`,
   piment: `${HOME}/emoji/piment.png`,
-  lieux: `${HOME}/eleveuse.webp`,
   producteurSoutenu: `${HOME}/emoji/producteur-sountenu.png`,
 } as const;
 

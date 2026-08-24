@@ -711,7 +711,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       description:
         'Chez Hugues & Marc, le potager devient miroir d\u2019entreprise : résilience, gestion du temps et stratégies naturelles. Un format inspiration puissant, à la journée ou en résidentiel 2 jours.',
       image:
-        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/potager-chateau-menthon.jpg',
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/potager-chateau-menthon.webp',
       imageAlt: 'Hugues et Marc, potager du château – exemple de séminaire inspiration TerraGo',
       seminaireSlug: 'avec-hugues-marc',
     },
@@ -1086,7 +1086,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       description:
         'Chez Hugues & Marc, au potager en permaculture près d\u2019Annecy, vos équipes vivent une journée au vert entre découverte du territoire, activité collective, repas local et temps de convivialité. Un format imaginé pour sortir du quotidien tout en vivant une expérience profondément ancrée dans le lieu.',
       image:
-        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/potager-chateau-menthon.jpg',
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/potager-chateau-menthon.webp',
       imageAlt: 'Hugues et Marc, potager du château – exemple de séminaire au vert TerraGo',
       seminaireSlug: 'avec-hugues-marc',
     },
