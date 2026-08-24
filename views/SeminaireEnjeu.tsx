@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown, ChevronRight } from 'lucide-react';
@@ -607,68 +607,171 @@ const FormatRows: React.FC<{
   </div>
 );
 
+function useSwipeTrack(trackRef: React.RefObject<HTMLDivElement | null>, length: number) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const isScrollingRef = useRef(false);
+
+  const goTo = useCallback(
+    (index: number, behavior: ScrollBehavior = 'smooth') => {
+      const track = trackRef.current;
+      if (!track || length === 0) return;
+      const clamped = ((index % length) + length) % length;
+      const slide = track.children[clamped] as HTMLElement | undefined;
+      if (!slide) return;
+      isScrollingRef.current = true;
+      const first = track.firstElementChild as HTMLElement;
+      const targetLeft = slide.offsetLeft - first.offsetLeft;
+      track.scrollTo({ left: targetLeft, behavior });
+      setActiveIndex(clamped);
+      window.setTimeout(() => {
+        isScrollingRef.current = false;
+      }, behavior === 'smooth' ? 450 : 50);
+    },
+    [trackRef, length],
+  );
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let raf = 0;
+    const onScroll = () => {
+      if (isScrollingRef.current) return;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const center = track.scrollLeft + track.clientWidth / 2;
+        let best = 0;
+        let bestDist = Infinity;
+        Array.from(track.children).forEach((child, i) => {
+          const el = child as HTMLElement;
+          const mid = el.offsetLeft - track.offsetLeft + el.offsetWidth / 2;
+          const dist = Math.abs(mid - center);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = i;
+          }
+        });
+        setActiveIndex((prev) => (prev === best ? prev : best));
+      });
+    };
+
+    track.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      track.removeEventListener('scroll', onScroll);
+    };
+  }, [trackRef]);
+
+  return { activeIndex, goTo };
+}
+
+const SwipeDots: React.FC<{
+  count: number;
+  activeIndex: number;
+  onSelect: (index: number) => void;
+  className?: string;
+  label?: string;
+}> = ({ count, activeIndex, onSelect, className = '', label = 'Élément' }) => (
+  <div className={`flex items-center justify-center gap-2 ${className}`}>
+    {Array.from({ length: count }, (_, i) => (
+      <button
+        key={i}
+        type="button"
+        aria-label={`${label} ${i + 1}`}
+        onClick={() => onSelect(i)}
+        className="h-2 rounded-full transition-all duration-300"
+        style={{
+          width: i === activeIndex ? 28 : 8,
+          background: i === activeIndex ? HOME_COLORS.orange : 'rgba(12,29,34,0.18)',
+        }}
+      />
+    ))}
+  </div>
+);
+
+const ThemeCard: React.FC<{ theme: SeminaireEnjeuTheme }> = ({ theme }) => (
+  <article
+    role="listitem"
+    className="flex h-full w-full flex-col p-5 sm:p-6"
+    style={{ borderRadius: HOME_RADIUS, background: HOME_COLORS.gray }}
+  >
+    <span
+      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-white text-[24px] leading-none sm:h-14 sm:w-14 sm:rounded-[18px] sm:text-[28px]"
+      aria-hidden
+    >
+      {theme.emoji}
+    </span>
+    <div className="mt-4 flex min-h-0 flex-1 flex-col">
+      <p className="font-sans text-[16px] font-bold leading-[1.25] tracking-[-0.04em] text-[#0c1d22] sm:text-[17px]">
+        {preserveAcronyms(theme.title)}
+      </p>
+      <p className="mt-2 font-sans text-[13px] font-normal leading-[1.65] tracking-[-0.03em] text-[#0c1d22]/65 sm:text-[14px]">
+        {preserveAcronyms(theme.description)}
+      </p>
+    </div>
+  </article>
+);
+
 const ThemesRow: React.FC<{
   themes: SeminaireEnjeuTheme[];
   ariaLabel?: string;
 }> = ({ themes, ariaLabel = 'Thématiques' }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const swipe = useSwipeTrack(scrollRef, themes.length);
   const gridColsClass =
-    themes.length >= 5
-      ? 'lg:grid-cols-5'
-      : themes.length === 3
-        ? 'lg:grid-cols-3'
-        : 'lg:grid-cols-4';
+    themes.length === 3
+      ? 'sm:grid-cols-3'
+      : themes.length === 4
+        ? 'sm:grid-cols-2 lg:grid-cols-4'
+        : 'sm:grid-cols-2 lg:grid-cols-3';
 
   return (
-    <div
-      className={`mt-10 grid grid-cols-1 gap-3 sm:mt-12 sm:grid-cols-2 sm:gap-4 ${gridColsClass}`}
-      role="list"
-      aria-label={ariaLabel}
-    >
-      {themes.map((theme, i) => {
-        const cardClass = `group theme-card flex w-full items-start gap-2.5 border bg-white p-4 transition-all duration-300 ease-out sm:gap-3 sm:p-5 ${
-          theme.href ? 'cursor-pointer' : 'cursor-default'
-        } border-[rgba(12,29,34,0.10)] hover:-translate-y-0.5 hover:border-[rgba(236,100,53,0.35)] hover:shadow-[0_8px_28px_rgba(12,29,34,0.12)]`;
-        const cardStyle = { borderRadius: HOME_RADIUS };
-        const cardInner = (
-          <>
-            <span
-              className="shrink-0 text-[14px] leading-[1.55] sm:text-[15px] sm:leading-[1.6]"
-              aria-hidden
-            >
-              {theme.emoji}
-            </span>
-            <div className="min-w-0 flex-1 text-center font-sans text-[14px] leading-[1.55] tracking-[-0.02em] sm:text-[15px] sm:leading-[1.6]">
-              <span className="font-bold text-[#0c1d22]">{preserveAcronyms(theme.title)}</span>
-              <span
-                className="grid overflow-hidden transition-[grid-template-rows,opacity,margin] duration-300 ease-out group-hover:mt-1 group-hover:grid-rows-[1fr] group-hover:opacity-100 group-focus-within:mt-1 group-focus-within:grid-rows-[1fr] group-focus-within:opacity-100 grid-rows-[0fr] opacity-0"
-              >
-                <span className="min-h-0 overflow-hidden font-normal text-[rgba(12,29,34,0.72)]">
-                  {preserveAcronyms(theme.description)}
-                </span>
-              </span>
-            </div>
-          </>
-        );
+    <div className="mt-10 sm:mt-12">
+      {/* Mobile : carousel swipable */}
+      <div
+        ref={scrollRef}
+        className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          scrollPaddingInline: '1.25rem',
+          paddingLeft: '1.25rem',
+          paddingRight: '1.25rem',
+          marginLeft: 'calc(-1.25rem)',
+          marginRight: 'calc(-1.25rem)',
+        }}
+        role="list"
+        aria-label={ariaLabel}
+      >
+        {themes.map((theme) => (
+          <div
+            key={theme.title}
+            className="w-[78vw] max-w-[320px] shrink-0 snap-center"
+          >
+            <ThemeCard theme={theme} />
+          </div>
+        ))}
+      </div>
 
-        return (
-          <ScrollAnimate key={theme.title} delay={i * 50} className="min-w-0">
-            {theme.href ? (
-              <Link
-                href={theme.href}
-                role="listitem"
-                className={cardClass}
-                style={cardStyle}
-              >
-                {cardInner}
-              </Link>
-            ) : (
-              <article role="listitem" className={cardClass} style={cardStyle}>
-                {cardInner}
-              </article>
-            )}
+      <SwipeDots
+        count={themes.length}
+        activeIndex={swipe.activeIndex}
+        onSelect={swipe.goTo}
+        label="Thématique"
+        className="mt-5 sm:hidden"
+      />
+
+      {/* Desktop / tablette : grille */}
+      <div
+        className={`hidden gap-4 sm:grid sm:gap-5 ${gridColsClass}`}
+        role="list"
+        aria-label={ariaLabel}
+      >
+        {themes.map((theme, i) => (
+          <ScrollAnimate key={theme.title} delay={i * 50} className="h-full min-w-0">
+            <ThemeCard theme={theme} />
           </ScrollAnimate>
-        );
-      })}
+        ))}
+      </div>
     </div>
   );
 };
@@ -837,9 +940,9 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
 
       {/* ── GROS + ── */}
       <section className="relative py-3 sm:py-4">
-        <div className="relative left-1/2 w-[calc(100vw+16px)] -translate-x-1/2 sm:w-[calc(100vw+20px)]">
+        <div className="relative left-1/2 w-[calc(100%+16px)] -translate-x-1/2 sm:w-[calc(100%+20px)]">
           <div
-            className="overflow-hidden px-5 pt-16 pb-0 sm:px-8 lg:px-10 lg:py-20"
+            className="overflow-hidden px-[calc(1.25rem+8px)] pt-16 pb-0 sm:px-[calc(2rem+10px)] lg:px-[calc(2.5rem+10px)] lg:py-20"
             style={{
               background: HOME_COLORS.orange,
               borderRadius: '42px',

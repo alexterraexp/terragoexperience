@@ -449,9 +449,9 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
 
       {/* ── GROS + ── */}
       <section className="relative py-3 sm:py-4">
-        <div className="relative left-1/2 w-[calc(100vw+16px)] -translate-x-1/2 sm:w-[calc(100vw+20px)]">
+        <div className="relative left-1/2 w-[calc(100%+16px)] -translate-x-1/2 sm:w-[calc(100%+20px)]">
           <div
-            className="overflow-hidden px-5 pt-16 pb-0 sm:px-8 lg:px-10 lg:py-20"
+            className="overflow-hidden px-[calc(1.25rem+8px)] pt-16 pb-0 sm:px-[calc(2rem+10px)] lg:px-[calc(2.5rem+10px)] lg:py-20"
             style={{
               background: HOME_COLORS.orange,
               borderRadius: '42px',

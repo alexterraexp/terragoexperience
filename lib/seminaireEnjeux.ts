@@ -500,29 +500,43 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       {
         emoji: '🌱',
         title: 'Agriculture durable',
-        description: 'Agroécologie, sols, biodiversité, pratiques agricoles.',
+        description:
+          'Agroécologie, vie des sols et pratiques régénératives : vos équipes voient concrètement comment un producteur cultive autrement.',
+        href: HUB.ferme,
       },
       {
         emoji: '💧',
         title: 'Adaptation climatique',
-        description: 'Eau, sécheresse, évolution des cultures et résilience.',
+        description:
+          'Eau, sécheresse, nouvelles cultures : comprendre sur le terrain comment les exploitations s\u2019adaptent au climat qui change.',
+        href: HUB.auVert,
       },
       {
         emoji: '🥕',
         title: 'Alimentation & circuits courts',
-        description: 'Production locale, saisonnalité, consommation et filières.',
+        description:
+          'Saisonnalité, filières locales et assiette du jour : relier ce que l\u2019on mange à ceux qui le produisent, à quelques kilomètres.',
+        href: HUB.producteur,
       },
       {
         emoji: '🐝',
         title: 'Biodiversité',
-        description: 'Pollinisateurs, haies, sols vivants et écosystèmes.',
+        description:
+          'Haies, pollinisateurs, sols vivants : observer un écosystème agricole et le rôle de chaque geste pour le faire durer.',
+        href: HUB.experiences,
       },
       {
         emoji: '🤝',
         title: 'Territoires & savoir-faire',
-        description: 'Transmission, économie locale et maintien des activités agricoles.',
+        description:
+          'Transmission, métiers agricoles et économie locale : mesurer l\u2019impact d\u2019une entreprise qui choisit de soutenir un territoire.',
+        href: HUB.destinations,
       },
     ],
+    themesCta: {
+      label: 'Composer votre séminaire RSE',
+      action: 'modal',
+    },
     faqTitle: 'Questions fréquentes sur les séminaires RSE.',
     faqTitleBold: 'séminaires RSE',
     faq: [
@@ -834,7 +848,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       'séminaire à la ferme',
       'séminaire original entreprise',
     ],
-    ogImage: `${HOME}/univers/photo-1569239591652-6cc3025b07fa.avif`,
+    ogImage: `${HOME}/EXPERIENCES IMG/184912-seminaire-entreprise`,
     ogImageAlt: 'Paysage rural pour un séminaire au vert – TerraGo',
 
     eyebrow: 'Selon vos enjeux',
@@ -1108,10 +1122,10 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
         action: 'modal',
       },
     },
-    heroImage: `${HOME}/univers/photo-1569239591652-6cc3025b07fa.avif`,
+    heroImage: `${HOME}/EXPERIENCES IMG/184912-seminaire-entreprise`,
     heroImageAlt: 'Paysage rural pour un séminaire au vert – TerraGo',
-    whyImage: `${HOME}/seminaire/paysdelaloire/785392042.jpg`,
-    whyImageAlt: 'Domaine à la campagne pour un séminaire au vert – TerraGo',
+    whyImage: `${HOME}/EXPERIENCES%20IMG/apicutlure-au-vert.png`,
+    whyImageAlt: 'Ruchers en forêt pour un séminaire au vert – TerraGo',
   },
 ];
 
