@@ -985,16 +985,28 @@ const Header: React.FC = () => {
                 </nav>
 
                 <div className="mt-auto pt-24">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      openModal();
-                    }}
-                    className="flex w-full items-center justify-center rounded-full bg-[#0c1d22] py-3 font-sans text-[14px] font-bold tracking-[-0.03em] text-white transition-colors duration-200 active:bg-[#163039]"
-                  >
-                    Organiser votre séminaire
-                  </button>
+                  <div className="flex flex-col gap-2.5">
+                    <Link
+                      href="/dashboard-event"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setMobileOpenSection(null);
+                      }}
+                      className="flex w-full items-center justify-center rounded-full border-2 border-[#0c1d22] bg-white py-3 font-sans text-[14px] font-bold tracking-[-0.03em] text-[#0c1d22] transition-colors duration-200 active:bg-[#0c1d22]/[0.04]"
+                    >
+                      Espace participants
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        openModal();
+                      }}
+                      className="flex w-full items-center justify-center rounded-full bg-[#0c1d22] py-3 font-sans text-[14px] font-bold tracking-[-0.03em] text-white transition-colors duration-200 active:bg-[#163039]"
+                    >
+                      Organiser votre séminaire
+                    </button>
+                  </div>
                   <p className="mt-3 text-center font-sans text-[11px] tracking-[-0.02em] text-[#0c1d22]/40">
                     Fabriqué avec tout notre 🧡 pour nos territoires.
                   </p>

@@ -21,7 +21,8 @@ const ORANGE = HOME_COLORS.orange;
 const SESSION_KEY = 'terrago-dashboard-event-session';
 const SESSION_TTL_MS = 10 * 60 * 1000;
 const HERO_IMAGE =
-  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/centre-val-de-loire.jpg';
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/111112.webp';
+const HERO_IMAGE_ALT = 'Grande salle en pierre d’un domaine d’exception';
 
 type StoredSession = { code: string; expiresAt: number };
 
@@ -592,11 +593,27 @@ export default function DashboardEventClient() {
         box-sizing: border-box;
       }
       .dash-hero {
+        position: relative;
         overflow: hidden;
-        background: ${ORANGE};
+        background: ${INK};
         border-radius: ${HOME_RADIUS};
         padding: 4rem 1.25rem;
         text-align: center;
+      }
+      .dash-hero-media {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+      }
+      .dash-hero-shade {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: linear-gradient(to top, rgba(12, 29, 34, 0.62) 0%, rgba(12, 29, 34, 0.28) 55%, rgba(12, 29, 34, 0.18) 100%);
+      }
+      .dash-hero-copy {
+        position: relative;
+        z-index: 2;
       }
       .dash-page--open .dash-inner { padding-top: 28px; }
       @media (min-width: 640px) {
@@ -901,7 +918,7 @@ export default function DashboardEventClient() {
         background: #fff;
         border-radius: 12px;
         padding: 12px 14px;
-        font-size: 14px;
+        font-size: 16px;
         font-family: ${FONT};
         color: ${INK};
         outline: none;
@@ -960,6 +977,7 @@ export default function DashboardEventClient() {
       }
       .dash-unlock-code {
         text-align: center;
+        font-size: 16px;
         font-weight: 600;
         letter-spacing: 0.18em;
         text-transform: uppercase;
@@ -1005,7 +1023,7 @@ export default function DashboardEventClient() {
         }
         .dash-infos-row-body { padding: 0 14px 12px 14px; }
         .dash-input { font-size: 16px; }
-        .dash-unlock-code { font-size: 13px; letter-spacing: 0.12em; }
+        .dash-unlock-code { font-size: 16px; letter-spacing: 0.12em; }
         .dash-cta { font-size: 10px; padding: 14px 18px; }
         .dash-unlock {
           flex-direction: column-reverse;
@@ -1068,7 +1086,7 @@ export default function DashboardEventClient() {
             <div className="dash-unlock-visual">
               <Image
                 src={HERO_IMAGE}
-                alt="Cheval de trait dans les vignes, Centre-Val de Loire"
+                alt={HERO_IMAGE_ALT}
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, 38vw"
@@ -1108,8 +1126,10 @@ export default function DashboardEventClient() {
                     }}
                     autoComplete="off"
                     autoCapitalize="characters"
+                    autoCorrect="off"
                     spellCheck={false}
                     className="dash-input dash-unlock-code"
+                    style={{ fontSize: 16 }}
                     placeholder="XXXXXX"
                   />
                 </div>
@@ -1126,7 +1146,7 @@ export default function DashboardEventClient() {
             <div className="dash-unlock-visual">
               <Image
                 src={HERO_IMAGE}
-                alt="Cheval de trait dans les vignes, Centre-Val de Loire"
+                alt={HERO_IMAGE_ALT}
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, 38vw"
@@ -1151,20 +1171,33 @@ export default function DashboardEventClient() {
       {pageCss}
       <div className="dash-hero-wrap">
         <div className="dash-hero">
-          <p
-            className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/85"
-            style={{ fontFamily: FONT }}
-          >
-            Espace participant
-          </p>
-          <h1 className="font-sans text-[clamp(1.85rem,4.5vw,2.85rem)] font-bold leading-[1.08] tracking-[-0.075em] text-white">
-            {event.company_name || event.name}
-          </h1>
-          {dateLabel && (
-            <p className="mt-3 font-sans text-[11px] font-normal tracking-[-0.03em] text-white/90 sm:text-[16px]">
-              {dateLabel}
+          <div className="dash-hero-media">
+            <Image
+              src={HERO_IMAGE}
+              alt={HERO_IMAGE_ALT}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
+          <div className="dash-hero-shade" aria-hidden />
+          <div className="dash-hero-copy">
+            <p
+              className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/85"
+              style={{ fontFamily: FONT }}
+            >
+              Espace participant
             </p>
-          )}
+            <h1 className="font-sans text-[clamp(1.85rem,4.5vw,2.85rem)] font-bold leading-[1.08] tracking-[-0.075em] text-white">
+              {event.company_name || event.name}
+            </h1>
+            {dateLabel && (
+              <p className="mt-3 font-sans text-[11px] font-normal tracking-[-0.03em] text-white/90 sm:text-[16px]">
+                {dateLabel}
+              </p>
+            )}
+          </div>
         </div>
       </div>
       <div className="dash-inner">

@@ -404,7 +404,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
             {conceptCards.map((card, i) => (
               <div
                 key={i}
-                className="relative aspect-[3/3.45] w-[70vw] max-w-[320px] shrink-0 snap-center overflow-hidden"
+                className="relative aspect-[3/3.9] w-[70vw] max-w-[320px] shrink-0 snap-center overflow-hidden"
                 style={{ borderRadius: HOME_RADIUS }}
               >
                 <Image
@@ -419,11 +419,11 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                 {getImageCopyright(card.image) ? (
                   <PhotoCopyright className="z-[2]" label={getImageCopyright(card.image)!} />
                 ) : null}
-                <div className="pointer-events-none absolute inset-x-0 top-[44%] z-10 px-7">
-                  <p className="font-sans text-[34px] font-normal leading-[1.12] tracking-[-0.075em] text-white">
+                <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-end px-6 pb-7">
+                  <p className="font-sans text-[clamp(1.7rem,8.2vw,2.125rem)] font-normal leading-[1.1] tracking-[-0.075em] text-white">
                     {card.title}
                   </p>
-                  <p className="mt-3 font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.02em] text-white/85">
+                  <p className="mt-2.5 font-sans text-[12.5px] font-normal leading-[1.42] tracking-[-0.02em] text-white/85">
                     {card.hover}
                   </p>
                 </div>
