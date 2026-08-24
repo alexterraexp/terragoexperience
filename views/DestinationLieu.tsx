@@ -25,13 +25,21 @@ import {
   lieuDestinationPath,
   type DestinationLieu as LieuData,
 } from '../lib/lieux';
-import {
-  EXEMPLES_SEMINAIRE_ENTREPRISE_PATH,
-  seminaireExempleHrefFromHints,
-} from '../lib/exemplesSeminaireEntreprise';
-import { fetchSeminaires } from '../lib/seminaires';
 import { protectedImageProps } from '../lib/protectedImage';
 import { getImageCopyright } from '../lib/imageCopyrights';
+import { supabase } from '../lib/supabase';
+import { fetchSeminaires } from '../lib/seminaires';
+import {
+  EXEMPLES_SEMINAIRE_ENTREPRISE_PATH,
+  exempleSeminaireEntreprisePath,
+  findSeminaireByLinkHint,
+  seminaireExempleHrefFromHints,
+} from '../lib/exemplesSeminaireEntreprise';
+import {
+  mapSupabaseRowToFull,
+  type SupabaseProducerRow,
+} from '../lib/producerTypes';
+
 /** Même format que les titres de section Home / Séminaires. */
 const sectionTitleClass =
   'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
@@ -311,34 +319,58 @@ type Props = {
 const DestinationLieu: React.FC<Props> = ({ lieu }) => {
   const { openModal } = useModal();
   const related = getRelatedLieux(lieu.slug, 2);
-  const [exempleHref, setExempleHref] = useState(EXEMPLES_SEMINAIRE_ENTREPRISE_PATH);
+  const [producerAbout, setProducerAbout] = useState<string | null>(null);
+  const [producerRole, setProducerRole] = useState<string | null>(null);
+  const [producerExempleHref, setProducerExempleHref] = useState(
+    EXEMPLES_SEMINAIRE_ENTREPRISE_PATH,
+  );
+
+  const producerLinkHints = [lieu.producer.seminaireSlug, lieu.producer.name];
 
   useEffect(() => {
     if (!lieu.producer.seminaireSlug && !lieu.producer.name) {
-      setExempleHref(EXEMPLES_SEMINAIRE_ENTREPRISE_PATH);
+      setProducerAbout(null);
+      setProducerRole(null);
+      setProducerExempleHref(EXEMPLES_SEMINAIRE_ENTREPRISE_PATH);
       return;
     }
 
     let cancelled = false;
-    fetchSeminaires()
-      .then((all) => {
-        if (cancelled) return;
-        setExempleHref(
-          seminaireExempleHrefFromHints(
-            all,
-            lieu.producer.seminaireSlug,
-            lieu.producer.name,
-          ),
+    (async () => {
+      const all = await fetchSeminaires();
+      const seminaire = findSeminaireByLinkHint(all, ...producerLinkHints);
+      if (cancelled) return;
+
+      if (!seminaire) {
+        setProducerExempleHref(
+          seminaireExempleHrefFromHints(all, ...producerLinkHints),
         );
-      })
-      .catch(() => {
-        if (!cancelled) setExempleHref(EXEMPLES_SEMINAIRE_ENTREPRISE_PATH);
-      });
+        return;
+      }
+
+      setProducerExempleHref(exempleSeminaireEntreprisePath(seminaire.slug));
+
+      const { data } = await supabase
+        .from('producers_full')
+        .select('*')
+        .eq('seminaire_id', seminaire.id)
+        .maybeSingle();
+
+      if (cancelled || !data) return;
+
+      const producer = mapSupabaseRowToFull(data as SupabaseProducerRow);
+      const about = producer.description?.trim() || producer.highlight?.trim() || null;
+      setProducerAbout(about);
+      if (producer.type?.trim()) setProducerRole(producer.type.trim());
+    })();
 
     return () => {
       cancelled = true;
     };
   }, [lieu.producer.name, lieu.producer.seminaireSlug]);
+
+  const aboutText = producerAbout || lieu.producer.description;
+  const roleText = producerRole || lieu.producer.role;
 
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -613,15 +645,30 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
 
             <ScrollAnimate delay={80} className="flex flex-col justify-center">
               <p className="font-sans text-[14px] font-semibold tracking-[-0.03em] text-[#0c1d22] sm:text-[15px]">
-                {lieu.producer.role}
+                {roleText}
               </p>
-              <p className={`mt-4 ${homeParagraphClass}`}>{lieu.producer.description}</p>
-              <Link
-                href={exempleHref}
-                className={`mt-7 self-start ${homeCtaOutlineClass}`}
+              <p
+                className="mt-5 font-sans text-[13px] font-bold tracking-[-0.03em] sm:text-[14px]"
+                style={{ color: HOME_COLORS.orange }}
               >
-                Découvrir cette expérience
-              </Link>
+                À propos du producteur
+              </p>
+              <p className={`mt-3 ${homeParagraphClass}`}>{aboutText}</p>
+              {!lieu.producer.seminaireSlug && !lieu.producer.name ? (
+                <Link
+                  href={EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}
+                  className={`mt-7 self-start ${homeCtaOutlineClass}`}
+                >
+                  Découvrir nos exemples de séminaire
+                </Link>
+              ) : (
+                <Link
+                  href={producerExempleHref}
+                  className={`mt-7 self-start ${homeCtaOutlineClass}`}
+                >
+                  Découvrir cet exemple de séminaire
+                </Link>
+              )}
             </ScrollAnimate>
           </div>
         </div>

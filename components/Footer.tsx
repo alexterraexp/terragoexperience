@@ -12,6 +12,7 @@ import {
 } from '../lib/exemplesSeminaireEntreprise';
 import {
   SEMINAIRE_ENJEUX,
+  SEMINAIRE_ENJEU_MENU_SLUGS,
   SEMINAIRE_ENJEU_SLUGS,
   seminaireEnjeuPath,
 } from '../lib/seminaireEnjeux';
@@ -46,7 +47,9 @@ const NAV_GROUPS: { title: string; links: FooterLink[] }[] = [
     links: [
       { to: '/seminaires-entreprise', label: "Séminaires d'entreprise engagés" },
       { to: EXEMPLES_SEMINAIRE_ENTREPRISE_PATH, label: 'Exemples de séminaire' },
-      ...SEMINAIRE_ENJEUX.map((enjeu) => ({
+      ...SEMINAIRE_ENJEUX.filter((enjeu) =>
+        SEMINAIRE_ENJEU_MENU_SLUGS.includes(enjeu.slug),
+      ).map((enjeu) => ({
         to: seminaireEnjeuPath(enjeu.slug),
         label: enjeu.name,
       })),
@@ -401,6 +404,13 @@ const Footer: React.FC = () => {
                   ) : null}
                 </form>
               )}
+
+              <p
+                className="m-0 mt-10 font-bold text-white"
+                style={{ fontSize: 14, letterSpacing: '-0.05em' }}
+              >
+                Vous connaissez un producteur pépite&nbsp;?
+              </p>
 
               <button
                 type="button"

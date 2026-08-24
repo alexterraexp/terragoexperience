@@ -1,10 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { FAQ_PATH, getFaqExcerptItems, type FaqExcerptKey } from '../lib/faq';
-import { HOME_COLORS, HOME_RADIUS, homeCtaOutlineGhostClass, homeParagraphClass } from './home/homeStyles';
+import { getFaqExcerptItems, type FaqExcerptKey } from '../lib/faq';
+import { HOME_COLORS, HOME_RADIUS, homeParagraphClass } from './home/homeStyles';
 import { FaqAnswerBody } from './FaqAnswer';
 
 type Props = {
@@ -77,12 +76,6 @@ export default function FaqExcerpt({ excerpt, intro, limit = 3 }: Props) {
               </div>
             );
           })}
-        </div>
-
-        <div className="mt-8 flex justify-center">
-          <Link href={FAQ_PATH} className={homeCtaOutlineGhostClass}>
-            Toutes les questions fréquentes
-          </Link>
         </div>
       </div>
     </section>

@@ -15,7 +15,6 @@ import {
   homeSectionPadding,
   bottomImageGradientClass,
   homeCtaOutlineClass,
-  homeCtaOutlineGhostClass,
   homeHeroOutlineButtonClass,
   homeHeroSolidButtonClass,
 } from '../components/home/homeStyles';
@@ -31,8 +30,6 @@ import {
   type ExperienceExample,
 } from '../lib/experiencesEntreprise';
 import { getImageCopyright } from '../lib/imageCopyrights';
-import { FAQ_PATH } from '../lib/faq';
-
 /** Titre avec gras uniquement sur les segments `**…**`. */
 const EmphasizedTitle: React.FC<{ title: string }> = ({ title }) => (
   <>
@@ -676,9 +673,6 @@ const ExperiencesEntreprise: React.FC = () => {
               <p className={`${homeParagraphClass} mt-4 max-w-sm`}>
                 Une question sur nos expériences entreprise ? Parcourez la FAQ ou contactez-nous directement.
               </p>
-              <Link href={FAQ_PATH} className={`${homeCtaOutlineGhostClass} mt-6 sm:mt-8`}>
-                Toutes les questions fréquentes
-              </Link>
             </div>
             <FaqAccordion />
           </div>

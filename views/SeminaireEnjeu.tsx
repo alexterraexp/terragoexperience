@@ -1831,8 +1831,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
 
             <div className="mt-10 flex justify-center">
               <Link href="/seminaires-entreprise" className={homeOnDarkOutlineButtonClass}>
-                <span aria-hidden>→</span>
-                Voir tous nos séminaires
+                → Découvrir tous nos séminaires
               </Link>
             </div>
           </div>
