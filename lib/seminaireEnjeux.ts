@@ -19,6 +19,8 @@ const HUB = {
   rse: '/seminaires-entreprise/sensibilisation-rse',
   inspiration: '/seminaires-entreprise/inspiration-miroir',
   codir: '/seminaires-entreprise/codir',
+  auVertPage: '/seminaires-entreprise/au-vert',
+  original: '/seminaires-entreprise/original',
 } as const;
 
 export const SEMINAIRE_ENJEU_SLUGS = [
@@ -27,9 +29,21 @@ export const SEMINAIRE_ENJEU_SLUGS = [
   'inspiration-miroir',
   'codir',
   'au-vert',
+  'original',
 ] as const;
 
 export type SeminaireEnjeuSlug = (typeof SEMINAIRE_ENJEU_SLUGS)[number];
+
+/** Slugs du mega-menu « Selon vos enjeux » (hors envies). */
+export const SEMINAIRE_ENJEU_MENU_SLUGS: readonly SeminaireEnjeuSlug[] = [
+  'cohesion',
+  'sensibilisation-rse',
+  'inspiration-miroir',
+  'codir',
+];
+
+/** Slugs du mega-menu « Selon vos envies ». */
+export const SEMINAIRE_ENVIE_SLUGS: readonly SeminaireEnjeuSlug[] = ['au-vert', 'original'];
 
 export type SeminaireEnjeuFAQ = {
   question: string;
@@ -111,6 +125,10 @@ export type SeminaireEnjeu = {
   };
   /** Masquer le CTA de la section orange. */
   hideWhyCta?: boolean;
+  /** Fond de la section intro (défaut blanc). */
+  introBackground?: string;
+  /** Fond de la section thématiques (défaut blanc). */
+  themesBackground?: string;
   /** Section expériences dédiée (la liste orange est alors masquée). */
   experiencesSection?: {
     title: string;
@@ -119,6 +137,11 @@ export type SeminaireEnjeu = {
     body: string[];
     listLead?: string;
     cta?: SeminaireEnjeuCta;
+    /** `stacked` = une seule colonne ; `image-left` = photo à gauche, texte à droite. */
+    layout?: 'two-column' | 'stacked' | 'image-left';
+    image?: string;
+    imageAlt?: string;
+    background?: string;
   };
   placesSection?: {
     title: string;
@@ -126,6 +149,7 @@ export type SeminaireEnjeu = {
     intro: string;
     items: SeminaireEnjeuLinkBlock[];
     cta?: SeminaireEnjeuCta;
+    background?: string;
   };
   formatsSection?: {
     title: string;
@@ -141,8 +165,15 @@ export type SeminaireEnjeu = {
     body?: string;
     cities: SeminaireEnjeuCity[];
     cta?: SeminaireEnjeuCta;
+    background?: string;
   };
   exampleCta?: SeminaireEnjeuCta;
+  /** Fond de la section exemple (défaut gris). */
+  exampleBackground?: string;
+  /** Fond de la section programme (défaut blanc). */
+  programBackground?: string;
+  /** Fond de la section FAQ (défaut gris). */
+  faqBackground?: string;
   faqLead?: string;
   closing?: {
     title: string;
@@ -162,6 +193,16 @@ export type SeminaireEnjeu = {
   whyCta?: SeminaireEnjeuCta;
   /** Intro de la section « déroulé type ». Si absent, texte générique. */
   programIntro?: string;
+  /** H2 section programme (sinon « Votre déroulé type pour un {title} »). */
+  programTitle?: string;
+  /** Portion en gras dans programTitle. */
+  programTitleBold?: string;
+  /**
+   * Emplacement de la section programme.
+   * `before-example` (défaut) : juste avant l’exemple de séminaire.
+   * `before-faq` : après les villes.
+   */
+  programPosition?: 'before-example' | 'before-faq';
   programHighlights: SeminaireEnjeuProgrammeStep[];
   /** Sous-titre sous le H2 exemple. */
   exampleLead?: string;
@@ -292,7 +333,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       description:
         'Chez Baptiste, vos équipes vivent une journée rythmée par la culture du piment : visite, challenges collaboratifs, atelier cordage et repas traditionnel basque. Une expérience entre découverte, coopération et convivialité, proposée à la journée ou en format résidentiel.',
       image:
-        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/baptiste_producteur_piment.jpg',
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/baptiste_producteur_piment.webp',
       imageAlt: 'Baptiste, producteur de piments – exemple de séminaire cohésion TerraGo',
       seminaireSlug: 'avec-baptiste',
     },
@@ -375,7 +416,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       },
       {
         question: 'Quels séminaires originaux peut-on organiser avec TerraGo ?',
-        answer: `TerraGo imagine des [[séminaires originaux|${HUB.experiences}]] qui sortent des formats classiques : immersion [[chez un producteur|${HUB.producteur}]], randonnée, découverte d\u2019un savoir-faire, [[activité nature|${HUB.auVert}]], défi collectif, atelier gastronomique ou expérience autour du terroir. Chaque programme est construit sur mesure.`,
+        answer: `TerraGo imagine des [[séminaires originaux|${HUB.original}]] qui sortent des formats classiques : immersion [[chez un producteur|${HUB.producteur}]], randonnée, découverte d\u2019un savoir-faire, [[activité nature|${HUB.auVert}]], défi collectif, atelier gastronomique ou expérience autour du terroir. Chaque programme est construit sur mesure.`,
       },
       {
         question: 'Peut-on organiser un team building original avec TerraGo ?',
@@ -851,7 +892,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
     ogImage: `${HOME}/EXPERIENCES IMG/184912-seminaire-entreprise`,
     ogImageAlt: 'Paysage rural pour un séminaire au vert – TerraGo',
 
-    eyebrow: 'Selon vos enjeux',
+    eyebrow: 'Selon vos envies',
     title: 'Séminaire au vert',
     shortTitle: 'séminaire au vert',
     subtitle:
@@ -1082,7 +1123,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       },
       {
         question: 'Pourquoi organiser un séminaire au vert ?',
-        answer: `Changer d\u2019environnement permet de créer une véritable rupture avec le quotidien. La nature favorise les échanges informels et offre un cadre différent pour travailler, prendre du recul et partager une expérience collective. C\u2019est aussi un format idéal pour un [[séminaire cohésion|${HUB.cohesion}]] ou un [[séminaire original|${HUB.experiences}]].`,
+        answer: `Changer d\u2019environnement permet de créer une véritable rupture avec le quotidien. La nature favorise les échanges informels et offre un cadre différent pour travailler, prendre du recul et partager une expérience collective. C\u2019est aussi un format idéal pour un [[séminaire cohésion|${HUB.cohesion}]] ou un [[séminaire original|${HUB.original}]].`,
       },
       {
         question: 'Où organiser un séminaire au vert ?',
@@ -1126,6 +1167,357 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
     heroImageAlt: 'Paysage rural pour un séminaire au vert – TerraGo',
     whyImage: `${HOME}/EXPERIENCES%20IMG/apicutlure-au-vert.png`,
     whyImageAlt: 'Ruchers en forêt pour un séminaire au vert – TerraGo',
+  },
+  {
+    slug: 'original',
+    name: 'Original',
+    menuLabel: 'Séminaire original',
+
+    metaTitle: 'Séminaire d\u2019entreprise original | TerraGo',
+    metaDescription:
+      'Organisez un séminaire d\u2019entreprise original avec TerraGo : immersion chez un producteur, défi collectif, gastronomie, nature et expériences sur mesure. Devis sous 48h.',
+    keywords: [
+      'séminaire original',
+      'séminaire d\u2019entreprise original',
+      'séminaire original entreprise',
+      'idée séminaire entreprise',
+      'activité originale séminaire',
+      'team building original',
+      'séminaire immersif',
+      'séminaire chez un producteur',
+      'séminaire gastronomique entreprise',
+      'séminaire défi collectif',
+    ],
+    ogImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/03782491.png',
+    ogImageAlt: 'Table de séminaire d\u2019entreprise original en extérieur – TerraGo',
+
+    eyebrow: 'Selon vos envies',
+    title: 'Séminaire d\u2019entreprise original',
+    shortTitle: 'séminaire d\u2019entreprise original',
+    subtitle:
+      'Sortez des formats habituels et faites vivre à vos équipes une expérience qu\u2019elles n\u2019auront pas déjà vécue.',
+    lead:
+      'Un séminaire original, ce n\u2019est pas simplement changer de salle ou ajouter une activité à votre programme. C\u2019est proposer à vos équipes une expérience qui crée de la surprise, de la curiosité et surtout des souvenirs communs.',
+    body: [
+      `Avec TerraGo, nous imaginons des séminaires qui sortent des formats standardisés : immersion [[chez un producteur|${HUB.producteur}]], activité [[en pleine nature|${HUB.auVert}]], défi collectif, découverte d\u2019un savoir-faire, atelier gastronomique ou expérience inattendue.`,
+      `Le programme est construit sur mesure selon votre équipe, votre [[destination|${HUB.destinations}]], votre budget et l\u2019objectif de votre événement.`,
+    ],
+    experiences: [
+      'récolter des produits directement dans une exploitation',
+      'participer à un atelier de fabrication',
+      'partir en randonnée ou en exploration',
+      'relever un défi gastronomique en équipe',
+      'découvrir un métier ou un savoir-faire local',
+      'participer à un chantier de plantation ou à une action concrète',
+      'organiser un rallye à la découverte d\u2019un territoire',
+      'partager une dégustation ou un repas directement chez leur hôte',
+    ],
+    heroCta: {
+      label: 'Demander un devis',
+      action: 'modal',
+    },
+    introBackground: '#f4f4f4',
+    themesBackground: '#f4f4f4',
+    hideWhyCta: true,
+    whyTitle: 'Sortez du séminaire d\u2019entreprise classique',
+    whyTitleBold: 'séminaire d\u2019entreprise classique',
+    whyLead:
+      'Hôtel, salle de réunion, déjeuner et activité de team building : vos équipes ont peut-être déjà vécu ce format.',
+    whyHighlights: [
+      {
+        title: 'Changer de décor et de manière de vivre',
+        text: `TerraGo propose de changer de décor et surtout de manière de vivre le séminaire. Ici, l\u2019activité devient une véritable expérience et le lieu fait partie intégrante du programme.`,
+      },
+      {
+        title: 'Vivre plutôt qu\u2019assister',
+        text: `Mettre les mains dans la terre, partir à la rencontre d\u2019un producteur, relever un défi autour du terroir, explorer un territoire ou partager une grande tablée : l\u2019originalité vient d\u2019abord de ce que vos équipes vont réellement vivre.`,
+      },
+      {
+        title: 'Une expérience mémorable',
+        text: `L\u2019objectif n\u2019est pas d\u2019ajouter une animation de plus, mais de créer de la surprise, de la curiosité et des souvenirs communs qui restent bien après le jour J.`,
+      },
+    ],
+    experiencesSection: {
+      title: 'Des expériences originales à vivre avec votre équipe',
+      titleBold: 'expériences originales',
+      intro:
+        'Nature, gastronomie, savoir-faire, aventure ou découverte : nous sélectionnons des expériences qui donnent une vraie personnalité à votre séminaire.',
+      body: [
+        'Vos collaborateurs peuvent par exemple participer à des formats concrets, adaptés au groupe et au niveau d\u2019engagement souhaité.',
+        `Chaque [[expérience|${HUB.experiences}]] est construite pour faire vivre quelque chose ensemble — pas seulement pour divertir.`,
+      ],
+      listLead: 'Vos collaborateurs peuvent par exemple :',
+      layout: 'image-left',
+      image:
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/6006735-31694875.jpg',
+      imageAlt: 'Récolte d\u2019olives lors d\u2019un séminaire original TerraGo',
+      background: '#ffffff',
+      cta: {
+        label: 'Découvrir nos expériences',
+        href: HUB.experiences,
+      },
+    },
+    themesTitle: 'Des idées de séminaires qui changent vraiment',
+    themesTitleBold: 'qui changent vraiment',
+    themesIntro:
+      'Quelques exemples de formats que nous pouvons imaginer pour votre entreprise.',
+    themes: [
+      {
+        emoji: '🌱',
+        title: 'Les mains dans la terre',
+        description:
+          'Récolte, plantation, maraîchage, vendanges ou découverte d\u2019une exploitation : une activité concrète qui permet de faire ensemble plutôt que simplement assister.',
+        href: HUB.ferme,
+      },
+      {
+        emoji: '🍽️',
+        title: 'Autour du terroir',
+        description:
+          'Défi cuisine, découverte des produits locaux, dégustation, fabrication ou repas partagé : la gastronomie devient un terrain de jeu collectif.',
+        href: HUB.experiences,
+      },
+      {
+        emoji: '🥾',
+        title: 'En pleine nature',
+        description:
+          'Randonnée, orientation, vélo, découverte de la biodiversité ou défi outdoor : sortez les équipes du cadre professionnel pour leur faire découvrir un territoire autrement.',
+        href: HUB.auVert,
+      },
+      {
+        emoji: '🧀',
+        title: 'À la rencontre d\u2019un savoir-faire',
+        description:
+          'Fromager, vigneron, brasseur, apiculteur, ostréiculteur, artisan ou producteur : vos équipes découvrent un métier et participent directement à l\u2019expérience.',
+        href: HUB.producteur,
+      },
+      {
+        emoji: '🏆',
+        title: 'Avec un défi collectif',
+        description:
+          'Construire, cuisiner, récolter, résoudre, créer ou relever un challenge ensemble : des activités pensées pour favoriser naturellement les échanges et la coopération.',
+        href: HUB.cohesion,
+      },
+    ],
+    placesSection: {
+      title: 'L\u2019originalité commence par le lieu',
+      titleBold: 'commence par le lieu',
+      intro:
+        'Un séminaire peut prendre une toute autre dimension lorsque le lieu devient une partie de l\u2019expérience. Ferme, vignoble, domaine, montagne, bord de mer, forêt, potager, brasserie artisanale ou lieu d\u2019exception : TerraGo sélectionne des cadres qui permettent de sortir du quotidien et de donner une vraie identité à votre événement.',
+      background: '#ffffff',
+      items: [
+        {
+          title: 'Chez le producteur',
+          text: 'Immersion dans un savoir-faire vivant, loin des salles de réunion impersonnelles.',
+          href: HUB.producteur,
+          linkLabel: 'Découvrir les séminaires chez le producteur',
+        },
+        {
+          title: 'À la ferme',
+          text: 'Un cadre authentique pour mettre les mains dans la terre et partager le quotidien d\u2019une exploitation.',
+          href: HUB.ferme,
+          linkLabel: 'Découvrir les séminaires à la ferme',
+        },
+        {
+          title: 'Au vignoble',
+          text: 'Paysages viticoles, découverte du terroir et moments de convivialité.',
+          href: HUB.vignoble,
+          linkLabel: 'Découvrir les séminaires au vignoble',
+        },
+        {
+          title: 'En pleine nature',
+          text: 'Forêts, grands espaces et activités outdoor pour changer vraiment de décor.',
+          href: HUB.auVert,
+          linkLabel: 'Découvrir les séminaires en pleine nature',
+        },
+        {
+          title: 'Dans un domaine d\u2019exception',
+          text: 'Des lieux rares et inspirants pour donner une identité forte à votre événement.',
+          href: lieuDestinationPath('domaine-d-exception'),
+          linkLabel: 'Découvrir les domaines d\u2019exception',
+        },
+      ],
+      cta: {
+        label: 'Découvrir nos destinations',
+        href: HUB.destinations,
+      },
+    },
+    formatsSection: {
+      title: 'Un séminaire original, mais pensé autour de vos objectifs',
+      titleBold: 'pensé autour de vos objectifs',
+      intro:
+        'L\u2019originalité ne doit jamais être une fin en soi. Votre séminaire doit avant tout répondre à ce que vous souhaitez faire vivre à votre équipe.',
+      items: [
+        {
+          title: 'Cohésion',
+          text: 'Créer du lien à travers une expérience collective.',
+          href: HUB.cohesion,
+          linkLabel: 'Nos séminaires cohésion',
+        },
+        {
+          title: 'Sensibilisation & RSE',
+          text: 'Découvrir concrètement les enjeux du vivant et des territoires.',
+          href: HUB.rse,
+          linkLabel: 'Nos séminaires RSE & sensibilisation',
+        },
+        {
+          title: 'Inspiration',
+          text: 'Prendre du recul et faire émerger de nouvelles idées.',
+          href: HUB.inspiration,
+          linkLabel: 'Nos séminaires inspiration',
+        },
+        {
+          title: 'Au vert',
+          text: 'Sortir du quotidien et reconnecter les équipes à la nature.',
+          href: HUB.auVertPage,
+          linkLabel: 'Nos séminaires au vert',
+        },
+        {
+          title: 'CODIR',
+          text: 'Alterner réflexion stratégique, échanges et expériences.',
+          href: HUB.codir,
+          linkLabel: 'Nos séminaires CODIR',
+        },
+      ],
+      cta: {
+        label: 'Découvrir nos séminaires selon vos enjeux',
+        href: HUB.seminaires,
+      },
+    },
+    programPosition: 'before-example',
+    programBackground: '#f4f4f4',
+    exampleBackground: '#ffffff',
+    faqBackground: '#ffffff',
+    programTitle: 'Un séminaire original, de l\u2019idée au jour J',
+    programTitleBold: 'de l\u2019idée au jour J',
+    programIntro:
+      'Vous avez une idée précise ou simplement envie de proposer quelque chose de différent à vos équipes ? Partagez-nous votre brief. Vous nous donnez l\u2019objectif. Nous imaginons l\u2019expérience.',
+    programHighlights: [
+      {
+        title: 'Partagez votre brief',
+        description:
+          'Objectif, taille du groupe, destination souhaitée, budget et contraintes : nous partons de votre besoin, même s\u2019il n\u2019est encore qu\u2019une envie.',
+      },
+      {
+        title: 'Recherche du lieu',
+        description:
+          'Nous sélectionnons un cadre qui donne une vraie identité à votre événement — ferme, vignoble, nature, domaine ou lieu d\u2019exception.',
+      },
+      {
+        title: 'Imagination du programme',
+        description:
+          'Nous construisons un déroulé sur mesure qui alterne découverte, activité, échanges et convivialité.',
+      },
+      {
+        title: 'Sélection des activités',
+        description:
+          'Expériences immersives, défis collectifs, ateliers et rencontres : chaque activité est adaptée à votre équipe.',
+      },
+      {
+        title: 'Coordination des partenaires',
+        description:
+          'Producteurs, hôtes, prestataires : nous orchestrons les différents acteurs nécessaires à votre événement.',
+      },
+      {
+        title: 'Hébergement, restauration & transport',
+        description:
+          'Selon vos besoins, nous intégrons l\u2019hébergement, la restauration, le transport et les différents temps de travail.',
+      },
+    ],
+    exampleLead:
+      'Découvrez concrètement ce que TerraGo peut imaginer pour votre équipe.',
+    exampleSeminar: {
+      producerName: 'Baptiste',
+      role: 'Producteur de piments · Pays basque',
+      description:
+        'Chez Baptiste, vos équipes découvrent l\u2019univers du piment à travers une journée qui mêle visite de l\u2019exploitation, challenges collaboratifs, atelier autour du savoir-faire local et repas traditionnel basque. Un format qui permet de sortir complètement du cadre habituel tout en créant de vrais moments de partage.',
+      image:
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/baptiste_producteur_piment.webp',
+      imageAlt: 'Baptiste, producteur de piments – exemple de séminaire original TerraGo',
+      seminaireSlug: 'avec-baptiste',
+    },
+    citiesSection: {
+      title: 'Où organiser un séminaire original ?',
+      titleBold: 'séminaire original',
+      intro:
+        'Paris, Lyon, Bordeaux, Nantes, Marseille, Toulouse ou ailleurs : l\u2019originalité peut commencer à quelques kilomètres de vos bureaux. TerraGo organise des séminaires partout en France, dans des lieux choisis pour leur caractère et les expériences qu\u2019ils permettent de vivre. Autour des grandes villes comme au cœur des territoires ruraux, nous recherchons le lieu et le programme qui correspondent à votre équipe.',
+      background: '#f4f4f4',
+      cities: [
+        { name: 'Paris', href: villeSeminairePath('paris') },
+        { name: 'Lyon', href: villeSeminairePath('lyon') },
+        { name: 'Bordeaux', href: villeSeminairePath('bordeaux') },
+        { name: 'Nantes', href: villeSeminairePath('nantes') },
+        { name: 'Marseille', href: villeSeminairePath('marseille') },
+        { name: 'Toulouse', href: villeSeminairePath('toulouse') },
+        { name: 'Annecy', href: villeSeminairePath('annecy') },
+        { name: 'Montpellier', href: villeSeminairePath('montpellier') },
+        { name: 'Biarritz', href: villeSeminairePath('biarritz') },
+        { name: 'Valence', href: villeSeminairePath('valence') },
+        { name: 'La Rochelle', href: villeSeminairePath('la-rochelle') },
+      ],
+      cta: {
+        label: 'Découvrir toutes nos destinations',
+        href: HUB.destinations,
+      },
+    },
+    faqLead:
+      'Une question sur l\u2019organisation d\u2019un séminaire original ? Consultez notre [[FAQ|/faq]] ou contactez-nous directement.',
+    faq: [
+      {
+        question: 'Qu\u2019est-ce qu\u2019un séminaire d\u2019entreprise original ?',
+        answer: `Un séminaire original sort des formats classiques pour proposer aux équipes une expérience différente, construite autour d\u2019un lieu, d\u2019une activité ou d\u2019une rencontre qui crée de véritables souvenirs communs — [[chez un producteur|${HUB.producteur}]], [[en pleine nature|${HUB.auVert}]] ou autour du terroir.`,
+      },
+      {
+        question: 'Quelles sont les meilleures idées de séminaire d\u2019entreprise ?',
+        answer: `Cela dépend de votre équipe et de votre objectif. Parmi les formats possibles : immersion [[chez un producteur|${HUB.producteur}]], défi gastronomique, randonnée, [[activité nature|${HUB.auVert}]], découverte d\u2019un savoir-faire, atelier participatif ou challenge collectif. Explorez nos [[expériences entreprise|${HUB.experiences}]].`,
+      },
+      {
+        question: 'Quelle activité originale choisir pour un séminaire ?',
+        answer:
+          'L\u2019activité doit être adaptée au nombre de participants, au niveau de forme du groupe, à la saison et surtout à l\u2019objectif du séminaire. TerraGo peut vous proposer plusieurs formats à partir de votre brief.',
+      },
+      {
+        question: 'Peut-on organiser un séminaire original avec hébergement ?',
+        answer:
+          'Oui. Nous pouvons construire des formats résidentiels sur plusieurs jours avec hébergement, restauration, activités et coordination.',
+      },
+      {
+        question: 'Peut-on personnaliser entièrement un séminaire original ?',
+        answer:
+          'Oui. Le lieu, les activités, le rythme, la restauration, l\u2019hébergement et les différents temps collectifs peuvent être adaptés à votre entreprise.',
+      },
+      {
+        question: 'Combien coûte un séminaire original ?',
+        answer:
+          'Le prix dépend notamment du nombre de participants, du lieu, de la durée, des activités, de l\u2019hébergement et du transport. TerraGo établit une proposition sur mesure à partir de votre projet.',
+      },
+      {
+        question: 'Où organiser un séminaire original en France ?',
+        answer: `TerraGo propose des expériences dans de nombreuses [[régions françaises|${HUB.destinations}]], à proximité des grandes villes comme dans des territoires ruraux. Le choix du lieu dépend du type d\u2019expérience recherché.`,
+      },
+      {
+        question: 'Combien de participants peut accueillir un séminaire original ?',
+        answer:
+          'Nous adaptons le programme à la taille du groupe et aux capacités du lieu. Des formats peuvent être imaginés aussi bien pour une petite équipe que pour des groupes plus importants.',
+      },
+    ],
+    relatedSlugs: [],
+    closing: {
+      title:
+        'Et si votre prochain séminaire était celui dont vos équipes parleront encore demain ?',
+      titleBold: 'parleront encore demain',
+      lead: 'Partagez-nous votre idée, même si elle n\u2019est encore qu\u2019une envie. Nous imaginons avec vous un séminaire différent, cohérent et adapté à votre équipe.',
+      cta: {
+        label: 'Demander un devis',
+        action: 'modal',
+      },
+    },
+    heroImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/03782491.png',
+    heroImageAlt: 'Séminaire d\u2019entreprise original – TerraGo',
+    whyImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/vignoble/vign3.jpg',
+    whyImageAlt: 'Vignoble pour un séminaire d\u2019entreprise original – TerraGo',
   },
 ];
 

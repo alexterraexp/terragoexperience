@@ -59,6 +59,7 @@ const HERO_PICTO_BY_SLUG: Record<string, string> = {
   'sensibilisation-rse': `${HOME_EMOJI}/emoji-branche.png`,
   'inspiration-miroir': `${HOME_EMOJI}/mains-dans-la-terre.png`,
   'au-vert': `${HOME_EMOJI}/emoji-arbre.png`,
+  original: `${HOME_EMOJI}/piment.png`,
 };
 
 const ABEILLE =
@@ -689,14 +690,23 @@ const SwipeDots: React.FC<{
   </div>
 );
 
-const ThemeCard: React.FC<{ theme: SeminaireEnjeuTheme }> = ({ theme }) => (
+const ThemeCard: React.FC<{
+  theme: SeminaireEnjeuTheme;
+  cardBackground?: string;
+  iconBackground?: string;
+}> = ({
+  theme,
+  cardBackground = HOME_COLORS.gray,
+  iconBackground = '#ffffff',
+}) => (
   <article
     role="listitem"
     className="flex h-full w-full flex-col p-5 sm:p-6"
-    style={{ borderRadius: HOME_RADIUS, background: HOME_COLORS.gray }}
+    style={{ borderRadius: HOME_RADIUS, background: cardBackground }}
   >
     <span
-      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-white text-[24px] leading-none sm:h-14 sm:w-14 sm:rounded-[18px] sm:text-[28px]"
+      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] text-[24px] leading-none sm:h-14 sm:w-14 sm:rounded-[18px] sm:text-[28px]"
+      style={{ background: iconBackground }}
       aria-hidden
     >
       {theme.emoji}
@@ -715,7 +725,14 @@ const ThemeCard: React.FC<{ theme: SeminaireEnjeuTheme }> = ({ theme }) => (
 const ThemesRow: React.FC<{
   themes: SeminaireEnjeuTheme[];
   ariaLabel?: string;
-}> = ({ themes, ariaLabel = 'Thématiques' }) => {
+  cardBackground?: string;
+  iconBackground?: string;
+}> = ({
+  themes,
+  ariaLabel = 'Thématiques',
+  cardBackground,
+  iconBackground,
+}) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const swipe = useSwipeTrack(scrollRef, themes.length);
   const gridColsClass =
@@ -747,7 +764,11 @@ const ThemesRow: React.FC<{
             key={theme.title}
             className="w-[78vw] max-w-[320px] shrink-0 snap-center"
           >
-            <ThemeCard theme={theme} />
+            <ThemeCard
+              theme={theme}
+              cardBackground={cardBackground}
+              iconBackground={iconBackground}
+            />
           </div>
         ))}
       </div>
@@ -768,13 +789,138 @@ const ThemesRow: React.FC<{
       >
         {themes.map((theme, i) => (
           <ScrollAnimate key={theme.title} delay={i * 50} className="h-full min-w-0">
-            <ThemeCard theme={theme} />
+            <ThemeCard
+              theme={theme}
+              cardBackground={cardBackground}
+              iconBackground={iconBackground}
+            />
           </ScrollAnimate>
         ))}
       </div>
     </div>
   );
 };
+
+const ThemesSection: React.FC<{
+  enjeu: EnjeuData;
+  onModal: () => void;
+}> = ({ enjeu, onModal }) => {
+  if (!enjeu.themes || enjeu.themes.length === 0) return null;
+  const sectionBg = enjeu.themesBackground ?? '#ffffff';
+  const onGray =
+    sectionBg === HOME_COLORS.gray || sectionBg.toLowerCase() === '#f4f4f4';
+  const cardBackground = onGray ? '#ffffff' : HOME_COLORS.gray;
+  const iconBackground = onGray ? HOME_COLORS.gray : '#ffffff';
+  return (
+    <section
+      className="relative"
+      style={{
+        paddingTop: homeSectionPadding,
+        paddingBottom: homeSectionPadding,
+        background: sectionBg,
+      }}
+    >
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        <ScrollAnimate>
+          <h2 className={`max-w-3xl ${sectionTitleClass}`}>
+            <TitleWithBold
+              full={
+                enjeu.themesTitle ??
+                'Quelles thématiques aborder lors d\u2019un séminaire RSE ?'
+              }
+              bold={enjeu.themesTitleBold}
+              boldClassName="font-bold text-[#ec6435]"
+            />
+          </h2>
+          {enjeu.themesIntro ? (
+            <p className={`mt-5 max-w-2xl ${homeParagraphClass}`}>
+              {preserveAcronyms(enjeu.themesIntro)}
+            </p>
+          ) : null}
+        </ScrollAnimate>
+
+        <ThemesRow
+          themes={enjeu.themes}
+          ariaLabel={enjeu.themesTitle ?? 'Thématiques'}
+          cardBackground={cardBackground}
+          iconBackground={iconBackground}
+        />
+        {enjeu.themesCta ? (
+          <div className="mt-10 flex justify-center sm:mt-12">
+            <EnjeuCtaButton
+              cta={enjeu.themesCta}
+              className={homeCtaOutlineGhostClass}
+              onModal={onModal}
+            />
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+};
+
+const ProgramSection: React.FC<{
+  enjeu: EnjeuData;
+  shortDisplayTitle: string;
+  onModal: () => void;
+}> = ({ enjeu, shortDisplayTitle, onModal }) => (
+  <section
+    className="relative"
+    style={{
+      paddingTop: homeSectionPadding,
+      paddingBottom: homeSectionPadding,
+      background: enjeu.programBackground ?? '#ffffff',
+    }}
+  >
+    <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-20">
+        <ScrollAnimate>
+          <h2 className={sectionTitleClass}>
+            {enjeu.programTitle ? (
+              <TitleWithBold
+                full={enjeu.programTitle}
+                bold={enjeu.programTitleBold}
+                boldClassName="font-bold text-[#ec6435]"
+              />
+            ) : (
+              <>
+                Votre{' '}
+                <span className="font-bold" style={{ color: HOME_COLORS.orange }}>
+                  déroulé type
+                </span>{' '}
+                pour un {shortDisplayTitle}.
+              </>
+            )}
+          </h2>
+          <p className={`mt-5 ${homeParagraphClass}`}>
+            {enjeu.programIntro ? (
+              preserveAcronyms(enjeu.programIntro)
+            ) : (
+              <>
+                <span className="font-semibold text-[#0c1d22] underline decoration-[#ec6435] decoration-2 underline-offset-[4px]">
+                  Pour résumer :
+                </span>{' '}
+                une journée riche et fluide, du café d&apos;accueil au repas
+                guinguette — modulable selon la taille du groupe et déclinable en
+                format résidentiel 2&nbsp;jours.
+              </>
+            )}
+          </p>
+        </ScrollAnimate>
+
+        <ScrollAnimate delay={80}>
+          <ProgramAccordion items={enjeu.programHighlights} />
+        </ScrollAnimate>
+      </div>
+
+      <div className="mt-10 flex justify-center sm:mt-12">
+        <button type="button" onClick={onModal} className={homeCtaOutlineGhostClass}>
+          Demander un devis
+        </button>
+      </div>
+    </div>
+  </section>
+);
 
 type Props = {
   enjeu: EnjeuData;
@@ -896,7 +1042,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
         style={{
           paddingTop: 'clamp(2.5rem, 5vw, 4rem)',
           paddingBottom: 'clamp(2.5rem, 5vw, 4rem)',
-          background: '#ffffff',
+          background: enjeu.introBackground ?? '#ffffff',
         }}
       >
         <div className="mx-auto max-w-3xl px-5 sm:px-8">
@@ -939,7 +1085,10 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
       </section>
 
       {/* ── GROS + ── */}
-      <section className="relative py-3 sm:py-4">
+      <section
+        className="relative py-3 sm:py-4"
+        style={{ background: enjeu.introBackground ?? '#ffffff' }}
+      >
         <div className="relative left-1/2 w-[calc(100%+16px)] -translate-x-1/2 sm:w-[calc(100%+20px)]">
           <div
             className="overflow-hidden px-[calc(1.25rem+8px)] pt-16 pb-0 sm:px-[calc(2rem+10px)] lg:px-[calc(2.5rem+10px)] lg:py-20"
@@ -1044,61 +1193,177 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
           style={{
             paddingTop: homeSectionPadding,
             paddingBottom: homeSectionPadding,
-            background: '#ffffff',
+            background: enjeu.experiencesSection.background ?? '#ffffff',
           }}
         >
-          <div className="mx-auto grid max-w-6xl grid-cols-1 items-start gap-x-8 gap-y-6 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,0.7fr)] xl:gap-x-10">
-            <ScrollAnimate className="lg:col-start-1 lg:row-start-1 lg:pr-2">
-              <h2 className={sectionTitleClass}>
-                <TitleWithBold
-                  full={enjeu.experiencesSection.title}
-                  bold={enjeu.experiencesSection.titleBold}
-                />
-              </h2>
-            </ScrollAnimate>
+          {enjeu.experiencesSection.layout === 'image-left' &&
+          enjeu.experiencesSection.image ? (
+            <div className="mx-auto grid max-w-6xl grid-cols-1 items-start gap-8 px-5 sm:px-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.55fr)] lg:items-stretch lg:gap-8 xl:gap-10">
+              <ScrollAnimate delay={80} className="flex h-full justify-center lg:justify-start">
+                <div
+                  className="relative aspect-[4/5] w-full max-w-[280px] overflow-hidden sm:max-w-[320px] lg:aspect-auto lg:h-full lg:min-h-0 lg:max-w-[300px] xl:max-w-[340px]"
+                  style={{ borderRadius: '28px' }}
+                >
+                  <Image
+                    src={enjeu.experiencesSection.image}
+                    alt={enjeu.experiencesSection.imageAlt ?? ''}
+                    fill
+                    sizes="(max-width: 1024px) 320px, 340px"
+                    className="object-cover"
+                  />
+                </div>
+              </ScrollAnimate>
 
-            <ScrollAnimate className="lg:col-start-1 lg:row-start-2 lg:pr-2">
-              <p className={homeParagraphClass}>
-                {preserveAcronyms(enjeu.experiencesSection.intro)}
-              </p>
-              <div className="mt-5 space-y-3.5">
-                {enjeu.experiencesSection.body.map((p) => (
-                  <p key={p.slice(0, 40)} className={homeParagraphClass}>
-                    <LinkedText text={p} />
-                  </p>
-                ))}
-              </div>
-            </ScrollAnimate>
+              <ScrollAnimate className="flex flex-col justify-start lg:pl-2">
+                <h2 className={sectionTitleClass}>
+                  <TitleWithBold
+                    full={enjeu.experiencesSection.title}
+                    bold={enjeu.experiencesSection.titleBold}
+                  />
+                </h2>
+                <p className={`mt-5 ${homeParagraphClass}`}>
+                  {preserveAcronyms(enjeu.experiencesSection.intro)}
+                </p>
+                <div className="mt-5 space-y-3.5">
+                  {enjeu.experiencesSection.body.map((p) => (
+                    <p key={p.slice(0, 40)} className={homeParagraphClass}>
+                      <LinkedText text={p} />
+                    </p>
+                  ))}
+                </div>
+                <p className="mt-8 font-sans text-[16px] font-bold tracking-[-0.03em] text-[#0c1d22] sm:text-[17px]">
+                  {preserveAcronyms(
+                    enjeu.experiencesSection.listLead ??
+                      'Ce que vos équipes peuvent vivre :',
+                  )}
+                </p>
+                <ul className="mt-4 space-y-2">
+                  {enjeu.experiences.map((f) => (
+                    <li
+                      key={f}
+                      className="font-sans text-[14px] font-normal leading-[1.6] tracking-[-0.03em] text-[#0c1d22]/75 before:mr-2 before:content-['•'] sm:text-[15px]"
+                    >
+                      {preserveAcronyms(f)}
+                    </li>
+                  ))}
+                </ul>
+                {enjeu.experiencesSection.cta ? (
+                  <div className="mt-10 flex justify-center lg:justify-start">
+                    <EnjeuCtaButton
+                      cta={enjeu.experiencesSection.cta}
+                      className={homeCtaOutlineGhostClass}
+                      onModal={() => openModal()}
+                    />
+                  </div>
+                ) : null}
+              </ScrollAnimate>
+            </div>
+          ) : enjeu.experiencesSection.layout === 'stacked' ? (
+            <div className="mx-auto max-w-3xl px-5 sm:px-8">
+              <ScrollAnimate>
+                <h2 className={sectionTitleClass}>
+                  <TitleWithBold
+                    full={enjeu.experiencesSection.title}
+                    bold={enjeu.experiencesSection.titleBold}
+                  />
+                </h2>
+                <p className={`mt-5 ${homeParagraphClass}`}>
+                  {preserveAcronyms(enjeu.experiencesSection.intro)}
+                </p>
+                <div className="mt-5 space-y-3.5">
+                  {enjeu.experiencesSection.body.map((p) => (
+                    <p key={p.slice(0, 40)} className={homeParagraphClass}>
+                      <LinkedText text={p} />
+                    </p>
+                  ))}
+                </div>
+                <p className="mt-8 font-sans text-[16px] font-bold tracking-[-0.03em] text-[#0c1d22] sm:text-[17px]">
+                  {preserveAcronyms(
+                    enjeu.experiencesSection.listLead ??
+                      'Ce que vos équipes peuvent vivre :',
+                  )}
+                </p>
+                <ul className="mt-4 space-y-2">
+                  {enjeu.experiences.map((f) => (
+                    <li
+                      key={f}
+                      className="font-sans text-[14px] font-normal leading-[1.6] tracking-[-0.03em] text-[#0c1d22]/75 before:mr-2 before:content-['•'] sm:text-[15px]"
+                    >
+                      {preserveAcronyms(f)}
+                    </li>
+                  ))}
+                </ul>
+              </ScrollAnimate>
+              {enjeu.experiencesSection.cta ? (
+                <div className="mt-10 flex justify-center">
+                  <EnjeuCtaButton
+                    cta={enjeu.experiencesSection.cta}
+                    className={homeCtaOutlineGhostClass}
+                    onModal={() => openModal()}
+                  />
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <div className="mx-auto grid max-w-6xl grid-cols-1 items-start gap-x-8 gap-y-6 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,0.7fr)] xl:gap-x-10">
+              <ScrollAnimate className="lg:col-start-1 lg:row-start-1 lg:pr-2">
+                <h2 className={sectionTitleClass}>
+                  <TitleWithBold
+                    full={enjeu.experiencesSection.title}
+                    bold={enjeu.experiencesSection.titleBold}
+                  />
+                </h2>
+              </ScrollAnimate>
 
-            <ScrollAnimate delay={80} className="lg:col-start-2 lg:row-start-2">
-              <p className="font-sans text-[16px] font-bold tracking-[-0.03em] text-[#0c1d22] sm:text-[17px]">
-                {preserveAcronyms(
-                  enjeu.experiencesSection.listLead ?? 'Ce que vos équipes peuvent vivre :',
-                )}
-              </p>
-              <ul className="mt-4 space-y-2">
-                {enjeu.experiences.map((f) => (
-                  <li
-                    key={f}
-                    className="font-sans text-[14px] font-normal leading-[1.6] tracking-[-0.03em] text-[#0c1d22]/75 before:mr-2 before:content-['•'] sm:text-[15px]"
-                  >
-                    {preserveAcronyms(f)}
-                  </li>
-                ))}
-              </ul>
-            </ScrollAnimate>
+              <ScrollAnimate className="lg:col-start-1 lg:row-start-2 lg:pr-2">
+                <p className={homeParagraphClass}>
+                  {preserveAcronyms(enjeu.experiencesSection.intro)}
+                </p>
+                <div className="mt-5 space-y-3.5">
+                  {enjeu.experiencesSection.body.map((p) => (
+                    <p key={p.slice(0, 40)} className={homeParagraphClass}>
+                      <LinkedText text={p} />
+                    </p>
+                  ))}
+                </div>
+              </ScrollAnimate>
 
-            {enjeu.experiencesSection.cta ? (
-              <div className="flex justify-center lg:col-span-2">
-                <EnjeuCtaButton
-                  cta={enjeu.experiencesSection.cta}
-                  className={homeCtaOutlineGhostClass}
-                  onModal={() => openModal()}
-                />
-              </div>
-            ) : null}
-          </div>
+              <ScrollAnimate delay={80} className="lg:col-start-2 lg:row-start-2">
+                <p className="font-sans text-[16px] font-bold tracking-[-0.03em] text-[#0c1d22] sm:text-[17px]">
+                  {preserveAcronyms(
+                    enjeu.experiencesSection.listLead ??
+                      'Ce que vos équipes peuvent vivre :',
+                  )}
+                </p>
+                <ul className="mt-4 space-y-2">
+                  {enjeu.experiences.map((f) => (
+                    <li
+                      key={f}
+                      className="font-sans text-[14px] font-normal leading-[1.6] tracking-[-0.03em] text-[#0c1d22]/75 before:mr-2 before:content-['•'] sm:text-[15px]"
+                    >
+                      {preserveAcronyms(f)}
+                    </li>
+                  ))}
+                </ul>
+              </ScrollAnimate>
+
+              {enjeu.experiencesSection.cta ? (
+                <div className="flex justify-center lg:col-span-2">
+                  <EnjeuCtaButton
+                    cta={enjeu.experiencesSection.cta}
+                    className={homeCtaOutlineGhostClass}
+                    onModal={() => openModal()}
+                  />
+                </div>
+              ) : null}
+            </div>
+          )}
         </section>
+      ) : null}
+
+      {/* ── THÉMATIQUES (après expériences, pages type au-vert / original) ── */}
+      {enjeu.experiencesSection && enjeu.themes && enjeu.themes.length > 0 ? (
+        <ThemesSection enjeu={enjeu} onModal={() => openModal()} />
       ) : null}
 
       {/* ── LIEUX ── */}
@@ -1108,7 +1373,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
           style={{
             paddingTop: 'clamp(3.5rem, 7vw, 6rem)',
             paddingBottom: 'clamp(3.5rem, 7vw, 6rem)',
-            background: HOME_COLORS.gray,
+            background: enjeu.placesSection.background ?? HOME_COLORS.gray,
           }}
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -1174,49 +1439,13 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
       ) : null}
 
       {/* ── PROGRAMME ── */}
-      <section
-        className="relative"
-        style={{
-          paddingTop: homeSectionPadding,
-          paddingBottom: homeSectionPadding,
-          background: '#ffffff',
-        }}
-      >
-        <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-20">
-            <ScrollAnimate>
-              <h2 className={sectionTitleClass}>
-                Votre <span className="font-bold" style={{ color: HOME_COLORS.orange }}>déroulé type</span>{' '}
-                pour un {shortDisplayTitle}.
-              </h2>
-              <p className={`mt-5 ${homeParagraphClass}`}>
-                {enjeu.programIntro ? (
-                  preserveAcronyms(enjeu.programIntro)
-                ) : (
-                  <>
-                    <span className="font-semibold text-[#0c1d22] underline decoration-[#ec6435] decoration-2 underline-offset-[4px]">
-                      Pour résumer :
-                    </span>{' '}
-                    une journée riche et fluide, du café d&apos;accueil au repas
-                    guinguette — modulable selon la taille du groupe et
-                    déclinable en format résidentiel 2&nbsp;jours.
-                  </>
-                )}
-              </p>
-            </ScrollAnimate>
-
-            <ScrollAnimate delay={80}>
-              <ProgramAccordion items={enjeu.programHighlights} />
-            </ScrollAnimate>
-          </div>
-
-          <div className="mt-10 flex justify-center sm:mt-12">
-            <button type="button" onClick={() => openModal()} className={homeCtaOutlineGhostClass}>
-              Demander un devis
-            </button>
-          </div>
-        </div>
-      </section>
+      {enjeu.programPosition !== 'before-faq' ? (
+        <ProgramSection
+          enjeu={enjeu}
+          shortDisplayTitle={shortDisplayTitle}
+          onModal={() => openModal()}
+        />
+      ) : null}
 
       {/* ── EXEMPLE DE SÉMINAIRE ── */}
       <section
@@ -1224,7 +1453,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
         style={{
           paddingTop: homeSectionPadding,
           paddingBottom: homeSectionPadding,
-          background: HOME_COLORS.gray,
+          background: enjeu.exampleBackground ?? HOME_COLORS.gray,
         }}
       >
         <Image
@@ -1245,50 +1474,9 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
         </div>
       </section>
 
-      {/* ── THÉMATIQUES ── */}
-      {enjeu.themes && enjeu.themes.length > 0 ? (
-        <section
-          className="relative"
-          style={{
-            paddingTop: homeSectionPadding,
-            paddingBottom: homeSectionPadding,
-            background: '#ffffff',
-          }}
-        >
-          <div className="mx-auto max-w-6xl px-5 sm:px-8">
-            <ScrollAnimate>
-              <h2 className={`max-w-3xl ${sectionTitleClass}`}>
-                <TitleWithBold
-                  full={
-                    enjeu.themesTitle ??
-                    'Quelles thématiques aborder lors d\u2019un séminaire RSE ?'
-                  }
-                  bold={enjeu.themesTitleBold}
-                  boldClassName="font-bold text-[#ec6435]"
-                />
-              </h2>
-              {enjeu.themesIntro ? (
-                <p className={`mt-5 max-w-2xl ${homeParagraphClass}`}>
-                  {preserveAcronyms(enjeu.themesIntro)}
-                </p>
-              ) : null}
-            </ScrollAnimate>
-
-            <ThemesRow
-              themes={enjeu.themes}
-              ariaLabel={enjeu.themesTitle ?? 'Thématiques'}
-            />
-            {enjeu.themesCta ? (
-              <div className="mt-10 flex justify-center sm:mt-12">
-                <EnjeuCtaButton
-                  cta={enjeu.themesCta}
-                  className={homeCtaOutlineGhostClass}
-                  onModal={() => openModal()}
-                />
-              </div>
-            ) : null}
-          </div>
-        </section>
+      {/* ── THÉMATIQUES (pages cohésion / RSE sans experiencesSection) ── */}
+      {!enjeu.experiencesSection && enjeu.themes && enjeu.themes.length > 0 ? (
+        <ThemesSection enjeu={enjeu} onModal={() => openModal()} />
       ) : null}
 
       {/* ── VILLES ── */}
@@ -1298,7 +1486,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
           style={{
             paddingTop: homeSectionPadding,
             paddingBottom: homeSectionPadding,
-            background: '#ffffff',
+            background: enjeu.citiesSection.background ?? '#ffffff',
           }}
         >
           <div className="mx-auto max-w-6xl px-5 sm:px-8">
@@ -1314,7 +1502,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
               </p>
             </ScrollAnimate>
             <nav
-              aria-label="Séminaires au vert près des villes"
+              aria-label={`Séminaires près des villes — ${shortDisplayTitle}`}
               className="mt-8 flex flex-wrap gap-x-8 gap-y-3 sm:mt-10 sm:gap-x-10 sm:gap-y-4"
             >
               {enjeu.citiesSection.cities.map((city) => (
@@ -1345,13 +1533,21 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
         </section>
       ) : null}
 
+      {enjeu.programPosition === 'before-faq' ? (
+        <ProgramSection
+          enjeu={enjeu}
+          shortDisplayTitle={shortDisplayTitle}
+          onModal={() => openModal()}
+        />
+      ) : null}
+
       {/* ── FAQ ── */}
       <section
         className="relative"
         style={{
           paddingTop: homeSectionPadding,
           paddingBottom: homeSectionPadding,
-          background: HOME_COLORS.gray,
+          background: enjeu.faqBackground ?? HOME_COLORS.gray,
         }}
       >
         <Image

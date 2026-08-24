@@ -26,7 +26,7 @@ const HOME =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
 
 const ASSETS = {
-  hero: `${HOME}/arrivee-randonnee.png`,
+  hero: `${HOME}/arrivee-randonnee.webp`,
   ble: `${HOME}/emoji/ble.png`,
   etoile: `${HOME}/etoilecouleurfoncee.png`,
   sOrange: `${HOME}/emoji/s-picto-orange.png`,
@@ -215,14 +215,14 @@ const FEATURES = [
   {
     lead: 'Des repas locaux ',
     rest: 'et conviviaux',
-    image: `${HOME}/pique-nique-convivial.png`,
+    image: `${HOME}/pique-nique-convivial.webp`,
     alt: 'Repas locaux et conviviaux – séminaire TerraGo',
   },
   {
     lead: 'Des activités ',
     rest: 'les mains dans la terre',
     image:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/groupe-potager-menthon.png',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/groupe-potager-menthon.webp',
     alt: 'Activités les mains dans la terre – séminaire TerraGo',
   },
   {
@@ -240,7 +240,7 @@ const FEATURES = [
   {
     lead: 'Des temps de réunion ',
     rest: 'dans des lieux inspirants',
-    image: `${HOME}/seminaire/536782491-meeting.jpg`,
+    image: `${HOME}/seminaire/536782491-meeting.webp`,
     alt: 'Temps de réunion dans des lieux inspirants – séminaire TerraGo',
   },
 ] as const;
@@ -353,7 +353,7 @@ const UNIVERS_DATA: UniversData[] = [
     id: 'ferme',
     lead: 'À la ',
     rest: 'ferme',
-    cardImage: `${HOME}/seminaire/ferme/295839-farm.jpg`,
+    cardImage: `${HOME}/seminaire/ferme/295839-farm.webp`,
   },
   {
     id: 'vergers',
@@ -383,7 +383,7 @@ const UNIVERS_DATA: UniversData[] = [
     id: 'affineurs',
     lead: 'Chez les maîtres ',
     rest: 'affineurs',
-    cardImage: `${HOME}/EXPERIENCES%20IMG/6427859-fromage.jpg`,
+    cardImage: `${HOME}/EXPERIENCES%20IMG/6427859-fromage.webp`,
   },
   {
     id: 'potagers',
@@ -425,11 +425,11 @@ const LIEUX_IMAGES = [
     alt: 'Façade de domaine – lieu TerraGo',
   },
   {
-    src: `${HOME}/Destination/62544708-23170201.jpg`,
+    src: `${HOME}/Destination/62544708-23170201.webp`,
     alt: 'Allée de cyprès menant à un domaine – lieu TerraGo',
   },
   {
-    src: `${HOME}/Destination/19986461.jpg`,
+    src: `${HOME}/Destination/19986461.webp`,
     alt: 'Dîner d’exception dans un cellier – lieu TerraGo',
   },
 ] as const;

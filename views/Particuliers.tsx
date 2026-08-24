@@ -19,7 +19,7 @@ const HOME =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
 
 const ASSETS = {
-  hero: `${HOME}/pique-nique-convivial.png`,
+  hero: `${HOME}/pique-nique-convivial.webp`,
   ble: `${HOME}/emoji/ble.png`,
 } as const;
 
@@ -56,14 +56,14 @@ const OFFRE_ITEMS = [
     title: 'Repas du',
     titleBold: 'terroir.',
     text: 'Tables locales, produits du lieu, cuisine de saison — un repas qui raconte le territoire.',
-    image: `${HOME}/repas-convivial.png`,
+    image: `${HOME}/repas-convivial.webp`,
     alt: 'Repas du terroir chez un producteur – TerraGo',
   },
   {
     title: 'Repas',
     titleBold: 'guinguette.',
     text: 'Dans les champs, entre les vignes ou au milieu des oliviers — une table longue, conviviale, en plein air.',
-    image: `${HOME}/pique-nique-convivial.png`,
+    image: `${HOME}/pique-nique-convivial.webp`,
     alt: 'Repas guinguette dans les champs – TerraGo',
   },
 ] as const;

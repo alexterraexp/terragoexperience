@@ -47,15 +47,18 @@ function attachHorizontalDrag(el: HTMLElement) {
     if (!axis) {
       if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
       if (Math.abs(dy) > Math.abs(dx)) {
+        // Scroll vertical du modal : on laisse le navigateur gérer
         axis = 'v';
         pointerId = null;
         return;
       }
       axis = 'h';
       el.style.scrollSnapType = 'none';
+      el.style.touchAction = 'none';
       el.setPointerCapture(e.pointerId);
     }
     if (axis !== 'h') return;
+    e.preventDefault();
     if (Math.abs(dx) > 4) moved = true;
     el.scrollLeft = startScroll - dx;
   };
@@ -65,6 +68,7 @@ function attachHorizontalDrag(el: HTMLElement) {
     pointerId = null;
     axis = null;
     el.style.scrollSnapType = '';
+    el.style.touchAction = '';
     if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
     if (!wasHorizontal) return;
     snap();
@@ -79,7 +83,7 @@ function attachHorizontalDrag(el: HTMLElement) {
   };
 
   el.addEventListener('pointerdown', onDown);
-  el.addEventListener('pointermove', onMove);
+  el.addEventListener('pointermove', onMove, { passive: false });
   el.addEventListener('pointerup', onUp);
   el.addEventListener('pointercancel', onUp);
   return () => {
@@ -122,8 +126,7 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
     const el = trackRef.current;
     if (!el || pairs.length === 0) return;
     const next = ((index % pairs.length) + pairs.length) % pairs.length;
-    const slide = el.children[next] as HTMLElement | undefined;
-    slide?.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+    el.scrollTo({ left: next * el.clientWidth, behavior: 'smooth' });
     setImgIndex(next);
   }, [pairs.length]);
 
@@ -190,6 +193,12 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
         @keyframes pdmOut { from { opacity:1; transform:none } to { opacity:0; transform:translateY(16px) scale(.985) } }
         .pdm-scroll::-webkit-scrollbar { width:0 }
         .pdm-scroll { scrollbar-width:none }
+        .pdm-panel {
+          overflow-x: hidden;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
+        }
         .pdm-track {
           display: flex;
           width: 100%;
@@ -200,7 +209,7 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
           -webkit-overflow-scrolling: touch;
           scrollbar-width: none;
           cursor: grab;
-          touch-action: pan-x pan-y;
+          touch-action: pan-y pinch-zoom;
         }
         .pdm-track::-webkit-scrollbar { display: none }
         .pdm-track:active { cursor: grabbing }
@@ -231,16 +240,13 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
           .pdm-overlay { display: none !important }
           .pdm-wrapper { padding: 0 !important; align-items: stretch !important }
           .pdm-panel {
-            display: block !important; width: 100% !important; max-width: none !important;
+            width: 100% !important; max-width: none !important;
             height: 100% !important; max-height: none !important; border-radius: 0 !important;
-            overflow-x: hidden !important; overflow-y: scroll !important;
-            -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
           }
           .pdm-gallery {
-            flex: none !important; height: 220px !important; min-height: 220px !important;
+            height: 220px !important; min-height: 220px !important;
           }
           .pdm-scroll {
-            flex: none !important; min-height: 0 !important; overflow: visible !important;
             padding: 24px 22px max(28px, env(safe-area-inset-bottom)) !important;
           }
           .pdm-close {
@@ -284,26 +290,23 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
           aria-label={producer.name}
           style={{
             pointerEvents: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
             width: '100%',
             maxWidth: 920,
             height: 'min(780px, 92vh)',
             background: '#fff',
             borderRadius: 20,
-            overflow: 'hidden',
             boxShadow: '0 24px 70px rgba(12,29,34,.28)',
             fontFamily: "'Poppins', sans-serif",
             animation: `${closing ? 'pdmOut' : 'pdmIn'} .28s cubic-bezier(.22,1,.36,1) both`,
           }}
         >
-          {/* ── Haut : carrousel swipable pleine largeur ── */}
+          {/* ── Haut : carrousel (défile avec le contenu) ── */}
           <div
             className="pdm-gallery"
             style={{
               position: 'relative',
-              flex: '0 0 36%',
-              minHeight: 0,
+              height: 280,
+              minHeight: 280,
               background: '#e8e8e8',
               overflow: 'hidden',
             }}
@@ -466,9 +469,6 @@ const ProducerDetailModal: React.FC<ProducerDetailModalProps> = ({ isOpen, produ
           <div
             className="pdm-scroll"
             style={{
-              flex: '1 1 50%',
-              minHeight: 0,
-              overflowY: 'auto',
               padding: '28px 56px 40px',
             }}
           >

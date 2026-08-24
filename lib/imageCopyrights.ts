@@ -13,12 +13,13 @@ const IMAGE_COPYRIGHT_BY_URL: Record<string, string> = {
   [`${HOME}/seminaire/producteur/7852905.jpg`]: 'Marine Van-den-Broek',
   [`${HOME}/seminaire/producteur/41906523-Marine-Van-den-Broek`]: 'Marine Van-den-Broek',
   [`${HOME}/seminaire/producteur/859241-Marine-Van-den-Broek.webp`]: 'Marine Van-den-Broek',
-  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/sol/producteurssol.png':
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/sol/producteurssol.webp':
     'Marine Van-den-Broek',
 
   // ── Pierine di Giacomo (à la ferme) ──
   [`${HOME}/seminaire/ferme/8953021.jpg`]: 'Pierine di Giacomo',
-  [`${HOME}/maraicher-explication.png`]: 'Pierine di Giacomo',
+  [`${HOME}/seminaire/ferme/8953021.webp`]: 'Pierine di Giacomo',
+  [`${HOME}/maraicher-explication.webp`]: 'Pierine di Giacomo',
   [`${HOME}/seminaire/ferme/730507323.jpg`]: 'Pierine di Giacomo',
   [`${HOME}/seminaire/ferme/794104642.jpg`]: 'Pierine di Giacomo',
   [`${HOME}/seminaire/ferme/723951348.jpg`]: 'Pierine di Giacomo',

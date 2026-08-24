@@ -133,7 +133,7 @@ export function buildSeminairePageMetadata(
   seminaire: Seminaire,
   all: Seminaire[] = [],
 ): { title: string; description: string } {
-  const { regionName } = parseSeminaireLocation(seminaire.region);
+  const { locality, regionName } = parseSeminaireLocation(seminaire.region);
   const sameRegion = all.filter((s) => {
     const other = parseSeminaireLocation(s.region);
     return other.regionName.toLowerCase() === regionName.toLowerCase();
@@ -148,8 +148,11 @@ export function buildSeminairePageMetadata(
       ? `${base} – ${producerShortName(seminaire.producteur)} | TerraGo`
       : `${base} | TerraGo`;
 
+  const locationPhrase = locality
+    ? `à ${locality}, ${regionName}`
+    : `en ${regionName}`;
   const description = [
-    `Séminaire d'entreprise ${label || seminaire.producteur} en ${seminaire.region}.`,
+    `Séminaire d'entreprise ${label || seminaire.producteur} ${locationPhrase}.`,
     'Immersion terroir, cohésion d’équipe et engagement RSE avec TerraGo.',
   ].join(' ');
 

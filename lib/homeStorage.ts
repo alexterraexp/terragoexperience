@@ -2,16 +2,15 @@ const HOME_PUBLIC_BASE =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
 
 const HOME_FILES = {
-  heroVideo: 'header-video.mp4',
-  heroPoster: 'Noisettes-recolte.png',
-  conceptAgir: 'Noisettes-recolte.png',
-  conceptLien: 'repas-convivial.png',
-  conceptInspirer: 'maraicher-explication.png',
+  heroVideo: 'header-video-opt.mp4',
+  heroPoster: 'Noisettes-recolte.webp',
+  conceptAgir: 'Noisettes-recolte.webp',
+  conceptLien: 'repas-convivial.webp',
+  conceptInspirer: 'maraicher-explication.webp',
   expOlive: 'olives-recoltes.mp4',
   expCuisine: 'atelier-cuisine-farine.mp4',
   expVin: 'vignes-barrique.mp4',
-  bannerVideo: 'vergers.mp4',
-  bannerPoster: 'serre-maraicher.jpg',
+  bannerImage: 'seminaire/ferme/8953021.webp',
 } as const;
 
 export type HomeAssetUrls = Record<keyof typeof HOME_FILES, string>;
@@ -36,7 +35,7 @@ export function getHomeAssetUrls(): HomeAssetUrls {
 }
 
 export const PRODUCER_IMAGE =
-  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/prod-menton.png';
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/potagermenthon/prod-menton.webp';
 
 export const HOME_EMOJI = {
   arbre:
@@ -73,12 +72,12 @@ export const HOME_PRODUCERS = [
   {
     name: 'Baptiste',
     image:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/baptiste_producteur_piment.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/pimentsbaptiste/baptiste_producteur_piment.webp',
   },
   {
     name: 'Nathalie & Benjamin',
     image:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/sol/producteurssol.png',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/sol/producteurssol.webp',
   },
   {
     name: 'Paolo',
@@ -97,7 +96,7 @@ export const HOME_PRODUCERS = [
   {
     name: 'Marie-Lise & Sabine',
     image:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/noixsoeurs/noix-et-cie-marie-lise-sabine.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/noixsoeurs/noix-et-cie-marie-lise-sabine.webp',
   },
 ] as const;
 
@@ -108,14 +107,14 @@ export const HOME_PRODUCERS = [
 export const REGION_IMAGES = [
   { slug: 'nouvelle-aquitaine', name: 'Nouvelle-Aquitaine', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/huitre-pecheurs.avif' },
   { slug: 'provence', name: 'Provence', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/lavande.avif' },
-  { slug: 'ile-de-france', name: 'Île-de-France', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/0147530379456.jpg' },
+  { slug: 'ile-de-france', name: 'Île-de-France', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/0147530379456.webp' },
   { slug: 'normandie', name: 'Normandie', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/normandie.avif' },
   { slug: 'occitanie', name: 'Occitanie', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/occitanie.avif' },
   { slug: 'bretagne', name: 'Bretagne', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/157872401-35444288.jpg' },
-  { slug: 'pays-de-la-loire', name: 'Pays de la Loire', prep: 'en', article: 'les ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/24311133636914.jpg' },
-  { slug: 'auvergne', name: 'Auvergne', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/37910945-15085778.jpg' },
+  { slug: 'pays-de-la-loire', name: 'Pays de la Loire', prep: 'en', article: 'les ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/24311133636914.webp' },
+  { slug: 'auvergne', name: 'Auvergne', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/37910945-15085778.webp' },
   { slug: 'bourgogne', name: 'Bourgogne', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/bourgogn.avif' },
-  { slug: 'corse', name: 'Corse', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/1198427643714.jpg' },
+  { slug: 'corse', name: 'Corse', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/1198427643714.webp' },
 ] as const;
 
 export type RegionSlug = (typeof REGION_IMAGES)[number]['slug'];

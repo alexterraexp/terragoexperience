@@ -146,7 +146,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
         teaser: 'Métiers, gestes et histoires à partager.',
         description:
           'Créez du lien entre générations en découvrant des métiers, des gestes et des histoires souvent méconnus, au plus près de ceux qui les font vivre.',
-        image: `${HOME}/maraicher-explication.png`,
+        image: `${HOME}/maraicher-explication.webp`,
         imageAlt: 'Transmission de savoir-faire – TerraGo',
       },
       {
@@ -155,7 +155,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
         teaser: 'Partager un moment autour de produits locaux.',
         description:
           'Redécouvrez le plaisir de la table à partir de produits locaux et de saison,  avec une ambiance conviviale de grandes tablées pour prolonger l’esprit du séminaire.',
-        image: `${HOME}/repas-convivial.png`,
+        image: `${HOME}/repas-convivial.webp`,
         imageAlt: 'Repas conviviaux en circuit court – TerraGo',
       },
       {
@@ -186,7 +186,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
       teaser: 'Donner du sens et de l’authenticité à vos événements.',
       description:
         'Lieux atypiques et chaleureux pour rassembler collaborateurs, clients ou partenaires au cœur du terroir.',
-      image: `${HOME}/pique-nique-convivial.png`,
+      image: `${HOME}/pique-nique-convivial.webp`,
       imageAlt: 'Pique-nique convivial en vignoble – événement TerraGo',
     },
     examples: [

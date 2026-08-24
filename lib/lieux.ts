@@ -293,7 +293,7 @@ export const LIEUX: DestinationLieu[] = [
           alt: 'Domaine viticole au pied d’une colline boisée',
         },
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/vignoble/vign4.jpg',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/vignoble/vign4.webp',
           alt: 'Château de Saint-Martin pour séminaire au vignoble',
         },
         {
@@ -336,7 +336,7 @@ export const LIEUX: DestinationLieu[] = [
       'TerraGo collabore avec des fermes capables d’accueillir des groupes — élevage, maraîchage, cultures — pour des programmes utiles, chaleureux et mémorables.',
       'Loin des open spaces, vos collaborateurs retrouvent un rythme plus humain, sans perdre en efficacité stratégique.',
     ],
-    prosImage: `${HOME}/maraicher-explication.png`,
+    prosImage: `${HOME}/maraicher-explication.webp`,
     prosImageAlt: 'Atelier à la ferme pour séminaire d’entreprise',
     prosImageCopyright: 'Pierine di Giacomo',
     pros: [
@@ -686,7 +686,7 @@ export const LIEUX: DestinationLieu[] = [
       'TerraGo y compose des programmes entre travail stratégique, outdoor et rencontres producteur, pour un impact durable sur la cohésion.',
       'Moins de slides, plus de présence : un format idéal pour inspirer, recentrer et faire avancer vos projets collectifs.',
     ],
-    prosImage: `${HOME}/Noisettes-recolte.png`,
+    prosImage: `${HOME}/Noisettes-recolte.webp`,
     prosImageAlt: 'Séminaire outdoor en pleine nature',
     pros: [
       {
@@ -917,7 +917,7 @@ export const LIEUX: DestinationLieu[] = [
       'TerraGo conçoit des itinéraires immersifs où chaque moment — travail, atelier, repas — raconte un territoire vivant.',
       'Le format idéal pour une expérience authentique, fédératrice et alignée avec une démarche RSE ou une culture d’entreprise engagée.',
     ],
-    prosImage: `${HOME}/repas-convivial.png`,
+    prosImage: `${HOME}/repas-convivial.webp`,
     prosImageAlt: 'Immersion terroir pour séminaire d’entreprise',
     pros: [
       {
@@ -986,7 +986,7 @@ export const LIEUX: DestinationLieu[] = [
       images: [
         { src: regionImg('occitanie'), alt: 'Hébergement au cœur des terroirs' },
         { src: regionImg('provence'), alt: 'Cadre terroir pour séminaire' },
-        { src: `${HOME}/maraicher-explication.png`, alt: 'Rencontre producteur terroir' },
+        { src: `${HOME}/maraicher-explication.webp`, alt: 'Rencontre producteur terroir' },
       ],
       highlights: [
         'Ancrage local fort',

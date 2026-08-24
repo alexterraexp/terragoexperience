@@ -21,7 +21,7 @@ const ASSETS = {
   paolo: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/paolo.png',
   team: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/team-terrago.png',
   seminairesHero:
-    'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/arrivee-randonnee.png',
+    'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/arrivee-randonnee.webp',
   partenairesHero:
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/serre-maraicher.jpg',
   arbre: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/emoji-arbre.png',

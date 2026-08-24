@@ -927,7 +927,7 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Sur les terres volcaniques, nous sélectionnons selon votre brief : producteurs de fromages AOP (Saint-Nectaire, Cantal…), chèvreries fermières ou ruchers de montagne. Une immersion authentique, à composer sur mesure.',
       image:
-        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/EXPERIENCES%20IMG/6427859-fromage.jpg',
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/EXPERIENCES%20IMG/6427859-fromage.webp',
       imageAlt: 'Cave d’affinage de fromages en Auvergne – TerraGo',
       generic: true,
     },

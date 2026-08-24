@@ -42,6 +42,7 @@ const PATHS = {
   experiences: '/experiences-entreprise',
   destinations: '/destinations',
   auVert: '/seminaires-entreprise/au-vert',
+  original: '/seminaires-entreprise/original',
   producteur: lieuDestinationPath('chez-le-producteur'),
   partenaires: '/partenaires',
 } as const;
@@ -436,7 +437,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
             type: 'p',
             parts: [
               'En supprimant les salles de réunion impersonnelles et les activités génériques au profit d\'immersion dans des lieux incarnés, vivants et tenus par des passionnés (producteurs, artisans, domaines éco-responsables). TerraGo conçoit précisément ce type de ',
-              { href: PATHS.cohesion, label: 'séminaire original' },
+              { href: PATHS.original, label: 'séminaire original' },
               '.',
             ],
           },

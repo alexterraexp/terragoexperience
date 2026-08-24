@@ -80,18 +80,23 @@ const SEMINAIRE_ENJEUX: DropdownItem[] = [
   { label: 'Séminaire RSE & sensibilisation', description: 'Sensibilisation aux enjeux du vivant', path: '/seminaires-entreprise/sensibilisation-rse' },
   { label: 'Séminaire inspiration & miroir d\'entreprise', description: 'Prendre du recul pour mieux avancer', path: '/seminaires-entreprise/inspiration-miroir' },
   { label: 'Séminaire CODIR', description: 'Aligner et inspirer votre comité de direction', path: '/seminaires-entreprise/codir' },
+];
+
+const SEMINAIRE_ENVIES: DropdownItem[] = [
   { label: 'Séminaire au vert', description: 'Sortez du cadre habituel', path: '/seminaires-entreprise/au-vert' },
+  { label: 'Séminaire original', description: 'Une expérience qu’elles n’auront pas déjà vécue', path: '/seminaires-entreprise/original' },
 ];
 
 const NAV_ITEMS: NavItem[] = [
   {
     label: 'Nos séminaires',
     path: '/seminaires-entreprise',
-    dropdown: [...SEMINAIRE_MAIN, ...SEMINAIRE_ENJEUX],
+    dropdown: [...SEMINAIRE_MAIN, ...SEMINAIRE_ENJEUX, ...SEMINAIRE_ENVIES],
     mega: {
       sections: [
         { title: 'Découvrir', items: SEMINAIRE_MAIN, columns: 1 },
         { title: 'Selon vos enjeux', items: SEMINAIRE_ENJEUX, columns: 1 },
+        { title: 'Selon vos envies', items: SEMINAIRE_ENVIES, columns: 1 },
       ],
       footerCta: {
         label: 'Tous les séminaires',
@@ -726,14 +731,24 @@ const Header: React.FC = () => {
             >
               {openNav?.mega ? (
                 <>
-                  <div className="grid grid-cols-2 gap-10 xl:gap-16 pt-5">
-                    {openNav.mega.sections.map((section, sIdx) => (
+                  <div
+                    className={[
+                      'grid gap-10 xl:gap-16 pt-5',
+                      openNav.mega.sections.length >= 3
+                        ? 'grid-cols-1 lg:grid-cols-3'
+                        : 'grid-cols-2',
+                    ].join(' ')}
+                  >
+                    {openNav.mega.sections.map((section, sIdx) => {
+                      const isLast = sIdx === openNav.mega!.sections.length - 1;
+                      return (
                       <div
                         key={section.title}
                         className={[
-                          sIdx === 0
+                          !isLast
                             ? (isDark ? 'pr-8 border-r border-white/10' : 'pr-8 border-r border-black/[0.06]')
                             : 'pl-2',
+                          sIdx > 0 ? 'pl-2' : '',
                         ].join(' ')}
                       >
                         <p className={sectionTitleCls}>{section.title}</p>
@@ -803,7 +818,8 @@ const Header: React.FC = () => {
                           </button>
                         )}
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </>
               ) : openNav ? (

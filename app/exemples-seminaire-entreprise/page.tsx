@@ -14,14 +14,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const url = `${SITE_URL}${EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}`;
 
   return {
-    title: 'Nos formules séminaire terroir – Journée, 2 jours, sur mesure – TerraGo',
+    title: 'Nos exemples de séminaires responsables en immersion chez des producteurs – TerraGo',
     description:
-      'Découvrez nos formules clés en main : séminaire à la journée, résidentiel 2 jours ou programme sur mesure au contact du terroir et de producteurs engagés. Devis gratuit en 48h.',
+      'Exemples de séminaires d’entreprise chez des producteurs engagés : formules à la journée ou résidentielles, immersion terroir et cohésion d’équipe.',
     robots: { index: true, follow: true },
     openGraph: {
-      title: 'Nos formules séminaire terroir – TerraGo',
+      title: 'Nos exemples de séminaires responsables en immersion chez des producteurs – TerraGo',
       description:
-        'Découvrez nos formules clés en main : séminaire à la journée, résidentiel 2 jours ou programme sur mesure au contact du terroir et de producteurs engagés.',
+        'Exemples de séminaires d’entreprise chez des producteurs engagés : formules à la journée ou résidentielles, immersion terroir et cohésion d’équipe.',
       url,
       siteName: 'TerraGo',
       locale: 'fr_FR',

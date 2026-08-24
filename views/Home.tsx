@@ -29,96 +29,6 @@ interface HomeProps {
   assets: HomeAssetUrls;
 }
 
-/** Vidéo bannière impact : poster immédiat + lecture dès qu’elle entre en vue. */
-const BannerVideo: React.FC<{ src: string; poster?: string; className?: string }> = ({
-  src,
-  poster,
-  className = '',
-}) => {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    const wrap = wrapRef.current;
-    const video = videoRef.current;
-    if (!wrap || !video) return;
-
-    let cancelled = false;
-
-    const tryPlay = () => {
-      if (cancelled) return;
-      video.muted = true;
-      video.playsInline = true;
-      void video.play()
-        .then(() => {
-          if (!cancelled) setReady(true);
-        })
-        .catch(() => undefined);
-    };
-
-    const onLoaded = () => {
-      try {
-        video.currentTime = 0;
-      } catch {
-        /* ignore */
-      }
-      tryPlay();
-    };
-
-    video.addEventListener('loadeddata', onLoaded);
-    video.addEventListener('canplay', tryPlay);
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) tryPlay();
-        else video.pause();
-      },
-      { rootMargin: '200px 0px', threshold: 0.05 },
-    );
-    observer.observe(wrap);
-    tryPlay();
-
-    return () => {
-      cancelled = true;
-      video.removeEventListener('loadeddata', onLoaded);
-      video.removeEventListener('canplay', tryPlay);
-      observer.disconnect();
-    };
-  }, [src]);
-
-  return (
-    <div ref={wrapRef} className={`relative overflow-hidden bg-[#0c1d22] ${className}`}>
-      {poster ? (
-        <Image
-          src={poster}
-          alt=""
-          aria-hidden
-          fill
-          sizes="100vw"
-          className={`object-cover transition-opacity duration-500 ${
-            ready ? 'opacity-0' : 'opacity-100'
-          }`}
-        />
-      ) : null}
-      <video
-        ref={videoRef}
-        src={src}
-        poster={poster}
-        muted
-        loop
-        playsInline
-        autoPlay
-        preload="auto"
-        className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
-          ready ? 'opacity-100' : 'opacity-0'
-        }`}
-        aria-label="Vergers en récolte – TerraGo"
-      />
-    </div>
-  );
-};
-
 const FAQ_ITEMS = [
   {
     q: 'Pourquoi choisir TerraGo pour organiser un séminaire d\'entreprise ?',
@@ -717,11 +627,15 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
             className="relative overflow-hidden max-sm:!rounded-none"
             style={{ borderRadius: HOME_RADIUS }}
           >
-            <BannerVideo
-              src={assets.bannerVideo}
-              poster={assets.bannerPoster}
-              className="aspect-[16/11] w-full sm:aspect-[36/12] lg:aspect-[40/9]"
-            />
+            <div className="relative aspect-[16/11] w-full overflow-hidden bg-[#0c1d22] sm:aspect-[36/12] lg:aspect-[40/9]">
+              <Image
+                src={assets.bannerImage}
+                alt="Serre maraîchère – TerraGo"
+                fill
+                sizes="100vw"
+                className="object-cover"
+              />
+            </div>
 
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div className="absolute inset-0 z-10 flex items-center justify-center px-5 py-12 text-center sm:px-8">
