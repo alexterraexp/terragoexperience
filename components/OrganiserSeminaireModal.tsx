@@ -25,10 +25,9 @@ const STEP_IMAGES = [
 
 const EVENT_TYPES = [
   'Séminaire cohésion',
-  'Séminaire sensibilisation',
-  'Séminaire inspiration',
+  'Séminaire RSE & sensibilisation',
+  'Séminaire inspiration & miroir',
   'Séminaire CODIR',
-  'Séminaire RSE & engagement',
   'Team building',
   'Lancement de produit',
   "Journée d'étude",
@@ -270,6 +269,11 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
         .osm-opt-grid {
           display:grid; grid-template-columns:1fr 1fr; gap:12px 26px;
         }
+        .osm-opt-grid .osm-opt:last-child {
+          grid-column: 1 / -1;
+          width: calc(50% - 13px);
+          justify-self: center;
+        }
 
         .osm-pill {
           background:#fff; cursor:pointer; white-space:nowrap;
@@ -375,6 +379,9 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           .osm-opt-grid {
             grid-template-columns:1fr !important;
             gap:10px !important;
+          }
+          .osm-opt-grid .osm-opt:last-child {
+            width: 100%;
           }
           .osm-opt {
             min-height:48px;
