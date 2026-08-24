@@ -181,6 +181,8 @@ export type SeminaireEnjeu = {
     lead: string;
     cta: SeminaireEnjeuCta;
   };
+  /** Fond de la section « pourquoi » (défaut orange). */
+  whyBackground?: string;
   /** H2 section « pourquoi » (sinon « Pourquoi choisir ce {title} ? »). */
   whyTitle?: string;
   /** Portion en gras dans whyTitle. */
@@ -750,6 +752,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
     relatedSlugs: ['codir', 'sensibilisation-rse'],
     heroImage: `${HOME}/enjeux/RSE76311867-28102052.webp`,
     heroImageAlt: 'Séminaire inspiration et miroir d\u2019entreprise – TerraGo',
+    whyBackground: '#0c1d22',
     whyImage: `${HOME}/enjeux/003515756747.webp`,
     whyImageAlt: 'Échange lors d\u2019un séminaire inspiration et miroir d\u2019entreprise – TerraGo',
   },
@@ -866,6 +869,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
     relatedSlugs: ['inspiration-miroir', 'cohesion'],
     heroImage: `${HOME}/enjeux/codir4743505-31107445.webp`,
     heroImageAlt: 'Séminaire CODIR TerraGo chez un producteur',
+    whyBackground: '#0c1d22',
     whyImage: `${HOME}/enjeux/2334767487164.webp`,
     whyImageAlt: 'Salle de travail pour un séminaire CODIR hors les murs – TerraGo',
   },

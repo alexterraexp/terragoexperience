@@ -493,7 +493,6 @@ const Header: React.FC = () => {
     if (nav.path === '/experiences-entreprise') {
       return (
         pathname === '/experiences' ||
-        (pathname?.startsWith('/experience/') ?? false) ||
         pathname === '/experiences-entreprise' ||
         pathname === '/experiences-privees' ||
         (pathname?.startsWith('/experiences-privees/') ?? false)

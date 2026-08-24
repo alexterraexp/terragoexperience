@@ -86,7 +86,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'paris',
     name: 'Paris',
     nearLabel: 'près de Paris',
-    h1: 'Séminaire nature près de Paris : changez de cadre',
+    h1: 'Séminaire d’entreprise proche de Paris',
     intro:
       'Les journées parisiennes s’enchaînent vite : open space, transports, réunions. Pour un [[séminaire d’entreprise|/seminaires-entreprise]], beaucoup d’équipes veulent simplement sortir de la ville sans s’éloigner trop. Autour de Paris, campagnes d’Île-de-France, Brie, Vexin ou la Sologne restent accessibles. TerraGo vous emmène chez des producteurs : changer de rythme, rencontrer ceux qui font vivre le territoire.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Paris ?',
@@ -149,7 +149,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Paris ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire près de Paris chez un producteur | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Paris | TerraGo',
     metaDescription:
       'Séminaire d’entreprise près de Paris : campagnes franciliennes, producteurs, team building utile et démarche RSE concrète. Brief et devis.',
   },
@@ -157,7 +157,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'lyon',
     name: 'Lyon',
     nearLabel: 'près de Lyon',
-    h1: 'Séminaire original à Lyon : partez à la rencontre du terroir',
+    h1: 'Séminaire d’entreprise proche de Lyon',
     intro:
       'Lyon concentre sièges, labos et sièges régionaux. Quand l’équipe a besoin d’air, le réflexe n’est pas forcément la salle du 6e. Beaujolais, Monts du Lyonnais, Dombes ou Bugey restent dans le bassin de vie. Un [[séminaire professionnel|/seminaires-entreprise]] chez un viticulteur, un éleveur ou un maraîcher change le sujet de conversation dès le premier café.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Lyon ?',
@@ -217,7 +217,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Lyon ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire à Lyon chez les producteurs | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Lyon | TerraGo',
     metaDescription:
       'Séminaire d’entreprise à Lyon et alentours : Beaujolais, Dombes, producteurs, team building terroir et RSE concrète. Demandez un devis.',
   },
@@ -225,7 +225,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'marseille',
     name: 'Marseille',
     nearLabel: 'près de Marseille',
-    h1: 'Séminaire éco-responsable à Marseille et dans les environs',
+    h1: 'Séminaire d’entreprise proche de Marseille',
     intro:
       'Entre collines, calanques et zone portuaire, Marseille vit vite. Pour un événement d’équipe, l’arrière-pays provençal offre un autre rythme : Alpilles, Camargue, oléiculteurs, vignerons, maraîchers et plantes aromatiques. TerraGo organise le [[séminaire éco-responsable|/seminaires-entreprise/sensibilisation-rse]] chez ceux qui cultivent, pas dans une salle vue mer générique.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Marseille ?',
@@ -285,7 +285,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Marseille ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire éco-responsable à Marseille | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Marseille | TerraGo',
     metaDescription:
       'Séminaire à Marseille et en Provence : oliviers, vignerons, team building agricole et RSE. Organisez votre journée chez un producteur.',
   },
@@ -293,7 +293,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'bordeaux',
     name: 'Bordeaux',
     nearLabel: 'près de Bordeaux',
-    h1: 'Séminaire original près de Bordeaux chez les producteurs',
+    h1: 'Séminaire d’entreprise proche de Bordeaux',
     intro:
       'Bordeaux n’est pas seulement un nom de vin sur une carte. Pour les équipes du centre-ville ou de la rive droite, un [[séminaire original|/experiences-entreprise]] consiste à quitter les quais pour l’Entre-deux-Mers, le Médoc agricole ou le maraîchage girondin. TerraGo vous place chez le producteur : chai, ferme, atelier — pas dans une salle de dégustation hors-sol.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Bordeaux ?',
@@ -353,7 +353,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Bordeaux ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire original près de Bordeaux | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Bordeaux | TerraGo',
     metaDescription:
       'Séminaire d’entreprise près de Bordeaux : vignobles, maraîchage, producteurs et team building utile. Démarche RSE, devis sur brief.',
   },
@@ -361,7 +361,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'toulouse',
     name: 'Toulouse',
     nearLabel: 'près de Toulouse',
-    h1: 'Séminaire RSE autour de Toulouse',
+    h1: 'Séminaire d’entreprise proche de Toulouse',
     intro:
       'Aéronautique, labos, sièges : Toulouse avance à un rythme serré. À côté, Lauragais, Frontonnais, campagnes de Haute-Garonne et portes du Gers offrent des terres de céréales, de vigne et d’élevage. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] TerraGo, c’est quitter la ville rose pour une exploitation occitane, le temps de travailler autrement.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Toulouse ?',
@@ -421,7 +421,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Toulouse ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire RSE autour de Toulouse | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Toulouse | TerraGo',
     metaDescription:
       'Séminaire d’entreprise autour de Toulouse : Lauragais, Frontonnais, producteurs occitans et team building utile. Demandez un devis.',
   },
@@ -429,7 +429,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'nantes',
     name: 'Nantes',
     nearLabel: 'près de Nantes',
-    h1: 'Séminaire éco-responsable près de Nantes : changez de cadre',
+    h1: 'Séminaire d’entreprise proche de Nantes',
     intro:
       'Nantes oscille entre Loire, océan et ceinture maraîchère. Pour un [[séminaire au vert|/seminaires-entreprise]], inutile d’aller loin : vignoble nantais, élevage, côte atlantique, ou cultures légumières de Loire-Atlantique. TerraGo sort l’équipe du quartier de la création ou d’un siège tertiaire pour la poser chez un producteur ligérien.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Nantes ?',
@@ -489,7 +489,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Nantes ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire au vert près de Nantes | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Nantes | TerraGo',
     metaDescription:
       'Séminaire d’entreprise près de Nantes : vignoble nantais, maraîchage, producteurs et team building RSE. Brief et devis TerraGo.',
   },
@@ -497,7 +497,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'rennes',
     name: 'Rennes',
     nearLabel: 'près de Rennes',
-    h1: 'Séminaire nature proche de  Rennes, au plus près des campagnes',
+    h1: 'Séminaire d’entreprise proche de Rennes',
     intro:
       'Rennes grandit, les sièges aussi. Autour, l’Ille-et-Vilaine reste un pays d’élevage laitier, de cidre, de maraîchage et de villages. Un [[team building|/experiences-entreprise]] TerraGo n’est pas un escape game en centre-ville : ce sont des immersions chez des éleveurs, marâichers ou cidriculteurs, à parler métier et territoire.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Rennes ?',
@@ -557,7 +557,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Rennes ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire d’entreprise à Rennes | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Rennes | TerraGo',
     metaDescription:
       'Séminaire près de Rennes : élevage, cidre, campagnes d’Ille-et-Vilaine, producteurs et RSE concrète. Demandez votre devis.',
   },
@@ -565,7 +565,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'lille',
     name: 'Lille',
     nearLabel: 'près de Lille',
-    h1: 'Séminaire original autour de Lille, chez les producteurs',
+    h1: 'Séminaire d’entreprise proche de Lille',
     intro:
       'Lille, Roubaix, Euralille : la densité est le quotidien. À deux pas, Flandre intérieure, Pévèle et Artois restent des terres de maraîchage, d’élevage et de grandes cultures. Un [[séminaire original|/experiences-entreprise]] TerraGo, c’est quitter la métropole européenne pour une ferme des Hauts-de-France, le temps de travailler ensemble autrement.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Lille ?',
@@ -625,7 +625,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Lille ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire original autour de Lille | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Lille | TerraGo',
     metaDescription:
       'Séminaire d’entreprise autour de Lille : Flandre, Pévèle, maraîchers, team building et RSE. Organisez votre journée chez un producteur.',
   },
@@ -633,7 +633,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'strasbourg',
     name: 'Strasbourg',
     nearLabel: 'près de Strasbourg',
-    h1: 'Séminaire éco-responsable près de Strasbourg',
+    h1: 'Séminaire d’entreprise proche de Strasbourg',
     intro:
       'Institutions, sièges rhénans, rythme européen : Strasbourg travaille beaucoup en intérieur. Derrière, le vignoble alsacien, la plaine du Rhin et le maraîchage offrent un autre terrain. TerraGo pose votre [[séminaire éco-responsable|/seminaires-entreprise/sensibilisation-rse]] chez un viticulteur, un maraîcher ou un éleveur, pas dans une salle de congrès.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Strasbourg ?',
@@ -693,7 +693,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Strasbourg ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire éco-responsable près de Strasbourg | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Strasbourg | TerraGo',
     metaDescription:
       'Séminaire près de Strasbourg : vignoble alsacien, maraîchage rhénan, producteurs et team building RSE. Demandez un devis.',
   },
@@ -701,7 +701,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'montpellier',
     name: 'Montpellier',
     nearLabel: 'près de Montpellier',
-    h1: 'Séminaire à impact autour de Montpellier',
+    h1: 'Séminaire d’entreprise proche de Montpellier',
     intro:
       'Montpellier pousse vers la mer et vers la garrigue. Pour un [[séminaire au vert|/seminaires-entreprise]], l’arrière-pays, le Pic Saint-Loup, les vignobles et le maraîchage méditerranéen sont le vrai terrain. TerraGo emmène l’équipe chez l’oléiculteur, le vigneron ou l’éleveur, loin des salles du centre.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Montpellier ?',
@@ -761,7 +761,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Montpellier ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire au vert autour de Montpellier | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Montpellier | TerraGo',
     metaDescription:
       'Séminaire autour de Montpellier : Pic Saint-Loup, oliviers, producteurs et team building éco-responsable. Brief et devis.',
   },
@@ -769,7 +769,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'nice',
     name: 'Nice',
     nearLabel: 'près de Nice',
-    h1: 'Séminaire RSE près de Nice, vers l’arrière-pays',
+    h1: 'Séminaire d’entreprise proche de Nice',
     intro:
       'Nice vit face à la mer ; l’arrière-pays, lui, vit de l’olivier, des agrumes, du maraîchage de coteau et de l’élevage de montagne. Pour un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]], l’intérêt n’est pas la Promenade mais un producteur des Alpes-Maritimes. TerraGo organise cette sortie de cadre.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Nice ?',
@@ -829,7 +829,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Nice ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire RSE près de Nice | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Nice | TerraGo',
     metaDescription:
       'Séminaire près de Nice : arrière-pays, oliviers, agrumes, producteurs et team building utile. Demandez un devis TerraGo.',
   },
@@ -837,7 +837,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'grenoble',
     name: 'Grenoble',
     nearLabel: 'près de Grenoble',
-    h1: 'Séminaire nature à Grenoble : cap sur les massifs',
+    h1: 'Séminaire d’entreprise proche de Grenoble',
     intro:
       'À Grenoble, il suffit de quitter la ville pour changer complètement de décor. Vercors, Chartreuse et Grésivaudan offrent un terrain idéal pour un [[séminaire d’entreprise|/seminaires-entreprise]] chez les producteurs : élevage, fromages, noix, savoir-faire de montagne et repas locaux. Avec TerraGo, vos équipes découvrent un territoire en rencontrant directement celles et ceux qui le font vivre.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Grenoble ?',
@@ -897,7 +897,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Grenoble ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire entreprise à Grenoble | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Grenoble | TerraGo',
     metaDescription:
       'Séminaire à Grenoble : Vercors, Chartreuse, noix, fromages, producteurs et team building RSE. Organisez votre journée au vert.',
   },
@@ -905,7 +905,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'aix-en-provence',
     name: 'Aix-en-Provence',
     nearLabel: 'près d’Aix-en-Provence',
-    h1: 'Séminaire original près d’Aix-en-Provence',
+    h1: 'Séminaire d’entreprise proche d’Aix-en-Provence',
     intro:
       'À Aix-en-Provence, changez de cadre sans partir loin. Dans le Pays d’Aix, oliviers, vignes, lavande et maraîchage deviennent le terrain de jeu de votre prochain [[séminaire original|/experiences-entreprise]]. Avec TerraGo, vos équipes rencontrent les producteurs, découvrent leurs savoir-faire et partagent un repas directement ancré dans le territoire.',
     whyTitle: 'Pourquoi organiser votre séminaire autour d’Aix-en-Provence ?',
@@ -965,7 +965,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Aix-en-Provence ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire original près d’Aix-en-Provence | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche d’Aix-en-Provence | TerraGo',
     metaDescription:
       'Séminaire près d’Aix-en-Provence : oliviers, vignes, producteurs et team building RSE. Organisez votre journée chez un acteur local.',
   },
@@ -973,7 +973,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'angers',
     name: 'Angers',
     nearLabel: 'près d’Angers',
-    h1: 'Séminaire à impact en Anjou, près d’Angers',
+    h1: 'Séminaire d’entreprise proche d’Angers',
     intro:
       'Angers vit au fil de la Loire et du végétal. Anjou viticole, horticulture, maraîchage, arboriculture : le département est un bassin de production. TerraGo transforme un [[séminaire au vert|/seminaires-entreprise]] angevin en journée chez un vigneron, un horticulteur ou un maraîcher, pas en location de château anonyme.',
     whyTitle: 'Pourquoi organiser votre séminaire autour d’Angers ?',
@@ -1033,7 +1033,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Angers ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire au vert près d’Angers | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche d’Angers | TerraGo',
     metaDescription:
       'Séminaire près d’Angers : Anjou, vignobles, horticulture, producteurs et team building RSE. Demandez un devis.',
   },
@@ -1041,7 +1041,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'tours',
     name: 'Tours',
     nearLabel: 'près de Tours',
-    h1: 'Séminaire éco-responsable autour de Tours',
+    h1: 'Séminaire d’entreprise proche de Tours',
     intro:
       'Tours est au cœur du Val de Loire. Autour de la ville, la Touraine vit au rythme de ses vignes, de son maraîchage et de ses élevages. Avec TerraGo, votre [[séminaire éco-responsable|/seminaires-entreprise/sensibilisation-rse]] quitte les salles de réunion pour partir à la rencontre des producteurs : découverte d’un domaine à Montlouis ou Vouvray, atelier maraîcher, rencontre avec un éleveur et repas issus du territoire.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Tours ?',
@@ -1101,7 +1101,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Tours ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire éco-responsable autour de Tours | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Tours | TerraGo',
     metaDescription:
       'Séminaire autour de Tours : Touraine, vignobles, fromages, producteurs et team building RSE. Brief et devis TerraGo.',
   },
@@ -1109,7 +1109,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'valence',
     name: 'Valence',
     nearLabel: 'près de Valence',
-    h1: 'Séminaire éco-responsable à Valence et dans la Drôme',
+    h1: 'Séminaire d’entreprise proche de Valence',
     intro:
       'Valence ouvre sur la Drôme et l’Ardèche : vergers, noix, plantes aromatiques, vigne. Pour un [[séminaire d’entreprise|/seminaires-entreprise]], c’est un bassin agricole dense, à quitter le centre en un transfert. TerraGo place l’équipe chez un arboriculteur, un producteur de plantes ou un vigneron.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Valence ?',
@@ -1169,7 +1169,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Valence ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire d’entreprise à Valence | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Valence | TerraGo',
     metaDescription:
       'Séminaire à Valence et en Drôme : vergers, noix, plantes, producteurs et team building RSE. Demandez un devis.',
   },
@@ -1177,7 +1177,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'reims',
     name: 'Reims',
     nearLabel: 'près de Reims',
-    h1: 'Séminaire original près de Reims, au-delà du champagne',
+    h1: 'Séminaire d’entreprise proche de Reims',
     intro:
       'Reims vit avec le champagne ; la Marne vit aussi de céréales, d’élevage et de producteurs hors grandes maisons. Un [[séminaire original|/experiences-entreprise]] TerraGo peut passer par un vigneron indépendant ou une ferme de plaine : autre chose qu’une visite d’enseigne. Sortir du bureau, rencontrer ceux qui font le territoire.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Reims ?',
@@ -1237,7 +1237,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Reims ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire original près de Reims | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Reims | TerraGo',
     metaDescription:
       'Séminaire près de Reims : Champagne agricole, producteurs, team building et RSE. Organisez votre journée hors des sentiers battus.',
   },
@@ -1245,7 +1245,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'clermont-ferrand',
     name: 'Clermont-Ferrand',
     nearLabel: 'près de Clermont-Ferrand',
-    h1: 'Séminaire nature autour de Clermont-Ferrand',
+    h1: 'Séminaire d’entreprise proche de Clermont-Ferrand',
     intro:
       'Clermont travaille au pied des volcans. Autour, l’Auvergne d’élevage, de fromages et d’agriculture de montagne reste le vrai paysage. Un [[séminaire au vert|/seminaires-entreprise]] TerraGo, c’est une journée chez un éleveur ou un fromager, pas une salle de zone industrielle. Changer de cadre, rencontrer le métier.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Clermont-Ferrand ?',
@@ -1305,7 +1305,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Clermont-Ferrand ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire au vert à Clermont-Ferrand | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Clermont-Ferrand | TerraGo',
     metaDescription:
       'Séminaire autour de Clermont-Ferrand : Auvergne, élevage, fromages, producteurs et team building RSE. Demandez un devis.',
   },
@@ -1313,7 +1313,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'annecy',
     name: 'Annecy',
     nearLabel: 'près d’Annecy',
-    h1: 'Séminaire RSE près d’Annecy, chez les producteurs savoyards',
+    h1: 'Séminaire d’entreprise proche d’Annecy',
     intro:
       'Annecy attire pour le lac ; l’agriculture savoyarde, elle, vit dans les massifs : élevage, fromages, alpages. Un [[séminaire RSE|/seminaires-entreprise/sensibilisation-rse]] TerraGo n’est pas un séminaire « vue lac » : c’est une journée chez un producteur de Haute-Savoie, à parler lait, herbe et métier.',
     whyTitle: 'Pourquoi organiser votre séminaire autour d’Annecy ?',
@@ -1373,7 +1373,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Annecy ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire RSE près d’Annecy | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche d’Annecy | TerraGo',
     metaDescription:
       'Séminaire près d’Annecy : Haute-Savoie, fromages, élevage, producteurs et team building utile. Organisez votre devis.',
   },
@@ -1381,7 +1381,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'la-rochelle',
     name: 'La Rochelle',
     nearLabel: 'près de La Rochelle',
-    h1: 'Séminaire à impact à La Rochelle : du littoral aux terres',
+    h1: 'Séminaire d’entreprise proche de La Rochelle',
     intro:
       'La Rochelle vit du port et du tertiaire. Derrière les tours, la Charente-Maritime cultive l’huître, le maraîchage, la vigne et l’élevage. Un [[séminaire d’entreprise|/seminaires-entreprise]] TerraGo quitte les Minimes pour un ostréiculteur, un maraîcher ou un vigneron : le littoral au travail, pas en décor.',
     whyTitle: 'Pourquoi organiser votre séminaire autour de La Rochelle ?',
@@ -1441,7 +1441,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à La Rochelle ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire entreprise à La Rochelle | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de La Rochelle | TerraGo',
     metaDescription:
       'Séminaire à La Rochelle : ostréiculture, marais, producteurs et team building RSE. Organisez votre journée chez un acteur local.',
   },
@@ -1449,7 +1449,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     slug: 'biarritz',
     name: 'Biarritz',
     nearLabel: 'près de Biarritz',
-    h1: 'Séminaire original près de Biarritz, au Pays Basque',
+    h1: 'Séminaire d’entreprise proche de Biarritz',
     intro:
       'Biarritz attire pour l’océan ; le Pays Basque intérieur vit d’élevage, de fromage, de piment d’Espelette et de polyculture. Un [[séminaire original|/experiences-entreprise]] TerraGo quitte la côte pour une ferme basque : rencontre, savoir-faire, repas. Pas un séminaire « vue surf ».',
     whyTitle: 'Pourquoi organiser votre séminaire autour de Biarritz ?',
@@ -1509,7 +1509,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
       },
     ],
     cta: 'Vous préparez un séminaire à Biarritz ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
-    metaTitle: 'Séminaire original près de Biarritz | TerraGo',
+    metaTitle: 'Séminaire d’entreprise proche de Biarritz | TerraGo',
     metaDescription:
       'Séminaire près de Biarritz : Pays Basque, éleveurs, piment d’Espelette, team building et RSE. Demandez un devis TerraGo.',
   },

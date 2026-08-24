@@ -24,6 +24,8 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroAspectClass,
+  homeFramedHeroH1Class,
+  homeFramedHeroOverlayClass,
   bottomImageGradientClass,
   homeHeroOutlineButtonClass,
   homeHeroSolidButtonClass,
@@ -2476,13 +2478,13 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
                   'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.5) 100%)',
               }}
             />
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl text-center font-sans text-[clamp(1.75rem,5.2vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
+            <div className={homeFramedHeroOverlayClass}>
+              <h1 className={`max-w-3xl text-center font-normal ${homeFramedHeroH1Class}`}>
                 Nos exemples de
                 <br />
                 <span className="font-bold">séminaire d&apos;entreprise.</span>
               </h1>
-              <h2 className="mt-4 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
+              <h2 className="mt-3 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
                 Des formules concrètes chez des producteurs — à la journée ou en résidentiel.
               </h2>
               <div className="mt-7 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:gap-4">

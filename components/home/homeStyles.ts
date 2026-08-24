@@ -20,6 +20,14 @@ export const homeFramedHeroAspectClass =
 export const homeFramedHeroWideAspectClass =
   'aspect-[4/5] w-full overflow-hidden sm:aspect-[2.45/1] lg:aspect-[2.85/1]';
 
+/** H1 des héros encadrés — plus grand sur mobile, fluide pour rester dans le cadre. */
+export const homeFramedHeroH1Class =
+  'font-sans text-[clamp(2.2rem,1.2rem+4.5vw,3.75rem)] leading-[1.06] tracking-[-0.075em] text-white text-balance';
+
+/** Overlay texte du hero encadré. */
+export const homeFramedHeroOverlayClass =
+  'absolute inset-0 z-10 flex min-h-0 flex-col items-center justify-center overflow-hidden px-4 py-6 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20';
+
 export const homeH1Class =
   'font-sans text-[40px] leading-[1.05] tracking-[-0.075em] text-[#0c1d22]';
 

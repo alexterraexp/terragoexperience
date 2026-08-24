@@ -59,7 +59,6 @@ const nextConfig = {
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'plus.unsplash.com' },
       { protocol: 'https', hostname: 'lxlvcwwvnujfbqgcfzze.supabase.co' },
-      { protocol: 'https', hostname: 'i.f1g.fr' },
       { protocol: 'https', hostname: 'upload.wikimedia.org' },
       { protocol: 'https', hostname: 'www.google.com' },
     ],

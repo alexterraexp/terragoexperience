@@ -9,6 +9,8 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroWideAspectClass,
+  homeFramedHeroH1Class,
+  homeFramedHeroOverlayClass,
   bottomImageGradientClass,
   homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
@@ -30,9 +32,6 @@ import {
 import { fetchSeminaires } from '../lib/seminaires';
 import { protectedImageProps } from '../lib/protectedImage';
 import { getImageCopyright } from '../lib/imageCopyrights';
-import FaqExcerpt from '../components/FaqExcerpt';
-import type { FaqExcerptKey } from '../lib/faq';
-
 /** Même format que les titres de section Home / Séminaires. */
 const sectionTitleClass =
   'font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]';
@@ -45,12 +44,6 @@ const S_ORANGE =
 
 const ETOILE =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/etoilecouleurfoncee.png';
-
-const LIEU_FAQ_EXCERPT: Partial<Record<string, FaqExcerptKey>> = {
-  'chez-le-producteur': 'producteur',
-  'au-coeur-des-terroirs': 'producteur',
-  'en-pleine-nature': 'au-vert',
-};
 
 const RATEAU =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/rateau.png';
@@ -388,12 +381,12 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
+            <div className={homeFramedHeroOverlayClass}>
               <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                 En fonction des lieux
               </p>
-              <h1 className="mt-5 max-w-4xl pt-1 font-sans text-[clamp(2.1rem,5.5vw,3rem)] font-bold leading-[1.05] tracking-[-0.075em] text-white sm:mt-6">
-                {`Séminaire ${lieu.phrase}`}
+              <h1 className={`mt-4 max-w-4xl pt-1 font-normal sm:mt-6 ${homeFramedHeroH1Class}`}>
+                Séminaire <span className="font-bold">{lieu.phrase}</span>.
               </h1>
               <button
                 type="button"
@@ -718,10 +711,6 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
           </div>
         </div>
       </section>
-
-      {LIEU_FAQ_EXCERPT[lieu.slug] ? (
-        <FaqExcerpt excerpt={LIEU_FAQ_EXCERPT[lieu.slug]!} />
-      ) : null}
 
       {/* ── AUTRES LIEUX ── */}
       <section

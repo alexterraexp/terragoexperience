@@ -9,6 +9,8 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroAspectClass,
+  homeFramedHeroH1Class,
+  homeFramedHeroOverlayClass,
   homeParagraphClass,
   homeSectionPadding,
   bottomImageGradientClass,
@@ -642,17 +644,17 @@ const Seminaires: React.FC = () => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl text-center font-sans text-[clamp(1.75rem,5.2vw,3.75rem)] font-bold leading-[1.02] tracking-[-0.075em] text-white">
+            <div className={homeFramedHeroOverlayClass}>
+              <h1 className={`max-w-3xl text-center font-bold ${homeFramedHeroH1Class}`}>
                 Séminaires d&apos;entreprise engagés
               </h1>
-              <h2 className="mt-4 max-w-2xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
+              <h2 className="mt-3 max-w-2xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
                 Organisez un séminaire d&apos;entreprise sur mesure, dans des lieux authentiques partout en France, entre nature, terroir, rencontres et expériences collectives.
               </h2>
               <button
                 type="button"
                 onClick={() => openModal()}
-                className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
+                className={`mt-5 ${homeHeroOutlineButtonClass} sm:mt-9`}
                 style={{ background: 'rgba(12, 29, 34, 0.12)' }}
               >
                 Demander un devis

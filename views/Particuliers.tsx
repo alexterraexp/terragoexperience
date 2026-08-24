@@ -7,6 +7,8 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroAspectClass,
+  homeFramedHeroH1Class,
+  homeFramedHeroOverlayClass,
   homeParagraphClass,
   homeSectionPadding,
   bottomImageGradientClass,
@@ -402,8 +404,8 @@ const Particuliers: React.FC = () => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl text-center font-sans text-[clamp(1.75rem,5.2vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
+            <div className={homeFramedHeroOverlayClass}>
+              <h1 className={`max-w-3xl text-center font-normal ${homeFramedHeroH1Class}`}>
                 Expériences privées
                 <br />
                 <span className="font-bold">entre amis & en famille.</span>

@@ -419,7 +419,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                 {getImageCopyright(card.image) ? (
                   <PhotoCopyright className="z-[2]" label={getImageCopyright(card.image)!} />
                 ) : null}
-                <div className="pointer-events-none absolute left-6 right-5 top-[50%] z-10">
+                <div className="pointer-events-none absolute inset-x-0 top-[44%] z-10 px-7">
                   <p className="font-sans text-[34px] font-normal leading-[1.12] tracking-[-0.075em] text-white">
                     {card.title}
                   </p>
@@ -638,6 +638,13 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
             </div>
 
             <div className={`${bottomImageGradientClass} z-[1]`} />
+            <div
+              className="pointer-events-none absolute inset-0 z-[2]"
+              style={{
+                background:
+                  'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.32) 45%, transparent 100%)',
+              }}
+            />
             <div className="absolute inset-0 z-10 flex items-center justify-center px-5 py-12 text-center sm:px-8">
               <p className="max-w-none font-sans text-[clamp(1.65rem,6.5vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.075em] text-white">
                 Des séminaires qui ont <span className="font-bold">de l&apos;impact</span>,

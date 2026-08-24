@@ -9,6 +9,8 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroWideAspectClass,
+  homeFramedHeroH1Class,
+  homeFramedHeroOverlayClass,
   bottomImageGradientClass,
   homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
@@ -34,6 +36,8 @@ import {
   seminaireExempleHrefFromHints,
 } from '../lib/exemplesSeminaireEntreprise';
 import { getImageCopyright } from '../lib/imageCopyrights';
+import { LIEUX, lieuDestinationPath } from '../lib/lieux';
+import { protectedImageProps } from '../lib/protectedImage';
 import {
   SEMINAIRE_FORMAT_LABELS,
   fetchSeminaires,
@@ -544,24 +548,158 @@ const ProgramAccordion: React.FC<{ items: EnjeuData['programHighlights'] }> = ({
   );
 };
 
+function lieuFromHref(href: string) {
+  return LIEUX.find((lieu) => lieuDestinationPath(lieu.slug) === href);
+}
+
+const LinkBlockPhotoCard: React.FC<{ item: SeminaireEnjeuLinkBlock }> = ({ item }) => {
+  const lieu = lieuFromHref(item.href);
+  if (!lieu) return null;
+  const copyright = getImageCopyright(lieu.heroImage) ?? lieu.heroImageCopyright;
+
+  return (
+    <Link
+      href={item.href}
+      className="relative flex aspect-[3/3.4] h-full w-full overflow-hidden"
+      style={{ borderRadius: HOME_RADIUS }}
+    >
+      <Image
+        src={lieu.heroImage}
+        alt={lieu.heroImageAlt}
+        fill
+        sizes="80vw"
+        className="pointer-events-none select-none object-cover"
+        {...protectedImageProps}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
+      {copyright ? <PhotoCopyright className="z-[2]" label={copyright} /> : null}
+      <p className="pointer-events-none absolute inset-x-0 bottom-9 z-[1] px-5 font-sans text-[28px] font-bold leading-[1.08] tracking-[-0.075em] text-white">
+        {preserveAcronyms(item.title)}
+      </p>
+    </Link>
+  );
+};
+
+const LinkBlockTextCard: React.FC<{
+  item: SeminaireEnjeuLinkBlock;
+  background?: string;
+  dark?: boolean;
+}> = ({ item, background = '#ffffff', dark = false }) => (
+  <Link
+    href={item.href}
+    className="flex w-full flex-col p-5"
+    style={{
+      borderRadius: HOME_RADIUS,
+      background: dark ? 'rgba(255,255,255,0.1)' : background,
+    }}
+  >
+    <p
+      className={`font-sans text-[16px] font-bold leading-[1.25] tracking-[-0.04em] ${
+        dark ? 'text-white' : 'text-[#0c1d22]'
+      }`}
+    >
+      {preserveAcronyms(item.title)}
+    </p>
+    <p
+      className={`mt-2.5 font-sans text-[13px] font-normal leading-[1.65] tracking-[-0.03em] ${
+        dark ? 'text-white/80' : 'text-[#0c1d22]/65'
+      }`}
+    >
+      {preserveAcronyms(item.text)}
+    </p>
+    <span className="mt-4 inline-flex font-sans text-[13px] font-semibold tracking-[-0.02em] text-[#ec6435]">
+      → {item.linkLabel ?? item.title}
+    </span>
+  </Link>
+);
+
+const LinkBlockCard: React.FC<{
+  item: SeminaireEnjeuLinkBlock;
+  background?: string;
+  dark?: boolean;
+}> = ({ item, background, dark }) => {
+  if (lieuFromHref(item.href)) return <LinkBlockPhotoCard item={item} />;
+  return <LinkBlockTextCard item={item} background={background} dark={dark} />;
+};
+
+const LinkBlockSwipe: React.FC<{
+  items: SeminaireEnjeuLinkBlock[];
+  ariaLabel: string;
+  dotsLabel: string;
+  cardBackground?: string;
+  dark?: boolean;
+}> = ({ items, ariaLabel, dotsLabel, cardBackground, dark = false }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const swipe = useSwipeTrack(scrollRef, items.length);
+
+  return (
+    <div className="sm:hidden">
+      <div
+        ref={scrollRef}
+        className="flex min-w-0 cursor-grab snap-x snap-mandatory items-start gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          scrollPaddingInline: '1.25rem',
+          paddingLeft: '1.25rem',
+          paddingRight: '1.25rem',
+        }}
+        role="list"
+        aria-label={ariaLabel}
+      >
+        {items.map((item) => (
+          <div
+            key={item.title}
+            className={`flex shrink-0 snap-center ${
+              lieuFromHref(item.href)
+                ? 'w-[56vw] max-w-[230px]'
+                : 'w-[62vw] max-w-[250px]'
+            }`}
+            role="listitem"
+          >
+            <LinkBlockCard item={item} background={cardBackground} dark={dark} />
+          </div>
+        ))}
+      </div>
+      <SwipeDots
+        count={items.length}
+        activeIndex={swipe.activeIndex}
+        onSelect={swipe.goTo}
+        label={dotsLabel}
+        dark={dark}
+        className="mt-5"
+      />
+    </div>
+  );
+};
+
 const LinkBlockGrid: React.FC<{
   items: SeminaireEnjeuLinkBlock[];
-}> = ({ items }) => (
-  <div className="mt-8 grid grid-cols-1 gap-8 sm:mt-10 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-9">
-    {items.map((item, i) => (
-      <ScrollAnimate key={item.title} delay={i * 50}>
-        <h3 className="font-sans text-[16px] font-bold tracking-[-0.03em] text-[#0c1d22] sm:text-[17px]">
-          {preserveAcronyms(item.title)}
-        </h3>
-        <p className={`mt-2.5 ${homeParagraphClass}`}>{preserveAcronyms(item.text)}</p>
-        <Link
-          href={item.href}
-          className="mt-3 inline-flex font-sans text-[13px] font-semibold tracking-[-0.02em] text-[#ec6435] transition-opacity hover:opacity-70 sm:text-[14px]"
-        >
-          → {item.linkLabel ?? item.title}
-        </Link>
-      </ScrollAnimate>
-    ))}
+  cardBackground?: string;
+  ariaLabel?: string;
+}> = ({ items, cardBackground = '#ffffff', ariaLabel = 'Lieux' }) => (
+  <div className="relative mt-8 sm:mx-auto sm:mt-10 sm:max-w-6xl sm:px-6 lg:px-8">
+    <LinkBlockSwipe
+      items={items}
+      ariaLabel={ariaLabel}
+      dotsLabel="Lieu"
+      cardBackground={cardBackground}
+    />
+    <div className="hidden gap-8 sm:grid sm:grid-cols-2 sm:gap-x-10 sm:gap-y-9">
+      {items.map((item, i) => (
+        <ScrollAnimate key={item.title} delay={i * 50}>
+          <h3 className="font-sans text-[16px] font-bold tracking-[-0.03em] text-[#0c1d22] sm:text-[17px]">
+            {preserveAcronyms(item.title)}
+          </h3>
+          <p className={`mt-2.5 ${homeParagraphClass}`}>{preserveAcronyms(item.text)}</p>
+          <Link
+            href={item.href}
+            className="mt-3 inline-flex font-sans text-[13px] font-semibold tracking-[-0.02em] text-[#ec6435] transition-opacity hover:opacity-70 sm:text-[14px]"
+          >
+            → {item.linkLabel ?? item.title}
+          </Link>
+        </ScrollAnimate>
+      ))}
+    </div>
   </div>
 );
 
@@ -571,40 +709,49 @@ const formatRowButtonClass =
 const FormatRows: React.FC<{
   items: SeminaireEnjeuLinkBlock[];
   dark?: boolean;
-}> = ({ items, dark = false }) => (
-  <div
-    className={`mt-8 flex flex-col border-t sm:mt-10 ${
-      dark ? 'border-white/15' : 'border-[rgba(12,29,34,0.12)]'
-    }`}
-  >
-    {items.map((item) => (
-      <div
-        key={item.title}
-        className={`flex flex-col gap-3 border-b py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-6 ${
-          dark ? 'border-white/15' : 'border-[rgba(12,29,34,0.12)]'
-        }`}
-      >
-        <div className="min-w-0 flex-1">
-          <p
-            className={`font-sans text-[15px] font-bold tracking-[-0.03em] sm:text-[16px] ${
-              dark ? 'text-white' : 'text-[#0c1d22]'
-            }`}
-          >
-            {preserveAcronyms(item.title)}
-          </p>
-          <p
-            className={`mt-1 font-sans text-[13px] font-normal leading-[1.65] tracking-[-0.03em] sm:text-[14px] ${
-              dark ? 'text-white/80' : 'text-[#0c1d22]/65'
-            }`}
-          >
-            {preserveAcronyms(item.text)}
-          </p>
+  ariaLabel?: string;
+}> = ({ items, dark = false, ariaLabel = 'Enjeux' }) => (
+  <div className="relative mt-8 sm:mx-auto sm:mt-10 sm:max-w-3xl sm:px-8">
+    <LinkBlockSwipe
+      items={items}
+      ariaLabel={ariaLabel}
+      dotsLabel="Enjeu"
+      dark={dark}
+    />
+    <div
+      className={`hidden flex-col border-t sm:flex ${
+        dark ? 'border-white/15' : 'border-[rgba(12,29,34,0.12)]'
+      }`}
+    >
+      {items.map((item) => (
+        <div
+          key={item.title}
+          className={`flex flex-col gap-3 border-b py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-6 ${
+            dark ? 'border-white/15' : 'border-[rgba(12,29,34,0.12)]'
+          }`}
+        >
+          <div className="min-w-0 flex-1">
+            <p
+              className={`font-sans text-[15px] font-bold tracking-[-0.03em] sm:text-[16px] ${
+                dark ? 'text-white' : 'text-[#0c1d22]'
+              }`}
+            >
+              {preserveAcronyms(item.title)}
+            </p>
+            <p
+              className={`mt-1 font-sans text-[13px] font-normal leading-[1.65] tracking-[-0.03em] sm:text-[14px] ${
+                dark ? 'text-white/80' : 'text-[#0c1d22]/65'
+              }`}
+            >
+              {preserveAcronyms(item.text)}
+            </p>
+          </div>
+          <Link href={item.href} className={dark ? formatRowButtonClass : homeCtaOutlineGhostClass}>
+            {preserveAcronyms(item.linkLabel ?? item.title)}
+          </Link>
         </div>
-        <Link href={item.href} className={dark ? formatRowButtonClass : homeCtaOutlineGhostClass}>
-          {preserveAcronyms(item.linkLabel ?? item.title)}
-        </Link>
-      </div>
-    ))}
+      ))}
+    </div>
   </div>
 );
 
@@ -672,7 +819,8 @@ const SwipeDots: React.FC<{
   onSelect: (index: number) => void;
   className?: string;
   label?: string;
-}> = ({ count, activeIndex, onSelect, className = '', label = 'Élément' }) => (
+  dark?: boolean;
+}> = ({ count, activeIndex, onSelect, className = '', label = 'Élément', dark = false }) => (
   <div className={`flex items-center justify-center gap-2 ${className}`}>
     {Array.from({ length: count }, (_, i) => (
       <button
@@ -683,7 +831,12 @@ const SwipeDots: React.FC<{
         className="h-2 rounded-full transition-all duration-300"
         style={{
           width: i === activeIndex ? 28 : 8,
-          background: i === activeIndex ? HOME_COLORS.orange : 'rgba(12,29,34,0.18)',
+          background:
+            i === activeIndex
+              ? HOME_COLORS.orange
+              : dark
+                ? 'rgba(255,255,255,0.28)'
+                : 'rgba(12,29,34,0.18)',
         }}
       />
     ))}
@@ -991,11 +1144,11 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
+            <div className={homeFramedHeroOverlayClass}>
               <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                 {enjeu.eyebrow}
               </p>
-              <h1 className="mt-5 max-w-4xl pt-1 font-sans text-[clamp(2.35rem,7vw,3rem)] font-normal leading-[1.05] tracking-[-0.075em] text-white sm:mt-6">
+              <h1 className={`mt-4 max-w-4xl pt-1 font-normal sm:mt-6 ${homeFramedHeroH1Class}`}>
                 {enjeu.shortTitle ? (
                   <>
                     Organisez votre{' '}
@@ -1093,7 +1246,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
           <div
             className="overflow-hidden px-[calc(1.25rem+8px)] pt-16 pb-0 sm:px-[calc(2rem+10px)] lg:px-[calc(2.5rem+10px)] lg:py-20"
             style={{
-              background: HOME_COLORS.orange,
+              background: enjeu.whyBackground ?? HOME_COLORS.orange,
               borderRadius: '42px',
             }}
           >
@@ -1378,7 +1531,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <ScrollAnimate>
-              <h2 className="font-sans text-[26px] font-normal leading-[1.12] tracking-[-0.075em] text-[#0c1d22] sm:text-[32px] md:whitespace-nowrap md:text-[36px] lg:text-[40px]">
+              <h2 className={sectionTitleClass}>
                 <TitleWithBold
                   full={enjeu.placesSection.title}
                   bold={enjeu.placesSection.titleBold}
@@ -1388,17 +1541,25 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
                 {preserveAcronyms(enjeu.placesSection.intro)}
               </p>
             </ScrollAnimate>
-            <LinkBlockGrid items={enjeu.placesSection.items} />
-            {enjeu.placesSection.cta ? (
-              <div className="mt-10 flex justify-center sm:mt-12">
-                <EnjeuCtaButton
-                  cta={enjeu.placesSection.cta}
-                  className={homeCtaOutlineGhostClass}
-                  onModal={() => openModal()}
-                />
-              </div>
-            ) : null}
           </div>
+          <LinkBlockGrid
+            items={enjeu.placesSection.items}
+            ariaLabel={enjeu.placesSection.title}
+            cardBackground={
+              (enjeu.placesSection.background ?? HOME_COLORS.gray) === '#ffffff'
+                ? HOME_COLORS.gray
+                : '#ffffff'
+            }
+          />
+          {enjeu.placesSection.cta ? (
+            <div className="mx-auto mt-10 flex max-w-6xl justify-center px-4 sm:mt-12 sm:px-6 lg:px-8">
+              <EnjeuCtaButton
+                cta={enjeu.placesSection.cta}
+                className={homeCtaOutlineGhostClass}
+                onModal={() => openModal()}
+              />
+            </div>
+          ) : null}
         </section>
       ) : null}
 
@@ -1424,17 +1585,21 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
                 {preserveAcronyms(enjeu.formatsSection.intro)}
               </p>
             </ScrollAnimate>
-            <FormatRows items={enjeu.formatsSection.items} dark />
-            {enjeu.formatsSection.cta ? (
-              <div className="mt-10 flex justify-center sm:mt-12">
-                <EnjeuCtaButton
-                  cta={enjeu.formatsSection.cta}
-                  className={homeOnDarkOutlineButtonClass}
-                  onModal={() => openModal()}
-                />
-              </div>
-            ) : null}
           </div>
+          <FormatRows
+            items={enjeu.formatsSection.items}
+            dark
+            ariaLabel={enjeu.formatsSection.title}
+          />
+          {enjeu.formatsSection.cta ? (
+            <div className="mx-auto mt-10 flex max-w-3xl justify-center px-5 sm:mt-12 sm:px-8">
+              <EnjeuCtaButton
+                cta={enjeu.formatsSection.cta}
+                className={homeOnDarkOutlineButtonClass}
+                onModal={() => openModal()}
+              />
+            </div>
+          ) : null}
         </section>
       ) : null}
 

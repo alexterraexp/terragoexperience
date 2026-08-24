@@ -9,6 +9,8 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroAspectClass,
+  homeFramedHeroH1Class,
+  homeFramedHeroOverlayClass,
   homeParagraphClass,
   homeSectionPadding,
   bottomImageGradientClass,
@@ -504,8 +506,8 @@ const ExperiencesEntreprise: React.FC = () => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl font-sans text-[clamp(2.15rem,5.5vw,3.4rem)] font-bold leading-[1.05] tracking-[-0.075em] text-white">
+            <div className={homeFramedHeroOverlayClass}>
+              <h1 className={`max-w-3xl font-bold ${homeFramedHeroH1Class}`}>
                 Nos expériences
               </h1>
               <p className={`${homeParagraphClass} mt-4 max-w-xl text-[15px] leading-relaxed text-white/90 sm:mt-6 sm:text-[16px]`}>

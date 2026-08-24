@@ -7,6 +7,7 @@ import { useModal } from '../context/ModalContext';
 import {
   HOME_COLORS,
   HOME_RADIUS,
+  homeFramedHeroH1Class,
   homeParagraphClass,
   homeSectionPadding,
   homeHeroOutlineButtonClass,
@@ -91,7 +92,7 @@ const Engagement: React.FC = () => {
             className="relative flex aspect-[5/4] w-full flex-col items-center justify-center overflow-hidden px-5 pb-8 pt-10 text-center sm:aspect-[16/9] sm:px-10 sm:pb-10 sm:pt-16 lg:aspect-[2.2/1] lg:pt-20"
             style={{ borderRadius: HOME_RADIUS, background: HOME_COLORS.orange }}
           >
-            <h1 className="max-w-3xl font-sans text-[clamp(2rem,5vw,3.75rem)] font-bold leading-[1.02] tracking-[-0.075em] text-white">
+            <h1 className={`max-w-3xl font-bold ${homeFramedHeroH1Class}`}>
               Notre approche
             </h1>
             <p className={`${homeParagraphClass} mt-4 max-w-xl text-[15px] leading-relaxed text-white/90 sm:mt-6 sm:text-[17px]`}>

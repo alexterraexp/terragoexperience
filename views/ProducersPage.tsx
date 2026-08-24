@@ -16,6 +16,8 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroAspectClass,
+  homeFramedHeroH1Class,
+  homeFramedHeroOverlayClass,
   bottomImageGradientClass,
   homeHeroOutlineButtonClass,
   homeHeroSolidButtonClass,
@@ -436,8 +438,8 @@ const ProducersPage: React.FC = () => {
                   'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.5) 100%)',
               }}
             />
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
-              <h1 className="max-w-3xl text-center font-sans text-[clamp(2.2rem,5.5vw,3.75rem)] font-bold leading-[1.02] tracking-[-0.075em] text-white">
+            <div className={homeFramedHeroOverlayClass}>
+              <h1 className={`max-w-3xl text-center font-bold ${homeFramedHeroH1Class}`}>
                 Nos producteurs partenaires
               </h1>
               <h2 className="mt-4 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">

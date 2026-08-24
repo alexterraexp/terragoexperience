@@ -9,6 +9,8 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroWideAspectClass,
+  homeFramedHeroH1Class,
+  homeFramedHeroOverlayClass,
   bottomImageGradientClass,
   homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
@@ -398,13 +400,13 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
               }}
             />
 
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16 lg:pt-20">
+            <div className={homeFramedHeroOverlayClass}>
               <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                 {destination.name}
               </p>
               <h1 className="mt-5 max-w-4xl pt-1 text-center font-sans text-white sm:mt-6">
-                <span className="block text-[clamp(2.1rem,5.5vw,3rem)] leading-[1.05] tracking-[-0.075em]">
-                  <span className="font-normal">Séminaire au vert</span>{' '}
+                <span className={`block ${homeFramedHeroH1Class}`}>
+                  <span className="font-normal">Séminaire d&apos;entreprise</span>{' '}
                   <span className="font-bold">
                     {destination.prep} {destination.name}
                   </span>
@@ -453,7 +455,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
           <div
             className="overflow-hidden px-[calc(1.25rem+8px)] pt-16 pb-0 sm:px-[calc(2rem+10px)] lg:px-[calc(2.5rem+10px)] lg:py-20"
             style={{
-              background: HOME_COLORS.orange,
+              background: HOME_COLORS.primary,
               borderRadius: '42px',
             }}
           >
