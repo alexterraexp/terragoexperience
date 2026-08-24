@@ -9,7 +9,7 @@ const INK = '#0c1d22';
 const ORANGE = '#ec6435';
 
 const COOKIE_IMAGE =
-  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/fromage-details2.png';
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/fromage-details2.webp';
 
 type Step = 1 | 2;
 

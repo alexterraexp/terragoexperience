@@ -18,7 +18,7 @@ const ASSETS = {
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/s-picto-orange.png',
   producteurSoutenu:
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/producteur-sountenu.png',
-  paolo: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/paolo.png',
+  paolo: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/paolo.webp',
   team: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/team-terrago.webp',
   seminairesHero:
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/arrivee-randonnee.webp',

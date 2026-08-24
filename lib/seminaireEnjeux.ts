@@ -426,7 +426,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
     relatedSlugs: ['sensibilisation-rse', 'inspiration-miroir'],
     heroImage: `${HOME}/enjeux/184022935847.webp`,
     heroImageAlt: 'Séminaire cohésion d\u2019équipe chez un producteur – TerraGo',
-    whyImage: `${HOME}/enjeux/8164316.jpg`,
+    whyImage: `${HOME}/enjeux/8164316.webp`,
     whyImageAlt: 'Équipe en séminaire de cohésion chez un producteur – TerraGo',
   },
   {
@@ -750,7 +750,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
     relatedSlugs: ['codir', 'sensibilisation-rse'],
     heroImage: `${HOME}/enjeux/RSE76311867-28102052.webp`,
     heroImageAlt: 'Séminaire inspiration et miroir d\u2019entreprise – TerraGo',
-    whyImage: `${HOME}/enjeux/003515756747.jpg`,
+    whyImage: `${HOME}/enjeux/003515756747.webp`,
     whyImageAlt: 'Échange lors d\u2019un séminaire inspiration et miroir d\u2019entreprise – TerraGo',
   },
   {
@@ -768,7 +768,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       'séminaire stratégique entreprise',
       'séminaire codir hors les murs',
     ],
-    ogImage: `${HOME}/enjeux/codir4743505-31107445.jpg`,
+    ogImage: `${HOME}/enjeux/codir4743505-31107445.webp`,
     ogImageAlt: 'Comité de direction en séminaire stratégique chez un producteur TerraGo',
 
     eyebrow: 'Selon vos enjeux',
@@ -864,9 +864,9 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       },
     ],
     relatedSlugs: ['inspiration-miroir', 'cohesion'],
-    heroImage: `${HOME}/enjeux/codir4743505-31107445.jpg`,
+    heroImage: `${HOME}/enjeux/codir4743505-31107445.webp`,
     heroImageAlt: 'Séminaire CODIR TerraGo chez un producteur',
-    whyImage: `${HOME}/enjeux/2334767487164.jpg`,
+    whyImage: `${HOME}/enjeux/2334767487164.webp`,
     whyImageAlt: 'Salle de travail pour un séminaire CODIR hors les murs – TerraGo',
   },
   {
@@ -1189,7 +1189,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       'séminaire défi collectif',
     ],
     ogImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/03782491.png',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/03782491.webp',
     ogImageAlt: 'Table de séminaire d\u2019entreprise original en extérieur – TerraGo',
 
     eyebrow: 'Selon vos envies',
@@ -1250,7 +1250,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       listLead: 'Vos collaborateurs peuvent par exemple :',
       layout: 'image-left',
       image:
-        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/6006735-31694875.jpg',
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/6006735-31694875.webp',
       imageAlt: 'Récolte d\u2019olives lors d\u2019un séminaire original TerraGo',
       background: '#ffffff',
       cta: {
@@ -1513,7 +1513,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       },
     },
     heroImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/03782491.png',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/03782491.webp',
     heroImageAlt: 'Séminaire d\u2019entreprise original – TerraGo',
     whyImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/vignoble/vign3.jpg',

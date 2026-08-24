@@ -279,7 +279,7 @@ export const LIEUX: DestinationLieu[] = [
       role: 'Distillateur & vigneron',
       description:
         'Chez Jean-François, vos équipes plongent dans l’univers du Cognac : visite des chais, transmission du geste et dégustation. Une immersion vignoble élégante et fédératrice, au plus près du savoir-faire.',
-      image: '/images/producteurs/cognacJF.png',
+      image: '/images/producteurs/cognacJF.webp',
       imageAlt: 'Jean-François, distillateur et vigneron – séminaire au vignoble TerraGo',
       seminaireSlug: 'avec-jean-francois',
     },
@@ -803,7 +803,7 @@ export const LIEUX: DestinationLieu[] = [
       'Luxe discret, expériences authentiques et programmes sur mesure : l’élégance au service du collectif.',
     ],
     prosImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/111112.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/111112.webp',
     prosImageAlt: 'Grande salle en pierre d’un domaine d’exception',
     pros: [
       {
@@ -876,7 +876,7 @@ export const LIEUX: DestinationLieu[] = [
           alt: 'Terrasse dressée d’un domaine d’exception',
         },
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/12213313.jpg',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/12213313.webp',
           alt: 'Domaine viticole vu du ciel pour séminaire',
         },
         {

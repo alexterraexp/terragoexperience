@@ -12,7 +12,7 @@ import {
 } from '../components/home/homeStyles';
 
 const ASSETS = {
-  hero: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Etapes/1087462-12111234.jpg',
+  hero: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Etapes/1087462-12111234.webp',
   arbre: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/emoji-arbre.png',
   goutte:
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/goutte-eau.png',

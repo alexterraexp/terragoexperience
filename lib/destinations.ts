@@ -181,11 +181,11 @@ export const DESTINATIONS: DestinationRegion[] = [
           alt: 'Pavillon en bois éclairé pour un dîner en forêt',
         },
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/47183145R.jpg',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/47183145R.webp',
           alt: 'Piscine d’un domaine séminaire en Nouvelle-Aquitaine',
         },
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/542896176891514.png',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/542896176891514.webp',
           alt: 'Table dîner en extérieur au coucher du soleil',
         },
       ],
@@ -435,7 +435,7 @@ export const DESTINATIONS: DestinationRegion[] = [
       'TerraGo y crée des expériences autour des producteurs — cidre, fromage, élevage, maraîchage — pour un impact humain fort.',
     ],
     prosImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/normandie/20409927.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/normandie/20409927.webp',
     prosImageAlt: 'Vaches normandes dans un pré verdoyant',
     pros: [
       {
@@ -503,11 +503,11 @@ export const DESTINATIONS: DestinationRegion[] = [
         'Manoirs, fermes rénovées ou maisons d’hôtes : des lieux chaleureux, adaptés aux groupes et proches des expériences TerraGo.',
       images: [
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/normandie/185733098130.png',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/normandie/185733098130.webp',
           alt: 'Manoir anglo-normand avec parc pour séminaire',
         },
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/normandie/4871102398458.png',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/normandie/4871102398458.webp',
           alt: 'Maison à colombages normande illuminée le soir',
         },
         {
@@ -651,7 +651,7 @@ export const DESTINATIONS: DestinationRegion[] = [
       'TerraGo y crée des programmes où le travail rencontre le vivant : ateliers, rencontres et moments de partage face à l’horizon.',
     ],
     prosImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/197677686-34666032.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/197677686-34666032.webp',
     prosImageAlt: 'Bateau sur la côte bretonne – séminaire TerraGo',
     pros: [
       {
@@ -759,7 +759,7 @@ export const DESTINATIONS: DestinationRegion[] = [
       'TerraGo y imagine des expériences ancrées dans le terroir — vignes, vergers, maraîchage — pour reconnecter vos collaborateurs au sens et au partage.',
     ],
     prosImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/11680885-17791202.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/11680885-17791202.webp',
     prosImageAlt: 'Marais salants en Pays de la Loire – séminaire TerraGo',
     pros: [
       {
@@ -977,7 +977,7 @@ export const DESTINATIONS: DestinationRegion[] = [
       'TerraGo y imagine des programmes autour du vin, des producteurs et du partage — pour un événement élégant et porteur de sens.',
     ],
     prosImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bourgogne/5289663206521.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bourgogne/5289663206521.webp',
     prosImageAlt: 'Cave à vin avec fûts de chêne en Bourgogne',
     pros: [
       {
