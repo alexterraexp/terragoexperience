@@ -61,14 +61,47 @@ function createSitemapSupabase(): SupabaseClient | null {
   });
 }
 
-async function fetchBlogSlugs(db: SupabaseClient): Promise<string[]> {
+function parseSitemapDate(value: unknown): Date | undefined {
+  if (value == null || value === '') return undefined;
+  const date = value instanceof Date ? value : new Date(String(value));
+  if (Number.isNaN(date.getTime())) return undefined;
+  return date;
+}
+
+function latestSitemapDate(...values: unknown[]): Date | undefined {
+  let latest: Date | undefined;
+  for (const value of values) {
+    const date = parseSitemapDate(value);
+    if (!date) continue;
+    if (!latest || date > latest) latest = date;
+  }
+  return latest;
+}
+
+async function fetchBlogEntries(
+  db: SupabaseClient,
+): Promise<{ slug: string; lastModified?: Date }[]> {
   try {
     const { data, error } = await db
       .from('blog_posts')
-      .select('slug')
+      .select('slug, updated_at, published_at, created_at')
       .eq('published', true);
     if (error || !data) return [];
-    return data.map((post: { slug: string }) => post.slug).filter(Boolean);
+    return data
+      .map((post: {
+        slug: string;
+        updated_at?: string | null;
+        published_at?: string | null;
+        created_at?: string | null;
+      }) => ({
+        slug: post.slug,
+        lastModified: latestSitemapDate(
+          post.updated_at,
+          post.published_at,
+          post.created_at,
+        ),
+      }))
+      .filter((entry) => Boolean(entry.slug));
   } catch {
     return [];
   }
@@ -86,18 +119,21 @@ async function fetchSeminaireExempleSlugs(db: SupabaseClient): Promise<string[]>
 }
 
 async function loadDynamicSlugs(): Promise<{
-  blogSlugs: string[];
+  blogEntries: { slug: string; lastModified?: Date }[];
   seminaireExempleSlugs: string[];
 }> {
-  const empty = { blogSlugs: [] as string[], seminaireExempleSlugs: [] as string[] };
+  const empty = {
+    blogEntries: [] as { slug: string; lastModified?: Date }[],
+    seminaireExempleSlugs: [] as string[],
+  };
   try {
     const db = createSitemapSupabase();
     if (!db) return empty;
-    const [blogSlugs, seminaireExempleSlugs] = await Promise.all([
-      fetchBlogSlugs(db),
+    const [blogEntries, seminaireExempleSlugs] = await Promise.all([
+      fetchBlogEntries(db),
       fetchSeminaireExempleSlugs(db),
     ]);
-    return { blogSlugs, seminaireExempleSlugs };
+    return { blogEntries, seminaireExempleSlugs };
   } catch {
     return empty;
   }
@@ -109,10 +145,9 @@ function isIndexableSitemapUrl(url: string): boolean {
   return true;
 }
 
-function staticSitemapEntries(now: Date): MetadataRoute.Sitemap {
+function staticSitemapEntries(): MetadataRoute.Sitemap {
   const hubPages: MetadataRoute.Sitemap = SITELINK_PAGES.map((page) => ({
     url: `${SITE_URL}${page.path}`,
-    lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.9,
   }));
@@ -120,19 +155,16 @@ function staticSitemapEntries(now: Date): MetadataRoute.Sitemap {
   const destinationPages: MetadataRoute.Sitemap = [
     ...DESTINATION_SLUGS.map((slug) => ({
       url: `${SITE_URL}${regionDestinationPath(slug)}`,
-      lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
     ...LIEU_SLUGS.map((slug) => ({
       url: `${SITE_URL}${lieuDestinationPath(slug)}`,
-      lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
     ...VILLE_SEMINAIRE_SLUGS.map((slug) => ({
       url: `${SITE_URL}${villeSeminairePath(slug)}`,
-      lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
@@ -140,7 +172,6 @@ function staticSitemapEntries(now: Date): MetadataRoute.Sitemap {
 
   const enjeuPages: MetadataRoute.Sitemap = SEMINAIRE_ENJEU_SLUGS.map((slug) => ({
     url: `${SITE_URL}${seminaireEnjeuPath(slug)}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
@@ -148,7 +179,6 @@ function staticSitemapEntries(now: Date): MetadataRoute.Sitemap {
   return [
     {
       url: `${SITE_URL}/`,
-      lastModified: now,
       changeFrequency: 'weekly',
       priority: 1.0,
     },
@@ -156,32 +186,27 @@ function staticSitemapEntries(now: Date): MetadataRoute.Sitemap {
     ...enjeuPages,
     {
       url: `${SITE_URL}${EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}`,
-      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.7,
     },
     ...destinationPages,
     {
       url: `${SITE_URL}/faq`,
-      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/experiences-privees`,
-      lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
       url: `${SITE_URL}/notre-approche/charte-rse`,
-      lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
       url: `${SITE_URL}/blog`,
-      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.6,
     },
@@ -189,14 +214,12 @@ function staticSitemapEntries(now: Date): MetadataRoute.Sitemap {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
-
   try {
-    const { blogSlugs, seminaireExempleSlugs } = await loadDynamicSlugs();
+    const { blogEntries, seminaireExempleSlugs } = await loadDynamicSlugs();
 
-    const blogPages: MetadataRoute.Sitemap = blogSlugs.map((slug) => ({
-      url: `${SITE_URL}/blog/${slug}`,
-      lastModified: now,
+    const blogPages: MetadataRoute.Sitemap = blogEntries.map((entry) => ({
+      url: `${SITE_URL}/blog/${entry.slug}`,
+      ...(entry.lastModified ? { lastModified: entry.lastModified } : {}),
       changeFrequency: 'monthly' as const,
       priority: 0.5,
     }));
@@ -204,16 +227,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const seminaireExemplePages: MetadataRoute.Sitemap = seminaireExempleSlugs.map(
       (slug) => ({
         url: `${SITE_URL}${exempleSeminaireEntreprisePath(slug)}`,
-        lastModified: now,
         changeFrequency: 'weekly' as const,
         priority: 0.65,
       }),
     );
 
-    return [...staticSitemapEntries(now), ...seminaireExemplePages, ...blogPages].filter(
+    return [...staticSitemapEntries(), ...seminaireExemplePages, ...blogPages].filter(
       (entry) => isIndexableSitemapUrl(entry.url),
     );
   } catch {
-    return staticSitemapEntries(now).filter((entry) => isIndexableSitemapUrl(entry.url));
+    return staticSitemapEntries().filter((entry) => isIndexableSitemapUrl(entry.url));
   }
 }
