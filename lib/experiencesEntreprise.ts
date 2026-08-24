@@ -33,7 +33,7 @@ const HOME =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
 
 export const EXPERIENCES_ENTREPRISE_ASSETS = {
-  hero: `${HOME}/EXPERIENCES IMG/pexels-mariaturkmani-14198583.jpg`,
+  hero: `${HOME}/EXPERIENCES IMG/pexels-mariaturkmani-14198583.webp`,
   feu: `${HOME}/emoji/feu.png`,
   piment: `${HOME}/emoji/piment.png`,
   etoile: `${HOME}/etoilecouleurfoncee.png`,
@@ -86,7 +86,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
         teaser: 'De la récolte à la transformation, des moments authentiques à partager.',
         description:
           'Cuisinez, pétrissez ou pressez aux côtés d’un producteur passionné : un atelier collectif où chacun repart avec le fruit du travail d’équipe.',
-        image: `${HOME}/EXPERIENCES IMG/fromage-details.jpg`,
+        image: `${HOME}/EXPERIENCES IMG/fromage-details.webp`,
         imageAlt: 'Atelier fromage – TerraGo',
       },
       {
@@ -127,7 +127,7 @@ export const EXPERIENCES_ENTREPRISE: ExperienceCategory[] = [
       teaser: 'Donner du sens à vos événements d’entreprise',
       description:
         'Un séminaire peut être bien plus qu’un moment de cohésion : il peut devenir une expérience qui sensibilise, transmet et reconnecte vos équipes aux enjeux actuels. TerraGo imagine des séminaires responsables en lien direct avec les acteurs engagés des territoires.',
-      image: `${HOME}/eleveuse.png`,
+      image: `${HOME}/eleveuse.webp`,
       imageAlt: 'Éleveuse avec son troupeau – séminaire RSE TerraGo',
     },
     examples: [

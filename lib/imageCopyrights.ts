@@ -17,13 +17,12 @@ const IMAGE_COPYRIGHT_BY_URL: Record<string, string> = {
     'Marine Van-den-Broek',
 
   // ── Pierine di Giacomo (à la ferme) ──
-  [`${HOME}/seminaire/ferme/8953021.jpg`]: 'Pierine di Giacomo',
   [`${HOME}/seminaire/ferme/8953021.webp`]: 'Pierine di Giacomo',
   [`${HOME}/maraicher-explication.webp`]: 'Pierine di Giacomo',
   [`${HOME}/seminaire/ferme/730507323.jpg`]: 'Pierine di Giacomo',
   [`${HOME}/seminaire/ferme/794104642.jpg`]: 'Pierine di Giacomo',
   [`${HOME}/seminaire/ferme/723951348.jpg`]: 'Pierine di Giacomo',
-  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.jpg':
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.webp':
     'Pierine di Giacomo',
 
   // ── Youza Ecolodge (pleine nature) ──

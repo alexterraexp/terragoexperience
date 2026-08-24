@@ -217,7 +217,7 @@ export const DESTINATIONS: DestinationRegion[] = [
       'TerraGo y crée des programmes autour des producteurs — olives, vin, lavande, maraîchage — pour un impact humain fort.',
     ],
     prosImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/423678569352.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/423678569352.webp',
     prosImageAlt: 'Récolte d’olives vertes en Provence',
     pros: [
       {
@@ -286,15 +286,15 @@ export const DESTINATIONS: DestinationRegion[] = [
         'Mas rénovés, domaines viticoles ou maisons d’hôtes : des cadres élégants et chaleureux, adaptés aux groupes professionnels.',
       images: [
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/537583942.jpg',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/537583942.webp',
           alt: 'Allée de cyprès menant à un domaine en Provence',
         },
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/64839245.jpg',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/64839245.webp',
           alt: 'Piscine et vignoble d’un mas pour séminaire en Provence',
         },
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/5386930.jpg',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/5386930.webp',
           alt: 'Champ de lavande et bâtiment en pierre en Provence',
         },
       ],
@@ -326,7 +326,7 @@ export const DESTINATIONS: DestinationRegion[] = [
       'TerraGo y imagine des expériences ancrées dans le vivant, idéales pour une journée d’étude, un team building ou un format résidentiel proche de la capitale.',
     ],
     prosImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/iledefrance/8592616.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/iledefrance/8592616.webp',
     prosImageAlt: 'Domaine en pierre et brique pour séminaire en Île-de-France',
     pros: [
       {
@@ -385,7 +385,7 @@ export const DESTINATIONS: DestinationRegion[] = [
       description:
         'Chez Louise & Benoît, vos équipes découvrent une ferme maraîchère engagée près de Paris : circuits courts, gestes durables et immersion terrain. Une expérience authentique et fédératrice, aux portes de la capitale.',
       image:
-        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.jpg',
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.webp',
       imageAlt: 'Benoît, producteur maraîcher – TerraGo',
       seminaireSlug: 'avec-louise-benoit',
     },
@@ -399,7 +399,7 @@ export const DESTINATIONS: DestinationRegion[] = [
           alt: 'Allée de cerisiers dans un domaine en Île-de-France',
         },
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/iledefrance/758241.png',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/iledefrance/758241.webp',
           alt: 'Manoir en pierre pour séminaire en Île-de-France',
         },
         {

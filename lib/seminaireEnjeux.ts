@@ -246,7 +246,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       'séminaire team building',
       'séminaire original entreprise',
     ],
-    ogImage: `${HOME}/enjeux/184022935847.jpg`,
+    ogImage: `${HOME}/enjeux/184022935847.webp`,
     ogImageAlt: 'Équipe en séminaire de cohésion chez un producteur partenaire TerraGo',
 
     eyebrow: 'Selon vos enjeux',
@@ -424,7 +424,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       },
     ],
     relatedSlugs: ['sensibilisation-rse', 'inspiration-miroir'],
-    heroImage: `${HOME}/enjeux/184022935847.jpg`,
+    heroImage: `${HOME}/enjeux/184022935847.webp`,
     heroImageAlt: 'Séminaire cohésion d\u2019équipe chez un producteur – TerraGo',
     whyImage: `${HOME}/enjeux/8164316.jpg`,
     whyImageAlt: 'Équipe en séminaire de cohésion chez un producteur – TerraGo',
@@ -453,7 +453,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       'démarche RSE',
       'sensibilisation changement climatique entreprise',
     ],
-    ogImage: `${HOME}/enjeux/2430570603-31667165.jpg`,
+    ogImage: `${HOME}/enjeux/2430570603-31667165.webp`,
     ogImageAlt: 'Équipe sensibilisée aux enjeux RSE lors d\u2019une récolte avec un producteur',
 
     eyebrow: 'Selon vos enjeux',
@@ -529,7 +529,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       description:
         'Chez Louise & Benoît, vos équipes découvrent une ferme maraîchère engagée près de Paris : circuits courts, gestes durables et immersion terrain pour ancrer concrètement votre démarche RSE.',
       image:
-        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.jpg',
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.webp',
       imageAlt: 'Benoît, producteur maraîcher – exemple de séminaire RSE TerraGo',
       seminaireSlug: 'avec-louise-benoit',
     },
@@ -633,9 +633,9 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       },
     ],
     relatedSlugs: ['inspiration-miroir', 'cohesion'],
-    heroImage: `${HOME}/enjeux/2430570603-31667165.jpg`,
+    heroImage: `${HOME}/enjeux/2430570603-31667165.webp`,
     heroImageAlt: 'Séminaire RSE chez un producteur – TerraGo',
-    whyImage: `${HOME}/enjeux/5420570603-31667159.jpg`,
+    whyImage: `${HOME}/enjeux/5420570603-31667159.webp`,
     whyImageAlt: 'Récolte immersive lors d\u2019un séminaire RSE – TerraGo',
   },
   {
@@ -653,7 +653,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       'séminaire résilience organisation',
       'team building inspirant nature',
     ],
-    ogImage: `${HOME}/enjeux/RSE76311867-28102052.jpg`,
+    ogImage: `${HOME}/enjeux/RSE76311867-28102052.webp`,
     ogImageAlt: 'Producteur expliquant son métier lors d\u2019un séminaire inspiration TerraGo',
 
     eyebrow: 'Selon vos enjeux',
@@ -748,7 +748,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
       },
     ],
     relatedSlugs: ['codir', 'sensibilisation-rse'],
-    heroImage: `${HOME}/enjeux/RSE76311867-28102052.jpg`,
+    heroImage: `${HOME}/enjeux/RSE76311867-28102052.webp`,
     heroImageAlt: 'Séminaire inspiration et miroir d\u2019entreprise – TerraGo',
     whyImage: `${HOME}/enjeux/003515756747.jpg`,
     whyImageAlt: 'Échange lors d\u2019un séminaire inspiration et miroir d\u2019entreprise – TerraGo',

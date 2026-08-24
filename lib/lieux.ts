@@ -328,7 +328,7 @@ export const LIEUX: DestinationLieu[] = [
     metaDescription:
       'Organisez un séminaire d’entreprise à la ferme avec TerraGo : immersion agricole, ateliers concrets, team building nature et hébergement authentique.',
     heroImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/ferme/8953021.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/ferme/8953021.webp',
     heroImageAlt: 'Maraîcher dans une serre pour séminaire à la ferme – TerraGo',
     heroImageCopyright: 'Pierine di Giacomo',
     intro: [
@@ -396,7 +396,7 @@ export const LIEUX: DestinationLieu[] = [
       description:
         'Chez Louise & Benoît, vos équipes découvrent une ferme maraîchère engagée près de Paris : circuits courts, gestes durables et immersion terrain. Une expérience ferme authentique et fédératrice pour vos équipes.',
       image:
-        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.jpg',
+        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/clefs%20ferme/Benoit.webp',
       imageAlt: 'Benoît, producteur maraîcher – séminaire à la ferme TerraGo',
       imageCopyright: 'Pierine di Giacomo',
       seminaireSlug: 'avec-louise-benoit',
@@ -564,7 +564,7 @@ export const LIEUX: DestinationLieu[] = [
     metaDescription:
       'Organisez un séminaire d’entreprise en montagne avec TerraGo : grands espaces, activités outdoor, rencontres producteur et hébergements de caractère.',
     heroImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/MONTAGNE/98317677686-27139098.jpg',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/MONTAGNE/98317677686-27139098.webp',
     heroImageAlt: 'Vallée et sommets enneigés pour séminaire en montagne – TerraGo',
     intro: [
       'Un séminaire d’entreprise en montagne offre altitude, silence et grands espaces pour prendre de la hauteur — au sens propre comme au figuré.',
@@ -755,7 +755,7 @@ export const LIEUX: DestinationLieu[] = [
         'Hébergements nature, lodges ou maisons d’hôtes isolées : confort groupe, silence et proximité immédiate des activités outdoor.',
       images: [
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nature/674289.jpg',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nature/674289.webp',
           alt: 'Lodge en bois au cœur de la forêt pour séminaire en pleine nature',
         },
         {
@@ -764,7 +764,7 @@ export const LIEUX: DestinationLieu[] = [
           copyright: 'Youza Ecolodge',
         },
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nature/52367489.jpg',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nature/52367489.webp',
           alt: 'Salle de séminaire avec vue sur la nature',
         },
       ],
