@@ -18,6 +18,7 @@ const IMAGE_COPYRIGHT_BY_URL: Record<string, string> = {
 
   // ── Pierine di Giacomo (à la ferme) ──
   [`${HOME}/seminaire/ferme/8953021.webp`]: 'Pierine di Giacomo',
+  [`${HOME}/seminaire/ferme/730507119.jpg`]: 'Pierine di Giacomo',
   [`${HOME}/maraicher-explication.webp`]: 'Pierine di Giacomo',
   [`${HOME}/seminaire/ferme/730507323.jpg`]: 'Pierine di Giacomo',
   [`${HOME}/seminaire/ferme/794104642.jpg`]: 'Pierine di Giacomo',

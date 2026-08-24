@@ -459,7 +459,8 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                     priority={i === 0}
                     className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.1]"
                   />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent transition-opacity duration-500 group-hover:opacity-95" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   {getImageCopyright(card.image) ? (
                     <PhotoCopyright className="z-[2]" label={getImageCopyright(card.image)!} />
                   ) : null}
@@ -797,7 +798,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
       >
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <h2 className="mx-auto max-w-3xl text-center font-sans text-[38px] font-normal leading-[1.05] tracking-[-0.075em] text-[#0c1d22] sm:text-[46px] lg:text-[54px]">
-            Votre séminaire, <span className="font-bold">partout en France.</span>
+            Votre séminaire, <span className="font-bold" style={{ color: HOME_COLORS.orange }}>partout en France.</span>
           </h2>
 
           <div className="mt-7 flex flex-wrap justify-center gap-2 sm:mt-8">
@@ -805,7 +806,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
               <span
                 key={tag}
                 className="rounded-full px-4 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.1em] text-white sm:text-[11px]"
-                style={{ background: HOME_COLORS.primary }}
+                style={{ background: HOME_COLORS.orange }}
               >
                 {tag}
               </span>
@@ -827,10 +828,9 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                 type="button"
                 onClick={() => scrollRegions(-1)}
                 aria-label="Régions précédentes"
-                className="flex h-10 w-10 items-center justify-center rounded-full border bg-white/70 transition-colors hover:bg-white"
-                style={{ borderColor: 'rgba(12,29,34,0.15)' }}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(12,29,34,0.15)] bg-white/70 text-[#0c1d22] transition-colors hover:border-[#ec6435] hover:bg-[#ec6435] hover:text-white"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={HOME_COLORS.primary} strokeWidth="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M19 12H5m0 0l6-6m-6 6l6 6" />
                 </svg>
               </button>
@@ -838,10 +838,9 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
                 type="button"
                 onClick={() => scrollRegions(1)}
                 aria-label="Régions suivantes"
-                className="flex h-10 w-10 items-center justify-center rounded-full border bg-white/70 transition-colors hover:bg-white"
-                style={{ borderColor: 'rgba(12,29,34,0.15)' }}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(12,29,34,0.15)] bg-white/70 text-[#0c1d22] transition-colors hover:border-[#ec6435] hover:bg-[#ec6435] hover:text-white"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={HOME_COLORS.primary} strokeWidth="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14m0 0l-6-6m6 6l-6 6" />
                 </svg>
               </button>

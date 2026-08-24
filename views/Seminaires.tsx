@@ -690,7 +690,7 @@ const Seminaires: React.FC = () => {
           />
           <ScrollAnimate>
             <h2 className={`max-w-3xl ${sectionTitleClass}`}>
-              <span className="font-bold">Bien plus</span> qu&apos;un séminaire
+              <span className="font-bold" style={{ color: HOME_COLORS.orange }}>Bien plus</span> qu&apos;un séminaire
               <br />
               d&apos;entreprise.
             </h2>

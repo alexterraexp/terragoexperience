@@ -39,7 +39,7 @@ const PRODUCER_ASSETS = {
 };
 
 const catalogueIntroTitleClass =
-  'font-sans text-[clamp(1.05rem,3.1vw,2.25rem)] font-normal leading-[1.2] tracking-[-0.06em] text-[#0c1d22]';
+  'font-sans text-[26px] font-normal leading-[1.18] tracking-[-0.06em] text-[#0c1d22] sm:text-[clamp(1.5rem,2.8vw,2.25rem)]';
 
 /** Pastilles calées sur le scroll réel (pas une pastille par carte). */
 function useSwipePages(trackRef: React.RefObject<HTMLDivElement | null>, itemCount: number) {
@@ -184,6 +184,7 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
         <div className="prod-mini-card-fallback" aria-hidden>🌿</div>
       )}
       <div className="prod-mini-card-gradient" aria-hidden />
+      <div className="prod-mini-card-hover" aria-hidden />
       <div className="prod-mini-card-copy">
         <span className="prod-mini-card-title">{producer.name}</span>
         {producer.type ? <span className="prod-mini-card-name">{producer.type}</span> : null}
@@ -273,7 +274,7 @@ const ProducersPage: React.FC = () => {
           scroll-snap-type: x mandatory;
           -webkit-overflow-scrolling: touch;
           scrollbar-width: none;
-          padding: 4px 0 16px;
+          padding: 16px 0 28px;
           margin: 0 -1.5rem;
           padding-left: 1.25rem;
           padding-right: 4.5rem;
@@ -284,6 +285,8 @@ const ProducersPage: React.FC = () => {
           .prod-swipe {
             gap: 20px;
             margin: 0 -2rem;
+            padding-top: 24px;
+            padding-bottom: 32px;
             padding-left: 2rem;
             padding-right: 5.5rem;
             scroll-padding-left: 2rem;
@@ -299,9 +302,9 @@ const ProducersPage: React.FC = () => {
         }
         .prod-swipe-fade {
           position: absolute;
-          top: 0;
+          top: 16px;
           right: -1.5rem;
-          bottom: 16px;
+          bottom: 28px;
           width: 2.25rem;
           background: linear-gradient(
             to right,
@@ -313,7 +316,9 @@ const ProducersPage: React.FC = () => {
         }
         @media (min-width: 640px) {
           .prod-swipe-fade {
+            top: 24px;
             right: -2rem;
+            bottom: 32px;
             width: 3.5rem;
             background: linear-gradient(
               to right,
@@ -339,9 +344,10 @@ const ProducersPage: React.FC = () => {
           background: ${HOME_COLORS.primary};
           font-family: inherit;
           text-align: left;
-          transition: transform 0.2s ease;
+          transform-origin: center center;
+          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .prod-mini-card:hover { transform: translateY(-2px); }
+        .prod-mini-card:hover { transform: scaleY(1.055); }
         @media (min-width: 640px) {
           .prod-mini-card {
             flex-basis: 280px;
@@ -379,6 +385,24 @@ const ProducersPage: React.FC = () => {
           inset: 0;
           background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.15) 45%, transparent 70%);
           pointer-events: none;
+        }
+        .prod-mini-card-hover {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.88) 0%,
+            rgba(0, 0, 0, 0.55) 38%,
+            rgba(0, 0, 0, 0.18) 68%,
+            transparent 100%
+          );
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.5s ease;
+        }
+        .prod-mini-card:hover .prod-mini-card-hover {
+          opacity: 1;
         }
         .prod-mini-card-copy {
           position: absolute;
@@ -480,7 +504,7 @@ const ProducersPage: React.FC = () => {
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
       >
         <div className="relative mx-auto max-w-[1280px] px-6 sm:px-8 lg:px-10">
-          <div className="mb-8 pr-6 sm:mb-10 sm:pr-8 lg:pr-10">
+          <div className="mb-3 pr-6 sm:mb-8 sm:pr-8 lg:mb-10 lg:pr-10">
             <h2 className={catalogueIntroTitleClass}>
               Voici quelques-uns de nos producteurs partenaires,{' '}
               <span className="font-bold">engagés</span>,{' '}
@@ -562,8 +586,8 @@ const ProducersPage: React.FC = () => {
       {/* ── CTA ── */}
       <section
         style={{
-          paddingTop: 'clamp(2rem, 4vw, 3rem)',
-          paddingBottom: homeSectionPadding,
+          paddingTop: 'clamp(4.5rem, 8vw, 6.5rem)',
+          paddingBottom: 'clamp(3.5rem, 6vw, 5rem)',
           background: HOME_COLORS.gray,
         }}
       >
@@ -606,7 +630,11 @@ const ProducersPage: React.FC = () => {
         </div>
       </section>
 
-      <FaqExcerpt excerpt="producteur" />
+      <FaqExcerpt
+        excerpt="producteur"
+        paddingTop="clamp(2.25rem, 4.5vw, 3.5rem)"
+        paddingBottom="clamp(5rem, 10vw, 7.5rem)"
+      />
     </div>
   );
 };

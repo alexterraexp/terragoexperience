@@ -514,6 +514,7 @@ const Particuliers: React.FC = () => {
                         'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.55) 100%)',
                     }}
                   />
+                  <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/60" />
                   <div className="relative z-10 flex w-full flex-col items-center justify-center">
                     <h3 className="min-h-[2.6em] font-sans text-[24px] font-normal leading-[1.15] tracking-[-0.05em] text-white sm:text-[26px] lg:text-[28px]">
                       {item.title}{' '}
@@ -527,12 +528,6 @@ const Particuliers: React.FC = () => {
               </ScrollAnimate>
             ))}
           </div>
-
-          <ScrollAnimate delay={100}>
-            <p className={`${homeParagraphClass} mx-auto mt-10 max-w-2xl text-center text-[14px] text-[#0c1d22]/60 sm:mt-12 sm:text-[15px]`}>
-              Repas du terroir & repas guinguette : dans les champs, entre les vignes, au milieu des oliviers.
-            </p>
-          </ScrollAnimate>
         </div>
       </section>
 

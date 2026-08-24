@@ -194,9 +194,13 @@ input:focus {
   box-shadow: none !important;
 }
 
-/* Image rendering */
+/* Image rendering + protection (clic droit / glisser / enregistrement iOS) */
 img {
   image-rendering: -webkit-optimize-contrast;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
 }
 
 /* iOS auto-detection */

@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import CookieBanner from '../components/CookieBanner';
 import GoogleTagManager from '../components/GoogleTagManager';
 import ScrollToTop from '../components/ScrollToTop';
+import ImageProtection from '../components/ImageProtection';
 import { ModalProvider } from '../context/ModalContext';
 
 export const metadata: Metadata = {
@@ -64,6 +65,7 @@ export default function RootLayout({
       </head>
       <body className="bg-beige-bg text-primary">
         <ScrollToTop />
+        <ImageProtection />
         <CookieBanner />
         <GoogleTagManager />
         <ModalProvider>

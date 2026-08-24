@@ -336,8 +336,9 @@ export const LIEUX: DestinationLieu[] = [
       'TerraGo collabore avec des fermes capables d’accueillir des groupes — élevage, maraîchage, cultures — pour des programmes utiles, chaleureux et mémorables.',
       'Loin des open spaces, vos collaborateurs retrouvent un rythme plus humain, sans perdre en efficacité stratégique.',
     ],
-    prosImage: `${HOME}/maraicher-explication.webp`,
-    prosImageAlt: 'Atelier à la ferme pour séminaire d’entreprise',
+    prosImage:
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/ferme/730507119.jpg',
+    prosImageAlt: 'Outils de jardinage à la ferme pour séminaire d’entreprise',
     prosImageCopyright: 'Pierine di Giacomo',
     pros: [
       {

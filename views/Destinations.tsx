@@ -10,23 +10,26 @@ import {
   homeParagraphClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
-import PhotoCopyright from '../components/PhotoCopyright';
 import { REGION_TAGS, regionDestinationPath } from '../lib/homeStorage';
 import { DESTINATIONS } from '../lib/destinations';
 import { LIEUX, lieuDestinationPath } from '../lib/lieux';
 import { VILLES_SEMINAIRE, villeSeminairePath } from '../lib/villesSeminaire';
 import { protectedImageProps } from '../lib/protectedImage';
-import { getImageCopyright } from '../lib/imageCopyrights';
 
 const sectionTitleClass =
   'font-sans text-[42px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[44px] lg:text-[48px]';
 
-const CategoryHeading: React.FC<{ children: React.ReactNode; className?: string }> = ({
-  children,
-  className = '',
-}) => (
+const CategoryHeading: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  largeMobile?: boolean;
+}> = ({ children, className = '', largeMobile = false }) => (
   <div className={`flex items-center gap-4 sm:gap-5 ${className}`}>
-    <h2 className="shrink-0 font-sans text-[17px] font-normal leading-[1.2] tracking-[-0.04em] text-[#0c1d22] sm:text-[19px] lg:text-[21px]">
+    <h2
+      className={`shrink-0 font-sans font-normal leading-[1.2] tracking-[-0.04em] text-[#0c1d22] sm:text-[19px] lg:text-[21px] ${
+        largeMobile ? 'text-[24px]' : 'text-[17px]'
+      }`}
+    >
       {children}
     </h2>
     <div
@@ -213,10 +216,10 @@ const Destinations: React.FC = () => {
       >
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <ScrollAnimate>
-            <CategoryHeading className="mb-3 sm:mb-4">
+            <CategoryHeading largeMobile className="mb-4 sm:mb-4">
               En fonction des <span className="font-bold">régions</span>
             </CategoryHeading>
-            <p className={`mb-5 max-w-none sm:mb-6 ${homeParagraphClass}`}>
+            <p className={`mb-8 max-w-none sm:mb-6 ${homeParagraphClass}`}>
               Du Sud-Ouest à la Provence, de la Bretagne aux Alpes… découvrez les territoires où nous
               imaginons des expériences uniques pour vos équipes.
             </p>
@@ -239,7 +242,7 @@ const Destinations: React.FC = () => {
             <Link
               key={region.slug}
               href={regionDestinationPath(region.slug)}
-              className="group relative aspect-[3/4.4] w-[62vw] shrink-0 snap-center overflow-hidden"
+              className="group relative aspect-[3/3.9] w-[62vw] shrink-0 snap-center overflow-hidden"
               style={{ borderRadius: HOME_RADIUS }}
             >
               <Image
@@ -252,13 +255,7 @@ const Destinations: React.FC = () => {
                 {...protectedImageProps}
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
-              {getImageCopyright(region.heroImage) ? (
-                <PhotoCopyright
-                  className="z-[2]"
-                  label={getImageCopyright(region.heroImage)!}
-                />
-              ) : null}
-              <p className="pointer-events-none absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white">
+              <p className="pointer-events-none absolute bottom-8 left-0 right-0 z-[1] px-5 font-sans text-[28px] leading-[1.12] tracking-[-0.05em] text-white">
                 <span className="font-normal">Séminaire {region.prep}</span>
                 <br />
                 <span className="font-bold">{region.name}</span>
@@ -293,13 +290,8 @@ const Destinations: React.FC = () => {
                   className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
                   {...protectedImageProps}
                 />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
-                {getImageCopyright(region.heroImage) ? (
-                  <PhotoCopyright
-                    className="z-[2]"
-                    label={getImageCopyright(region.heroImage)!}
-                  />
-                ) : null}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+                <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/35" />
                 <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
                   <span className="font-normal">Séminaire {region.prep}</span>
                   <br />
@@ -313,10 +305,10 @@ const Destinations: React.FC = () => {
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
 
           <ScrollAnimate className="mt-14 sm:mt-16">
-            <CategoryHeading className="mb-3 sm:mb-4">
+            <CategoryHeading largeMobile className="mb-4 sm:mb-4">
               En fonction des <span className="font-bold">lieux</span>
             </CategoryHeading>
-            <p className={`mb-5 max-w-none sm:mb-6 ${homeParagraphClass}`}>
+            <p className={`mb-8 max-w-none sm:mb-6 ${homeParagraphClass}`}>
               Chez un producteur, au cœur d&apos;un vignoble, dans une ferme, au bord de l&apos;eau
               ou en pleine nature… choisissez le lieu qui donnera une autre dimension à votre
               séminaire.
@@ -340,7 +332,7 @@ const Destinations: React.FC = () => {
             <Link
               key={lieu.slug}
               href={lieuDestinationPath(lieu.slug)}
-              className="group relative aspect-[3/4.4] w-[62vw] shrink-0 snap-center overflow-hidden"
+              className="group relative aspect-[3/3.9] w-[62vw] shrink-0 snap-center overflow-hidden"
               style={{ borderRadius: HOME_RADIUS }}
             >
               <Image
@@ -352,16 +344,10 @@ const Destinations: React.FC = () => {
                 {...protectedImageProps}
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
-              {lieu.heroImageCopyright || getImageCopyright(lieu.heroImage) ? (
-                <PhotoCopyright
-                  className="z-[2]"
-                  label={lieu.heroImageCopyright || getImageCopyright(lieu.heroImage)!}
-                />
-              ) : null}
-              <p className="pointer-events-none absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white">
+              <p className="pointer-events-none absolute bottom-8 left-0 right-0 z-[1] px-5 font-sans text-[28px] leading-[1.12] tracking-[-0.05em] text-white">
                 <span className="font-normal">Séminaire</span>
                 <br />
-                <span className="font-bold">{lieu.name}</span>
+                <span className="font-bold lowercase">{lieu.name}</span>
               </p>
             </Link>
           ))}
@@ -392,17 +378,12 @@ const Destinations: React.FC = () => {
                   className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
                   {...protectedImageProps}
                 />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
-                {lieu.heroImageCopyright || getImageCopyright(lieu.heroImage) ? (
-                  <PhotoCopyright
-                    className="z-[2]"
-                    label={lieu.heroImageCopyright || getImageCopyright(lieu.heroImage)!}
-                  />
-                ) : null}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+                <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/35" />
                 <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
                   <span className="font-normal">Séminaire</span>
                   <br />
-                  <span className="font-bold">{lieu.name}</span>
+                  <span className="font-bold lowercase">{lieu.name}</span>
                 </p>
               </Link>
             </ScrollAnimate>

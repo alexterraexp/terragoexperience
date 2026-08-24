@@ -11,9 +11,17 @@ type Props = {
   intro?: string;
   /** Nombre max d’items (défaut 3). */
   limit?: number;
+  paddingTop?: string;
+  paddingBottom?: string;
 };
 
-export default function FaqExcerpt({ excerpt, intro, limit = 3 }: Props) {
+export default function FaqExcerpt({
+  excerpt,
+  intro,
+  limit = 3,
+  paddingTop = 'clamp(3rem, 6vw, 4.5rem)',
+  paddingBottom = 'clamp(3rem, 6vw, 4.5rem)',
+}: Props) {
   const items = getFaqExcerptItems(excerpt, limit);
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -23,8 +31,8 @@ export default function FaqExcerpt({ excerpt, intro, limit = 3 }: Props) {
     <section
       className="relative"
       style={{
-        paddingTop: 'clamp(3rem, 6vw, 4.5rem)',
-        paddingBottom: 'clamp(3rem, 6vw, 4.5rem)',
+        paddingTop,
+        paddingBottom,
         background: HOME_COLORS.gray,
       }}
     >

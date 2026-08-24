@@ -182,7 +182,7 @@ const CharteRse: React.FC = () => {
               Notre conviction
             </p>
             <h2 className={`mt-3 ${sectionTitleClass}`}>
-              Deux causes, <span className="font-bold">un même modèle</span>.
+              Deux causes, <span className="font-bold" style={{ color: HOME_COLORS.orange }}>un même modèle</span>.
             </h2>
             <div className="mt-6 space-y-4">
               <p className={charterParagraphClass}>
