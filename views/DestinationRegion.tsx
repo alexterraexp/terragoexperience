@@ -11,11 +11,14 @@ import {
   homeFramedHeroWideAspectClass,
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
+  homeFramedHeroOverlayInnerClass,
+  homeFramedHeroSubtitleClass,
   bottomImageGradientClass,
   homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
   homeHeroOutlineButtonClass,
   homeParagraphClass,
+  faqAnswerClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
@@ -200,7 +203,7 @@ const FaqAccordion: React.FC<{ items: DestinationData['faq'] }> = ({ items }) =>
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`${homeParagraphClass} pb-4 pr-8`}>{item.a}</p>
+                <p className={`${faqAnswerClass} pb-4 pr-8`}>{item.a}</p>
               </div>
             </div>
           </div>
@@ -401,20 +404,19 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
             />
 
             <div className={homeFramedHeroOverlayClass}>
+              <div className={homeFramedHeroOverlayInnerClass}>
               <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                 {destination.name}
               </p>
-              <h1 className="mt-5 max-w-4xl pt-1 text-center font-sans text-white sm:mt-6">
-                <span className={`block ${homeFramedHeroH1Class}`}>
-                  <span className="font-normal">Séminaire d&apos;entreprise</span>{' '}
-                  <span className="font-bold">
-                    {destination.prep} {destination.name}
-                  </span>
-                </span>
-                <span className="mt-2 block text-[clamp(0.95rem,2.5vw,1.25rem)] font-normal leading-snug tracking-[-0.02em] text-white/90">
-                  à la rencontre de producteurs
+              <h1 className={`mt-5 max-w-4xl pt-1 text-center font-normal sm:mt-6 ${homeFramedHeroH1Class}`}>
+                Séminaire d&apos;entreprise{' '}
+                <span className="font-bold">
+                  {destination.prep} {destination.name}
                 </span>
               </h1>
+              <p className={homeFramedHeroSubtitleClass}>
+                à la rencontre de producteurs
+              </p>
               <button
                 type="button"
                 onClick={() => openModal()}
@@ -423,6 +425,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
               >
                 Réserver mon séminaire
               </button>
+              </div>
             </div>
           </div>
         </div>
@@ -503,7 +506,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                 <button
                   type="button"
                   onClick={() => openModal()}
-                  className="mt-8 hidden w-fit items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px] lg:inline-flex"
+                  className="mt-8 hidden w-fit items-center justify-center rounded-full border border-white bg-transparent px-6 py-2 text-[12px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px] lg:inline-flex"
                 >
                   Demander un devis
                 </button>
@@ -533,7 +536,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
               <button
                 type="button"
                 onClick={() => openModal()}
-                className="inline-flex w-fit items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px]"
+                className="inline-flex w-fit items-center justify-center rounded-full border border-white bg-transparent px-6 py-2 text-[12px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px]"
               >
                 Demander un devis
               </button>

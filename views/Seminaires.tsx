@@ -11,6 +11,8 @@ import {
   homeFramedHeroAspectClass,
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
+  homeFramedHeroOverlayInnerClass,
+  homeFramedHeroSubtitleClass,
   homeParagraphClass,
   homeSectionPadding,
   bottomImageGradientClass,
@@ -645,20 +647,22 @@ const Seminaires: React.FC = () => {
             />
 
             <div className={homeFramedHeroOverlayClass}>
+              <div className={homeFramedHeroOverlayInnerClass}>
               <h1 className={`max-w-3xl text-center font-bold ${homeFramedHeroH1Class}`}>
                 Séminaires d&apos;entreprise engagés
               </h1>
-              <h2 className="mt-3 max-w-2xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
+              <h2 className={homeFramedHeroSubtitleClass}>
                 Organisez un séminaire d&apos;entreprise sur mesure, dans des lieux authentiques partout en France, entre nature, terroir, rencontres et expériences collectives.
               </h2>
               <button
                 type="button"
                 onClick={() => openModal()}
-                className={`mt-5 ${homeHeroOutlineButtonClass} sm:mt-9`}
+                className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
                 style={{ background: 'rgba(12, 29, 34, 0.12)' }}
               >
                 Demander un devis
               </button>
+              </div>
             </div>
           </div>
         </div>
@@ -939,7 +943,7 @@ const Seminaires: React.FC = () => {
           <div className="mt-8 flex justify-center sm:mt-10">
             <Link
               href={EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}
-              className="inline-flex items-center justify-center rounded-full border border-[#ec6435] px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]"
+              className="inline-flex items-center justify-center rounded-full border border-[#ec6435] px-6 py-2 text-[12px] font-bold tracking-[-0.02em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]"
             >
               Découvrir nos exemples de séminaire d&apos;entreprise
             </Link>
@@ -1027,7 +1031,7 @@ const Seminaires: React.FC = () => {
             </p>
             <Link
               href="/destinations"
-              className="mt-8 inline-flex items-center justify-center rounded-full border border-[#ec6435] px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]"
+              className="mt-8 inline-flex items-center justify-center rounded-full border border-[#ec6435] px-6 py-2 text-[12px] font-bold tracking-[-0.02em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]"
             >
               Découvrir toutes nos destinations
             </Link>

@@ -8,7 +8,8 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroH1Class,
-  homeParagraphClass,
+  homeFramedHeroOverlayInnerClass,
+  homeFramedHeroSubtitleClass,
   homeSectionPadding,
   homeHeroOutlineButtonClass,
   homeCtaOutlineClass,
@@ -92,10 +93,11 @@ const Engagement: React.FC = () => {
             className="relative flex aspect-[5/4] w-full flex-col items-center justify-center overflow-hidden px-5 pb-8 pt-10 text-center sm:aspect-[16/9] sm:px-10 sm:pb-10 sm:pt-16 lg:aspect-[2.2/1] lg:pt-20"
             style={{ borderRadius: HOME_RADIUS, background: HOME_COLORS.orange }}
           >
+            <div className={homeFramedHeroOverlayInnerClass}>
             <h1 className={`max-w-3xl font-bold ${homeFramedHeroH1Class}`}>
               Notre approche
             </h1>
-            <p className={`${homeParagraphClass} mt-4 max-w-xl text-[15px] leading-relaxed text-white/90 sm:mt-6 sm:text-[17px]`}>
+            <p className={homeFramedHeroSubtitleClass}>
               Reconnecter l&apos;humain à la terre, soutenir les producteurs engagés,
               et créer des expériences qui laissent une trace.
             </p>
@@ -106,6 +108,7 @@ const Engagement: React.FC = () => {
             >
               Rejoindre la communauté
             </button>
+            </div>
           </div>
 
           <Image
@@ -130,7 +133,7 @@ const Engagement: React.FC = () => {
           aria-hidden
           width={320}
           height={320}
-          className="pointer-events-none absolute left-0 top-1/2 z-0 h-48 w-48 -translate-x-[35%] -translate-y-1/2 object-contain opacity-90 sm:h-64 sm:w-64 lg:h-80 lg:w-80"
+          className="pointer-events-none absolute left-0 top-1/2 z-0 hidden h-48 w-48 -translate-x-[35%] -translate-y-1/2 object-contain opacity-90 sm:block sm:h-64 sm:w-64 lg:h-80 lg:w-80"
         />
 
         <div className="relative z-10 mx-auto max-w-3xl px-5 text-center sm:px-8">
@@ -208,7 +211,7 @@ const Engagement: React.FC = () => {
           aria-hidden
           width={288}
           height={288}
-          className="pointer-events-none absolute right-0 top-0 z-20 h-40 w-40 translate-x-[35%] -translate-y-1/2 object-contain opacity-90 sm:h-56 sm:w-56 lg:h-72 lg:w-72"
+          className="pointer-events-none absolute right-0 top-0 z-20 h-32 w-32 translate-x-[35%] -translate-y-[40%] object-contain opacity-90 sm:h-56 sm:w-56 sm:-translate-y-1/2 lg:h-72 lg:w-72"
         />
         {/* Arbre — mobile : intersection vision / producteurs ; desktop : gauche section */}
         <Image

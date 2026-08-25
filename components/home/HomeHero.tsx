@@ -5,8 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import {
-  homeH1Class,
-  homeParagraphClass,
   bottomImageGradientClass,
 } from './homeStyles';
 import { useModal } from '../../context/ModalContext';
@@ -108,7 +106,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
         />
 
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-3.5 pt-24 pb-14 text-center sm:px-6 sm:pt-28 sm:pb-12">
-          <h1 className={`${homeH1Class} max-w-none text-[clamp(1.85rem,6.6vw,3.75rem)] leading-[1.06] text-white`}>
+          <h1 className="max-w-none font-sans text-[clamp(2.75rem,9.5vw,3.35rem)] font-normal leading-[1.04] tracking-[-0.075em] text-white sm:text-[clamp(1.85rem,6.6vw,3.75rem)] sm:leading-[1.06]">
             <span className="sm:whitespace-nowrap">
               <span className="font-bold">Séminaires d&apos;entreprise engagés,</span>{' '}
               <span className="font-normal">à la</span>
@@ -119,11 +117,11 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
               rencontre des producteurs français.
             </span>
           </h1>
-          <p className={`${homeParagraphClass} mt-5 max-w-5xl px-0 text-[16px] leading-relaxed text-white/95 sm:mt-10 sm:text-lg`}>
+          <p className="mt-4 max-w-5xl px-0 font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.04em] text-white/95 sm:mt-10 sm:text-lg sm:leading-relaxed">
             Des séminaires d&apos;entreprise au vert, sur mesure et engagés dans une démarche RSE, partout
             en France.
           </p>
-          <div className="mt-12 flex flex-col items-center gap-3 sm:mt-24 sm:flex-row sm:gap-5">
+          <div className="mt-10 flex flex-col items-center gap-3 sm:mt-24 sm:flex-row sm:gap-5">
             <Link
               href="/seminaires-entreprise"
               className="hidden rounded-full border-2 border-white px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:inline-flex sm:items-center sm:justify-center sm:px-10 sm:py-2.5 sm:text-[13px]"
@@ -134,7 +132,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
             <button
               type="button"
               onClick={openModal}
-              className="rounded-full bg-white px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]"
+              className="rounded-full bg-white px-7 py-2 text-[13px] font-bold tracking-[-0.02em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]"
             >
               Parlons de votre projet
             </button>
@@ -142,7 +140,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
           <button
             type="button"
             onClick={scrollToConcept}
-            className="mt-8 inline-flex items-center justify-center sm:hidden"
+            className="absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-1/2 inline-flex -translate-x-1/2 items-center justify-center sm:hidden"
             aria-label="Descendre à la suite"
           >
             <ChevronDown

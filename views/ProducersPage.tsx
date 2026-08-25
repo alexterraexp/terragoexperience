@@ -18,6 +18,8 @@ import {
   homeFramedHeroAspectClass,
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
+  homeFramedHeroOverlayInnerClass,
+  homeFramedHeroSubtitleClass,
   bottomImageGradientClass,
   homeHeroOutlineButtonClass,
   homeHeroSolidButtonClass,
@@ -463,10 +465,11 @@ const ProducersPage: React.FC = () => {
               }}
             />
             <div className={homeFramedHeroOverlayClass}>
+              <div className={homeFramedHeroOverlayInnerClass}>
               <h1 className={`max-w-3xl text-center font-bold ${homeFramedHeroH1Class}`}>
                 Nos producteurs partenaires
               </h1>
-              <h2 className="mt-4 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
+              <h2 className={homeFramedHeroSubtitleClass}>
                 Des hôtes engagés pour accueillir vos groupes en séminaire ou séjour immersif.
               </h2>
               <div className="mx-auto mt-7 flex w-max max-w-full flex-col items-stretch gap-3 sm:mt-9 sm:flex-row sm:items-center sm:gap-4">
@@ -484,6 +487,7 @@ const ProducersPage: React.FC = () => {
                 >
                   Devenir partenaire
                 </button>
+              </div>
               </div>
             </div>
           </div>

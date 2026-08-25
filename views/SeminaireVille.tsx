@@ -10,6 +10,7 @@ import {
   HOME_RADIUS,
   homeCtaOutlineClass,
   homeParagraphClass,
+  faqAnswerClass,
 } from '../components/home/homeStyles';
 import {
   getVilleSeminaire,
@@ -181,7 +182,7 @@ function VilleFaqAccordion({ items }: { items: VilleFaq[] }) {
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`pb-4 pr-2 ${homeParagraphClass}`}>{item.a}</p>
+                <p className={`pb-4 pr-2 ${faqAnswerClass}`}>{item.a}</p>
               </div>
             </div>
           </div>

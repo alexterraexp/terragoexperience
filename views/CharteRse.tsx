@@ -129,7 +129,7 @@ const CharteRse: React.FC = () => {
           aria-hidden
           width={384}
           height={384}
-          className="pointer-events-none absolute bottom-0 right-0 z-30 h-52 w-52 translate-x-[42%] translate-y-[42%] object-contain drop-shadow-md sm:h-72 sm:w-72 lg:h-96 lg:w-96"
+          className="pointer-events-none absolute bottom-0 right-0 z-30 h-44 w-44 translate-x-[42%] translate-y-[50%] object-contain drop-shadow-md sm:h-72 sm:w-72 sm:translate-y-[42%] lg:h-96 lg:w-96"
         />
         <div className="relative mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
@@ -152,14 +152,14 @@ const CharteRse: React.FC = () => {
                   'linear-gradient(to bottom, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.55) 100%)',
               }}
             />
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-5 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center overflow-hidden px-5 pb-8 pt-10 text-center sm:px-10 sm:pb-10 sm:pt-16">
               <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                 TerraGo
               </p>
               <h1 className={`mt-2 max-w-3xl font-normal ${homeFramedHeroH1Class}`}>
                 Charte d&apos;engagement <span className="font-bold">RSE</span>
               </h1>
-              <p className="mt-3 max-w-xl font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.02em] text-white/85 sm:text-[15px]">
+              <p className="mt-3 max-w-xl font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.02em] text-white/85 sm:max-w-2xl sm:text-[14px] lg:max-w-3xl">
                 Ce que nous faisons concrètement aujourd&apos;hui, et ce sur quoi nous
                 nous engageons à progresser.
               </p>

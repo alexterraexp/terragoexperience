@@ -1343,12 +1343,14 @@ export default function SeminaireDetailPage() {
           .sem-mobile-sheet { display: block; }
           .sem-mobile-sheet-header { display: none !important; }
           .sem-offer-intro { margin-top: 8px; margin-bottom: 28px; }
+          .sem-offer-intro:has(.sem-offer-bestseller) { margin-top: 0; }
           .sem-offer-title { margin-top: 0 !important; margin-bottom: 14px !important; }
           .sem-infos-pratiques { margin-top: 28px; }
           .sem-infos-row-body { padding-left: 16px; }
-          .sem-offer-format { margin-top: 8px; margin-bottom: 24px; }
+          .sem-experiences-proposees { margin-top: 44px; margin-bottom: 8px; }
+          .sem-offer-format { margin-top: 44px; margin-bottom: 24px; }
           .sem-offer-inclus--grid { grid-template-columns: 1fr; }
-          .sem-mobile-devis-block { margin-top: 8px; margin-bottom: 32px; }
+          .sem-mobile-devis-block { margin-top: 44px; margin-bottom: 32px; }
           .sem-detail-format-row > div:last-child { display: none; }
           .sem-detail-format-row {
             flex-direction: column;
@@ -1377,19 +1379,21 @@ export default function SeminaireDetailPage() {
             cursor: pointer;
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
           }
           .sem-mobile-hero-btn--back {
-            /* Sous le burger / safe-area du header fixe */
-            top: calc(64px + env(safe-area-inset-top, 0px));
+            top: auto;
+            bottom: 52px;
             left: max(16px, env(safe-area-inset-left, 0px));
             height: auto;
             min-height: 28px;
             padding: 4px 10px 4px 7px;
             border-radius: 9999px;
             gap: 4px;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0, 0, 0, 0.18);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
             color: #fff;
             font-size: 8px;
             font-weight: 700;
@@ -1409,9 +1413,10 @@ export default function SeminaireDetailPage() {
             width: 38px;
             height: 38px;
             border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.28);
-            background: rgba(0, 0, 0, 0.38);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(0, 0, 0, 0.16);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             color: #fff;
             display: flex;
             align-items: center;
@@ -1419,7 +1424,7 @@ export default function SeminaireDetailPage() {
             cursor: pointer;
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
           }
           .sem-mobile-photo-arrow--prev {
             left: max(12px, env(safe-area-inset-left, 0px));
@@ -1451,23 +1456,19 @@ export default function SeminaireDetailPage() {
             letter-spacing: 0.02em;
             flex-shrink: 0;
           }
-          .sem-mobile-bestseller {
-            position: absolute;
-            /* Aligné sous le burger (évite de passer derrière le menu) */
-            top: calc(64px + env(safe-area-inset-top, 0px));
-            right: max(16px, env(safe-area-inset-right, 0px));
-            z-index: 20;
-            background: rgba(255, 255, 255, 0.42);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+          .sem-offer-bestseller {
+            display: inline-flex;
+            align-items: center;
+            background: #ec6435;
             border-radius: 9999px;
-            padding: 5px 10px;
-            font-size: 9px;
+            padding: 3px 7px;
+            margin: 0 0 10px;
+            font-size: 7px;
             font-weight: 700;
             color: #fff;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            pointer-events: none;
+            line-height: 1.2;
           }
 
           .sem-mobile-sheet {
@@ -1479,13 +1480,16 @@ export default function SeminaireDetailPage() {
             margin-top: -24px;
             padding: 40px 24px calc(32px + env(safe-area-inset-bottom, 0px));
           }
+          .sem-mobile-sheet:has(.sem-offer-bestseller) {
+            padding-top: 56px;
+          }
           .sem-mobile-sheet-header {
             display: block;
             padding: 32px 0 0;
           }
           .sem-mobile-hero-partenaire {
             position: absolute;
-            bottom: 52px;
+            bottom: 92px;
             left: max(16px, env(safe-area-inset-left, 0px));
             z-index: 4;
             display: flex;
@@ -1671,7 +1675,7 @@ export default function SeminaireDetailPage() {
             padding-left: 14px;
             border-left: 3px solid #ec6435;
           }
-          .sem-mobile-devis-block { margin-top: 28px; margin-bottom: 28px; text-align: center; }
+          .sem-mobile-devis-block { margin-top: 44px; margin-bottom: 28px; text-align: center; }
           .sem-mobile-devis-btn {
             width: 100%;
             display: inline-flex;
@@ -1680,11 +1684,11 @@ export default function SeminaireDetailPage() {
             gap: 8px;
             background: #0c1d22;
             color: #fff;
-            font-size: 10px;
+            font-size: 16px;
             font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            padding: 11px 18px;
+            letter-spacing: -0.02em;
+            text-transform: none;
+            padding: 15px 22px;
             border-radius: 9999px;
             border: none;
             cursor: pointer;

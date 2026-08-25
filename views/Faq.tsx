@@ -48,7 +48,7 @@ function FaqSectionAccordion({ items }: { items: FaqItem[] }) {
               onClick={() => setOpenId(isOpen ? null : item.id)}
               aria-expanded={isOpen}
             >
-              <span className="min-w-0 flex-1 font-sans text-[15px] font-bold leading-[1.35] tracking-[-0.03em] text-[#0c1d22]">
+              <span className="min-w-0 flex-1 font-sans text-[13px] font-bold leading-[1.35] tracking-[-0.03em] text-[#0c1d22] sm:text-[15px]">
                 {item.question}
               </span>
               <ChevronRight

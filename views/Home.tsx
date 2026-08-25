@@ -12,6 +12,7 @@ import {
   homeH1Class,
   homeH2Class,
   homeParagraphClass,
+  faqAnswerClass,
   homeSectionPadding,
   homeSeparatorPadding,
   bottomImageGradientClass,
@@ -106,7 +107,7 @@ const FaqAccordion: React.FC = () => {
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`${homeParagraphClass} whitespace-pre-line pb-4 pr-8`}>{item.a}</p>
+                <p className={`${faqAnswerClass} whitespace-pre-line pb-4 pr-8`}>{item.a}</p>
               </div>
             </div>
           </div>
@@ -154,7 +155,7 @@ function attachHorizontalDrag(el: HTMLElement) {
     if (Math.abs(dx) > 4) moved = true;
     if (moved) el.scrollLeft = startScroll - dx;
   };
-  const onUp = (e: PointerEvent) => {
+  const onPointerEnd = (e: PointerEvent) => {
     if (pointerId !== e.pointerId) return;
     pointerId = null;
     try {
@@ -166,13 +167,13 @@ function attachHorizontalDrag(el: HTMLElement) {
 
   el.addEventListener('pointerdown', onDown);
   el.addEventListener('pointermove', onMove);
-  el.addEventListener('pointerup', onUp);
-  el.addEventListener('pointercancel', onUp);
+  el.addEventListener('pointerup', onPointerEnd);
+  el.addEventListener('pointercancel', onPointerEnd);
   return () => {
     el.removeEventListener('pointerdown', onDown);
     el.removeEventListener('pointermove', onMove);
-    el.removeEventListener('pointerup', onUp);
-    el.removeEventListener('pointercancel', onUp);
+    el.removeEventListener('pointerup', onPointerEnd);
+    el.removeEventListener('pointercancel', onPointerEnd);
   };
 }
 
@@ -262,6 +263,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
   const stepsScrollRef = useRef<HTMLDivElement>(null);
   const experiencesScrollRef = useRef<HTMLDivElement>(null);
   const [producerIndex, setProducerIndex] = useState(0);
+  const [openConceptIndex, setOpenConceptIndex] = useState<number | null>(null);
   const activeProducer = HOME_PRODUCERS[producerIndex];
 
   const conceptSwipe = useSwipeTrack(conceptScrollRef, 3);
@@ -348,10 +350,71 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
   /** Drag horizontal (touch + souris) pour les carousels mobile. */
   useEffect(() => {
-    const cleanups = [conceptScrollRef.current, stepsScrollRef.current, experiencesScrollRef.current]
-      .filter((el): el is HTMLDivElement => !!el)
-      .map(attachHorizontalDrag);
-    return () => cleanups.forEach((off) => off());
+    const conceptEl = conceptScrollRef.current;
+    const cleanups = [
+      stepsScrollRef.current ? attachHorizontalDrag(stepsScrollRef.current) : null,
+      experiencesScrollRef.current ? attachHorizontalDrag(experiencesScrollRef.current) : null,
+    ].filter((off): off is () => void => !!off);
+
+    if (!conceptEl) {
+      return () => cleanups.forEach((off) => off());
+    }
+
+    let pointerId: number | null = null;
+    let startX = 0;
+    let startY = 0;
+    let startScroll = 0;
+    let moved = false;
+    let downTarget: EventTarget | null = null;
+
+    const onDown = (e: PointerEvent) => {
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+      startScroll = conceptEl.scrollLeft;
+      moved = false;
+      downTarget = e.target;
+      conceptEl.setPointerCapture(e.pointerId);
+    };
+    const onMove = (e: PointerEvent) => {
+      if (pointerId !== e.pointerId) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) moved = true;
+      if (moved) conceptEl.scrollLeft = startScroll - dx;
+    };
+    const onPointerEnd = (e: PointerEvent) => {
+      if (pointerId !== e.pointerId) return;
+      pointerId = null;
+      try {
+        conceptEl.releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+      const isTap =
+        !moved &&
+        Math.abs(e.clientX - startX) < 10 &&
+        Math.abs(e.clientY - startY) < 10;
+      if (isTap && downTarget instanceof Element) {
+        const card = downTarget.closest('[data-concept-index]');
+        const index = card ? Number(card.getAttribute('data-concept-index')) : NaN;
+        if (!Number.isNaN(index)) {
+          setOpenConceptIndex((prev) => (prev === index ? null : index));
+        }
+      }
+      downTarget = null;
+    };
+
+    conceptEl.addEventListener('pointerdown', onDown);
+    conceptEl.addEventListener('pointermove', onMove);
+    conceptEl.addEventListener('pointerup', onPointerEnd);
+    conceptEl.addEventListener('pointercancel', onPointerEnd);
+    return () => {
+      conceptEl.removeEventListener('pointerdown', onDown);
+      conceptEl.removeEventListener('pointermove', onMove);
+      conceptEl.removeEventListener('pointerup', onPointerEnd);
+      conceptEl.removeEventListener('pointercancel', onPointerEnd);
+      cleanups.forEach((off) => off());
+    };
   }, []);
 
   return (
@@ -401,34 +464,63 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
               paddingRight: '1.25rem',
             }}
           >
-            {conceptCards.map((card, i) => (
-              <div
-                key={i}
-                className="relative aspect-[3/3.9] w-[70vw] max-w-[320px] shrink-0 snap-center overflow-hidden"
-                style={{ borderRadius: HOME_RADIUS }}
-              >
-                <Image
-                  src={card.image}
-                  alt={card.alt}
-                  fill
-                  sizes="70vw"
-                  className="pointer-events-none select-none object-cover"
-                  draggable={false}
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
-                {getImageCopyright(card.image) ? (
-                  <PhotoCopyright className="z-[2]" label={getImageCopyright(card.image)!} />
-                ) : null}
-                <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-end px-6 pb-7">
-                  <p className="font-sans text-[clamp(1.7rem,8.2vw,2.125rem)] font-normal leading-[1.1] tracking-[-0.075em] text-white">
-                    {card.title}
-                  </p>
-                  <p className="mt-2.5 font-sans text-[12.5px] font-normal leading-[1.42] tracking-[-0.02em] text-white/85">
-                    {card.hover}
-                  </p>
+            {conceptCards.map((card, i) => {
+              const isOpen = openConceptIndex === i;
+              return (
+                <div
+                  key={i}
+                  data-concept-index={i}
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={isOpen}
+                  aria-label={card.alt}
+                  className="relative aspect-[3/3.9] w-[70vw] max-w-[320px] shrink-0 snap-center overflow-hidden"
+                  style={{ borderRadius: HOME_RADIUS }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setOpenConceptIndex((prev) => (prev === i ? null : i));
+                    }
+                  }}
+                >
+                  <Image
+                    src={card.image}
+                    alt={card.alt}
+                    fill
+                    sizes="70vw"
+                    className="pointer-events-none select-none object-cover"
+                    draggable={false}
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
+                  <div
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent transition-opacity duration-500"
+                    style={{ opacity: isOpen ? 1 : 0 }}
+                  />
+                  {getImageCopyright(card.image) ? (
+                    <PhotoCopyright className="z-[2]" label={getImageCopyright(card.image)!} />
+                  ) : null}
+                  <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-end px-6 pb-7">
+                    <p className="font-sans text-[clamp(1.7rem,8.2vw,2.125rem)] font-normal leading-[1.1] tracking-[-0.075em] text-white">
+                      {card.title}
+                    </p>
+                    <div
+                      className="grid transition-all duration-300"
+                      style={{
+                        gridTemplateRows: isOpen ? '1fr' : '0fr',
+                        opacity: isOpen ? 1 : 0,
+                        marginTop: isOpen ? 10 : 0,
+                      }}
+                    >
+                      <div className="overflow-hidden">
+                        <p className="font-sans text-[12.5px] font-normal leading-[1.42] tracking-[-0.02em] text-white/85">
+                          {card.hover}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <SwipeDots
@@ -1068,7 +1160,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
               className="pointer-events-none absolute right-0 top-1/2 z-20 h-20 w-20 -translate-y-1/2 translate-x-1/2 object-contain sm:h-28 sm:w-28 lg:h-36 lg:w-36"
             />
             <div
-              className="relative overflow-hidden px-6 py-12 text-center sm:px-12 sm:py-14 lg:py-16"
+              className="relative overflow-hidden px-6 py-14 text-center sm:px-12 sm:py-14 lg:py-16"
               style={{ background: HOME_COLORS.orange, borderRadius: HOME_RADIUS }}
             >
               <h2 className="mx-auto max-w-2xl font-sans text-[28px] font-normal leading-[1.1] tracking-[-0.07em] text-white sm:text-[36px] lg:text-[42px]">

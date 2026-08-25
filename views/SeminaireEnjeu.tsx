@@ -11,12 +11,14 @@ import {
   homeFramedHeroWideAspectClass,
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
+  homeFramedHeroOverlayInnerClass,
   bottomImageGradientClass,
   homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
   homeHeroOutlineButtonClass,
   homeOnDarkOutlineButtonClass,
   homeParagraphClass,
+  faqAnswerClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
@@ -480,7 +482,7 @@ const FaqAccordion: React.FC<{ items: EnjeuData['faq'] }> = ({ items }) => {
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`${homeParagraphClass} pb-4 pr-8`}>
+                <p className={`${faqAnswerClass} pb-4 pr-8`}>
                   <LinkedText text={item.answer} />
                 </p>
               </div>
@@ -1104,7 +1106,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
   const whyCtaIsLink = 'href' in whyCta;
   const whyCtaOnOrangeBase = whyCtaIsLink
     ? 'w-fit max-w-full items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-center text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px]'
-    : 'w-fit items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px]';
+    : 'w-fit items-center justify-center rounded-full border border-white bg-transparent px-6 py-2 text-[12px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px]';
   const whyCtaOnOrangeDesktop = `mt-8 hidden ${whyCtaOnOrangeBase} lg:inline-flex sm:mt-9`;
   const whyCtaOnOrangeMobile = `inline-flex ${whyCtaOnOrangeBase}`;
   const linkedOnOrange =
@@ -1145,6 +1147,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
             />
 
             <div className={homeFramedHeroOverlayClass}>
+              <div className={homeFramedHeroOverlayInnerClass}>
               <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                 {enjeu.eyebrow}
               </p>
@@ -1164,7 +1167,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
                   </>
                 )}
               </h1>
-              <p className="mt-3 max-w-xl font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.02em] text-white/85 sm:text-[14px]">
+              <p className="mt-3 max-w-xl font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.02em] text-white/85 sm:max-w-2xl sm:text-[13px] lg:max-w-3xl">
                 {preserveAcronyms(enjeu.subtitle)}
               </p>
               {heroCtaIsModal ? (
@@ -1185,6 +1188,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
                   {preserveAcronyms(heroCta.label)}
                 </Link>
               )}
+              </div>
             </div>
           </div>
         </div>

@@ -9,6 +9,8 @@ import {
   homeFramedHeroAspectClass,
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
+  homeFramedHeroOverlayInnerClass,
+  homeFramedHeroSubtitleClass,
   homeParagraphClass,
   homeSectionPadding,
   bottomImageGradientClass,
@@ -405,12 +407,13 @@ const Particuliers: React.FC = () => {
             />
 
             <div className={homeFramedHeroOverlayClass}>
+              <div className={homeFramedHeroOverlayInnerClass}>
               <h1 className={`max-w-3xl text-center font-normal ${homeFramedHeroH1Class}`}>
                 Expériences privées
                 <br />
                 <span className="font-bold">entre amis & en famille.</span>
               </h1>
-              <h2 className="mt-4 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
+              <h2 className={homeFramedHeroSubtitleClass}>
                 Pour l’instant, uniquement sur demande. Nos séjours entreprises s’ouvrent aux particuliers à partir de 8 personnes.
               </h2>
               <button
@@ -421,6 +424,7 @@ const Particuliers: React.FC = () => {
               >
                 Faire une demande
               </button>
+              </div>
             </div>
           </div>
         </div>

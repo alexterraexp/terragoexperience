@@ -11,7 +11,10 @@ import {
   homeFramedHeroAspectClass,
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
+  homeFramedHeroOverlayInnerClass,
+  homeFramedHeroSubtitleClass,
   homeParagraphClass,
+  faqAnswerClass,
   homeSectionPadding,
   bottomImageGradientClass,
   homeCtaOutlineClass,
@@ -120,7 +123,7 @@ const FaqAccordion: React.FC = () => {
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`${homeParagraphClass} pb-4 pr-8`}>{item.a}</p>
+                <p className={`${faqAnswerClass} pb-4 pr-8`}>{item.a}</p>
               </div>
             </div>
           </div>
@@ -462,7 +465,7 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
             className={
               category.slug === '2'
                 ? homeCtaOutlineClass
-                : 'inline-flex items-center justify-center gap-2 rounded-full border border-[#ec6435] bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]'
+                : 'inline-flex items-center justify-center gap-2 rounded-full border border-[#ec6435] bg-transparent px-6 py-2 text-[12px] font-bold tracking-[-0.02em] text-[#ec6435] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]'
             }
           >
             <span aria-hidden>→</span>
@@ -504,10 +507,11 @@ const ExperiencesEntreprise: React.FC = () => {
             />
 
             <div className={homeFramedHeroOverlayClass}>
+              <div className={homeFramedHeroOverlayInnerClass}>
               <h1 className={`max-w-3xl font-bold ${homeFramedHeroH1Class}`}>
                 Nos expériences
               </h1>
-              <p className={`${homeParagraphClass} mt-4 max-w-xl text-[15px] leading-relaxed text-white/90 sm:mt-6 sm:text-[16px]`}>
+              <p className={homeFramedHeroSubtitleClass}>
                 Team building, séminaires RSE et événements d&apos;entreprise chez des producteurs engagés, partout en France.
               </p>
               <div className="mt-7 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:gap-4">
@@ -525,6 +529,7 @@ const ExperiencesEntreprise: React.FC = () => {
                 >
                   Nos séminaires d&apos;entreprise
                 </Link>
+              </div>
               </div>
             </div>
           </div>

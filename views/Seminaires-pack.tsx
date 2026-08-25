@@ -26,6 +26,8 @@ import {
   homeFramedHeroAspectClass,
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
+  homeFramedHeroOverlayInnerClass,
+  homeFramedHeroSubtitleClass,
   bottomImageGradientClass,
   homeHeroOutlineButtonClass,
   homeHeroSolidButtonClass,
@@ -547,7 +549,7 @@ function MobileDevisCta({ onDevis }: { onDevis: () => void }) {
     <section className="sem-mobile-devis-block">
       <button type="button" className="sem-mobile-devis-btn" onClick={onDevis}>
         Demander un devis
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
       </button>
       <p className="sem-mobile-devis-hint">Besoin d&apos;un programme sur mesure ? On s&apos;adapte à vos objectifs.</p>
     </section>
@@ -712,7 +714,7 @@ function SeminaireCard({ s, isActive, onSelect }: {
           src={s.images[0] ?? ''}
           alt={s.label}
           fill
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes="(max-width: 640px) 80vw, (max-width: 768px) 100vw, 50vw"
           className="object-cover"
           style={{
             transition: 'transform 0.45s ease',
@@ -1161,13 +1163,16 @@ function OfferIntroBlock({
   title,
   producteur,
   region,
+  bestseller,
 }: {
   title: string;
   producteur: string;
   region: string;
+  bestseller?: boolean;
 }) {
   return (
     <header className="sem-offer-intro">
+      {bestseller && <div className="sem-offer-bestseller">Populaire</div>}
       <div className="sem-offer-intro-top">
         <div className="sem-offer-intro-main">
           <h1 className="sem-offer-title">{title}</h1>
@@ -1675,7 +1680,6 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
             </>
           )}
 
-          {s.bestseller && <div className="sem-mobile-bestseller">Populaire</div>}
           {s.images.length > 1 && (
             <div className="sem-mobile-hero-meta">
               <div className="sem-mobile-photo-counter">{mobilePhotoIdx + 1} / {s.images.length}</div>
@@ -1745,6 +1749,7 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
               title={s.label}
               producteur={s.producteur}
               region={s.region}
+              bestseller={s.bestseller}
             />
             <InfosPratiquesSection
               s={s}
@@ -2319,6 +2324,84 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   );
 }
 
+function useSwipeTrack(trackRef: React.RefObject<HTMLDivElement | null>, length: number) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const isScrollingRef = useRef(false);
+
+  const goTo = useCallback((index: number, behavior: ScrollBehavior = 'smooth') => {
+    const track = trackRef.current;
+    if (!track || length === 0) return;
+    const clamped = ((index % length) + length) % length;
+    const slide = track.children[clamped] as HTMLElement | undefined;
+    if (!slide) return;
+    isScrollingRef.current = true;
+    const targetLeft = slide.offsetLeft - (track.firstElementChild as HTMLElement).offsetLeft;
+    track.scrollTo({ left: targetLeft, behavior });
+    setActiveIndex(clamped);
+    window.setTimeout(() => {
+      isScrollingRef.current = false;
+    }, behavior === 'smooth' ? 450 : 50);
+  }, [trackRef, length]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let raf = 0;
+    const onScroll = () => {
+      if (isScrollingRef.current) return;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const center = track.scrollLeft + track.clientWidth / 2;
+        let best = 0;
+        let bestDist = Infinity;
+        Array.from(track.children).forEach((child, i) => {
+          const el = child as HTMLElement;
+          const mid = el.offsetLeft - track.offsetLeft + el.offsetWidth / 2;
+          const dist = Math.abs(mid - center);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = i;
+          }
+        });
+        setActiveIndex((prev) => (prev === best ? prev : best));
+      });
+    };
+
+    track.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      track.removeEventListener('scroll', onScroll);
+    };
+  }, [trackRef]);
+
+  return { activeIndex, goTo };
+}
+
+const SwipeDots: React.FC<{
+  count: number;
+  activeIndex: number;
+  onSelect: (index: number) => void;
+  className?: string;
+  label?: string;
+}> = ({ count, activeIndex, onSelect, className = '', label = 'Élément' }) => (
+  <div className={`flex items-center justify-center gap-2 bg-transparent ${className}`}>
+    {Array.from({ length: count }, (_, i) => (
+      <button
+        key={i}
+        type="button"
+        aria-label={`${label} ${i + 1}`}
+        onClick={() => onSelect(i)}
+        className="h-2 rounded-full transition-all duration-300"
+        style={{
+          width: i === activeIndex ? 28 : 8,
+          background: i === activeIndex ? HOME_COLORS.orange : 'rgba(12,29,34,0.16)',
+        }}
+      />
+    ))}
+  </div>
+);
+
 // ─── Page principale ──────────────────────────────────────────────────────────
 
 export default function SeminairesPage({ initialSeminaires }: { initialSeminaires: Seminaire[] }) {
@@ -2333,6 +2416,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
   const [mounted, setMounted] = useState(false);
   const catalogueRef = useRef<HTMLElement>(null);
   const catalogueInnerRef = useRef<HTMLDivElement>(null);
+  const catalogueScrollRef = useRef<HTMLDivElement>(null);
   const thirdRowRef = useRef<HTMLDivElement>(null);
   const fifthRowRef = useRef<HTMLDivElement>(null);
   const [leftPictoTop, setLeftPictoTop] = useState<number | null>(null);
@@ -2343,6 +2427,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
   }, []);
 
   const filtered = seminaires;
+  const catalogueSwipe = useSwipeTrack(catalogueScrollRef, filtered.length);
 
   useEffect(() => {
     const section = catalogueRef.current;
@@ -2420,6 +2505,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
         .sem-grid > div { min-width:0; display:flex; }
         .sem-pack-card { flex:1; width:100%; min-height:0; display:flex; flex-direction:column; }
         .sem-pack-card-visual { position:relative; width:100%; flex-shrink:0; aspect-ratio:16/9; overflow:hidden; }
+        .sem-catalogue-swipe .sem-pack-card-visual { aspect-ratio: 4 / 5; }
         .sem-pack-card-body { flex:1; display:flex; flex-direction:column; min-height:0; padding:16px 20px 18px; }
         .sem-pack-card-sub { margin-bottom:8px !important; }
         .sem-pack-card-row { margin-top:auto; }
@@ -2442,6 +2528,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
           .sem-photo-grid-desktop { display:none !important; }
           .sem-detail-title { display:none; }
           .sem-pack-card-visual { aspect-ratio:16/9; }
+          .sem-catalogue-swipe .sem-pack-card-visual { aspect-ratio: 4 / 5; }
           .sem-pack-card-body { padding:16px 20px 18px; }
         }
         @media (max-width:600px)  {
@@ -2479,28 +2566,30 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
               }}
             />
             <div className={homeFramedHeroOverlayClass}>
+              <div className={homeFramedHeroOverlayInnerClass}>
               <h1 className={`max-w-3xl text-center font-normal ${homeFramedHeroH1Class}`}>
                 Nos exemples de
                 <br />
                 <span className="font-bold">séminaire d&apos;entreprise.</span>
               </h1>
-              <h2 className="mt-3 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:text-[17px]">
+              <h2 className={homeFramedHeroSubtitleClass}>
                 Des formules concrètes chez des producteurs — à la journée ou en résidentiel.
               </h2>
-              <div className="mt-7 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:gap-4">
+              <div className="mx-auto mt-7 flex w-max max-w-full flex-col items-stretch gap-3 sm:mt-9 sm:flex-row sm:items-center sm:gap-4">
                 <a
                   href="#exemples"
-                  className={homeHeroOutlineButtonClass}
+                  className={`${homeHeroOutlineButtonClass} w-full sm:w-auto`}
                   style={{ background: 'rgba(12, 29, 34, 0.12)' }}
                 >
                   Explorer les exemples
                 </a>
                 <Link
                   href="/notre-approche"
-                  className={`${homeHeroSolidButtonClass} border-2 border-white bg-white text-[#0c1d22] hover:border-[#ec6435] hover:bg-white/90`}
+                  className={`${homeHeroSolidButtonClass} w-full border-2 border-white bg-white text-[#0c1d22] hover:border-[#ec6435] hover:bg-white/90 sm:w-auto`}
                 >
                   Découvrir notre approche
                 </Link>
+              </div>
               </div>
             </div>
           </div>
@@ -2611,14 +2700,49 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
               </button>
             </div>
           ) : (
-            <div className="sem-grid">
-              {filtered.map((s, i) => (
+            <div className="hidden sm:block">
+              <div className="sem-grid">
+                {filtered.map((s, i) => (
+                  <div
+                    key={s.id}
+                    data-id={s.id}
+                    ref={
+                      i === 4 ? thirdRowRef : i === 8 ? fifthRowRef : undefined
+                    }
+                  >
+                    <SeminaireCard
+                      s={s}
+                      isActive={activeId === s.id}
+                      onSelect={() => {
+                        setActiveId(s.id);
+                        navigateToSlug(s);
+                      }}
+                      onDevis={() => openDevis(s)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {filtered.length > 0 && (
+          <>
+            <div
+              ref={catalogueScrollRef}
+              className="sem-catalogue-swipe flex min-w-0 cursor-grab snap-x snap-mandatory items-stretch gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pt-2 pb-10 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+              style={{
+                WebkitOverflowScrolling: 'touch',
+                scrollPaddingInline: '1.25rem',
+                paddingLeft: '1.25rem',
+                paddingRight: '1.25rem',
+              }}
+              aria-label="Exemples de séminaires"
+            >
+              {filtered.map((s) => (
                 <div
                   key={s.id}
-                  data-id={s.id}
-                  ref={
-                    i === 4 ? thirdRowRef : i === 8 ? fifthRowRef : undefined
-                  }
+                  className="flex w-[78vw] max-w-[340px] shrink-0 snap-center"
                 >
                   <SeminaireCard
                     s={s}
@@ -2632,8 +2756,15 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
                 </div>
               ))}
             </div>
-          )}
-        </div>
+            <SwipeDots
+              count={filtered.length}
+              activeIndex={catalogueSwipe.activeIndex}
+              onSelect={catalogueSwipe.goTo}
+              label="Exemple"
+              className="relative z-[1] -mt-6 bg-transparent sm:hidden"
+            />
+          </>
+        )}
       </section>
 
       {/* ── CTA ── */}
@@ -2667,17 +2798,17 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
               <p className="mx-auto mt-4 max-w-xl font-sans text-[14px] font-normal leading-[1.7] tracking-[-0.04em] text-white/80 sm:mt-5 sm:text-[15px]">
                 Groupe de 5 à 200+ — on construit avec vous un séminaire sur mesure, à la rencontre d&apos;un ou plusieurs producteurs.
               </p>
-              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
+              <div className="mx-auto mt-8 flex w-max max-w-full flex-col items-stretch gap-3 sm:mt-10 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
                 <button
                   type="button"
                   onClick={() => openModal()}
-                  className={`${homeHeroSolidButtonClass} border border-white bg-white text-[#0c1d22] hover:bg-[#ec6435] hover:text-white`}
+                  className={`${homeHeroSolidButtonClass} w-full border border-white bg-white text-[#0c1d22] hover:bg-[#ec6435] hover:text-white sm:w-auto`}
                 >
                   Parlons de votre projet
                 </button>
                 <Link
                   href="/partenaires"
-                  className={homeOnDarkOutlineButtonClass}
+                  className={`${homeOnDarkOutlineButtonClass} w-full sm:w-auto`}
                 >
                   Voir nos producteurs partenaires
                 </Link>

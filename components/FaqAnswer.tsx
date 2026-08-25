@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useModal } from '../context/ModalContext';
 import type { FaqBlock, FaqInlinePart, FaqItem } from '../lib/faq';
-import { homeParagraphClass } from './home/homeStyles';
+import { faqAnswerClass } from './home/homeStyles';
 
 function InlineParts({ parts }: { parts: FaqInlinePart[] }) {
   const { openModal } = useModal();
@@ -44,7 +44,7 @@ export function FaqAnswerBody({
   className?: string;
 }) {
   return (
-    <div className={`${homeParagraphClass} space-y-3 ${className}`}>
+    <div className={`${faqAnswerClass} space-y-2 sm:space-y-3 ${className}`}>
       {item.blocks.map((block: FaqBlock, i) =>
         block.type === 'p' ? (
           <p key={i}>

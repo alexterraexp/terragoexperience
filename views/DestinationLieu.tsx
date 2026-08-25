@@ -11,11 +11,13 @@ import {
   homeFramedHeroWideAspectClass,
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
+  homeFramedHeroOverlayInnerClass,
   bottomImageGradientClass,
   homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
   homeHeroOutlineButtonClass,
   homeParagraphClass,
+  faqAnswerClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
@@ -200,7 +202,7 @@ const FaqAccordion: React.FC<{ items: LieuData['faq'] }> = ({ items }) => {
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`${homeParagraphClass} pb-4 pr-8`}>{item.a}</p>
+                <p className={`${faqAnswerClass} pb-4 pr-8`}>{item.a}</p>
               </div>
             </div>
           </div>
@@ -414,6 +416,7 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
             />
 
             <div className={homeFramedHeroOverlayClass}>
+              <div className={homeFramedHeroOverlayInnerClass}>
               <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                 En fonction des lieux
               </p>
@@ -428,6 +431,7 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
               >
                 Réserver mon séminaire
               </button>
+              </div>
             </div>
           </div>
         </div>
@@ -505,7 +509,7 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                 <button
                   type="button"
                   onClick={() => openModal()}
-                  className="mt-8 hidden w-fit items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#0c1d22] sm:px-10 sm:py-2.5 sm:text-[13px] lg:inline-flex"
+                  className="mt-8 hidden w-fit items-center justify-center rounded-full border border-white bg-transparent px-6 py-2 text-[12px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#0c1d22] sm:px-10 sm:py-2.5 sm:text-[13px] lg:inline-flex"
                 >
                   Demander un devis
                 </button>
@@ -537,7 +541,7 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
               <button
                 type="button"
                 onClick={() => openModal()}
-                className="inline-flex w-fit items-center justify-center rounded-full border border-white bg-transparent px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#0c1d22] sm:px-10 sm:py-2.5 sm:text-[13px]"
+                className="inline-flex w-fit items-center justify-center rounded-full border border-white bg-transparent px-6 py-2 text-[12px] font-bold tracking-[-0.02em] text-white transition-colors hover:bg-white hover:text-[#0c1d22] sm:px-10 sm:py-2.5 sm:text-[13px]"
               >
                 Demander un devis
               </button>
