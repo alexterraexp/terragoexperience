@@ -84,13 +84,6 @@ const NAV_GROUPS: { title: string; links: FooterLink[] }[] = [
   },
 ];
 
-/** Coupe une liste en deux rangées équilibrées. */
-function splitInTwoRows(links: FooterLink[]): [FooterLink[], FooterLink[]] {
-  if (links.length <= 1) return [links, []];
-  const mid = Math.ceil(links.length / 2);
-  return [links.slice(0, mid), links.slice(mid)];
-}
-
 const SOCIALS = [
   {
     href: 'https://www.instagram.com/terrago.experiences/',
@@ -148,22 +141,22 @@ const hoverReset = (e: React.MouseEvent<HTMLElement>) => {
   e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
 };
 
-/** Mobile : une colonne (pas de wrap bizarre). Desktop : rangée horizontale avec ·. */
+/** Filet vertical entre deux liens (desktop). Collé après le libellé pour ne pas orpheliner au wrap. */
+const LinkSep: React.FC = () => (
+  <span
+    aria-hidden
+    className="footer-link-sep mx-2.5 h-3 w-px shrink-0 self-center"
+    style={{ background: 'rgba(255,255,255,0.38)' }}
+  />
+);
+
+/** Desktop : une rangée qui wrap, filets verticaux entre les liens. */
 const LinkRow: React.FC<{ links: FooterLink[] }> = ({ links }) => {
   if (links.length === 0) return null;
   return (
-    <ul className="footer-link-row m-0 flex list-none flex-col gap-2 p-0 sm:flex-row sm:flex-wrap sm:items-center sm:gap-y-2">
+    <ul className="footer-link-row m-0 hidden list-none p-0 sm:flex sm:flex-wrap sm:items-center sm:gap-y-2">
       {links.map((item, index) => (
-        <li key={item.to} className="inline-flex items-center">
-          {index > 0 && (
-            <span
-              aria-hidden
-              className="footer-link-sep mx-2.5 hidden sm:inline"
-              style={{ color: 'rgba(255,255,255,0.28)', fontSize: 14 }}
-            >
-              ·
-            </span>
-          )}
+        <li key={item.to} className="inline-flex items-center whitespace-nowrap">
           <Link
             href={item.to}
             style={linkStyle}
@@ -172,6 +165,7 @@ const LinkRow: React.FC<{ links: FooterLink[] }> = ({ links }) => {
           >
             {item.label}
           </Link>
+          {index < links.length - 1 ? <LinkSep /> : null}
         </li>
       ))}
     </ul>
@@ -255,13 +249,10 @@ const Footer: React.FC = () => {
           flex-direction: column;
           gap: 0.45rem;
         }
-        /* Mobile : une seule liste verticale (évite le découpage en 2 rangées + wrap). */
+        /* Mobile : une seule liste verticale. */
         @media (max-width: 639px) {
           .footer-nav-links {
             gap: 0.55rem;
-          }
-          .footer-nav-links .footer-link-row + .footer-link-row {
-            margin-top: 0;
           }
         }
         .footer-input::placeholder {
@@ -282,34 +273,28 @@ const Footer: React.FC = () => {
           <div className="footer-grid">
             {/* Listings horizontaux : Séminaires → Destinations → Expériences → TerraGo */}
             <nav className="footer-nav" aria-label="Pied de page">
-              {NAV_GROUPS.map((group) => {
-                const [row1, row2] = splitInTwoRows(group.links);
-                return (
-                  <div key={group.title}>
-                    <h6 style={sectionTitle}>{group.title}</h6>
-                    {/* Mobile : tous les liens en une colonne. sm+ : 2 rangées horizontales. */}
-                    <div className="footer-nav-links">
-                      <div className="flex flex-col gap-2 sm:hidden">
-                        {group.links.map((item) => (
-                          <Link
-                            key={item.to}
-                            href={item.to}
-                            style={linkStyle}
-                            onMouseEnter={hoverWhite}
-                            onMouseLeave={hoverReset}
-                          >
-                            {item.label}
-                          </Link>
-                        ))}
-                      </div>
-                      <div className="hidden sm:contents">
-                        <LinkRow links={row1} />
-                        <LinkRow links={row2} />
-                      </div>
+              {NAV_GROUPS.map((group) => (
+                <div key={group.title}>
+                  <h6 style={sectionTitle}>{group.title}</h6>
+                  {/* Mobile : une colonne. sm+ : rangée horizontale avec filets verticaux. */}
+                  <div className="footer-nav-links">
+                    <div className="flex flex-col gap-2 sm:hidden">
+                      {group.links.map((item) => (
+                        <Link
+                          key={item.to}
+                          href={item.to}
+                          style={linkStyle}
+                          onMouseEnter={hoverWhite}
+                          onMouseLeave={hoverReset}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
                     </div>
+                    <LinkRow links={group.links} />
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </nav>
 
             {/* Contact + rappel + garanties */}
