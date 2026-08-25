@@ -5,12 +5,22 @@ import {
   LIEU_PATH_SLUGS,
   LIEU_SLUGS,
   REGION_IMAGES,
+  REGION_SLUG_REDIRECTS,
+  regionDestinationPath,
 } from './lib/homeStorage';
 
 const VILLE_SLUGS = new Set<string>(VILLE_SEMINAIRE_SLUGS);
 
 const REGION_BY_PUBLIC = new Map<string, string>(
   REGION_IMAGES.map((r) => [`${r.prep}-${r.slug}`, r.slug]),
+);
+
+const REGION_PUBLIC_REDIRECTS = new Map<string, string>(
+  REGION_SLUG_REDIRECTS.map(({ from, to }) => {
+    const region = REGION_IMAGES.find((r) => r.slug === to);
+    const prep = region?.prep ?? 'en';
+    return [`${prep}-${from}`, regionDestinationPath(to)];
+  }),
 );
 
 const LIEU_BY_PUBLIC = new Map<string, string>(
@@ -32,6 +42,13 @@ export function middleware(request: NextRequest) {
   );
   if (destMatch) {
     const publicSlug = destMatch[1];
+
+    const redirected = REGION_PUBLIC_REDIRECTS.get(publicSlug);
+    if (redirected) {
+      const url = request.nextUrl.clone();
+      url.pathname = redirected;
+      return NextResponse.redirect(url, 308);
+    }
 
     const regionSlug = REGION_BY_PUBLIC.get(publicSlug);
     if (regionSlug) {

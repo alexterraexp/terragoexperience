@@ -287,7 +287,7 @@ export const VILLES_SEMINAIRE: VilleSeminaire[] = [
     cta: 'Vous préparez un séminaire à Marseille ? Donnez-nous vos dates, votre nombre de participants et vos envies : TerraGo vous propose des expériences adaptées auprès de producteurs et acteurs locaux.',
     metaTitle: 'Séminaire d’entreprise proche de Marseille | TerraGo',
     metaDescription:
-      'Séminaire à Marseille et en Provence : oliviers, vignerons, team building agricole et RSE. Organisez votre journée chez un producteur.',
+      'Séminaire à Marseille et en Provence-Alpes-Côte d’Azur : oliviers, vignerons, team building agricole et RSE. Organisez votre journée chez un producteur.',
   },
   {
     slug: 'bordeaux',

@@ -21,6 +21,7 @@ const config: Config = {
       fontFamily: {
         display: ['Cormorant Garamond', 'serif'],
         sans: ['Poppins', 'sans-serif'],
+        handwriting: ['Caveat', 'cursive'],
       },
       borderRadius: {
         DEFAULT: '0.375rem',

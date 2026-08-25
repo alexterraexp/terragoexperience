@@ -44,20 +44,28 @@ type NavItem = {
 // ─── Destinations : régions & lieux ───────────────────────────────────────────
 // Aligné sur « Votre séminaire, partout en France » (REGION_IMAGES).
 
-const DESTINATION_REGIONS: DropdownItem[] = REGION_IMAGES.map((region) => ({
-  label: region.name,
-  description: `Séminaire ${region.prep} ${region.name}`,
-  path: regionDestinationPath(region.slug),
-}));
+const DESTINATION_REGIONS: DropdownItem[] = (() => {
+  const items = REGION_IMAGES.map((region) => ({
+    label: region.name,
+    description: `Séminaire ${region.prep} ${region.name}`,
+    path: regionDestinationPath(region.slug),
+  }));
+  const bretagne = items.findIndex((item) => item.path.includes('bretagne'));
+  const bourgogne = items.findIndex((item) => item.path.includes('bourgogne-franche-comte'));
+  if (bretagne >= 0 && bourgogne >= 0) {
+    [items[bretagne], items[bourgogne]] = [items[bourgogne], items[bretagne]];
+  }
+  return items;
+})();
 
 const LIEU_MENU: { slug: LieuSlug; label: string; description: string }[] = [
   { slug: 'chez-le-producteur', label: 'Chez le producteur', description: 'Savoir-faire et terroir vivant' },
   { slug: 'au-vignoble', label: 'Au vignoble', description: 'Terroirs & dégustations' },
   { slug: 'a-la-ferme', label: 'À la ferme', description: 'Immersion chez l’exploitant' },
-  { slug: 'au-bord-de-leau', label: 'Au bord de l’eau', description: 'Lacs, rivières ou océan' },
+  { slug: 'domaine-d-exception', label: 'Dans un domaine d’exception', description: 'Lieux rares et inspirants' },
   { slug: 'en-montagne', label: 'En montagne', description: 'Altitude et grands espaces' },
   { slug: 'en-pleine-nature', label: 'En pleine nature', description: 'Forêts et paysages sauvages' },
-  { slug: 'domaine-d-exception', label: 'Dans un domaine d’exception', description: 'Lieux rares et inspirants' },
+  { slug: 'au-bord-de-leau', label: 'Au bord de l’eau', description: 'Lacs, rivières ou océan' },
   { slug: 'au-coeur-des-terroirs', label: 'Au cœur des terroirs', description: 'Immersion locale authentique' },
 ];
 
@@ -217,12 +225,7 @@ const AccordionSection: React.FC<{
                     </p>
                     <span className="h-px min-w-[12px] flex-1 bg-[#0c1d22]/12" aria-hidden />
                   </div>
-                  <div
-                    className={[
-                      'grid gap-0.5',
-                      (section.columns ?? 2) === 1 ? 'grid-cols-1' : 'grid-cols-2',
-                    ].join(' ')}
-                  >
+                  <div className="grid grid-cols-1 gap-0.5">
                     {section.items.map((item) =>
                       item.comingSoon ? (
                         <div
@@ -241,9 +244,9 @@ const AccordionSection: React.FC<{
                           key={item.label}
                           type="button"
                           onClick={() => onItemClick(item)}
-                          className="group inline-flex w-full cursor-pointer items-center gap-6 rounded-[10px] border-none bg-transparent px-3 py-2.5 text-left transition-colors duration-150 active:bg-white"
+                          className="group inline-flex w-full min-w-0 cursor-pointer items-center gap-3 rounded-[10px] border-none bg-transparent px-3 py-2.5 text-left transition-colors duration-150 active:bg-white"
                         >
-                          <span className="font-sans text-[13px] font-medium tracking-[-0.02em] text-[#0c1d22]/75 transition-colors duration-150 group-active:text-[#ec6435]">
+                          <span className="min-w-0 font-sans text-[13px] font-medium leading-snug tracking-[-0.02em] text-[#0c1d22]/75 transition-colors duration-150 group-active:text-[#ec6435]">
                             {item.label}
                           </span>
                           <span className="shrink-0 text-[#ec6435] opacity-0 transition-all duration-150 group-active:opacity-100" aria-hidden>
@@ -530,7 +533,7 @@ const Header: React.FC = () => {
 
   const panelLinkCls = [
     'font-sans text-[14px] font-medium text-left border-none bg-transparent cursor-pointer',
-    'px-0 py-1.5 transition-colors duration-150 whitespace-nowrap',
+    'px-0 py-1.5 transition-colors duration-150 leading-[1.25]',
     isDark
       ? 'text-white/80 hover:text-white'
       : 'text-[#0c1d22]/70 hover:text-[#ec6435]',
@@ -721,7 +724,7 @@ const Header: React.FC = () => {
             className={[
               'hidden lg:block overflow-hidden transition-[max-height,opacity] duration-300 ease-out',
               isPanelOpen
-                ? 'max-h-[480px] opacity-100'
+                ? 'max-h-[560px] opacity-100'
                 : 'max-h-0 opacity-0 pointer-events-none',
             ].join(' ')}
             aria-hidden={!isPanelOpen}
@@ -736,10 +739,10 @@ const Header: React.FC = () => {
                 <>
                   <div
                     className={[
-                      'grid gap-10 xl:gap-16 pt-5',
+                      'grid gap-6 xl:gap-8 pt-5',
                       openNav.mega.sections.length >= 3
                         ? 'grid-cols-1 lg:grid-cols-3'
-                        : 'grid-cols-2',
+                        : 'grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]',
                     ].join(' ')}
                   >
                     {openNav.mega.sections.map((section, sIdx) => {
@@ -749,15 +752,15 @@ const Header: React.FC = () => {
                         key={section.title}
                         className={[
                           !isLast
-                            ? (isDark ? 'pr-8 border-r border-white/10' : 'pr-8 border-r border-black/[0.06]')
-                            : 'pl-2',
-                          sIdx > 0 ? 'pl-2' : '',
+                            ? (isDark ? 'pr-5 border-r border-white/10' : 'pr-5 border-r border-black/[0.06]')
+                            : '',
+                          sIdx > 0 ? 'pl-1' : '',
                         ].join(' ')}
                       >
                         <p className={sectionTitleCls}>{section.title}</p>
                         <div
                           className={[
-                            'grid w-max max-w-full gap-x-10 gap-y-0.5',
+                            'grid w-max max-w-full min-w-0 gap-x-12 gap-y-0.5',
                             (section.columns ?? 2) === 1 ? 'grid-cols-1' : 'grid-cols-[auto_auto]',
                           ].join(' ')}
                         >
@@ -765,7 +768,7 @@ const Header: React.FC = () => {
                             item.comingSoon ? (
                               <div
                                 key={item.label}
-                                className="flex w-full items-center justify-between gap-4 py-2 cursor-default"
+                                className="flex w-full min-w-0 items-center justify-between gap-3 py-2 cursor-default"
                               >
                                 <span
                                   className={[
@@ -786,10 +789,10 @@ const Header: React.FC = () => {
                                 onClick={() => handleItemClick(item)}
                                 className={[
                                   panelLinkCls,
-                                  'flex w-full items-center justify-between gap-4 group',
+                                  'flex w-full min-w-0 items-center justify-between gap-3 group',
                                 ].join(' ')}
                               >
-                                <span>{item.label}</span>
+                                <span className="min-w-0">{item.label}</span>
                                 <span
                                   className={[
                                     'shrink-0 opacity-0 -translate-x-1 transition-all duration-150 group-hover:opacity-100 group-hover:translate-x-0',

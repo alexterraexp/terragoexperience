@@ -7,6 +7,7 @@ import {
   lieuDestinationPath,
   type LieuSlug,
 } from '../../../../lib/lieux';
+import { stripInlineLinks } from '../../../../lib/seminaireEnjeux';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -103,7 +104,7 @@ function JsonLd({ slug }: { slug: string }) {
       name: item.q,
       acceptedAnswer: {
         '@type': 'Answer',
-        text: item.a,
+        text: stripInlineLinks(item.a),
       },
     })),
   };

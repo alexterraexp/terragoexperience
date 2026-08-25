@@ -22,6 +22,7 @@ import {
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
 import PhotoCopyright from '../components/PhotoCopyright';
+import { LinkedText, linkedTextOnDarkClass } from '../components/LinkedText';
 import {
   getRelatedLieux,
   lieuDestinationPath,
@@ -202,7 +203,9 @@ const FaqAccordion: React.FC<{ items: LieuData['faq'] }> = ({ items }) => {
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`${faqAnswerClass} pb-4 pr-8`}>{item.a}</p>
+                <p className={`${faqAnswerClass} pb-4 pr-8`}>
+                  <LinkedText text={item.a} />
+                </p>
               </div>
             </div>
           </div>
@@ -450,7 +453,7 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
             <div className="space-y-3.5">
               {lieu.intro.map((p) => (
                 <p key={p.slice(0, 40)} className={homeParagraphClass}>
-                  {p}
+                  <LinkedText text={p} />
                 </p>
               ))}
             </div>
@@ -483,7 +486,7 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                         {pro.title}
                       </h3>
                       <p className="mt-2.5 max-w-md font-sans text-[13px] font-normal leading-[1.7] tracking-[-0.03em] text-white/90 sm:text-[14px]">
-                        {pro.text}
+                        <LinkedText text={pro.text} linkClassName={linkedTextOnDarkClass} />
                       </p>
                     </div>
                   ))}
@@ -574,7 +577,7 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
                 >
                   Pour résumer :
                 </span>{' '}
-                {lieu.programmeSummary}
+                <LinkedText text={lieu.programmeSummary} />
               </p>
             </ScrollAnimate>
 
@@ -657,7 +660,9 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
               >
                 À propos du producteur
               </p>
-              <p className={`mt-3 ${homeParagraphClass}`}>{aboutText}</p>
+              <p className={`mt-3 ${homeParagraphClass}`}>
+                <LinkedText text={aboutText} />
+              </p>
               {!lieu.producer.seminaireSlug && !lieu.producer.name ? (
                 <Link
                   href={EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}
@@ -699,7 +704,9 @@ const DestinationLieu: React.FC<Props> = ({ lieu }) => {
               <h2 className={`mt-3 ${sectionTitleClass}`}>
                 <LogementTitle title={lieu.logement.title} />.
               </h2>
-              <p className={`mt-5 ${homeParagraphClass}`}>{lieu.logement.description}</p>
+              <p className={`mt-5 ${homeParagraphClass}`}>
+                <LinkedText text={lieu.logement.description} />
+              </p>
               <ul className="mt-5 space-y-2">
                 {lieu.logement.highlights.map((h) => (
                   <li

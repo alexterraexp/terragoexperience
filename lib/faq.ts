@@ -253,7 +253,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
           {
             type: 'p',
             parts: [
-              'Le choix dépend surtout de votre objectif, du temps que vous souhaitez consacrer au séminaire et du budget disponible. Une journée permet de réunir les équipes sur un format efficace et plus accessible, tandis qu’un résidentiel sur 2 ou 3 jours laisse davantage de place au travail, aux activités et aux moments informels.  ',
+              'Le choix dépend surtout de votre objectif, du temps que vous souhaitez consacrer au séminaire et du budget disponible. Une journée permet de réunir les équipes sur un format efficace et plus accessible, tandis qu’un résidentiel de 2 à plusieurs jours laisse davantage de place au travail, aux activités et aux moments informels.  ',
             ],
           },
         ],

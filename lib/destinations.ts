@@ -1,7 +1,31 @@
-import { HOME_PRODUCERS, REGION_IMAGES, type RegionSlug } from './homeStorage';
+import {
+  HOME_PRODUCERS,
+  REGION_IMAGES,
+  lieuDestinationPath,
+  type RegionSlug,
+} from './homeStorage';
 
 const HOME =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
+
+/** Pages stratégiques pour le maillage interne (ancres dans le contenu). */
+const PATH = {
+  original: '/seminaires-entreprise/original',
+  auVert: '/seminaires-entreprise/au-vert',
+  producteur: lieuDestinationPath('chez-le-producteur'),
+  vignoble: lieuDestinationPath('au-vignoble'),
+  ferme: lieuDestinationPath('a-la-ferme'),
+  bordeaux: '/seminaire-entreprise-bordeaux',
+  paris: '/seminaire-entreprise-paris',
+  marseille: '/seminaire-entreprise-marseille',
+  aix: '/seminaire-entreprise-aix-en-provence',
+  toulouse: '/seminaire-entreprise-toulouse',
+  rennes: '/seminaire-entreprise-rennes',
+  nantes: '/seminaire-entreprise-nantes',
+  clermont: '/seminaire-entreprise-clermont-ferrand',
+  lyon: '/seminaire-entreprise-lyon',
+  annecy: '/seminaire-entreprise-annecy',
+} as const;
 
 export const DESTINATION_SLUGS = REGION_IMAGES.map((r) => r.slug);
 
@@ -100,9 +124,9 @@ export const DESTINATIONS: DestinationRegion[] = [
     heroImage: regionImage('nouvelle-aquitaine'),
     heroImageAlt: 'Ostréiculteurs en Nouvelle-Aquitaine – séminaire TerraGo',
     intro: [
-      'Entre océan, estuaires et campagnes viticoles, la Nouvelle-Aquitaine offre un terrain idéal pour un séminaire d’entreprise hors des sentiers battus.',
-      'À moins de 3 h de Paris en train, vos équipes basculent rapidement dans un autre rythme : grand air, producteurs engagés et moments de partage autour du vivant.',
-      'TerraGo y imagine des expériences ancrées dans le terroir — de l’huître à la vigne — pour reconnecter vos collaborateurs au sens et à la matière.',
+      `Entre océan, estuaires, vignobles et campagnes, la Nouvelle-Aquitaine offre un terrain idéal pour un [[séminaire d’entreprise original|${PATH.original}]], responsable et dépaysant. Une région vaste et contrastée, où les équipes peuvent sortir du cadre habituel et retrouver un autre rythme.`,
+      `Accessible notamment depuis [[Bordeaux|${PATH.bordeaux}]], la région permet de rejoindre facilement les vignobles, exploitations agricoles et territoires du littoral. TerraGo imagine des séminaires d’entreprise dans des lieux choisis pour leur environnement, leur histoire et leur capacité à accueillir les équipes.`,
+      `Les [[producteurs|${PATH.producteur}]] sont au cœur de l’expérience : immersion chez un ostréiculteur, découverte d’un domaine viticole, rencontre avec un producteur engagé ou atelier autour des produits du terroir. Le programme alterne naturellement temps de travail, immersion sur le terrain et moments de convivialité. Les équipes peuvent ainsi passer d’une plénière en extérieur à une dégustation, puis partager un repas entre les vignes ou au bord de l’océan.`,
     ],
     prosImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/20211025_124532-scaled.webp',
@@ -119,7 +143,7 @@ export const DESTINATIONS: DestinationRegion[] = [
     ],
     formatsLead: 'Nous organisons notamment :',
     formats: [
-      'Séminaire résidentiel sur 2 ou 3 jours',
+      'Séminaire résidentiel de 2 à plusieurs jours',
       'Journée d’étude au bord de l’eau',
       'Team building ostréicole ou viticole',
       'Convention RSE autour du vivant',
@@ -133,28 +157,28 @@ export const DESTINATIONS: DestinationRegion[] = [
       {
         label: 'Jour 1',
         items: [
-          'Arrivée et installation dans un lieu au bord de l’eau ou en campagne',
-          'Briefing & icebreaker outdoor',
-          'Atelier découverte du territoire avec un producteur local',
-          'Dîner produit local et soirée conviviale',
+          'Accueil de l’équipe dans un domaine, une ferme ou une cabane ostréicole',
+          'Découverte du territoire avec un producteur local',
+          'Plénière d’ouverture en extérieur au cœur du domaine',
+          'Dîner entre les vignes ou face à l’océan',
         ],
       },
       {
         label: 'Jour 2',
         items: [
-          'Matinée de travail (salle équipée ou outdoor)',
-          'Immersion producteur : ostréiculture, vigne ou maraîchage',
-          'Dégustation et temps d’échange',
-          'Restitution créative en équipe',
+          'VTT dans le vignoble ou randonnée sur le littoral',
+          'Atelier ostréicole, viticole ou gastronomique',
+          'Temps de réflexion sous une tente ou dans un chai',
+          'Soirée dégustation à l’aveugle et produits du terroir',
         ],
       },
       {
         label: 'Jour 3',
         items: [
-          'Session stratégique courte',
-          'Activité nature (balade, kayak ou vélo selon saison)',
-          'Déjeuner de clôture',
-          'Départs',
+          'Temps de travail',
+          'Rencontre avec un second producteur',
+          'Restitution dans une grange ou un jardin',
+          'Grande tablée de produits locaux',
         ],
       },
     ],
@@ -198,7 +222,7 @@ export const DESTINATIONS: DestinationRegion[] = [
     faq: [
       {
         q: 'La Nouvelle-Aquitaine est-elle adaptée à un séminaire d’entreprise ?',
-        a: 'Oui : accessibilité TGV, diversité des paysages et un réseau de producteurs engagés en font une destination idéale pour un séminaire au vert et porteur de sens.',
+        a: `Oui : accessibilité TGV, diversité des paysages et un réseau de producteurs engagés en font une destination idéale pour un [[séminaire au vert|${PATH.auVert}]] et porteur de sens.`,
       },
       {
         q: 'Peut-on organiser une journée seulement ?',
@@ -208,13 +232,13 @@ export const DESTINATIONS: DestinationRegion[] = [
     ],
   },
 {
-    ...regionBase('provence'),
-    heroImage: regionImage('provence'),
-    heroImageAlt: 'Champs de lavande en Provence – séminaire TerraGo',
+    ...regionBase('provence-alpes-cote-d-azur'),
+    heroImage: regionImage('provence-alpes-cote-d-azur'),
+    heroImageAlt: 'Champs de lavande en Provence-Alpes-Côte d’Azur – séminaire TerraGo',
     intro: [
-      'Lumière, garrigue et villages de caractère : la Provence est une destination iconique pour un séminaire d’entreprise inspirant.',
-      'Accessible et solaire, elle invite vos équipes à ralentir, partager et se reconnecter au vivant.',
-      'TerraGo y crée des programmes autour des producteurs — olives, vin, lavande, maraîchage — pour un impact humain fort.',
+      `Lumière, garrigue, oliviers, vignobles et villages de caractère : la Provence-Alpes-Côte d’Azur est une destination iconique pour un [[séminaire d’entreprise au vert|${PATH.auVert}]], [[original|${PATH.original}]] et responsable.`,
+      `Accessible notamment depuis [[Marseille|${PATH.marseille}]] ou [[Aix-en-Provence|${PATH.aix}]], elle offre une grande diversité de paysages et de lieux pour travailler autrement. TerraGo imagine des programmes dans la Provence intérieure, entre domaines, exploitations agricoles et villages où les équipes peuvent ralentir et se retrouver.`,
+      `Les producteurs provençaux donnent le ton : récolte des olives, réalisation d’un fuseau de lavande, rencontre avec un maraîcher ou [[découverte d’un domaine viticole|${PATH.vignoble}]]. Le programme alterne naturellement temps de travail, immersion sur le terrain et moments de convivialité. Une réunion peut prendre place dans un jardin, avant de poursuivre par une immersion chez le producteur et un repas sous les oliviers.`,
     ],
     prosImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/provence/423678569352.webp',
@@ -222,7 +246,7 @@ export const DESTINATIONS: DestinationRegion[] = [
     pros: [
       {
         title: 'Un cadre inspirant au cœur du Sud',
-        text: 'Paysages emblématiques, lumière généreuse et ambiance méditerranéenne : la Provence ouvre naturellement les esprits.',
+        text: 'Paysages emblématiques, lumière généreuse et ambiance méditerranéenne : la Provence-Alpes-Côte d’Azur ouvre naturellement les esprits.',
       },
       {
         title: 'Des immersions producteur mémorables',
@@ -240,33 +264,33 @@ export const DESTINATIONS: DestinationRegion[] = [
       'Chaque détail est pensé pour coller à votre culture d’entreprise et à vos objectifs.',
     programmeAccent: 'programme type',
     programmeSummary:
-      'La Provence combine accessibilité, beauté des lieux et richesse du terroir — idéal pour un événement d’entreprise réussi et mémorable.',
+      'La Provence-Alpes-Côte d’Azur combine accessibilité, beauté des lieux et richesse du terroir — idéal pour un événement d’entreprise réussi et mémorable.',
     programmeDays: [
       {
         label: 'Jour 1',
         items: [
-          'Arrivée et installation dans un mas ou domaine',
-          'Ouverture & icebreaker outdoor',
-          'Découverte du territoire avec un producteur',
-          'Dîner provençal',
+          'Accueil de l’équipe dans un domaine entre oliviers et lavandes',
+          'Balade dans les paysages provençaux avec un producteur',
+          'Réunion d’ouverture sous les oliviers',
+          'Repas provençal et soirée guinguette',
         ],
       },
       {
         label: 'Jour 2',
         items: [
-          'Matinée de travail',
-          'Atelier olives, vigne ou cuisine producteur',
-          'Dégustation et temps d’échange',
-          'Restitution créative',
+          'Randonnée ou VTT dans les Alpilles',
+          'Récolte des olives et atelier de fabrication d’huile',
+          'Temps de réflexion dans un jardin méditerranéen',
+          'BBQ convivial et quizz du sud',
         ],
       },
       {
         label: 'Jour 3',
         items: [
-          'Session stratégique',
-          'Balade garrigue ou activité douce',
-          'Déjeuner de clôture',
-          'Départs',
+          'Course d’orientation entre vignes et oliviers',
+          'Temps de travail en extérieur',
+          'Restitution sur une terrasse face aux paysages',
+          'Déjeuner sous les oliviers',
         ],
       },
     ],
@@ -306,7 +330,7 @@ export const DESTINATIONS: DestinationRegion[] = [
     },
     faq: [
       {
-        q: 'Pourquoi choisir la Provence pour un séminaire ?',
+        q: 'Pourquoi choisir la Provence-Alpes-Côte d’Azur pour un séminaire ?',
         a: 'Pour la lumière, l’accessibilité et la richesse des rencontres producteur — un cadre qui inspire autant qu’il fédère.',
       },
       {
@@ -321,9 +345,9 @@ export const DESTINATIONS: DestinationRegion[] = [
     heroImage: regionImage('ile-de-france'),
     heroImageAlt: 'Tour Eiffel en Île-de-France – séminaire TerraGo',
     intro: [
-      'À deux pas de Paris, l’Île-de-France révèle campagnes, forêts et producteurs pour un séminaire d’entreprise sans les contraintes du long trajet.',
-      'Vos équipes quittent le bureau en quelques minutes et basculent dans un autre rythme — nature, savoir-faire locaux et moments de partage.',
-      'TerraGo y imagine des expériences ancrées dans le vivant, idéales pour une journée d’étude, un team building ou un format résidentiel proche de la capitale.',
+      `L’Île-de-France ne se résume pas à Paris. Fermes, forêts, domaines et producteurs engagés offrent autour de la capitale de nombreuses possibilités pour organiser un séminaire d’entreprise au vert, responsable et dépaysant.`,
+      `À moins de 2h00 de [[Paris|${PATH.paris}]], vos équipes peuvent rejoindre des territoires ruraux où le rythme change rapidement. TerraGo imagine des séminaires dans des lieux à taille humaine, suffisamment proches pour rester accessibles tout en permettant une véritable coupure avec le quotidien professionnel.`,
+      `Les producteurs sont au cœur de l’expérience : [[découverte d’une ferme|${PATH.ferme}]], récolte de saison, atelier maraîcher, rencontre avec un agriculteur ou découverte d’un élevage. Le programme alterne naturellement temps de travail, immersion sur le terrain et moments de convivialité. Une plénière peut se tenir dans un jardin ou une grange, avant une activité collective et un repas préparé autour des productions locales.`,
     ],
     prosImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/iledefrance/8592616.webp',
@@ -354,28 +378,28 @@ export const DESTINATIONS: DestinationRegion[] = [
       {
         label: 'Jour 1',
         items: [
-          'Arrivée et installation près de Paris',
-          'Ouverture & icebreaker outdoor',
-          'Découverte du territoire avec un producteur',
-          'Dîner produit local',
+          'Accueil de l’équipe dans une ferme aux portes de Paris',
+          'Découverte des cultures et rencontre avec les producteurs',
+          'Plénière d’ouverture dans une grange',
+          'Dîner fermier et soirée conviviale',
         ],
       },
       {
         label: 'Jour 2',
         items: [
-          'Matinée de travail',
-          'Atelier producteur (maraîchage, élevage…)',
-          'Dégustation et temps d’échange',
-          'Restitution créative',
+          'Course d’orientation en forêt',
+          'Atelier maraîchage : initiation à la permaculture',
+          'Temps de réflexion dans le jardin de la ferme',
+          'Dîner local dans une serre, sous les étoiles',
         ],
       },
       {
         label: 'Jour 3',
         items: [
-          'Session stratégique',
-          'Balade nature ou activité douce',
-          'Déjeuner de clôture',
-          'Retours sur Paris',
+          'VTT à travers les paysages agricoles',
+          'Découverte d’un second producteur',
+          'Restitution sous les arbres',
+          'Déjeuner champêtre',
         ],
       },
     ],
@@ -430,9 +454,9 @@ export const DESTINATIONS: DestinationRegion[] = [
     heroImage: regionImage('normandie'),
     heroImageAlt: 'Paysages de Normandie – séminaire TerraGo',
     intro: [
-      'Falaises, vergers et campagnes verdoyantes : la Normandie offre un cadre ressourçant pour un séminaire d’entreprise proche de Paris.',
-      'En moins de 2 h, vos équipes changent d’air et retrouvent authenticité, grand air et produits du terroir.',
-      'TerraGo y crée des expériences autour des producteurs — cidre, fromage, élevage, maraîchage — pour un impact humain fort.',
+      'Entre bocage, vergers, littoral et élevages, la Normandie offre un cadre généreux pour un séminaire d’entreprise au vert, authentique et responsable.',
+      'La région permet de quitter facilement les environnements urbains pour rejoindre des domaines, fermes et villages où les équipes peuvent travailler autrement. TerraGo construit des programmes sur mesure, dans des lieux qui associent nature, savoir-faire et convivialité.',
+      'Les producteurs sont au centre du séjour : découverte d’un élevage, rencontre avec un producteur laitier, atelier autour des produits normands, visite d’une exploitation ou dégustation. Le programme alterne naturellement temps de travail, immersion sur le terrain et moments de convivialité. Une réflexion collective peut se tenir dans une grange ou un jardin avant une immersion dans l’exploitation et un repas partagé autour des produits du territoire.',
     ],
     prosImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/normandie/20409927.webp',
@@ -463,27 +487,27 @@ export const DESTINATIONS: DestinationRegion[] = [
       {
         label: 'Jour 1',
         items: [
-          'Arrivée et installation',
-          'Ouverture & icebreaker outdoor',
-          'Découverte du territoire avec un producteur',
-          'Dîner local',
+          'Accueil de l’équipe dans une ferme normande ou un domaine cidricole',
+          'Découverte du verger et rencontre avec le producteur',
+          'Plénière d’ouverture dans une grange',
+          'Dîner normand autour d’une grande tablée',
         ],
       },
       {
         label: 'Jour 2',
         items: [
-          'Matinée de travail',
-          'Atelier ferme, cidre ou fromage',
-          'Dégustation et échanges',
-          'Restitution collective',
+          'Randonnée sur le littoral',
+          'Atelier ostréicole ou fabrication de fromage',
+          'Temps de réflexion dans un jardin ou face à la mer',
+          'Soirée cidre, produits locaux et quiz normand',
         ],
       },
       {
         label: 'Jour 3',
         items: [
-          'Session stratégique',
-          'Balade nature ou littoral',
-          'Déjeuner de clôture',
+          'Temps de travail dans les espaces du domaine',
+          'Activité sportive sur demande',
+          'Déjeuner de terroir',
           'Départs',
         ],
       },
@@ -538,9 +562,9 @@ export const DESTINATIONS: DestinationRegion[] = [
     heroImage: regionImage('occitanie'),
     heroImageAlt: 'Paysages d’Occitanie – séminaire TerraGo',
     intro: [
-      'Entre Méditerranée, Causses et Pyrénées, l’Occitanie déploie une diversité de décors pour un séminaire d’entreprise sur mesure.',
-      'Soleil, terroirs et producteurs passionnés : vos équipes y trouvent inspiration, convivialité et ancrage.',
-      'TerraGo y imagine des expériences qui mêlent travail, découverte et moments de partage autour du vivant.',
+      'Des Pyrénées à la Méditerranée, entre vignobles, garrigues, villages et grands espaces, l’Occitanie offre un terrain particulièrement riche pour un séminaire d’entreprise original, responsable et dépaysant.',
+      `Accessible notamment depuis [[Toulouse|${PATH.toulouse}]], la région permet de rejoindre rapidement des territoires ruraux et viticoles où les équipes peuvent changer de rythme. TerraGo imagine des séminaires qui associent travail collectif, découverte du territoire et immersion dans des lieux singuliers.`,
+      'Les producteurs donnent une dimension concrète au séjour : découverte d’un domaine viticole, rencontre avec un maraîcher, immersion dans une exploitation ou dégustation à l’aveugle. Le programme alterne naturellement temps de travail, immersion sur le terrain et moments de convivialité. Les temps de réflexion peuvent prendre place dans un domaine ou un jardin, avant un atelier collectif et un dîner autour des produits locaux.',
     ],
     prosImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/occitanie/aligot-geant-aubrac-aligot-les-traces-1.jpg',
@@ -571,27 +595,27 @@ export const DESTINATIONS: DestinationRegion[] = [
       {
         label: 'Jour 1',
         items: [
-          'Arrivée et installation',
-          'Ouverture du séminaire',
-          'Découverte du territoire avec un hôte local',
-          'Dîner produit local',
+          'Accueil de l’équipe dans un domaine viticole ou une ferme',
+          'Balade dans les vignes avec le producteur',
+          'Plénière d’ouverture sous les arbres',
+          'Dîner au domaine et soirée guinguette',
         ],
       },
       {
         label: 'Jour 2',
         items: [
-          'Matinée de travail',
-          'Atelier producteur (olives, vigne, pain…)',
-          'Dégustation et échanges',
-          'Restitution collective',
+          'Trail ou randonnée dans les paysages viticoles',
+          'Atelier de fabrication ou transformation d’un produit local',
+          'Temps de réflexion dans le chai ou le jardin',
+          'Dégustation à l’aveugle',
         ],
       },
       {
         label: 'Jour 3',
         items: [
-          'Session stratégique',
-          'Activité nature ou culturelle douce',
-          'Déjeuner de clôture',
+          'Rencontre avec un second producteur ou artisan',
+          'Restitution sur une terrasse',
+          'Grand déjeuner occitan',
           'Départs',
         ],
       },
@@ -646,9 +670,9 @@ export const DESTINATIONS: DestinationRegion[] = [
     heroImage: regionImage('bretagne'),
     heroImageAlt: 'Pêche en Bretagne – séminaire TerraGo',
     intro: [
-      'Falaises, ports et campagnes verdoyantes : la Bretagne offre un décor puissant pour un séminaire d’entreprise qui marque les esprits.',
-      'Facilement accessible, elle invite vos équipes à ralentir, respirer et se reconnecter — entre océan, producteurs et savoir-faire locaux.',
-      'TerraGo y crée des programmes où le travail rencontre le vivant : ateliers, rencontres et moments de partage face à l’horizon.',
+      'Entre côte sauvage, ports, campagnes et terres agricoles, la Bretagne offre un cadre singulier pour un séminaire d’entreprise original, responsable et authentique.',
+      `Depuis [[Rennes|${PATH.rennes}]], les équipes peuvent rejoindre facilement les campagnes et le littoral bretons. TerraGo imagine des programmes dans des lieux où l’environnement, les savoir-faire et les rencontres occupent une place centrale.`,
+      'Les producteurs bretons sont au cœur des expériences : atelier ostréicole autour de l’huître, découverte d’une ferme, rencontre avec un producteur ou visite d’un atelier. Le programme alterne naturellement temps de travail, immersion sur le terrain et moments de convivialité. Une réunion face à la mer peut laisser place à une immersion ostréicole, une balade sur le littoral et un dîner dans une ancienne grange.',
     ],
     prosImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/197677686-34666032.webp',
@@ -679,27 +703,27 @@ export const DESTINATIONS: DestinationRegion[] = [
       {
         label: 'Jour 1',
         items: [
-          'Arrivée et installation en bord de mer ou en campagne',
-          'Ouverture du séminaire et icebreaker outdoor',
-          'Découverte du territoire avec un hôte local',
-          'Dîner produit local',
+          'Accueil de l’équipe dans une ferme ou une exploitation ostréicole',
+          'Découverte du littoral avec un producteur',
+          'Plénière d’ouverture face à la mer',
+          'Dîner de produits locaux dans une longère',
         ],
       },
       {
         label: 'Jour 2',
         items: [
-          'Matinée de travail en salle équipée',
-          'Atelier producteur (maraîchage, cidre, huîtres…)',
-          'Temps de dégustation et d’échange',
-          'Restitution collective',
+          'Kayak, randonnée côtière ou course d’orientation',
+          'Initiation ostréicole autour des savoirs sur l’huître',
+          'Temps de réflexion dans une cour de ferme ou sous une tente',
+          'Soirée fruits de mer et dégustation',
         ],
       },
       {
         label: 'Jour 3',
         items: [
-          'Session stratégique',
-          'Balade nature ou activité maritime selon saison',
-          'Déjeuner de clôture',
+          'Vélo le long du littoral',
+          'Rencontre avec un producteur ou artisan breton',
+          'Déjeuner façon pique-nique convivial',
           'Départs',
         ],
       },
@@ -754,9 +778,9 @@ export const DESTINATIONS: DestinationRegion[] = [
     heroImage: regionImage('pays-de-la-loire'),
     heroImageAlt: 'Château de Chenonceau en Pays de la Loire – séminaire TerraGo',
     intro: [
-      'Châteaux, vignobles et jardins le long du fleuve : les Pays de la Loire offrent un cadre d’exception pour un séminaire d’entreprise inspirant.',
-      'À moins de 2 h de Paris, vos équipes basculent dans un autre rythme — patrimoine vivant, producteurs engagés et paysages qui ouvrent les esprits.',
-      'TerraGo y imagine des expériences ancrées dans le terroir — vignes, vergers, maraîchage — pour reconnecter vos collaborateurs au sens et au partage.',
+      'Entre Loire, vignobles, bocages et littoral atlantique, les Pays de la Loire offrent un cadre idéal pour un séminaire d’entreprise au vert, responsable et dépaysant.',
+      `Accessible notamment depuis [[Nantes|${PATH.nantes}]], la région permet de rejoindre facilement les vignobles, fermes et domaines qui entourent la métropole. TerraGo imagine des programmes où les temps de travail trouvent naturellement leur place dans des environnements plus ouverts et plus vivants.`,
+      'Les producteurs sont au cœur du séjour : découverte d’un domaine, rencontre avec un vigneron, immersion dans une ferme ou atelier autour des productions locales. Le programme alterne naturellement temps de travail, immersion sur le terrain et moments de convivialité. Une plénière peut se tenir dans les vignes ou sous une tente en extérieur, avant une activité collective et un repas dans une grange.',
     ],
     prosImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/11680885-17791202.webp',
@@ -773,7 +797,7 @@ export const DESTINATIONS: DestinationRegion[] = [
     ],
     formatsLead: 'Nous organisons notamment :',
     formats: [
-      'Séminaire résidentiel sur 2 ou 3 jours',
+      'Séminaire résidentiel de 2 à plusieurs jours',
       'Journée d’étude au domaine',
       'Team building viticole ou jardins',
       'Convention RSE autour du vivant',
@@ -787,27 +811,27 @@ export const DESTINATIONS: DestinationRegion[] = [
       {
         label: 'Jour 1',
         items: [
-          'Arrivée et installation dans un domaine ou demeure de caractère',
-          'Ouverture & icebreaker outdoor',
-          'Découverte du territoire avec un producteur',
-          'Dîner ligérien',
+          'Accueil de l’équipe dans un domaine viticole ou une ferme ligérienne',
+          'Balade dans les vignes ou au bord de la Loire',
+          'Plénière d’ouverture sous les arbres',
+          'Dîner entre les vignes',
         ],
       },
       {
         label: 'Jour 2',
         items: [
-          'Matinée de travail',
-          'Atelier vigne, verger ou cuisine producteur',
-          'Dégustation et temps d’échange',
-          'Restitution créative',
+          'Vélo le long de la Loire',
+          'Immersion viticole ou maraîchère',
+          'Temps de réflexion dans un jardin ou une grange',
+          'Dégustation à l’aveugle et soirée guinguette',
         ],
       },
       {
         label: 'Jour 3',
         items: [
-          'Session stratégique',
-          'Balade le long de la Loire ou dans les jardins',
-          'Déjeuner de clôture',
+          'Défi d’orientation autour d’une ferme',
+          'Rencontre avec l’éleveur',
+          'Déjeuner champêtre',
           'Départs',
         ],
       },
@@ -859,13 +883,13 @@ export const DESTINATIONS: DestinationRegion[] = [
     ],
   },
 {
-    ...regionBase('auvergne'),
-    heroImage: regionImage('auvergne'),
-    heroImageAlt: 'Paysages d’Auvergne – séminaire TerraGo',
+    ...regionBase('auvergne-rhone-alpes'),
+    heroImage: regionImage('auvergne-rhone-alpes'),
+    heroImageAlt: 'Paysages d’Auvergne-Rhône-Alpes – séminaire TerraGo',
     intro: [
-      'Volcans, lacs et plateaux : l’Auvergne offre un écrin naturel puissant pour un séminaire d’entreprise au vert.',
-      'Loin des distractions urbaines, vos équipes retrouvent concentration, souffle et authenticité au contact du vivant.',
-      'TerraGo y conçoit des programmes ancrés dans le territoire — producteurs, nature et moments de partage — pour un impact durable.',
+      `Montagnes, alpages, fermes et savoir-faire locaux : l’Auvergne-Rhône-Alpes offre un cadre idéal pour organiser un [[séminaire d’entreprise au vert|${PATH.auVert}]], responsable et dépaysant.`,
+      `Depuis [[Lyon|${PATH.lyon}]], [[Annecy|${PATH.annecy}]], [[Clermont-Ferrand|${PATH.clermont}]], ou d’autres villes de la région, vos équipes peuvent rejoindre des territoires où le travail prend une autre dimension. TerraGo construit des séminaires entre réunions au grand air, découverte de producteurs engagés et moments partagés avec les collaborateurs.`,
+      'La rencontre avec le terroir est au cœur de l’expérience : fabrication de son propre fromage, rencontre avec un éleveur, balade en alpage avec le berger et son troupeau, découverte d’une ferme ou atelier autour des produits locaux. Le programme peut aussi intégrer une randonnée, une course d’orientation ou une soirée conviviale autour d’un repas du terroir.',
     ],
     prosImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/auvergne/472819.avif',
@@ -873,7 +897,7 @@ export const DESTINATIONS: DestinationRegion[] = [
     pros: [
       {
         title: 'Un cadre inspirant au cœur des volcans',
-        text: 'Grands espaces, silence et nature préservée : l’Auvergne crée les conditions idéales pour réfléchir et se reconnecter.',
+        text: 'Grands espaces, silence et nature préservée : l’Auvergne-Rhône-Alpes crée les conditions idéales pour réfléchir et se reconnecter.',
       },
       {
         title: 'Des expériences concrètes et fédératrices',
@@ -891,45 +915,44 @@ export const DESTINATIONS: DestinationRegion[] = [
       'Nous ajustons chaque détail à vos objectifs : rythme, intensité outdoor et niveau d’immersion.',
     programmeAccent: 'programme type',
     programmeSummary:
-      'L’Auvergne est faite pour les séminaires qui veulent du vrai : nature, producteurs et temps de qualité loin du bruit ambiant.',
+      'L’Auvergne-Rhône-Alpes est faite pour les séminaires qui veulent du vrai : nature, producteurs et temps de qualité loin du bruit ambiant.',
     programmeDays: [
       {
         label: 'Jour 1',
         items: [
-          'Arrivée et installation en pleine nature',
-          'Ouverture & icebreaker outdoor',
-          'Découverte du territoire avec un producteur',
-          'Dîner local et soirée au coin du feu',
+          'Accueil de l’équipe dans une ferme d’altitude',
+          'Balade en alpage avec le berger et son troupeau',
+          'Plénière d’ouverture face aux volcans',
+          'Dîner local au logement',
         ],
       },
       {
         label: 'Jour 2',
         items: [
-          'Matinée de travail',
-          'Atelier immersion (ferme, fromage, forêt…)',
-          'Temps de dégustation et d’échange',
-          'Restitution en équipe',
+          'Trail ou randonnée volcanique',
+          'Fabrication de son propre fromage',
+          'Temps de réflexion dans une bergerie',
+          'Soirée raclette et dégustation à l’aveugle',
         ],
       },
       {
         label: 'Jour 3',
         items: [
-          'Session stratégique courte',
-          'Randonnée douce ou activité nature',
-          'Déjeuner de clôture',
+          'VTT ou yoga, au pied des montagnes',
+          'Rencontre avec un producteur local',
+          'Déjeuner de spécialités auvergnates',
           'Départs',
         ],
       },
     ],
     producer: {
-      name: 'Fromagers, éleveurs de chèvres et apiculteurs',
-      role: 'Exemples de rencontres possibles',
+      name: 'Hugues & Marc',
+      role: 'Potager en permaculture · Annecy',
       description:
-        'Sur les terres volcaniques, nous sélectionnons selon votre brief : producteurs de fromages AOP (Saint-Nectaire, Cantal…), chèvreries fermières ou ruchers de montagne. Une immersion authentique, à composer sur mesure.',
-      image:
-        'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/EXPERIENCES%20IMG/6427859-fromage.webp',
-      imageAlt: 'Cave d’affinage de fromages en Auvergne – TerraGo',
-      generic: true,
+        'Chez Hugues et Marc, au potager en permaculture près d’Annecy, vos équipes découvrent le jardin, les gestes du vivant et les savoir-faire locaux. Une immersion authentique et fédératrice, au cœur de l’Auvergne-Rhône-Alpes.',
+      image: HOME_PRODUCERS[3].image,
+      imageAlt: 'Hugues et Marc, potager du château près d’Annecy – TerraGo',
+      seminaireSlug: 'avec-hugues-marc',
     },
     logement: {
       title: 'Hébergements nature pour séminaires',
@@ -957,7 +980,7 @@ export const DESTINATIONS: DestinationRegion[] = [
     },
     faq: [
       {
-        q: 'L’Auvergne convient-elle aux séminaires RSE ?',
+        q: 'L’Auvergne-Rhône-Alpes convient-elle aux séminaires RSE ?',
         a: 'Oui : nature préservée, rencontres producteur et formats outdoor en font une destination très pertinente pour un séminaire engagé.',
       },
       {
@@ -968,13 +991,13 @@ export const DESTINATIONS: DestinationRegion[] = [
     ],
   },
 {
-    ...regionBase('bourgogne'),
-    heroImage: regionImage('bourgogne'),
-    heroImageAlt: 'Vignobles de Bourgogne – séminaire TerraGo',
+    ...regionBase('bourgogne-franche-comte'),
+    heroImage: regionImage('bourgogne-franche-comte'),
+    heroImageAlt: 'Vignobles de Bourgogne-Franche-Comté – séminaire TerraGo',
     intro: [
-      'Vignobles, villages de pierre et campagnes généreuses : la Bourgogne incarne l’art de recevoir pour un séminaire d’entreprise d’exception.',
-      'À proximité de Paris et Lyon, elle offre un cadre raffiné sans perdre l’authenticité du terroir.',
-      'TerraGo y imagine des programmes autour du vin, des producteurs et du partage — pour un événement élégant et porteur de sens.',
+      'Vignobles, villages de caractère, élevages et gastronomie : la Bourgogne-Franche-Comté est une destination de choix pour un séminaire d’entreprise original, responsable et gourmand.',
+      'Ses domaines et territoires viticoles offrent de nombreux cadres pour travailler autrement, dans des environnements où le patrimoine et les savoir-faire font partie intégrante du séjour. TerraGo imagine des programmes sur mesure, entre immersion et temps de réflexion.',
+      'Les producteurs sont au premier plan : découverte d’un domaine viticole, rencontre avec un vigneron, dégustation à l’aveugle, visite des ateliers de production ou découverte des savoir-faire locaux. Le programme alterne naturellement temps de travail, immersion sur le terrain et moments de convivialité. Une plénière peut prendre place dans une grange ou au milieu des vignes, avant une activité collective et un dîner dans le domaine.',
     ],
     prosImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bourgogne/5289663206521.webp',
@@ -982,7 +1005,7 @@ export const DESTINATIONS: DestinationRegion[] = [
     pros: [
       {
         title: 'Un terroir d’exception',
-        text: 'Vignes, caves et savoir-faire : la Bourgogne offre un terrain unique pour des expériences mémorables et structurantes.',
+        text: 'Vignes, caves et savoir-faire : la Bourgogne-Franche-Comté offre un terrain unique pour des expériences mémorables et structurantes.',
       },
       {
         title: 'Convivialité et excellence',
@@ -1000,32 +1023,32 @@ export const DESTINATIONS: DestinationRegion[] = [
       'Nous cocréons un programme sur mesure, du rythme de travail aux expériences producteur.',
     programmeAccent: 'programme type',
     programmeSummary:
-      'La Bourgogne réunit accessibilité, prestige du terroir et chaleur humaine — parfait pour un séminaire qui marque durablement.',
+      'La Bourgogne-Franche-Comté réunit accessibilité, prestige du terroir et chaleur humaine — parfait pour un séminaire qui marque durablement.',
     programmeDays: [
       {
         label: 'Jour 1',
         items: [
-          'Arrivée et installation dans un domaine',
-          'Ouverture du séminaire',
-          'Visite et introduction au terroir',
-          'Dîner vigneron',
+          'Accueil de l’équipe dans un domaine viticole',
+          'Balade dans les vignes avec le vigneron',
+          'Plénière d’ouverture dans le chai',
+          'Dîner au cœur du vignoble',
         ],
       },
       {
         label: 'Jour 2',
         items: [
-          'Matinée de travail',
-          'Atelier vigne, assemblage ou cuisine du terroir',
-          'Dégustation commentée',
-          'Restitution en équipe',
+          'Balade à vélo entre vignes et villages',
+          'Atelier d’assemblage et création de sa propre cuvée',
+          'Temps de réflexion dans les jardins du domaine',
+          'Dégustation à l’aveugle et soirée autour des produits locaux',
         ],
       },
       {
         label: 'Jour 3',
         items: [
-          'Session stratégique',
-          'Balade dans les vignes ou village',
-          'Déjeuner de clôture',
+          'Temps de travail en équipe',
+          'Déjeuner bourguignon',
+          'Restitution sur la terrasse du domaine',
           'Départs',
         ],
       },
@@ -1065,7 +1088,7 @@ export const DESTINATIONS: DestinationRegion[] = [
     },
     faq: [
       {
-        q: 'La Bourgogne est-elle adaptée aux séminaires d’entreprise ?',
+        q: 'La Bourgogne-Franche-Comté est-elle adaptée aux séminaires d’entreprise ?',
         a: 'Oui : proximité des grandes villes, lieux d’exception et expériences terroir en font une destination très demandée.',
       },
       {
@@ -1080,9 +1103,9 @@ export const DESTINATIONS: DestinationRegion[] = [
     heroImage: regionImage('corse'),
     heroImageAlt: 'Paysages de Corse – séminaire TerraGo',
     intro: [
-      'Montagne, mer et villages perchés : la Corse offre un cadre spectaculaire pour un séminaire d’entreprise hors du commun.',
-      'Île de caractère, elle invite vos équipes à une immersion forte — nature, producteurs et hospitalité corse.',
-      'TerraGo y imagine des programmes sur mesure, entre travail, exploration et rencontres authentiques.',
+      'Montagne, mer et villages perchés : la Corse offre un cadre spectaculaire pour un séminaire d’entreprise hors du commun, responsable et profondément dépaysant.',
+      'L’île invite les équipes à changer de rythme entre littoral, maquis, montagnes et villages. TerraGo imagine des programmes sur mesure qui associent travail, découverte du territoire et immersion dans la culture insulaire.',
+      'Les producteurs corses donnent une vraie profondeur au séjour : rencontre avec un berger, découverte d’une exploitation, atelier autour des produits insulaires, visite d’un domaine ou dégustation de spécialités locales. Le programme alterne naturellement temps de travail, immersion sur le terrain et moments de convivialité. Une réunion peut se tenir en extérieur avant une randonnée dans le maquis, une rencontre avec un producteur et un dîner dans un village.',
     ],
     prosImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/corse/74105.webp',
@@ -1113,36 +1136,28 @@ export const DESTINATIONS: DestinationRegion[] = [
       {
         label: 'Jour 1',
         items: [
-          'Arrivée et installation',
-          'Ouverture du séminaire',
-          'Découverte du territoire',
-          'Dîner corse',
+          'Accueil de l’équipe dans une bergerie ou un domaine corse',
+          'Balade entre maquis, oliviers et châtaigniers',
+          'Plénière d’ouverture sous les oliviers',
+          'Dîner corse et soirée chants traditionnels',
         ],
       },
       {
         label: 'Jour 2',
         items: [
-          'Matinée de travail',
-          'Atelier producteur ou artisan local',
-          'Temps de dégustation et d’échange',
-          'Restitution en équipe',
+          'Randonnée ou canyoning selon le territoire',
+          'Fabrication de fromage ou découverte d’un savoir-faire insulaire',
+          'Temps de réflexion dans une bergerie ou en pleine nature',
+          'Grande tablée corse autour des producteurs',
         ],
       },
       {
         label: 'Jour 3',
         items: [
-          'Session stratégique',
-          'Activité nature (selon saison et forme du groupe)',
-          'Déjeuner de clôture',
+          'Temps de travail ou activité sportive',
+          'Déjeuner façon pique-nique en bord de mer',
+          'Bilan du séminaire',
           'Départs',
-        ],
-      },
-      {
-        label: 'Jour 4',
-        items: [
-          'Option extension : exploration douce du territoire',
-          'Temps libre ou activité surprise',
-          'Clôture et départs',
         ],
       },
     ],

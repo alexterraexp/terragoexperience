@@ -220,7 +220,7 @@ const Destinations: React.FC = () => {
               En fonction des <span className="font-bold">régions</span>
             </CategoryHeading>
             <p className={`mb-8 max-w-none sm:mb-6 ${homeParagraphClass}`}>
-              Du Sud-Ouest à la Provence, de la Bretagne aux Alpes… découvrez les territoires où nous
+              Du Sud-Ouest à la Provence-Alpes-Côte d&apos;Azur, de la Bretagne aux Alpes… découvrez les territoires où nous
               imaginons des expériences uniques pour vos équipes.
             </p>
           </ScrollAnimate>
@@ -255,10 +255,12 @@ const Destinations: React.FC = () => {
                 {...protectedImageProps}
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
-              <p className="pointer-events-none absolute bottom-8 left-0 right-0 z-[1] px-5 font-sans text-[28px] leading-[1.12] tracking-[-0.05em] text-white">
+              <p className="pointer-events-none absolute bottom-8 left-0 right-0 z-[1] px-5 font-sans text-[24px] leading-[1.12] tracking-[-0.05em] text-white">
                 <span className="font-normal">Séminaire {region.prep}</span>
                 <br />
-                <span className="font-bold">{region.name}</span>
+                <span className={`font-bold ${region.name.length > 20 ? 'text-[0.86em] leading-[1.15]' : ''}`}>
+                  {region.name}
+                </span>
               </p>
             </Link>
           ))}
@@ -292,10 +294,12 @@ const Destinations: React.FC = () => {
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
                 <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/35" />
-                <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
+                <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[20px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[22px]">
                   <span className="font-normal">Séminaire {region.prep}</span>
                   <br />
-                  <span className="font-bold">{region.name}</span>
+                  <span className={`font-bold ${region.name.length > 20 ? 'text-[0.88em] leading-[1.15]' : ''}`}>
+                    {region.name}
+                  </span>
                 </p>
               </Link>
             </ScrollAnimate>

@@ -36,6 +36,10 @@ export const homeFramedHeroOverlayInnerClass =
 export const homeFramedHeroSubtitleClass =
   'mt-3 max-w-xl text-center font-sans text-[15px] font-normal leading-relaxed tracking-[-0.04em] text-white/90 sm:mt-6 sm:max-w-2xl sm:text-[15px] lg:max-w-3xl';
 
+/** Annotation manuscrite collée en oblique sous le bout du H1 (pages régions). */
+export const homeFramedHeroHandwrittenClass =
+  'pointer-events-none absolute right-[-1.25em] top-[calc(100%-0.12rem)] origin-[92%_center] select-none whitespace-nowrap font-handwriting text-[clamp(1.02rem,3.1vw,1.55rem)] font-medium not-italic leading-none tracking-[0.02em] text-white transition-none [text-shadow:0_2px_12px_rgba(0,0,0,0.45)] -rotate-[3deg] sm:right-[-1.7em] sm:top-[calc(100%-0.28rem)] sm:-rotate-[4deg]';
+
 export const homeH1Class =
   'font-sans text-[40px] leading-[1.05] tracking-[-0.075em] text-[#0c1d22]';
 

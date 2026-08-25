@@ -12,7 +12,7 @@ import {
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
   homeFramedHeroOverlayInnerClass,
-  homeFramedHeroSubtitleClass,
+  homeFramedHeroHandwrittenClass,
   bottomImageGradientClass,
   homeCtaOutlineClass,
   homeCtaOutlineGhostClass,
@@ -23,6 +23,7 @@ import {
 } from '../components/home/homeStyles';
 import FramedHeroImage from '../components/FramedHeroImage';
 import PhotoCopyright from '../components/PhotoCopyright';
+import { LinkedText, linkedTextOnDarkClass } from '../components/LinkedText';
 import { regionDestinationPath } from '../lib/homeStorage';
 import {
   getRelatedDestinations,
@@ -203,7 +204,9 @@ const FaqAccordion: React.FC<{ items: DestinationData['faq'] }> = ({ items }) =>
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr', opacity: isOpen ? 1 : 0 }}
             >
               <div className="overflow-hidden">
-                <p className={`${faqAnswerClass} pb-4 pr-8`}>{item.a}</p>
+                <p className={`${faqAnswerClass} pb-4 pr-8`}>
+                  <LinkedText text={item.a} />
+                </p>
               </div>
             </div>
           </div>
@@ -408,19 +411,19 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
               <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                 {destination.name}
               </p>
-              <h1 className={`mt-5 max-w-4xl pt-1 text-center font-normal sm:mt-6 ${homeFramedHeroH1Class}`}>
+              <h1 className={`mt-5 max-w-4xl pb-6 pt-1 text-center font-normal sm:mt-6 sm:pb-8 ${homeFramedHeroH1Class}`}>
                 Séminaire d&apos;entreprise{' '}
-                <span className="font-bold">
+                <span className="relative inline-block font-bold">
                   {destination.prep} {destination.name}
+                  <span className={homeFramedHeroHandwrittenClass}>
+                    à la rencontre de producteurs
+                  </span>
                 </span>
               </h1>
-              <p className={homeFramedHeroSubtitleClass}>
-                à la rencontre de producteurs
-              </p>
               <button
                 type="button"
                 onClick={() => openModal()}
-                className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
+                className={`mt-8 ${homeHeroOutlineButtonClass} sm:mt-10`}
                 style={{ background: 'rgba(12, 29, 34, 0.12)' }}
               >
                 Réserver mon séminaire
@@ -444,7 +447,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
             <div className="space-y-3.5">
               {destination.intro.map((p) => (
                 <p key={p.slice(0, 40)} className={homeParagraphClass}>
-                  {p}
+                  <LinkedText text={p} />
                 </p>
               ))}
             </div>
@@ -480,7 +483,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                         {pro.title}
                       </h3>
                       <p className="mt-2.5 max-w-md font-sans text-[13px] font-normal leading-[1.7] tracking-[-0.03em] text-white/90 sm:text-[14px]">
-                        {pro.text}
+                        <LinkedText text={pro.text} linkClassName={linkedTextOnDarkClass} />
                       </p>
                     </div>
                   ))}
@@ -569,7 +572,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                 >
                   Pour résumer :
                 </span>{' '}
-                {destination.programmeSummary}
+                <LinkedText text={destination.programmeSummary} />
               </p>
             </ScrollAnimate>
 
@@ -661,7 +664,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
               <p
                 className={`${destination.producer.generic ? 'mt-4' : 'mt-3'} ${homeParagraphClass}`}
               >
-                {aboutText}
+                <LinkedText text={aboutText} />
               </p>
               {destination.producer.generic || producerLinkHints.length === 0 ? (
                 <Link
@@ -714,7 +717,9 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
               <h2 className={`mt-3 ${sectionTitleClass}`}>
                 <LogementTitle title={destination.logement.title} />.
               </h2>
-              <p className={`mt-5 ${homeParagraphClass}`}>{destination.logement.description}</p>
+              <p className={`mt-5 ${homeParagraphClass}`}>
+                <LinkedText text={destination.logement.description} />
+              </p>
               <ul className="mt-5 space-y-2">
                 {destination.logement.highlights.map((h) => (
                   <li
@@ -819,10 +824,12 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
                       label={getImageCopyright(region.heroImage)!}
                     />
                   ) : null}
-                  <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[26px]">
+                  <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[20px] leading-[1.12] tracking-[-0.05em] text-white sm:bottom-6 sm:px-6 sm:text-[24px]">
                     <span className="font-normal">Séminaire {region.prep}</span>
                     <br />
-                    <span className="font-bold">{region.name}</span>
+                    <span className={`font-bold ${region.name.length > 20 ? 'text-[0.88em] leading-[1.15]' : ''}`}>
+                      {region.name}
+                    </span>
                   </p>
                 </Link>
               </ScrollAnimate>

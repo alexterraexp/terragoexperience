@@ -9,6 +9,7 @@ import {
   type DestinationSlug,
 } from '../../../lib/destinations';
 import { regionDestinationPath } from '../../../lib/homeStorage';
+import { stripInlineLinks } from '../../../lib/seminaireEnjeux';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -28,9 +29,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const title = destinationSeoTitle(destination);
-  const description =
+  const description = stripInlineLinks(
     destination.intro[0] ??
-    `Séminaire ${destination.prep} ${destination.name} chez un producteur avec TerraGo : cohésion, RSE, team building et immersion terroir.`;
+      `Séminaire ${destination.prep} ${destination.name} chez un producteur avec TerraGo : cohésion, RSE, team building et immersion terroir.`,
+  );
   const url = `${SITE}${regionDestinationPath(slug)}`;
 
   return {
@@ -72,9 +74,10 @@ function JsonLd({ slug }: { slug: string }) {
 
   const url = `${SITE}${regionDestinationPath(slug)}`;
   const title = destinationSeoTitle(destination);
-  const description =
+  const description = stripInlineLinks(
     destination.intro[0] ??
-    `Séminaire ${destination.prep} ${destination.name} chez un producteur avec TerraGo.`;
+      `Séminaire ${destination.prep} ${destination.name} chez un producteur avec TerraGo.`,
+  );
 
   const webPage = {
     '@context': 'https://schema.org',
@@ -113,7 +116,7 @@ function JsonLd({ slug }: { slug: string }) {
       name: item.q,
       acceptedAnswer: {
         '@type': 'Answer',
-        text: item.a,
+        text: stripInlineLinks(item.a),
       },
     })),
   };

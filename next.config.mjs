@@ -26,15 +26,22 @@ const VILLE_SEMINAIRE_SLUGS = [
 /** Régions : URL publique `seminaire-entreprise-{prep}-{slug}` → `/destinations/{slug}` */
 const DESTINATION_REGIONS = [
   { slug: 'nouvelle-aquitaine', prep: 'en' },
-  { slug: 'provence', prep: 'en' },
+  { slug: 'provence-alpes-cote-d-azur', prep: 'en' },
   { slug: 'ile-de-france', prep: 'en' },
   { slug: 'normandie', prep: 'en' },
   { slug: 'occitanie', prep: 'en' },
   { slug: 'bretagne', prep: 'en' },
   { slug: 'pays-de-la-loire', prep: 'en' },
-  { slug: 'auvergne', prep: 'en' },
-  { slug: 'bourgogne', prep: 'en' },
+  { slug: 'auvergne-rhone-alpes', prep: 'en' },
+  { slug: 'bourgogne-franche-comte', prep: 'en' },
   { slug: 'corse', prep: 'en' },
+];
+
+/** Anciens slugs de régions (Provence / Auvergne / Bourgogne) → noms officiels. */
+const DESTINATION_REGION_SLUG_REDIRECTS = [
+  { from: 'provence', to: 'provence-alpes-cote-d-azur', prep: 'en' },
+  { from: 'auvergne', to: 'auvergne-rhone-alpes', prep: 'en' },
+  { from: 'bourgogne', to: 'bourgogne-franche-comte', prep: 'en' },
 ];
 
 /** Lieux : URL publique `seminaire-entreprise-{pathSlug}` → `/destinations/lieux/{slug}` */
@@ -173,6 +180,18 @@ const nextConfig = {
         destination: `/seminaire-entreprise-${ville}`,
         permanent: true,
       })),
+      ...DESTINATION_REGION_SLUG_REDIRECTS.flatMap(({ from, to, prep }) => [
+        {
+          source: `/destinations/${from}`,
+          destination: `/destinations/seminaire-entreprise-${prep}-${to}`,
+          permanent: true,
+        },
+        {
+          source: `/destinations/seminaire-entreprise-${prep}-${from}`,
+          destination: `/destinations/seminaire-entreprise-${prep}-${to}`,
+          permanent: true,
+        },
+      ]),
       ...DESTINATION_REGIONS.map(({ slug, prep }) => ({
         source: `/destinations/${slug}`,
         destination: `/destinations/seminaire-entreprise-${prep}-${slug}`,

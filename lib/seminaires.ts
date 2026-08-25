@@ -120,7 +120,9 @@ export function parseSeminaireLocation(region: string): {
 function normalizeRegionName(name: string): string {
   return name
     .replace(/\bNouvelle\s+Aquitaine\b/gi, 'Nouvelle-Aquitaine')
-    .replace(/\bProvence-Alpes-Côte d'Azur\b/gi, "Provence-Alpes-Côte d'Azur")
+    .replace(/\bProvence-Alpes-Côte d['’]Azur\b/gi, 'Provence-Alpes-Côte d’Azur')
+    .replace(/\bBourgogne-Franche-Comté\b/gi, 'Bourgogne-Franche-Comté')
+    .replace(/\bAuvergne-Rhône-Alpes\b/gi, 'Auvergne-Rhône-Alpes')
     .replace(/\bCentre-Val de Loire\b/gi, 'Centre-Val de Loire');
 }
 

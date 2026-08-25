@@ -65,7 +65,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Dans quelles régions TerraGo organise-t-il des séminaires ?',
-    a: 'TerraGo organise des séminaires partout en France, notamment en Bretagne, Normandie, Pays de la Loire, Nouvelle-Aquitaine, Occitanie, Provence, Auvergne-Rhône-Alpes, Bourgogne et dans les Alpes. Nous pouvons également construire un projet dans une autre région selon vos besoins.',
+    a: "TerraGo organise des séminaires partout en France, notamment en Bretagne, Normandie, Pays de la Loire, Nouvelle-Aquitaine, Occitanie, Provence-Alpes-Côte d’Azur, Auvergne-Rhône-Alpes et Bourgogne-Franche-Comté. Nous pouvons également construire un projet dans une autre région selon vos besoins.",
   },
   {
     q: 'Peut-on personnaliser entièrement son événement d\'entreprise ?',
@@ -898,7 +898,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
               <span
                 key={tag}
                 className="rounded-full px-4 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.1em] text-white sm:text-[11px]"
-                style={{ background: HOME_COLORS.orange }}
+                style={{ background: HOME_COLORS.primary }}
               >
                 {tag}
               </span>
@@ -910,7 +910,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
             <div className="hidden w-[88px] shrink-0 sm:block" aria-hidden />
 
             <p className={`${homeParagraphClass} flex-1 text-center sm:text-[15px]`}>
-              Du Pays Basque à l&apos;Alsace, en passant par la Bretagne, la Provence ou la Savoie, découvrez nos
+              Du Pays Basque à l&apos;Alsace, en passant par la Bretagne, la Provence-Alpes-Côte d&apos;Azur ou la Savoie, découvrez nos
               séminaires d&apos;entreprise engagés dans toute la France, chacun partant à la rencontre de producteurs
               locaux et d&apos;un terroir unique.
             </p>
@@ -970,10 +970,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
               <div
                 className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
               />
-              <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[24px] leading-[1.12] tracking-[-0.06em] text-white sm:bottom-7 sm:px-6 sm:text-[28px] lg:text-[30px]">
+              <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.06em] text-white sm:bottom-7 sm:px-6 sm:text-[24px] lg:text-[26px]">
                 <span className="font-normal">Séminaire {region.prep}</span>
                 <br />
-                <span className="font-bold">{region.name}</span>
+                <span className={`font-bold ${region.name.length > 20 ? 'text-[0.86em] leading-[1.15]' : ''}`}>
+                  {region.name}
+                </span>
               </p>
             </Link>
           ))}

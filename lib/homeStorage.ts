@@ -102,19 +102,26 @@ export const HOME_PRODUCERS = [
 
 /**
  * `prep` : préposition (« Séminaire en Bretagne »).
- * `article` : article défini devant le nom (« la Bretagne », « l'Auvergne ») — espace inclus sauf pour `l'`.
+ * `article` : article défini devant le nom (« la Bretagne », « l'Auvergne-Rhône-Alpes ») — espace inclus sauf pour `l'`.
  */
 export const REGION_IMAGES = [
   { slug: 'nouvelle-aquitaine', name: 'Nouvelle-Aquitaine', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/huitre-pecheurs.avif' },
-  { slug: 'provence', name: 'Provence', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/lavande.avif' },
+  { slug: 'provence-alpes-cote-d-azur', name: 'Provence-Alpes-Côte d’Azur', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/lavande.avif' },
   { slug: 'ile-de-france', name: 'Île-de-France', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/0147530379456.webp' },
   { slug: 'normandie', name: 'Normandie', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/normandie.avif' },
   { slug: 'occitanie', name: 'Occitanie', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/occitanie.avif' },
   { slug: 'bretagne', name: 'Bretagne', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/157872401-35444288.jpg' },
   { slug: 'pays-de-la-loire', name: 'Pays de la Loire', prep: 'en', article: 'les ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/24311133636914.webp' },
-  { slug: 'auvergne', name: 'Auvergne', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/37910945-15085778.webp' },
-  { slug: 'bourgogne', name: 'Bourgogne', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/bourgogn.avif' },
+  { slug: 'auvergne-rhone-alpes', name: 'Auvergne-Rhône-Alpes', prep: 'en', article: "l'", image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/37910945-15085778.webp' },
+  { slug: 'bourgogne-franche-comte', name: 'Bourgogne-Franche-Comté', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/bourgogn.avif' },
   { slug: 'corse', name: 'Corse', prep: 'en', article: 'la ', image: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/Destination/1198427643714.webp' },
+] as const;
+
+/** Anciens slugs publics → nouveaux slugs (redirections 301). */
+export const REGION_SLUG_REDIRECTS = [
+  { from: 'provence', to: 'provence-alpes-cote-d-azur' },
+  { from: 'auvergne', to: 'auvergne-rhone-alpes' },
+  { from: 'bourgogne', to: 'bourgogne-franche-comte' },
 ] as const;
 
 export type RegionSlug = (typeof REGION_IMAGES)[number]['slug'];

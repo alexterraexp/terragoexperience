@@ -12,7 +12,7 @@ export const SITELINK_PAGES = [
     path: '/destinations',
     name: 'Nos destinations',
     description:
-      'Découvrez nos destinations de séminaire en France : Nouvelle-Aquitaine, Provence, Île-de-France, Normandie, Occitanie et autres territoires.',
+      'Découvrez nos destinations de séminaire en France : Nouvelle-Aquitaine, Provence-Alpes-Côte d’Azur, Île-de-France, Normandie, Occitanie et autres territoires.',
   },
   {
     path: '/experiences-entreprise',

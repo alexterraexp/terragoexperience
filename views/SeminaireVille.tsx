@@ -75,9 +75,9 @@ const NEARBY: Partial<Record<VilleSeminaireSlug, VilleSeminaireSlug[]>> = {
 
 const REGION_BY_VILLE: Partial<Record<VilleSeminaireSlug, { slug: string; label: string }>> = {
   paris: { slug: 'ile-de-france', label: 'séminaires en Île-de-France' },
-  marseille: { slug: 'provence', label: 'séminaires en Provence' },
-  'aix-en-provence': { slug: 'provence', label: 'séminaires en Provence' },
-  nice: { slug: 'provence', label: 'séminaires en Provence' },
+  marseille: { slug: 'provence-alpes-cote-d-azur', label: 'séminaires en Provence-Alpes-Côte d’Azur' },
+  'aix-en-provence': { slug: 'provence-alpes-cote-d-azur', label: 'séminaires en Provence-Alpes-Côte d’Azur' },
+  nice: { slug: 'provence-alpes-cote-d-azur', label: 'séminaires en Provence-Alpes-Côte d’Azur' },
   bordeaux: { slug: 'nouvelle-aquitaine', label: 'séminaires en Nouvelle-Aquitaine' },
   'la-rochelle': { slug: 'nouvelle-aquitaine', label: 'séminaires en Nouvelle-Aquitaine' },
   biarritz: { slug: 'nouvelle-aquitaine', label: 'séminaires en Nouvelle-Aquitaine' },
@@ -86,7 +86,11 @@ const REGION_BY_VILLE: Partial<Record<VilleSeminaireSlug, { slug: string; label:
   nantes: { slug: 'pays-de-la-loire', label: 'séminaires dans les Pays de la Loire' },
   angers: { slug: 'pays-de-la-loire', label: 'séminaires dans les Pays de la Loire' },
   rennes: { slug: 'bretagne', label: 'séminaires en Bretagne' },
-  'clermont-ferrand': { slug: 'auvergne', label: 'séminaires en Auvergne' },
+  lyon: { slug: 'auvergne-rhone-alpes', label: 'séminaires en Auvergne-Rhône-Alpes' },
+  grenoble: { slug: 'auvergne-rhone-alpes', label: 'séminaires en Auvergne-Rhône-Alpes' },
+  valence: { slug: 'auvergne-rhone-alpes', label: 'séminaires en Auvergne-Rhône-Alpes' },
+  annecy: { slug: 'auvergne-rhone-alpes', label: 'séminaires en Auvergne-Rhône-Alpes' },
+  'clermont-ferrand': { slug: 'auvergne-rhone-alpes', label: 'séminaires en Auvergne-Rhône-Alpes' },
 };
 
 function BoldPhrase({
