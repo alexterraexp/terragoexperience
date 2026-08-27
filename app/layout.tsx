@@ -36,6 +36,10 @@ export const metadata: Metadata = {
       'Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français.',
     images: ['/og-home.jpg'],
   },
+  icons: {
+    icon: [{ url: '/favicon.png', type: 'image/png' }],
+    apple: [{ url: '/favicon.png' }],
+  },
 };
 
 export default function RootLayout({
@@ -62,6 +66,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
       </head>
       <body className="bg-beige-bg text-primary">
         <ScrollToTop />

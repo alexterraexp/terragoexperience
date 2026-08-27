@@ -2585,7 +2585,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
                 </a>
                 <Link
                   href="/notre-approche"
-                  className={`${homeHeroSolidButtonClass} w-full border-2 border-white bg-white text-[#0c1d22] hover:border-[#ec6435] hover:bg-white/90 sm:w-auto`}
+                  className={`${homeHeroSolidButtonClass} w-full border-2 border-white bg-white text-[#0c1d22] hover:border-[#ec6435] hover:bg-[#ec6435] hover:text-white sm:w-auto`}
                 >
                   Découvrir notre approche
                 </Link>

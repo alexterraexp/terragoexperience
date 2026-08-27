@@ -129,8 +129,9 @@ export const DESTINATIONS: DestinationRegion[] = [
       `Les [[producteurs|${PATH.producteur}]] sont au cœur de l’expérience : immersion chez un ostréiculteur, découverte d’un domaine viticole, rencontre avec un producteur engagé ou atelier autour des produits du terroir. Le programme alterne naturellement temps de travail, immersion sur le terrain et moments de convivialité. Les équipes peuvent ainsi passer d’une plénière en extérieur à une dégustation, puis partager un repas entre les vignes ou au bord de l’océan.`,
     ],
     prosImage:
-      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/20211025_124532-scaled.webp',
-    prosImageAlt: 'Séchage des piments d’Espelette en Nouvelle-Aquitaine',
+      'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/pexels-ertabbt-150087708-13678581.webp',
+    prosImageAlt:
+      "Paysage des fermes ostréicoles et des bateaux dans le bassin d'Arcachon, France.",
     pros: [
       {
         title: 'Un cadre entre terre et océan',
@@ -197,12 +198,16 @@ export const DESTINATIONS: DestinationRegion[] = [
         'Maisons d’hôtes, domaines ou lodges en bord de bassin : nous sélectionnons des lieux chaleureux, adaptés aux groupes et proches des expériences producteur.',
       images: [
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/5284910512984.jpg',
-          alt: 'Lodges contemporains au bord d’un lac en forêt des Landes',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/hotel-indarra-arbonne-1.webp',
+          alt: 'Hôtel typique basque proche de Biarritz, France',
         },
         {
-          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/b38cb07b.webp',
-          alt: 'Pavillon en bois éclairé pour un dîner en forêt',
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/479767839.jpg',
+          alt: 'Château et domaine viticole proche de Bordeaux, France',
+        },
+        {
+          src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/5284910512984.jpg',
+          alt: 'Lodges contemporains au bord d’un lac en forêt des Landes',
         },
         {
           src: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/47183145R.webp',

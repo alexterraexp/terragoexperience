@@ -171,7 +171,9 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
       type="button"
       className="prod-mini-card"
       onClick={() => onClick(producer.id)}
-      aria-label={producer.name}
+      aria-label={
+        producer.type ? `${producer.name} — ${producer.type}` : producer.name
+      }
     >
       {producer.cover ? (
         <Image
@@ -189,7 +191,13 @@ const ProducerCard: React.FC<ProducerCardProps> = ({ producer, onClick }) => {
       <div className="prod-mini-card-hover" aria-hidden />
       <div className="prod-mini-card-copy">
         <span className="prod-mini-card-title">{producer.name}</span>
-        {producer.type ? <span className="prod-mini-card-name">{producer.type}</span> : null}
+        {producer.type ? (
+          <>
+            {' '}
+            <br />
+            <span className="prod-mini-card-name">{producer.type}</span>
+          </>
+        ) : null}
       </div>
     </button>
   );
@@ -413,9 +421,6 @@ const ProducersPage: React.FC = () => {
           bottom: 0;
           z-index: 2;
           padding: 16px 16px 18px;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
         }
         .prod-mini-card-title {
           color: #fff;
@@ -423,12 +428,10 @@ const ProducersPage: React.FC = () => {
           font-weight: 700;
           letter-spacing: -0.045em;
           line-height: 1.15;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
         }
         .prod-mini-card-name {
+          display: inline-block;
+          margin-top: 4px;
           color: rgba(255,255,255,0.88);
           font-size: 12px;
           font-weight: 500;
@@ -437,6 +440,7 @@ const ProducersPage: React.FC = () => {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          max-width: 100%;
         }
         @media (min-width: 640px) {
           .prod-mini-card-copy { padding: 18px 18px 20px; }

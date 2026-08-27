@@ -486,9 +486,9 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Barre légale — mobile empilé (1 lien / ligne) ; desktop : une ligne */}
+        {/* Barre légale — mobile empilé (1 lien / ligne) ; desktop : une ligne avec filets */}
         <div
-          className="relative z-[1] flex flex-col items-start gap-2.5 pr-20 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7 sm:gap-y-2 sm:pr-32 lg:pr-40"
+          className="relative z-[1] flex flex-col items-start gap-2.5 pr-20 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-0 sm:gap-y-2 sm:pr-32 lg:pr-40"
           style={{
             paddingTop: 'clamp(1.25rem, 2vw, 1.75rem)',
             paddingLeft: FRAME_PADDING,
@@ -497,22 +497,24 @@ const Footer: React.FC = () => {
           }}
         >
           <p
-            className="m-0 order-last mt-2.5 sm:order-1 sm:mt-0"
+            className="m-0 order-last mt-2.5 inline-flex items-center whitespace-nowrap sm:order-1 sm:mt-0"
             style={{ fontSize: 12, lineHeight: 1.45, color: 'rgba(255,255,255,0.55)', letterSpacing: '-0.075em' }}
           >
             Fabriqué avec tout notre 🤍 © 2026 TerraGo
+            <span className="hidden sm:inline-flex"><LinkSep /></span>
           </p>
           {LEGAL_LINKS.map((item) => (
-            <Link
-              key={item.to}
-              href={item.to}
-              className="order-1 sm:order-2"
-              style={{ ...linkStyle, fontSize: 12, lineHeight: 1.45 }}
-              onMouseEnter={hoverWhite}
-              onMouseLeave={hoverReset}
-            >
-              {item.label}
-            </Link>
+            <span key={item.to} className="order-1 inline-flex items-center whitespace-nowrap sm:order-2">
+              <Link
+                href={item.to}
+                style={{ ...linkStyle, fontSize: 12, lineHeight: 1.45 }}
+                onMouseEnter={hoverWhite}
+                onMouseLeave={hoverReset}
+              >
+                {item.label}
+              </Link>
+              <span className="hidden sm:inline-flex"><LinkSep /></span>
+            </span>
           ))}
           <button
             type="button"
