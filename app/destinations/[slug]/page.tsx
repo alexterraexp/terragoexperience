@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = destinationSeoTitle(destination);
   const description = stripInlineLinks(
     destination.intro[0] ??
-      `Séminaire ${destination.prep} ${destination.name} chez un producteur avec TerraGo : cohésion, RSE, team building et immersion terroir.`,
+      `Séminaire ${destination.prep} ${destination.name} à la rencontre de producteurs avec TerraGo : cohésion, RSE, team building et immersion terroir.`,
   );
   const url = `${SITE}${regionDestinationPath(slug)}`;
 
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     keywords: [
       `séminaire ${destination.prep} ${destination.name}`,
-      `séminaire chez un producteur ${destination.name}`,
+      `séminaire à la rencontre de producteurs ${destination.name}`,
       `team building ${destination.prep} ${destination.name}`,
       'TerraGo',
       'séminaire RSE',
@@ -76,7 +76,7 @@ function JsonLd({ slug }: { slug: string }) {
   const title = destinationSeoTitle(destination);
   const description = stripInlineLinks(
     destination.intro[0] ??
-      `Séminaire ${destination.prep} ${destination.name} chez un producteur avec TerraGo.`,
+      `Séminaire ${destination.prep} ${destination.name} à la rencontre de producteurs avec TerraGo.`,
   );
 
   const webPage = {

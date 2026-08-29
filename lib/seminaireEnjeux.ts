@@ -235,7 +235,7 @@ export const SEMINAIRE_ENJEUX: SeminaireEnjeu[] = [
 
     metaTitle: 'Séminaire cohésion et team building d\u2019équipe | TerraGo',
     metaDescription:
-      'Organisez un séminaire cohésion TerraGo : team building original, défis collaboratifs, activités outdoor et immersion chez un producteur. Devis sous 48h.',
+      'Organisez un séminaire cohésion TerraGo : team building original, défis collaboratifs, activités outdoor et à la rencontre d\u2019un ou plusieurs producteurs. Devis sous 48h.',
     keywords: [
       'séminaire cohésion',
       'séminaire cohésion équipe',

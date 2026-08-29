@@ -144,7 +144,7 @@ export function buildSeminairePageMetadata(
   const label = seminaire.label?.trim();
   const base = label
     ? label
-    : `Séminaire chez un producteur en ${regionName}`;
+    : `Séminaire à la rencontre d’un producteur en ${regionName}`;
   const title =
     sameRegion.length > 1 && !label
       ? `${base} – ${producerShortName(seminaire.producteur)} | TerraGo`

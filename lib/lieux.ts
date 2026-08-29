@@ -108,9 +108,9 @@ export const LIEUX: DestinationLieu[] = [
     name: 'Chez le producteur',
     phrase: 'chez le producteur',
     eyebrow: 'Séminaire chez le producteur',
-    metaTitle: 'Séminaire chez un producteur | TerraGo',
+    metaTitle: 'Séminaire à la rencontre d’un producteur | TerraGo',
     metaDescription:
-      'Organisez un séminaire d’entreprise chez le producteur avec TerraGo : immersion terroir, ateliers concrets, team building RSE et hébergement de caractère partout en France.',
+      'Organisez un séminaire d’entreprise à la rencontre d’un producteur avec TerraGo : immersion terroir, ateliers concrets, team building RSE et hébergement de caractère partout en France.',
     heroImage:
       'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/producteur/578192052.jpg',
     heroImageAlt: 'Maison de producteur pour séminaire d’entreprise – TerraGo',

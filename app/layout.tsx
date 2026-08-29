@@ -26,7 +26,7 @@ export const metadata: Metadata = {
         url: '/og-home.jpg',
         width: 1200,
         height: 630,
-        alt: "TerraGo — séminaires d'entreprise chez des producteurs engagés",
+        alt: "TerraGo — séminaires d'entreprise à la rencontre des producteurs",
       },
     ],
   },

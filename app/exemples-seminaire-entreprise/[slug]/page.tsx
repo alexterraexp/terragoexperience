@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: 'Séminaire producteur – TerraGo',
       description:
-        'Découvrez cette offre séminaire packagée chez un producteur du terroir : programme, formats et tarifs. Demandez votre devis personnalisé.',
+        'Découvrez cette offre séminaire packagée à la rencontre d’un producteur du terroir : programme, formats et tarifs. Demandez votre devis personnalisé.',
       robots: { index: true, follow: true },
     };
   }

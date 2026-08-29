@@ -7,13 +7,13 @@ const OG_IMAGE = {
   url: '/og-home.jpg',
   width: 1200,
   height: 630,
-  alt: "TerraGo — séminaires d'entreprise chez des producteurs engagés",
+  alt: "TerraGo — séminaires d'entreprise à la rencontre des producteurs",
 } as const;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "TerraGo | Séminaires d'entreprise engagés chez des producteurs";
+  const title = "TerraGo | Séminaires d'entreprise engagés à la rencontre des producteurs";
   const description =
-    "Séminaires d'entreprise immersifs : cohésion, RSE, inspiration et engagement au contact de producteurs et artisans. Des expériences qui donnent du sens à vos équipes.";
+    "Séminaires d'entreprise à impact : cohésion, RSE, inspiration et engagement au contact de producteurs et artisans. Des expériences qui donnent du sens à vos équipes.";
 
   return {
     title,

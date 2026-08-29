@@ -14,14 +14,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const url = `${SITE_URL}${EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}`;
 
   return {
-    title: 'Nos exemples de séminaires responsables en immersion chez des producteurs – TerraGo',
+    title: 'Nos exemples de séminaires responsables à la rencontre des producteurs – TerraGo',
     description:
-      'Exemples de séminaires d’entreprise chez des producteurs engagés : formules à la journée ou résidentielles, immersion terroir et cohésion d’équipe.',
+      'Exemples de séminaires d’entreprise à la rencontre de producteurs engagés : formules à la journée ou résidentielles, immersion terroir et cohésion d’équipe.',
     robots: { index: true, follow: true },
     openGraph: {
-      title: 'Nos exemples de séminaires responsables en immersion chez des producteurs – TerraGo',
+      title: 'Nos exemples de séminaires responsables à la rencontre des producteurs – TerraGo',
       description:
-        'Exemples de séminaires d’entreprise chez des producteurs engagés : formules à la journée ou résidentielles, immersion terroir et cohésion d’équipe.',
+        'Exemples de séminaires d’entreprise à la rencontre de producteurs engagés : formules à la journée ou résidentielles, immersion terroir et cohésion d’équipe.',
       url,
       siteName: 'TerraGo',
       locale: 'fr_FR',

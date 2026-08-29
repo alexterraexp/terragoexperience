@@ -45,7 +45,7 @@ export const homeFramedHeroSubtitleClass =
 
 /** Annotation manuscrite collée en oblique sous le bout du H1 (pages régions). */
 export const homeFramedHeroHandwrittenClass =
-  'pointer-events-none absolute right-[-1.25em] top-[calc(100%-0.12rem)] origin-[92%_center] select-none whitespace-nowrap font-handwriting text-[clamp(1.02rem,3.1vw,1.55rem)] font-medium not-italic leading-none tracking-[0.02em] text-white transition-none [text-shadow:0_2px_12px_rgba(0,0,0,0.45)] -rotate-[3deg] sm:right-[-1.7em] sm:top-[calc(100%-0.28rem)] sm:-rotate-[4deg]';
+  'pointer-events-none absolute left-1/2 right-auto top-[calc(100%-0.08rem)] origin-center -translate-x-[47%] select-none whitespace-nowrap font-handwriting text-[1.32rem] font-medium not-italic leading-none tracking-[0.02em] text-white transition-none [text-shadow:0_2px_12px_rgba(0,0,0,0.45)] -rotate-[3deg] sm:left-auto sm:right-[-1.7em] sm:top-[calc(100%-0.28rem)] sm:origin-[92%_center] sm:translate-x-0 sm:text-[clamp(1.02rem,3.1vw,1.55rem)] sm:-rotate-[4deg]';
 
 export const homeH1Class =
   'font-sans text-[40px] leading-[1.05] tracking-[-0.075em] text-[#0c1d22]';

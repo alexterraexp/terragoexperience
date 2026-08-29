@@ -118,29 +118,17 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     };
   }, [isOpen]);
 
-  /** Aligne le modal sur le viewport visible (clavier iOS, barre Safari). */
+  /** Empêche le zoom iOS au focus des champs (sinon le modal se décale et se ferme). */
   useEffect(() => {
     if (!isOpen) return;
-    const root = document.documentElement;
-    const sync = () => {
-      const vv = window.visualViewport;
-      const h = vv?.height ?? window.innerHeight;
-      root.style.setProperty('--osm-vvh', `${h}px`);
-      root.style.setProperty('--osm-vvt', `${vv?.offsetTop ?? 0}px`);
-      root.classList.toggle('osm-vv-compact', h < 560);
-    };
-    sync();
-    window.visualViewport?.addEventListener('resize', sync);
-    window.visualViewport?.addEventListener('scroll', sync);
-    window.addEventListener('resize', sync);
-    return () => {
-      window.visualViewport?.removeEventListener('resize', sync);
-      window.visualViewport?.removeEventListener('scroll', sync);
-      window.removeEventListener('resize', sync);
-      root.style.removeProperty('--osm-vvh');
-      root.style.removeProperty('--osm-vvt');
-      root.classList.remove('osm-vv-compact');
-    };
+    const meta = document.querySelector('meta[name="viewport"]');
+    if (!meta) return;
+    const prev = meta.getAttribute('content') ?? '';
+    meta.setAttribute(
+      'content',
+      'width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover',
+    );
+    return () => meta.setAttribute('content', prev);
   }, [isOpen]);
 
   useEffect(() => {
@@ -417,18 +405,17 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           .osm-backdrop:not(.osm-backdrop--confirm) {
             background:#fff !important;
             backdrop-filter:none !important;
-            top:var(--osm-vvt, 0px) !important;
-            height:var(--osm-vvh, 100dvh) !important;
-            bottom:auto !important;
+            inset:0 !important;
           }
           .osm-wrapper:not(.osm-wrapper--confirm) {
             padding:0 !important;
             align-items:stretch !important;
             justify-content:flex-start !important;
-            top:var(--osm-vvt, 0px) !important;
-            height:var(--osm-vvh, 100dvh) !important;
-            bottom:auto !important;
+            inset:0 !important;
+            height:100% !important;
+            max-height:none !important;
             background:#fff !important;
+            pointer-events:auto !important;
           }
           .osm-panel:not(.osm-panel--confirm) {
             display:flex !important;
@@ -441,6 +428,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             border-radius:0 !important;
             overflow:hidden !important;
             background:#fff !important;
+            touch-action:manipulation;
           }
           .osm-panel--confirm {
             width:calc(100% - 32px) !important;
@@ -450,7 +438,6 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             border-radius:20px !important;
           }
           .osm-visual { width:100% !important; height:140px !important; flex:none !important }
-          html.osm-vv-compact .osm-visual { height:72px !important }
           .osm-body {
             display:flex !important;
             flex-direction:column !important;
@@ -474,7 +461,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           }
           .osm-close {
             position:fixed !important;
-            top:calc(var(--osm-vvt, 0px) + max(20px, env(safe-area-inset-top) + 8px)) !important;
+            top:calc(max(20px, env(safe-area-inset-top) + 8px)) !important;
             right:22px !important;
             width:32px !important;
             height:32px !important;
@@ -514,7 +501,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             height: 22px;
           }
           /* 16px réel = pas de zoom iOS ; le descriptif overlay reste à 13px */
-          input.osm-input { font-size: 16px !important; }
+          input.osm-input { font-size: 16px !important; touch-action: manipulation; }
           input.osm-has-ph::placeholder { color:transparent !important; opacity:0; }
           button.osm-input { font-size: 13px !important; }
           .osm-ph { display:flex; }
@@ -524,7 +511,11 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
       <div
         className={`osm-backdrop${isConfirm ? ' osm-backdrop--confirm' : ''}`}
-        onClick={isConfirm ? undefined : handleClose}
+        onClick={isConfirm ? undefined : (e) => {
+          if (window.matchMedia('(max-width: 860px)').matches) return;
+          if (e.target !== e.currentTarget) return;
+          handleClose();
+        }}
         style={{
           position: 'fixed', inset: 0, zIndex: 1200,
           background: 'rgba(12,29,34,0.55)', backdropFilter: 'blur(6px)',
@@ -645,6 +636,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           role="dialog"
           aria-modal="true"
           aria-label="Organiser votre séminaire"
+          onClick={(e) => e.stopPropagation()}
           style={{
             pointerEvents: 'auto',
             display: 'flex',

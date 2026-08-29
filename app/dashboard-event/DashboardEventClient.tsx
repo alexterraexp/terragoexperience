@@ -425,19 +425,21 @@ function teamDayKey(value?: string | null): TeamDay['key'] | null {
 }
 
 function groupTeamsByDay(items: TeamMember[]): TeamDay[] {
-  const days: Record<TeamDay['key'], Map<string, TeamGroup>> = {
-    samedi: new Map(),
-    dimanche: new Map(),
+  const days: Record<TeamDay['key'], { title: string; teams: Map<string, TeamGroup> }> = {
+    samedi: { title: 'Samedi', teams: new Map() },
+    dimanche: { title: 'Dimanche', teams: new Map() },
   };
 
   for (const row of items) {
     const key = teamDayKey(row.day_context);
     if (!key) continue;
-    const existing = days[key].get(row.team_name);
+    const label = row.day_context.trim();
+    if (label) days[key].title = label;
+    const existing = days[key].teams.get(row.team_name);
     if (existing) {
       existing.members.push({ id: row.id, name: row.member_name });
     } else {
-      days[key].set(row.team_name, {
+      days[key].teams.set(row.team_name, {
         name: row.team_name,
         members: [{ id: row.id, name: row.member_name }],
       });
@@ -446,8 +448,8 @@ function groupTeamsByDay(items: TeamMember[]): TeamDay[] {
 
   const daysOut: TeamDay[] = (['samedi', 'dimanche'] as const).map((key) => ({
     key,
-    title: key === 'samedi' ? 'Samedi' : 'Dimanche',
-    teams: [...days[key].values()],
+    title: days[key].title,
+    teams: [...days[key].teams.values()],
   }));
 
   return daysOut.some((day) => day.teams.length > 0) ? daysOut : [];

@@ -18,7 +18,7 @@ export const SITELINK_PAGES = [
     path: '/experiences-entreprise',
     name: 'Nos expériences',
     description:
-      'Team building, séminaires RSE et conventions d’entreprise chez des producteurs engagés. Des expériences authentiques qui ont du sens.',
+      'Team building, séminaires RSE et conventions d’entreprise à la rencontre de producteurs engagés. Des expériences authentiques qui ont du sens.',
   },
   {
     path: '/notre-approche',

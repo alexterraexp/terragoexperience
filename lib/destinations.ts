@@ -1222,7 +1222,7 @@ export function getDestination(slug: string): DestinationRegion | undefined {
 export function destinationSeoTitle(
   destination: Pick<DestinationRegion, 'name'>,
 ): string {
-  return `${destination.name} : séminaire chez un producteur | TerraGo`;
+  return `${destination.name} : séminaire à la rencontre de producteurs | TerraGo`;
 }
 
 /** H1 d’un seul tenant, sans fragment orphelin. */

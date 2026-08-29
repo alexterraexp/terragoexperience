@@ -5,7 +5,7 @@ import { SITE_URL } from '../../lib/siteNav';
 
 const title = 'FAQ séminaire d’entreprise, RSE et team building | TerraGo';
 const description =
-  'Réponses aux questions fréquentes sur le séminaire d’entreprise : budget, format, séminaire au vert, RSE, team building original et immersion chez les producteurs.';
+  'Réponses aux questions fréquentes sur le séminaire d’entreprise : budget, format, séminaire au vert, RSE, team building original et immersion à la rencontre des producteurs.';
 
 const url = `${SITE_URL}${FAQ_PATH}`;
 
