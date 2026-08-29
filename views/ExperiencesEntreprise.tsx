@@ -9,6 +9,7 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroAspectClass,
+  homeFramedHeroSectionClass,
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
   homeFramedHeroOverlayInnerClass,
@@ -487,7 +488,7 @@ const ExperiencesEntreprise: React.FC = () => {
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
       {/* ── HERO ── */}
-      <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
+      <section className={homeFramedHeroSectionClass}>
         <div className="mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
             className={`relative ${homeFramedHeroAspectClass}`}

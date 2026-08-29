@@ -118,6 +118,31 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     };
   }, [isOpen]);
 
+  /** Aligne le modal sur le viewport visible (clavier iOS, barre Safari). */
+  useEffect(() => {
+    if (!isOpen) return;
+    const root = document.documentElement;
+    const sync = () => {
+      const vv = window.visualViewport;
+      const h = vv?.height ?? window.innerHeight;
+      root.style.setProperty('--osm-vvh', `${h}px`);
+      root.style.setProperty('--osm-vvt', `${vv?.offsetTop ?? 0}px`);
+      root.classList.toggle('osm-vv-compact', h < 560);
+    };
+    sync();
+    window.visualViewport?.addEventListener('resize', sync);
+    window.visualViewport?.addEventListener('scroll', sync);
+    window.addEventListener('resize', sync);
+    return () => {
+      window.visualViewport?.removeEventListener('resize', sync);
+      window.visualViewport?.removeEventListener('scroll', sync);
+      window.removeEventListener('resize', sync);
+      root.style.removeProperty('--osm-vvh');
+      root.style.removeProperty('--osm-vvt');
+      root.classList.remove('osm-vv-compact');
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
       if (lieuWrapRef.current && !lieuWrapRef.current.contains(e.target as Node)) {
@@ -253,7 +278,20 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           letter-spacing:-.02em; outline:none; transition:border-color .15s ease, box-shadow .15s ease;
         }
         .osm-input:focus { border-color:${INK}; box-shadow:0 0 0 3px rgba(12,29,34,.06) }
-        .osm-input::placeholder { color:#b3b3b3 }
+        .osm-input::placeholder { color:#b3b3b3; font-size:13px; font-weight:400; letter-spacing:-.02em; }
+        .osm-input--dates { width:100%; max-width:400px; }
+        .osm-ph {
+          display:none;
+          position:absolute; left:14px; right:14px; top:0; bottom:0;
+          align-items:center; font-size:13px; font-weight:400; color:#b3b3b3;
+          letter-spacing:-.02em; pointer-events:none; white-space:nowrap;
+          overflow:hidden; text-overflow:ellipsis; font-family:inherit;
+        }
+        .osm-ph--pin { left:34px; }
+        .osm-lieu-icon {
+          position:absolute; left:13px; top:0; height:44px;
+          display:flex; align-items:center; color:#b3b3b3; z-index:1; pointer-events:none;
+        }
 
         .osm-opt {
           width:100%; box-sizing:border-box; background:#fff; cursor:pointer;
@@ -319,36 +357,90 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
         }
         .osm-back:hover { color:${INK} }
 
+        .osm-range-wrap {
+          position: relative;
+          touch-action: none;
+          padding: 12px 8px;
+          margin: 0;
+          overflow: visible;
+          display: flex;
+          align-items: center;
+        }
+        .osm-range-track {
+          position: absolute;
+          left: 0; right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          height: 4px;
+          border-radius: 9999px;
+          background: #f4f4f4;
+          pointer-events: none;
+        }
+        .osm-range-fill {
+          height: 100%;
+          border-radius: 9999px;
+          background: ${ORANGE};
+        }
         .osm-range {
-          -webkit-appearance:none; appearance:none; width:100%; height:8px; border-radius:9999px;
-          outline:none; cursor:pointer; touch-action:none;
+          -webkit-appearance:none; appearance:none; width:100%; height:28px;
+          background:transparent; outline:none; cursor:pointer; touch-action:none;
+          margin:0; display:block; position:relative; z-index:1;
+        }
+        .osm-range::-webkit-slider-runnable-track {
+          height:4px; border-radius:9999px; background:transparent;
         }
         .osm-range::-webkit-slider-thumb {
-          -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%;
-          background:#fff; border:1px solid rgba(12,29,34,.2); box-shadow:0 1px 4px rgba(0,0,0,.18); cursor:pointer;
-          touch-action:none;
+          -webkit-appearance:none; appearance:none; width:20px; height:20px; border-radius:50%;
+          background:#fff; border:2px solid ${ORANGE}; margin-top:-8px; cursor:pointer;
+          box-shadow:0 1px 4px rgba(12,29,34,.12), 0 0 0 4px rgba(236,100,53,.14);
+          touch-action:none; transition:box-shadow .18s ease;
+        }
+        .osm-range:hover::-webkit-slider-thumb,
+        .osm-range:active::-webkit-slider-thumb {
+          box-shadow:0 1px 6px rgba(12,29,34,.16), 0 0 0 6px rgba(236,100,53,.18);
+        }
+        .osm-range::-moz-range-track {
+          height:4px; border-radius:9999px; background:transparent; border:none;
+        }
+        .osm-range::-moz-range-progress {
+          height:4px; background:transparent; border:none;
         }
         .osm-range::-moz-range-thumb {
-          width:18px; height:18px; border-radius:50%; background:#fff;
-          border:1px solid rgba(12,29,34,.2); box-shadow:0 1px 4px rgba(0,0,0,.18); cursor:pointer;
-          touch-action:none;
-        }
-        .osm-range-wrap {
-          touch-action: none;
-          padding: 14px 0;
-          margin: -6px 0;
+          width:20px; height:20px; border-radius:50%; background:#fff;
+          border:2px solid ${ORANGE}; box-shadow:0 1px 4px rgba(12,29,34,.12), 0 0 0 4px rgba(236,100,53,.14);
+          cursor:pointer; touch-action:none;
         }
 
         .osm-panel--noscroll { overflow: hidden !important }
 
         @media (max-width: 860px) {
-          .osm-wrapper:not(.osm-wrapper--confirm) { padding:0 !important; align-items:stretch !important }
+          .osm-backdrop:not(.osm-backdrop--confirm) {
+            background:#fff !important;
+            backdrop-filter:none !important;
+            top:var(--osm-vvt, 0px) !important;
+            height:var(--osm-vvh, 100dvh) !important;
+            bottom:auto !important;
+          }
+          .osm-wrapper:not(.osm-wrapper--confirm) {
+            padding:0 !important;
+            align-items:stretch !important;
+            justify-content:flex-start !important;
+            top:var(--osm-vvt, 0px) !important;
+            height:var(--osm-vvh, 100dvh) !important;
+            bottom:auto !important;
+            background:#fff !important;
+          }
           .osm-panel:not(.osm-panel--confirm) {
-            display:block !important; width:100% !important; max-width:none !important;
-            height:100% !important; height:100dvh !important; height:100svh !important;
-            max-height:100svh !important; border-radius:0 !important;
-            overflow-x:hidden !important; overflow-y:scroll !important;
-            -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y;
+            display:flex !important;
+            flex-direction:column !important;
+            width:100% !important;
+            max-width:none !important;
+            height:100% !important;
+            max-height:none !important;
+            min-height:0 !important;
+            border-radius:0 !important;
+            overflow:hidden !important;
+            background:#fff !important;
           }
           .osm-panel--confirm {
             width:calc(100% - 32px) !important;
@@ -358,21 +450,45 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             border-radius:20px !important;
           }
           .osm-visual { width:100% !important; height:140px !important; flex:none !important }
-          .osm-body { display:block !important; flex:none !important; min-height:0 !important; overflow:visible !important }
+          html.osm-vv-compact .osm-visual { height:72px !important }
+          .osm-body {
+            display:flex !important;
+            flex-direction:column !important;
+            flex:1 1 auto !important;
+            min-height:0 !important;
+            overflow:hidden !important;
+          }
           .osm-content {
-            flex:none !important; min-height:0 !important; overflow:visible !important;
+            flex:1 1 auto !important;
+            min-height:0 !important;
+            overflow-y:auto !important;
+            -webkit-overflow-scrolling:touch;
+            overscroll-behavior:contain;
             padding:36px 22px 0 !important;
           }
           .osm-content--confirm { padding:48px 24px 28px !important }
           .osm-footer {
             flex-shrink:0 !important;
-            padding:18px 22px max(28px, env(safe-area-inset-bottom)) !important;
+            padding:18px 22px max(16px, env(safe-area-inset-bottom)) !important;
             background:#fff;
           }
           .osm-close {
-            position:fixed !important; top:max(12px, env(safe-area-inset-top)) !important;
-            right:16px !important; background:rgba(255,255,255,.88) !important;
-            border-radius:50% !important; backdrop-filter:blur(8px);
+            position:fixed !important;
+            top:calc(var(--osm-vvt, 0px) + max(20px, env(safe-area-inset-top) + 8px)) !important;
+            right:22px !important;
+            width:32px !important;
+            height:32px !important;
+            color:#fff !important;
+            background:rgba(0,0,0,.2) !important;
+            border:1.5px solid #fff !important;
+            border-radius:50% !important;
+            backdrop-filter:blur(12px);
+            -webkit-backdrop-filter:blur(12px);
+          }
+          .osm-close svg {
+            width:12px !important;
+            height:12px !important;
+            stroke-width:2.6 !important;
           }
           .osm-title { font-size:24px !important }
           .osm-confirm-title { font-size:24px !important }
@@ -387,26 +503,27 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             min-height:48px;
             white-space:nowrap;
           }
-          .osm-range {
-            height: 28px;
-          }
+          .osm-input--dates { max-width:none; }
           .osm-range::-webkit-slider-thumb {
-            width: 28px;
-            height: 28px;
+            width: 22px;
+            height: 22px;
+            margin-top: -9px;
           }
           .osm-range::-moz-range-thumb {
-            width: 28px;
-            height: 28px;
+            width: 22px;
+            height: 22px;
           }
-          .osm-range-wrap {
-            padding: 10px 0 18px;
-          }
-          .osm-input,
+          /* 16px réel = pas de zoom iOS ; le descriptif overlay reste à 13px */
           input.osm-input { font-size: 16px !important; }
+          input.osm-has-ph::placeholder { color:transparent !important; opacity:0; }
+          button.osm-input { font-size: 13px !important; }
+          .osm-ph { display:flex; }
+          .osm-lieu-icon { height:50px; }
         }
       `}</style>
 
       <div
+        className={`osm-backdrop${isConfirm ? ' osm-backdrop--confirm' : ''}`}
         onClick={isConfirm ? undefined : handleClose}
         style={{
           position: 'fixed', inset: 0, zIndex: 1200,
@@ -623,9 +740,9 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                     </h2>
                     <button
                       type="button"
-                      className="osm-input"
+                      className="osm-input osm-input--dates"
                       onClick={() => setCalendarOpen((v) => !v)}
-                      style={{ maxWidth: 240, textAlign: 'left', cursor: 'pointer', color: startDate ? INK : '#b3b3b3' }}
+                      style={{ textAlign: 'left', cursor: 'pointer', color: startDate ? INK : '#b3b3b3' }}
                     >
                       {startDate
                         ? `${fmtDay(startDate)}${endDate ? ` → ${fmtDay(endDate)}` : ' → …'}`
@@ -665,14 +782,14 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                       Une idée de <strong style={strong}>lieu ?</strong>
                     </h2>
                     <div ref={lieuWrapRef} style={{ position: 'relative', maxWidth: 340 }}>
-                      <span style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', display: 'flex', color: '#b3b3b3', zIndex: 1, pointerEvents: 'none' }}>
+                      <span className="osm-lieu-icon">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
                           <circle cx="12" cy="10" r="3" />
                         </svg>
                       </span>
                       <input
-                        className="osm-input"
+                        className="osm-input osm-has-ph"
                         style={{ paddingLeft: 34 }}
                         placeholder="Saisissez le lieu souhaité : ville, région, etc"
                         value={lieu}
@@ -685,6 +802,11 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                         }}
                         onFocus={() => setLieuOpen(true)}
                       />
+                      {!lieu && (
+                        <span className="osm-ph osm-ph--pin" aria-hidden="true">
+                          Saisissez le lieu souhaité : ville, région, etc
+                        </span>
+                      )}
                       {showLieuSuggestions && (
                         <ul
                           role="listbox"
@@ -749,16 +871,19 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                     <h2 className="osm-title" style={titleStyle}>
                       <strong style={strong}>Combien de participants</strong> y aura-t-il ?
                     </h2>
-                    <input
-                      className="osm-input"
-                      type="text"
-                      style={{ maxWidth: 250, fontSize: 16 }}
-                      inputMode="numeric"
-                      autoComplete="off"
-                      placeholder="Nombre de participants"
-                      value={participants}
-                      onChange={(e) => { setParticipants(e.target.value.replace(/\D/g, '')); setErr(''); }}
-                    />
+                    <div style={{ maxWidth: 250, position: 'relative' }}>
+                      <input
+                        className="osm-input osm-has-ph"
+                        inputMode="numeric"
+                        autoComplete="off"
+                        placeholder="Nombre de participants"
+                        value={participants}
+                        onChange={(e) => { setParticipants(e.target.value.replace(/\D/g, '')); setErr(''); }}
+                      />
+                      {!participants && (
+                        <span className="osm-ph" aria-hidden="true">Nombre de participants</span>
+                      )}
+                    </div>
 
                     <h2 className="osm-title" style={{ ...titleStyle, margin: '40px 0 22px' }}>
                       Quel est votre <strong style={strong}>budget total ?</strong>
@@ -772,6 +897,15 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                       onPointerUp={unlockScrollAfterDragging}
                       onPointerCancel={unlockScrollAfterDragging}
                     >
+                      <div
+                        className="osm-range-track"
+                        aria-hidden="true"
+                      >
+                        <div
+                          className="osm-range-fill"
+                          style={{ width: `${((budget - BUDGET_MIN) / (BUDGET_MAX - BUDGET_MIN)) * 100}%` }}
+                        />
+                      </div>
                       <input
                         type="range"
                         className="osm-range"
@@ -781,23 +915,20 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                         value={budget}
                         onChange={(e) => setBudget(Number(e.target.value))}
                         aria-label="Budget total"
-                        style={{
-                          background: `linear-gradient(to right, ${INK} 0%, ${INK} ${((budget - BUDGET_MIN) / (BUDGET_MAX - BUDGET_MIN)) * 100}%, #ededed ${((budget - BUDGET_MIN) / (BUDGET_MAX - BUDGET_MIN)) * 100}%, #ededed 100%)`,
-                        }}
                       />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 60, marginTop: 18 }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 60, marginTop: 14 }}>
                       <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: 19, fontWeight: 600, color: INK, letterSpacing: '-.04em' }}>
+                        <div style={{ fontSize: 22, fontWeight: 600, color: INK, letterSpacing: '-.05em' }}>
                           {budget >= BUDGET_MAX ? `${eur(BUDGET_MAX)} et +` : eur(budget)}
                         </div>
-                        <div style={{ fontSize: 10.5, color: '#a5a5a5', letterSpacing: '-.02em' }}>Budget total</div>
+                        <div style={{ fontSize: 10.5, color: '#a5a5a5', letterSpacing: '-.02em', marginTop: 3 }}>Budget total</div>
                       </div>
                       <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: INK, letterSpacing: '-.04em' }}>
+                        <div style={{ fontSize: 15, fontWeight: 600, color: INK, letterSpacing: '-.04em' }}>
                           {budgetParPersonne != null ? eur(budgetParPersonne) : '—'}
                         </div>
-                        <div style={{ fontSize: 9.5, color: '#a5a5a5', letterSpacing: '-.02em' }}>Par personne</div>
+                        <div style={{ fontSize: 10.5, color: '#a5a5a5', letterSpacing: '-.02em', marginTop: 3 }}>Par personne</div>
                       </div>
                     </div>
                   </>

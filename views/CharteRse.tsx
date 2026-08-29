@@ -9,6 +9,7 @@ import {
   bottomImageGradientClass,
   homeCtaOutlineClass,
   homeFramedHeroH1Class,
+  homeFramedHeroSectionClass,
   homeSectionPadding,
 } from '../components/home/homeStyles';
 
@@ -122,7 +123,7 @@ const CharteRse: React.FC = () => {
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
       {/* ── HERO ── */}
-      <section className="relative w-full overflow-x-clip bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
+      <section className={`${homeFramedHeroSectionClass} overflow-x-clip`}>
         <Image
           src={ASSETS.sOrange}
           alt=""

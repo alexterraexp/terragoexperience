@@ -8,6 +8,7 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroH1Class,
+  homeFramedHeroSectionClass,
   homeFramedHeroOverlayInnerClass,
   homeFramedHeroSubtitleClass,
   homeSectionPadding,
@@ -87,7 +88,7 @@ const Engagement: React.FC = () => {
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
 
       {/* ── HERO (fond orange) ── */}
-      <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
+      <section className={homeFramedHeroSectionClass}>
         <div className="relative mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
             className="relative flex aspect-[5/4] w-full flex-col items-center justify-center overflow-hidden px-5 pb-8 pt-10 text-center sm:aspect-[16/9] sm:px-10 sm:pb-10 sm:pt-16 lg:aspect-[2.2/1] lg:pt-20"

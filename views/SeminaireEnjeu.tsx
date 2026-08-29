@@ -9,6 +9,7 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroWideAspectClass,
+  homeFramedHeroSectionClass,
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
   homeFramedHeroOverlayInnerClass,
@@ -138,6 +139,22 @@ const EnjeuCtaButton: React.FC<{
   }
   return null;
 };
+
+const HERO_CTA_MOBILE_LABEL = 'Parlons de votre séminaire';
+
+/** Libellé hero : version courte sur mobile pour les CTA « Parlons de votre… ». */
+function HeroCtaLabel({ label }: { label: string }) {
+  const desktop = preserveAcronyms(label);
+  if (!label.toLowerCase().startsWith('parlons de votre')) {
+    return desktop;
+  }
+  return (
+    <>
+      <span className="sm:hidden">{HERO_CTA_MOBILE_LABEL}</span>
+      <span className="hidden sm:inline">{desktop}</span>
+    </>
+  );
+}
 
 /** Rend un titre avec une portion en gras (correspondance exacte après normalisation des sigles). */
 function TitleWithBold({
@@ -1120,7 +1137,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
       {/* ── HERO ── */}
-      <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
+      <section className={homeFramedHeroSectionClass}>
         <div className="relative mx-auto max-w-[1280px] px-5 pb-2 sm:px-8">
           {heroPicto ? (
             <Image
@@ -1177,7 +1194,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
                   className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
                   style={{ background: 'rgba(12, 29, 34, 0.12)' }}
                 >
-                  {preserveAcronyms(heroCta.label)}
+                  <HeroCtaLabel label={heroCta.label} />
                 </button>
               ) : (
                 <Link
@@ -1185,7 +1202,7 @@ const SeminaireEnjeu: React.FC<Props> = ({ enjeu }) => {
                   className={`mt-7 ${homeHeroOutlineButtonClass} sm:mt-9`}
                   style={{ background: 'rgba(12, 29, 34, 0.12)' }}
                 >
-                  {preserveAcronyms(heroCta.label)}
+                  <HeroCtaLabel label={heroCta.label} />
                 </Link>
               )}
               </div>

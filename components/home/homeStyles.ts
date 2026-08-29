@@ -10,6 +10,13 @@ export const HOME_COLORS = {
 export const HOME_RADIUS = '26px';
 
 /**
+ * Section hero encadré : header verre au-dessus, image en dessous avec padding
+ * (comme l’espace participants desktop — pas de superposition).
+ */
+export const homeFramedHeroSectionClass =
+  'relative w-full bg-white pt-[calc(9rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]';
+
+/**
  * Cadre hero encadré — plus haut sur mobile (ex-5/4 trop écrasé sur iPhone).
  * Ne pas appliquer à Charte RSE / Notre approche (contenu plus court).
  */

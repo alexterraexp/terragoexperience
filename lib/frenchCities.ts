@@ -297,7 +297,7 @@ export function matchFrenchCities(query: string, limit = 12): string[] {
 
 /**
  * Autocomplétion lieu : préfixe (sans accents), dès 1 caractère.
- * Priorité : régions → départements → villes, puis longueur du nom.
+ * Priorité : villes → régions → départements, puis longueur du nom.
  */
 export function matchFrenchPlaces(query: string, limit = 10): FrenchPlace[] {
   const raw = query.trim();
@@ -323,9 +323,9 @@ export function matchFrenchPlaces(query: string, limit = 10): FrenchPlace[] {
   }
 
   const kindRank: Record<FrenchPlaceKind, number> = {
-    région: 0,
-    département: 1,
-    ville: 2,
+    ville: 0,
+    région: 1,
+    département: 2,
   };
 
   return Array.from(byKey.values())

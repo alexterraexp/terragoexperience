@@ -9,6 +9,7 @@ import {
   HOME_COLORS,
   HOME_RADIUS,
   homeFramedHeroWideAspectClass,
+  homeFramedHeroSectionClass,
   homeFramedHeroH1Class,
   homeFramedHeroOverlayClass,
   homeFramedHeroOverlayInnerClass,
@@ -381,7 +382,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
   return (
     <div className="overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
       {/* ── HERO (image encadrée, largeur header, plus basse) ── */}
-      <section className="relative w-full bg-white pt-[calc(7.5rem+env(safe-area-inset-top))] sm:pt-[calc(9rem+env(safe-area-inset-top))] lg:pt-[calc(10.5rem+env(safe-area-inset-top))]">
+      <section className={homeFramedHeroSectionClass}>
         <div className="relative mx-auto max-w-[1280px] px-5 pb-2 sm:px-8">
           {/* Picto vélo — coin bas gauche du hero, déborde à l’extérieur */}
           <Image

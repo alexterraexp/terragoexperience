@@ -456,17 +456,18 @@ const Header: React.FC = () => {
     /^\/seminaires-entreprise\/offres\/[^/]+$/.test(pathname ?? '');
 
   const routePath = locationPath || pathname || '';
-  const isDashboardEventHeroPage = routePath === '/dashboard-event' || routePath.startsWith('/dashboard-event/');
 
   const hasHeroTransparent = (
     routePath === '/' ||
     routePath === '/demande-seminaire' ||
     routePath === '/blog' ||
     routePath.startsWith('/blog/') ||
-    (isDashboardEventHeroPage && isMobileViewport)
+    isMobileViewport
   );
   const isHeroTransparent = hasHeroTransparent && !isScrolled;
   const isDark = isHeroTransparent;
+  /** SSR / premier paint mobile : verre dès max-md, sans attendre isMobileViewport. */
+  const mobileGlassFallback = !isDark && !isScrolled;
 
   const openNav = NAV_ITEMS.find((n) => n.label === openDropdown) ?? null;
   const isPanelOpen = Boolean(openNav);
@@ -554,7 +555,10 @@ const Header: React.FC = () => {
           'transition-[padding] duration-300 ease-out',
           isDark
             ? 'pt-[max(28px,calc(env(safe-area-inset-top)+20px))]'
-            : 'pt-[env(safe-area-inset-top)]',
+            : [
+                'pt-[env(safe-area-inset-top)]',
+                mobileGlassFallback && 'max-md:pt-[max(28px,calc(env(safe-area-inset-top)+20px))]',
+              ].filter(Boolean).join(' '),
           isSeminaireDetailPage && 'max-lg:pt-0 max-lg:px-0',
         ].filter(Boolean).join(' ')}
       >
@@ -578,6 +582,7 @@ const Header: React.FC = () => {
               'bg-[rgba(20,24,22,0.30)] shadow-[0_8px_28px_rgba(0,0,0,0.20)] backdrop-blur-[20px]',
               'transition-opacity duration-300 ease-out',
               isDark ? 'opacity-100' : 'opacity-0',
+              mobileGlassFallback && 'max-md:opacity-100',
               isSeminaireDetailPage && 'max-lg:hidden',
             ].filter(Boolean).join(' ')}
           />
@@ -588,6 +593,7 @@ const Header: React.FC = () => {
               'border-b bg-white/85 backdrop-blur-[16px]',
               'transition-[opacity,border-color,box-shadow] duration-300 ease-out',
               isDark ? 'opacity-0' : 'opacity-100',
+              mobileGlassFallback && 'max-md:opacity-0',
               isScrolled
                 ? 'border-black/[0.06] shadow-[0_4px_24px_rgba(12,29,34,0.07)]'
                 : 'border-transparent shadow-none',
@@ -602,7 +608,10 @@ const Header: React.FC = () => {
               'transition-[height] duration-300 ease-out',
               isDark
                 ? 'h-[64px] sm:h-[68px] lg:h-[72px]'
-                : 'h-[76px] sm:h-[84px] lg:h-[92px]',
+                : [
+                    'h-[76px] sm:h-[84px] lg:h-[92px]',
+                    mobileGlassFallback && 'max-md:h-[64px]',
+                  ].filter(Boolean).join(' '),
             ].join(' ')}
           >
             <Link
@@ -617,13 +626,26 @@ const Header: React.FC = () => {
                 }
               }}
             >
-              <Image src="/logo-white.png" alt="" aria-hidden width={116} height={90} className="hidden" />
               <Image
-                src={isDark ? '/logo-white.png' : '/logo.png'}
+                src="/logo-white.png"
                 alt="TerraGo"
                 width={116}
                 height={90}
-                className="h-[36px] w-auto object-contain transition-transform duration-300 group-hover:scale-105 sm:h-[40px] lg:h-[44px]"
+                className={[
+                  'h-[36px] w-auto object-contain transition-transform duration-300 group-hover:scale-105 sm:h-[40px] lg:h-[44px]',
+                  isDark ? '' : mobileGlassFallback ? 'hidden max-md:block' : 'hidden',
+                ].join(' ')}
+                priority
+              />
+              <Image
+                src="/logo.png"
+                alt="TerraGo"
+                width={116}
+                height={90}
+                className={[
+                  'h-[36px] w-auto object-contain transition-transform duration-300 group-hover:scale-105 sm:h-[40px] lg:h-[44px]',
+                  isDark ? 'hidden' : mobileGlassFallback ? 'max-md:hidden' : '',
+                ].join(' ')}
                 priority
               />
             </Link>
@@ -702,7 +724,10 @@ const Header: React.FC = () => {
                         'size-10 rounded-full border',
                         isDark
                           ? 'bg-white/10 border-white/20 text-white'
-                          : 'bg-[#0c1d22]/[0.04] border-black/5 text-[#0c1d22]',
+                          : [
+                              'bg-[#0c1d22]/[0.04] border-black/5 text-[#0c1d22]',
+                              mobileGlassFallback && 'max-md:bg-white/10 max-md:border-white/20 max-md:text-white',
+                            ].filter(Boolean).join(' '),
                       ].join(' '),
                 ].join(' ')}
               >

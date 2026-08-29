@@ -365,7 +365,25 @@ function formatDayHeading(value: string) {
 function dayKeyFromStart(value?: string | null) {
   const d = parseDateTime(value);
   if (!d) return 'sans-date';
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Paris',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(d);
+  const num = (type: Intl.DateTimeFormatPartTypes) =>
+    Number(parts.find((part) => part.type === type)?.value);
+  const year = num('year');
+  const month = num('month');
+  const day = num('day');
+  const hour = num('hour');
+  if (![year, month, day, hour].every(Number.isFinite)) return 'sans-date';
+  const utc = Date.UTC(year, month - 1, day);
+  const shifted = hour < 6 ? utc - 86_400_000 : utc;
+  const key = new Date(shifted);
+  return `${key.getUTCFullYear()}-${String(key.getUTCMonth() + 1).padStart(2, '0')}-${String(key.getUTCDate()).padStart(2, '0')}`;
 }
 
 function groupScheduleByDay(items: ScheduleItem[]) {
@@ -1041,9 +1059,15 @@ export default function DashboardEventClient() {
         color: rgba(12, 29, 34, 0.72);
       }
       @media (min-width: 1024px) {
-        .dash-inclus { gap: 0; }
-        .dash-inclus-item { padding: 3px 0; gap: 10px; }
-        .dash-inclus-icon { width: 28px; height: 28px; }
+        .dash-inclus { gap: 2px; }
+        .dash-inclus-item { padding: 5px 0; gap: 10px; }
+        .dash-inclus-icon {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: ${ORANGE};
+          color: #fff;
+        }
         .dash-inclus-label { line-height: 1.25; }
       }
       .dash-programme { display: flex; flex-direction: column; }
@@ -1095,19 +1119,19 @@ export default function DashboardEventClient() {
         background: rgba(12, 29, 34, 0.12);
         transform: translateX(-50%);
       }
-      .dash-timeline-item--dated:not(:first-child) { padding-top: 10px; }
-      .dash-timeline-item:first-child .dash-timeline-rail::before { top: 42px; }
-      .dash-timeline-item:only-child .dash-timeline-rail::before,
-      .dash-timeline-item:last-child:not(.dash-timeline-item--dated) .dash-timeline-rail::before {
-        display: none;
+      .dash-timeline-item--dated:not(:first-child) .dash-timeline-rail {
+        padding-top: 36px;
       }
-      .dash-timeline-item:last-child.dash-timeline-item--dated .dash-timeline-rail::before {
-        display: block;
-        top: 0;
-        bottom: auto;
-        height: 22px;
+      .dash-timeline-item--dated:not(:first-child) .dash-timeline-card {
+        margin-top: 34px;
       }
-      .dash-timeline-item:first-child:last-child.dash-timeline-item--dated .dash-timeline-rail::before {
+      .dash-timeline-item--dated .dash-timeline-rail::before {
+        top: 67px;
+      }
+      .dash-timeline-item--dated:not(:first-child) .dash-timeline-rail::before {
+        top: 101px;
+      }
+      .dash-timeline-item:last-child .dash-timeline-rail::before {
         display: none;
       }
       .dash-timeline-weekday {
@@ -1141,7 +1165,8 @@ export default function DashboardEventClient() {
         align-self: start;
         min-width: 0;
         margin-bottom: 8px;
-        padding: 10px 12px;
+        padding: 15px 12px;
+        min-height: 60px;
         background: ${HOME_COLORS.gray};
         border-radius: 14px;
       }
@@ -1868,7 +1893,7 @@ export default function DashboardEventClient() {
                 {checklist.map((item) => (
                   <div key={item.id} className="dash-inclus-item">
                     <span className="dash-inclus-icon">
-                      <ChecklistTick size={16} />
+                      <ChecklistTick size={11} />
                     </span>
                     <span className="dash-inclus-label">{item.label}</span>
                   </div>
