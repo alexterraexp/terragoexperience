@@ -358,14 +358,6 @@ function ChecklistTick({ size }: { size: number }) {
   );
 }
 
-function formatDayHeading(value: string) {
-  const d = parseDateTime(value);
-  if (!d) return 'Autre moment';
-  const weekday = d.toLocaleDateString('fr-FR', { weekday: 'long' });
-  const month = d.toLocaleDateString('fr-FR', { month: 'long' });
-  return `${weekday.charAt(0).toUpperCase()}${weekday.slice(1)} ${d.getDate()} ${month}`;
-}
-
 function dayKeyFromStart(value?: string | null) {
   const d = parseDateTime(value);
   if (!d) return 'sans-date';
@@ -390,31 +382,42 @@ function dayKeyFromStart(value?: string | null) {
   return `${key.getUTCFullYear()}-${String(key.getUTCMonth() + 1).padStart(2, '0')}-${String(key.getUTCDate()).padStart(2, '0')}`;
 }
 
-function groupScheduleByDay(items: ScheduleItem[]) {
-  const sorted = [...items].sort((a, b) => {
-    const ta = parseDateTime(a.start_time)?.getTime() ?? Number.POSITIVE_INFINITY;
-    const tb = parseDateTime(b.start_time)?.getTime() ?? Number.POSITIVE_INFINITY;
-    if (ta !== tb) return ta - tb;
-    return (a.sort_order ?? 0) - (b.sort_order ?? 0);
-  });
-  const order: string[] = [];
-  const map = new Map<string, ScheduleItem[]>();
-  for (const item of sorted) {
-    const key = dayKeyFromStart(item.start_time);
-    if (!map.has(key)) {
-      order.push(key);
-      map.set(key, []);
-    }
-    map.get(key)!.push(item);
-  }
-  return order.map((key) => {
-    const dayItems = map.get(key)!;
-    return {
-      key,
-      title: key === 'sans-date' ? 'Autre moment' : formatDayHeading(dayItems[0].start_time ?? ''),
-      items: dayItems,
-    };
-  });
+function TimelineItems({ items }: { items: ScheduleItem[] }) {
+  return (
+    <div className="dash-timeline">
+      {items.map((item, index) => {
+        const showDate =
+          index === 0 || dayKeyFromStart(item.start_time) !== dayKeyFromStart(items[index - 1].start_time);
+        const timeLabel = formatProgrammeTime(item);
+        return (
+          <div
+            key={item.id}
+            className={`dash-timeline-item${showDate ? ' dash-timeline-item--dated' : ''}`}
+          >
+            <div className="dash-timeline-rail" aria-hidden={!showDate}>
+              {showDate && (
+                <>
+                  <span className="dash-timeline-weekday">
+                    {formatTimelineWeekday(item.start_time)}
+                  </span>
+                  <span className="dash-timeline-dot">{formatTimelineDayNum(item.start_time)}</span>
+                </>
+              )}
+            </div>
+            <article className="dash-timeline-card">
+              <span className="dash-timeline-icon" aria-hidden>
+                {programmeIcon(item.title)}
+              </span>
+              <span className="dash-timeline-card-text">
+                <span className="dash-timeline-card-title">{item.title}</span>
+                {timeLabel && <span className="dash-timeline-card-sub">{timeLabel}</span>}
+              </span>
+            </article>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 function teamDayKey(value?: string | null): TeamDay['key'] | null {
@@ -996,7 +999,7 @@ export default function DashboardEventClient() {
         color: rgba(12, 29, 34, 0.5);
       }
       .dash-actions {
-        margin: 4px 0 0;
+        margin: 32px 0 0;
         display: flex;
         flex-direction: column;
         gap: 10px;
@@ -1045,6 +1048,7 @@ export default function DashboardEventClient() {
       .dash-quick-row-icon {
         flex-shrink: 0;
         width: 22px;
+        min-width: 22px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1742,7 +1746,8 @@ export default function DashboardEventClient() {
         .dash-checklist-fold {
           display: block;
           margin: 28px 0 12px;
-          border: 1.5px solid ${ORANGE};
+          border: none;
+          box-shadow: inset 0 0 0 1.5px ${ORANGE};
           border-radius: 16px;
           background: #fff;
           overflow: hidden;
@@ -1755,13 +1760,24 @@ export default function DashboardEventClient() {
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 18px 20px;
+          padding: 18px;
           border: none;
           background: transparent;
           color: ${ORANGE};
           font-family: inherit;
           cursor: pointer;
           text-align: left;
+        }
+        .dash-checklist-fold-trigger .dash-quick-row-icon {
+          width: 22px;
+          min-width: 22px;
+        }
+        .dash-quick-card {
+          padding-left: 18px;
+          padding-right: 18px;
+        }
+        .dash-actions {
+          margin: 4px 0 0;
         }
         .dash-checklist-fold-trigger .dash-quick-row-title {
           color: ${ORANGE};
@@ -1776,7 +1792,7 @@ export default function DashboardEventClient() {
           transform: rotate(90deg);
         }
         .dash-checklist-fold-body {
-          padding: 0 20px 16px;
+          padding: 0 18px 16px;
         }
         .dash-checklist-fold-body .dash-inclus {
           gap: 0;
@@ -1990,7 +2006,7 @@ export default function DashboardEventClient() {
               className="dash-hero-kicker mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/85"
               style={{ fontFamily: FONT }}
             >
-              Espace participant
+              Espace participants
             </p>
             <h1 className="dash-hero-title">
               {event.company_name || event.name}
@@ -2140,42 +2156,7 @@ export default function DashboardEventClient() {
               <section className="dash-section">
                 <hr className="dash-divider" />
                 <h2 className="dash-section-title">Planning</h2>
-                <div className="dash-timeline">
-                  {programme.map((item, index) => {
-                    const showDate =
-                      index === 0 ||
-                      dayKeyFromStart(item.start_time) !== dayKeyFromStart(programme[index - 1].start_time);
-                    const timeLabel = formatProgrammeTime(item);
-                    return (
-                      <div
-                        key={item.id}
-                        className={`dash-timeline-item${showDate ? ' dash-timeline-item--dated' : ''}`}
-                      >
-                        <div className="dash-timeline-rail" aria-hidden={!showDate}>
-                          {showDate && (
-                            <>
-                              <span className="dash-timeline-weekday">
-                                {formatTimelineWeekday(item.start_time)}
-                              </span>
-                              <span className="dash-timeline-dot">
-                                {formatTimelineDayNum(item.start_time)}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                        <article className="dash-timeline-card">
-                          <span className="dash-timeline-icon" aria-hidden>
-                            {programmeIcon(item.title)}
-                          </span>
-                          <span className="dash-timeline-card-text">
-                            <span className="dash-timeline-card-title">{item.title}</span>
-                            {timeLabel && <span className="dash-timeline-card-sub">{timeLabel}</span>}
-                          </span>
-                        </article>
-                      </div>
-                    );
-                  })}
-                </div>
+                <TimelineItems items={programme} />
               </section>
             )}
 
