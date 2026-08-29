@@ -64,12 +64,16 @@ function clearSession() {
   window.localStorage.removeItem(SESSION_KEY);
 }
 
-type Weather = {
-  temperature: number | null;
+type WeatherDay = {
+  date: string;
   temp_min: number | null;
   temp_max: number | null;
   code: number | null;
   label: string;
+};
+
+type Weather = {
+  days: WeatherDay[];
 };
 
 type EventPayload = {
@@ -463,6 +467,77 @@ function smsHref(phone: string) {
   return `sms:${phone.replace(/[^\d+]/g, '')}`;
 }
 
+function mapsSearchQuery(event: {
+  location_name?: string;
+  location_address?: string;
+}): string {
+  return [event.location_name, event.location_address].filter(Boolean).join(', ');
+}
+
+function parseMapsCoords(url: string): { lat: number; lng: number } | null {
+  const at = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (at) return { lat: Number(at[1]), lng: Number(at[2]) };
+  const query = url.match(/[?&](?:q|query)=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (query) return { lat: Number(query[1]), lng: Number(query[2]) };
+  const d = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+  if (d) return { lat: Number(d[1]), lng: Number(d[2]) };
+  return null;
+}
+
+function isAppleMobile() {
+  const ua = navigator.userAgent || '';
+  return (
+    /iPad|iPhone|iPod/i.test(ua) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  );
+}
+
+function mapsChooserApps(
+  event: { location_name?: string; location_address?: string },
+  mapsUrl: string,
+): { label: string; href: string }[] {
+  const query = mapsSearchQuery(event);
+  const coords = parseMapsCoords(mapsUrl);
+  const q = encodeURIComponent(query);
+  const apple = coords
+    ? `maps://?ll=${coords.lat},${coords.lng}&q=${q}`
+    : `maps://?q=${q}`;
+  const google = coords
+    ? `comgooglemaps://?q=${q}&center=${coords.lat},${coords.lng}`
+    : `comgooglemaps://?q=${q}`;
+  const waze = coords
+    ? `waze://?ll=${coords.lat},${coords.lng}&navigate=yes`
+    : `waze://?q=${q}&navigate=yes`;
+  return [
+    { label: 'Plans', href: apple },
+    { label: 'Google Maps', href: google },
+    { label: 'Waze', href: waze },
+  ];
+}
+
+/** Android : sélecteur d’applis natif. Desktop : URL web. iPhone : feuille « Ouvrir avec ». */
+function openInMapsApp(
+  event: { location_name?: string; location_address?: string; location_maps_url?: string },
+  fallbackUrl: string,
+) {
+  const query = mapsSearchQuery(event);
+  const coords = parseMapsCoords(fallbackUrl);
+  const encoded = encodeURIComponent(query);
+  const canDeepLink = Boolean(query || coords);
+
+  if (/Android/i.test(navigator.userAgent)) {
+    if (!canDeepLink) {
+      window.location.href = fallbackUrl;
+      return;
+    }
+    window.location.href = coords
+      ? `geo:${coords.lat},${coords.lng}?q=${coords.lat},${coords.lng}(${encoded})`
+      : `geo:0,0?q=${encoded}`;
+    return;
+  }
+  window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
+}
+
 type InfosVariant = 'card' | 'plain';
 
 const AccordionCtx = React.createContext<{
@@ -597,6 +672,59 @@ async function fetchDashboard(code: string): Promise<DashboardData> {
   return body;
 }
 
+function weatherEmoji(code: number | null): string {
+  if (code == null) return '⛅';
+  if (code === 0) return '☀️';
+  if (code === 1) return '🌤️';
+  if (code === 2) return '⛅';
+  if (code === 3) return '☁️';
+  if (code >= 45 && code < 50) return '🌫️';
+  if (code >= 51 && code < 60) return '🌦️';
+  if (code >= 61 && code < 70) return '🌧️';
+  if (code >= 71 && code < 80) return '🌨️';
+  if (code >= 80 && code < 85) return '🌦️';
+  if (code >= 85 && code < 95) return '🌨️';
+  if (code >= 95) return '⛈️';
+  return '☁️';
+}
+
+function formatWeatherDayLabel(ymd: string) {
+  const d = new Date(`${ymd}T12:00:00`);
+  if (!Number.isFinite(d.getTime())) return ymd;
+  const weekday = d.toLocaleDateString('fr-FR', { weekday: 'short', timeZone: 'Europe/Paris' });
+  const day = d.toLocaleDateString('fr-FR', { day: 'numeric', timeZone: 'Europe/Paris' });
+  return `${weekday.replace(/\.$/, '')} ${day}`;
+}
+
+function WeatherCard({ weather, className }: { weather: Weather; className?: string }) {
+  const days = weather.days ?? [];
+  if (days.length === 0) return null;
+  return (
+    <div className={`dash-weather${className ? ` ${className}` : ''}`}>
+      <span className="dash-weather-kicker">Météo</span>
+      <div className="dash-weather-days">
+        {days.map((day, index) => {
+          const min = day.temp_min != null ? `${Math.round(day.temp_min)}°` : null;
+          const max = day.temp_max != null ? `${Math.round(day.temp_max)}°` : null;
+          const range = [min, max].filter(Boolean).join(' / ');
+          return (
+            <div
+              key={day.date}
+              className={`dash-weather-day${index === 0 ? ' dash-weather-day--first' : ''}`}
+            >
+              <span className="dash-weather-day-name">{formatWeatherDayLabel(day.date)}</span>
+              <span className="dash-weather-day-icon" role="img" aria-label={day.label}>
+                {weatherEmoji(day.code)}
+              </span>
+              {range && <span className="dash-weather-day-temps">{range}</span>}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardEventClient() {
   const [gate, setGate] = useState<'restoring' | 'locked' | 'open'>('restoring');
   const [inputCode, setInputCode] = useState('');
@@ -604,6 +732,7 @@ export default function DashboardEventClient() {
   const [unlocking, setUnlocking] = useState(false);
   const [data, setData] = useState<DashboardData | null>(null);
   const [checklistOpen, setChecklistOpen] = useState(false);
+  const [mapsChooserOpen, setMapsChooserOpen] = useState(false);
 
   useEffect(() => {
     const code = readSession();
@@ -632,6 +761,28 @@ export default function DashboardEventClient() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!mapsChooserOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMapsChooserOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [mapsChooserOpen]);
+
+  useEffect(() => {
+    if (gate !== 'open') return;
+    const toTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    toTop();
+    const frame = window.requestAnimationFrame(toTop);
+    return () => window.cancelAnimationFrame(frame);
+  }, [gate]);
 
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -804,7 +955,7 @@ export default function DashboardEventClient() {
       .dash-stay {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        margin: 20px 0 12px;
+        margin: 0 0 12px;
         padding: 22px 24px;
         background: ${HOME_COLORS.gray};
         border-radius: 16px;
@@ -851,12 +1002,12 @@ export default function DashboardEventClient() {
         gap: 10px;
       }
       .dash-quick-card {
-        background: #f7f7f7;
-        border-radius: 16px;
-        padding: 4px 18px;
+        background: transparent;
+        border-radius: 0;
+        padding: 0;
       }
       .dash-quick-card .dash-contact-action {
-        background: #fff;
+        background: ${HOME_COLORS.gray};
       }
       .dash-divider {
         height: 1px;
@@ -927,6 +1078,129 @@ export default function DashboardEventClient() {
         align-items: center;
         gap: 10px;
       }
+      .dash-weather {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        gap: 4px;
+        width: max-content;
+        max-width: 100%;
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+      }
+      .dash-weather--main { display: none; }
+      .dash-weather-kicker {
+        display: none;
+      }
+      .dash-weather-days {
+        display: flex;
+        align-items: stretch;
+        width: max-content;
+      }
+      .dash-weather-day {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        padding: 0 12px;
+        text-align: center;
+        border-left: 1px solid rgba(12, 29, 34, 0.12);
+      }
+      .dash-weather-day--first {
+        border-left: 0;
+        padding-left: 0;
+      }
+      .dash-weather-day:last-child {
+        padding-right: 0;
+      }
+      .dash-weather-day-name {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.25;
+        color: ${INK};
+        text-transform: capitalize;
+      }
+      .dash-weather-day-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 1.25em;
+        font-size: 20px;
+        line-height: 1;
+      }
+      .dash-weather-day-temps {
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        line-height: 1.35;
+        color: rgba(12, 29, 34, 0.55);
+      }
+      .dash-maps-sheet {
+        position: fixed;
+        inset: 0;
+        z-index: 80;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px));
+        background: rgba(12, 29, 34, 0.45);
+      }
+      .dash-maps-sheet-panel {
+        width: 100%;
+        max-width: 400px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .dash-maps-sheet-group {
+        overflow: hidden;
+        background: #fff;
+        border-radius: 16px;
+      }
+      .dash-maps-sheet-title {
+        margin: 0;
+        padding: 14px 16px 10px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        text-align: center;
+        color: rgba(12, 29, 34, 0.5);
+      }
+      .dash-maps-sheet-option {
+        display: block;
+        width: 100%;
+        padding: 16px 18px;
+        border: 0;
+        border-top: 1px solid rgba(12, 29, 34, 0.08);
+        background: #fff;
+        color: ${INK};
+        font-family: ${FONT};
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .dash-maps-sheet-option:active { background: ${HOME_COLORS.gray}; }
+      .dash-maps-sheet-cancel {
+        display: block;
+        width: 100%;
+        padding: 16px 18px;
+        border: 0;
+        border-radius: 16px;
+        background: #fff;
+        color: ${INK};
+        font-family: ${FONT};
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        cursor: pointer;
+      }
+      .dash-maps-sheet-cancel:active { background: ${HOME_COLORS.gray}; }
       .dash-detail-label {
         font-size: 15px;
         font-weight: 700;
@@ -1366,14 +1640,52 @@ export default function DashboardEventClient() {
       .dash-cols {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
-        gap: clamp(32px, 4vw, 56px);
+        grid-template-areas:
+          "header side"
+          "main side";
+        column-gap: clamp(32px, 4vw, 56px);
+        row-gap: 0;
         align-items: start;
         margin-top: 28px;
       }
-      .dash-aside {
+      .dash-cols:has(> .dash-stay) {
+        grid-template-areas:
+          "header side"
+          "stay side"
+          "main side";
+      }
+      .dash-cols:has(> .dash-stay):has(> .dash-weather--aside) {
+        grid-template-areas:
+          "header ."
+          "stay weather"
+          "main side";
+      }
+      .dash-cols:has(> .dash-weather--aside):not(:has(> .dash-stay)) {
+        grid-template-areas:
+          "header weather"
+          "main side";
+      }
+      .dash-main-header { grid-area: header; margin-bottom: 28px; }
+      .dash-cols > .dash-stay { grid-area: stay; margin: 0; }
+      .dash-weather--aside {
+        grid-area: weather;
+        align-self: center;
+        justify-self: center;
+        width: auto;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      .dash-main { grid-area: main; min-width: 0; }
+      .dash-side {
+        grid-area: side;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
         position: sticky;
         top: calc(72px + 2.5rem);
         align-self: start;
+      }
+      .dash-aside {
         background: ${HOME_COLORS.gray};
         border-radius: 16px;
         padding: 22px 22px 20px;
@@ -1387,8 +1699,45 @@ export default function DashboardEventClient() {
           padding-left: max(1rem, env(safe-area-inset-left, 0px));
           padding-right: max(1rem, env(safe-area-inset-right, 0px));
         }
-        .dash-cols { grid-template-columns: 1fr; gap: 0; }
+        .dash-cols {
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            "header"
+            "main";
+          gap: 0;
+        }
+        .dash-cols:has(> .dash-stay) {
+          grid-template-areas:
+            "header"
+            "stay"
+            "main";
+        }
+        .dash-main-header { margin-bottom: 8px; }
+        .dash-cols > .dash-stay { margin: 16px 0 8px; }
+        .dash-side { display: none; }
         .dash-aside { display: none; }
+        .dash-weather--aside { display: none; }
+        .dash-weather--main {
+          display: flex;
+          width: max-content;
+          max-width: 100%;
+          margin: 4px auto 10px;
+          padding: 22px 0;
+        }
+        .dash-weather-day {
+          gap: 4px;
+          padding: 0 10px;
+        }
+        .dash-weather-day-name {
+          font-size: 13px;
+        }
+        .dash-weather-day-icon {
+          height: 1.2em;
+          font-size: 17px;
+        }
+        .dash-weather-day-temps {
+          font-size: 12px;
+        }
         .dash-aside-mobile { display: none; }
         .dash-checklist-fold {
           display: block;
@@ -1397,6 +1746,9 @@ export default function DashboardEventClient() {
           border-radius: 16px;
           background: #fff;
           overflow: hidden;
+        }
+        .dash-weather--main + .dash-checklist-fold {
+          margin-top: 8px;
         }
         .dash-checklist-fold-trigger {
           width: 100%;
@@ -1448,7 +1800,15 @@ export default function DashboardEventClient() {
           font-weight: 500;
           line-height: 1.15;
         }
-        .dash-stay { padding: 18px 16px; margin-top: 16px; }
+        .dash-stay { padding: 18px 16px; }
+        .dash-quick-card {
+          background: #f7f7f7;
+          border-radius: 16px;
+          padding: 4px 18px;
+        }
+        .dash-quick-card .dash-contact-action {
+          background: #fff;
+        }
         .dash-stay-col--arrive { padding-right: 14px; }
         .dash-stay-col--depart { padding-left: 14px; }
         .dash-infos-row-trigger {
@@ -1640,28 +2000,29 @@ export default function DashboardEventClient() {
       </div>
       <div className="dash-inner">
         <div className="dash-cols">
-          <div>
-            <header style={{ marginBottom: 28 }}>
-              <p className="dash-kicker">Votre séminaire</p>
-              <h2 className="dash-title" style={{ fontSize: 'clamp(24px, 2.8vw, 32px)', marginBottom: 0 }}>
-                {event.name}
-              </h2>
-            </header>
-
-            {hasStay && (
-              <div className="dash-stay">
-                <div className="dash-stay-col dash-stay-col--arrive">
-                  <span className="dash-stay-label">Arrivée</span>
-                  {stay.arrivalDate && <span className="dash-stay-date">{stay.arrivalDate}</span>}
-                  {stay.arrivalTime && <span className="dash-stay-time">{stay.arrivalTime}</span>}
-                </div>
-                <div className="dash-stay-col dash-stay-col--depart">
-                  <span className="dash-stay-label">Départ</span>
-                  {stay.departureDate && <span className="dash-stay-date">{stay.departureDate}</span>}
-                  {stay.departureTime && <span className="dash-stay-time">{stay.departureTime}</span>}
-                </div>
+          <header className="dash-main-header">
+            <p className="dash-kicker">Votre séminaire</p>
+            <h2 className="dash-title" style={{ fontSize: 'clamp(24px, 2.8vw, 32px)', marginBottom: 0 }}>
+              {event.name}
+            </h2>
+          </header>
+          {hasStay && (
+            <div className="dash-stay">
+              <div className="dash-stay-col dash-stay-col--arrive">
+                <span className="dash-stay-label">Arrivée</span>
+                {stay.arrivalDate && <span className="dash-stay-date">{stay.arrivalDate}</span>}
+                {stay.arrivalTime && <span className="dash-stay-time">{stay.arrivalTime}</span>}
               </div>
-            )}
+              <div className="dash-stay-col dash-stay-col--depart">
+                <span className="dash-stay-label">Départ</span>
+                {stay.departureDate && <span className="dash-stay-date">{stay.departureDate}</span>}
+                {stay.departureTime && <span className="dash-stay-time">{stay.departureTime}</span>}
+              </div>
+            </div>
+          )}
+          {weather && <WeatherCard weather={weather} className="dash-weather--aside" />}
+          <div className="dash-main">
+            {weather && <WeatherCard weather={weather} className="dash-weather--main" />}
 
             {checklist.length > 0 && (
               <div className={`dash-checklist-fold${checklistOpen ? ' is-open' : ''}`}>
@@ -1720,6 +2081,15 @@ export default function DashboardEventClient() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label="Ouvrir dans Maps"
+                          onClick={(e) => {
+                            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                            e.preventDefault();
+                            if (isAppleMobile()) {
+                              setMapsChooserOpen(true);
+                              return;
+                            }
+                            openInMapsApp(event, event.location_maps_url!);
+                          }}
                         >
                           <MapPin size={16} strokeWidth={1.8} />
                         </a>
@@ -1764,27 +2134,6 @@ export default function DashboardEventClient() {
                   </div>
                 )}
               </div>
-            )}
-
-            {weather && (
-              <section className="dash-section">
-                <hr className="dash-divider" />
-                <h2 className="dash-section-title">Météo</h2>
-                <p className="dash-detail-value">
-                  {weather.label}
-                  {weather.temperature != null ? ` · ${Math.round(weather.temperature)}°` : ''}
-                  {(weather.temp_min != null || weather.temp_max != null) && (
-                    <>
-                      {' '}
-                      (
-                      {weather.temp_min != null ? `${Math.round(weather.temp_min)}°` : ''}
-                      {weather.temp_min != null && weather.temp_max != null ? ' / ' : ''}
-                      {weather.temp_max != null ? `${Math.round(weather.temp_max)}°` : ''}
-                      )
-                    </>
-                  )}
-                </p>
-              </section>
             )}
 
             {programme.length > 0 && (
@@ -1886,25 +2235,61 @@ export default function DashboardEventClient() {
           </div>
 
           {checklist.length > 0 && (
-            <aside className="dash-aside">
-              <h2 className="dash-checklist-title">
-                <Briefcase size={16} strokeWidth={1.8} aria-hidden />
-                À ne pas oublier
-              </h2>
-              <div className="dash-inclus">
-                {checklist.map((item) => (
-                  <div key={item.id} className="dash-inclus-item">
-                    <span className="dash-inclus-icon">
-                      <ChecklistTick size={11} />
-                    </span>
-                    <span className="dash-inclus-label">{item.label}</span>
-                  </div>
-                ))}
-              </div>
-            </aside>
+            <div className="dash-side">
+              <aside className="dash-aside">
+                <h2 className="dash-checklist-title">
+                  <Briefcase size={16} strokeWidth={1.8} aria-hidden />
+                  À ne pas oublier
+                </h2>
+                <div className="dash-inclus">
+                  {checklist.map((item) => (
+                    <div key={item.id} className="dash-inclus-item">
+                      <span className="dash-inclus-icon">
+                        <ChecklistTick size={11} />
+                      </span>
+                      <span className="dash-inclus-label">{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </aside>
+            </div>
           )}
         </div>
       </div>
+      {mapsChooserOpen && event.location_maps_url && (
+        <div
+          className="dash-maps-sheet"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="dash-maps-sheet-title"
+          onClick={() => setMapsChooserOpen(false)}
+        >
+          <div className="dash-maps-sheet-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="dash-maps-sheet-group">
+              <p id="dash-maps-sheet-title" className="dash-maps-sheet-title">
+                Ouvrir avec
+              </p>
+              {mapsChooserApps(event, event.location_maps_url).map((app) => (
+                <a
+                  key={app.label}
+                  className="dash-maps-sheet-option"
+                  href={app.href}
+                  onClick={() => setMapsChooserOpen(false)}
+                >
+                  {app.label}
+                </a>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="dash-maps-sheet-cancel"
+              onClick={() => setMapsChooserOpen(false)}
+            >
+              Annuler
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

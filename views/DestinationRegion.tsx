@@ -412,7 +412,7 @@ const DestinationRegion: React.FC<Props> = ({ destination }) => {
               <p className="font-sans text-[12px] font-bold tracking-[-0.02em] text-white/90 sm:text-[13px]">
                 {destination.name}
               </p>
-              <h1 className={`mt-5 max-w-4xl pb-6 pt-1 text-center font-normal sm:mt-6 sm:pb-8 ${homeFramedHeroH1Class}`}>
+              <h1 className={`mt-4 max-w-4xl pb-8 pt-1 text-center font-normal sm:mt-6 sm:pb-8 ${homeFramedHeroH1Class}`}>
                 Séminaire d&apos;entreprise{' '}
                 <span className="relative inline-block font-bold">
                   {destination.prep} {destination.name}

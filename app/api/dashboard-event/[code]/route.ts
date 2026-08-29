@@ -86,22 +86,78 @@ function weatherLabel(code: number): string {
   return 'Météo';
 }
 
-type WeatherPayload = {
-  temperature: number | null;
+type WeatherDay = {
+  date: string;
   temp_min: number | null;
   temp_max: number | null;
   code: number | null;
   label: string;
 };
 
-async function fetchWeather(lat: number, lng: number): Promise<WeatherPayload | null> {
+type WeatherPayload = {
+  days: WeatherDay[];
+};
+
+function ymdParis(date: Date): string {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Paris',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+}
+
+function ymdFromValue(value?: string): string | null {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isFinite(parsed.getTime())) return ymdParis(parsed);
+  const match = value.trim().match(/^(\d{4}-\d{2}-\d{2})/);
+  return match?.[1] ?? null;
+}
+
+function daysBetweenYmd(from: string, to: string): number {
+  const [fy, fm, fd] = from.split('-').map(Number);
+  const [ty, tm, td] = to.split('-').map(Number);
+  return Math.round((Date.UTC(ty, tm - 1, td) - Date.UTC(fy, fm - 1, fd)) / 86400000);
+}
+
+function weatherDaysFromDaily(
+  daily: {
+    time?: string[];
+    weather_code?: number[];
+    temperature_2m_max?: number[];
+    temperature_2m_min?: number[];
+  },
+  startIdx: number,
+  count: number,
+): WeatherDay[] {
+  const times = daily.time ?? [];
+  const days: WeatherDay[] = [];
+  for (let i = startIdx; i < times.length && days.length < count; i += 1) {
+    const code = daily.weather_code?.[i] ?? null;
+    days.push({
+      date: times[i],
+      temp_min: daily.temperature_2m_min?.[i] ?? null,
+      temp_max: daily.temperature_2m_max?.[i] ?? null,
+      code,
+      label: code == null ? 'Météo' : weatherLabel(code),
+    });
+  }
+  return days;
+}
+
+async function fetchWeather(
+  lat: number,
+  lng: number,
+  startDate?: string,
+  endDate?: string,
+): Promise<WeatherPayload | null> {
   const url = new URL('https://api.open-meteo.com/v1/forecast');
   url.searchParams.set('latitude', String(lat));
   url.searchParams.set('longitude', String(lng));
-  url.searchParams.set('current', 'temperature_2m,weather_code');
   url.searchParams.set('daily', 'weather_code,temperature_2m_max,temperature_2m_min');
   url.searchParams.set('timezone', 'Europe/Paris');
-  url.searchParams.set('forecast_days', '1');
+  url.searchParams.set('forecast_days', '16');
 
   try {
     const res = await fetch(url.toString(), {
@@ -110,21 +166,38 @@ async function fetchWeather(lat: number, lng: number): Promise<WeatherPayload | 
     });
     if (!res.ok) return null;
     const data = (await res.json()) as {
-      current?: { temperature_2m?: number; weather_code?: number };
       daily?: {
+        time?: string[];
         weather_code?: number[];
         temperature_2m_max?: number[];
         temperature_2m_min?: number[];
       };
     };
-    const code = data.current?.weather_code ?? data.daily?.weather_code?.[0] ?? null;
-    return {
-      temperature: data.current?.temperature_2m ?? null,
-      temp_min: data.daily?.temperature_2m_min?.[0] ?? null,
-      temp_max: data.daily?.temperature_2m_max?.[0] ?? null,
-      code,
-      label: code == null ? 'Météo' : weatherLabel(code),
-    };
+    const daily = data.daily;
+    if (!daily?.time?.length) return null;
+
+    const today = ymdParis(new Date());
+    const start = ymdFromValue(startDate);
+    const end = ymdFromValue(endDate) ?? start;
+    const times = daily.time;
+    let days: WeatherDay[] = [];
+
+    if (start) {
+      const untilStart = daysBetweenYmd(today, start);
+      const untilEnd = end ? daysBetweenYmd(today, end) : untilStart;
+      if (untilStart > 7 || untilEnd < 0) {
+        days = weatherDaysFromDaily(daily, 0, 3);
+      } else {
+        const from = today > start ? today : start;
+        const fromIdx = Math.max(0, times.indexOf(from));
+        const endIdx = end && times.includes(end) ? times.indexOf(end) : fromIdx;
+        days = weatherDaysFromDaily(daily, fromIdx, Math.max(1, endIdx - fromIdx + 1));
+      }
+    } else {
+      days = weatherDaysFromDaily(daily, 0, 3);
+    }
+
+    return days.length ? { days } : null;
   } catch {
     return null;
   }
@@ -251,7 +324,15 @@ export async function GET(_req: NextRequest, context: RouteContext) {
     const eventRow = event as Record<string, unknown>;
     const lat = toCoord(eventRow.weather_lat);
     const lng = toCoord(eventRow.weather_lng);
-    const weather = lat != null && lng != null ? await fetchWeather(lat, lng) : null;
+    const weather =
+      lat != null && lng != null
+        ? await fetchWeather(
+            lat,
+            lng,
+            filledString(eventRow.start_date),
+            filledString(eventRow.end_date),
+          )
+        : null;
 
     const publicEvent: Record<string, unknown> = {
       id: eventRow.id,
