@@ -1,17 +1,22 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import {
+  Briefcase,
+  Building2,
   Bus,
-  Calendar,
-  Check,
   ChevronRight,
-  CloudSun,
+  Clock,
   MapPin,
+  MessageCircle,
+  Music2,
   Phone,
   Train,
+  Trophy,
   Users,
+  UtensilsCrossed,
+  Wheat,
 } from 'lucide-react';
 import { HOME_COLORS, HOME_RADIUS } from '../../components/home/homeStyles';
 
@@ -23,6 +28,14 @@ const SESSION_TTL_MS = 10 * 60 * 1000;
 const HERO_IMAGE =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/111112.webp';
 const HERO_IMAGE_ALT = 'Grande salle en pierre d’un domaine d’exception';
+const EVENT_HERO_BY_CODE: Record<string, string> = {
+  'avb.2026':
+    'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/hotel-indarra-arbonne-1.webp',
+};
+
+function eventHeroImage(event: { code: string; image?: string }) {
+  return event.image || EVENT_HERO_BY_CODE[event.code.trim().toLowerCase()] || HERO_IMAGE;
+}
 
 type StoredSession = { code: string; expiresAt: number };
 
@@ -71,6 +84,7 @@ type EventPayload = {
   location_maps_url?: string;
   contact_name?: string;
   contact_phone?: string;
+  image?: string;
   weather?: Weather | null;
 };
 
@@ -184,6 +198,53 @@ function formatDateRange(start?: string, end?: string) {
   return startLabel ?? endLabel;
 }
 
+function formatStayDate(value?: string | null) {
+  const d = parseDateTime(value);
+  if (!d) return null;
+  const weekday = d.toLocaleDateString('fr-FR', { weekday: 'short', timeZone: 'Europe/Paris' });
+  const day = d.toLocaleDateString('fr-FR', { day: 'numeric', timeZone: 'Europe/Paris' });
+  const month = d.toLocaleDateString('fr-FR', { month: 'short', timeZone: 'Europe/Paris' });
+  return `${weekday} ${day} ${month}`;
+}
+
+function formatStayTime(value?: string | null) {
+  if (!value) return null;
+  const trimmed = value.trim();
+  if (/^\d{2}:\d{2}/.test(trimmed) && trimmed.length <= 8) return formatTime(trimmed);
+  const d = parseDateTime(trimmed);
+  if (!d) return formatTime(trimmed);
+  const parts = new Intl.DateTimeFormat('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Europe/Paris',
+  }).formatToParts(d);
+  const hour = Number(parts.find((p) => p.type === 'hour')?.value);
+  const minute = Number(parts.find((p) => p.type === 'minute')?.value);
+  if (!Number.isFinite(hour) || (hour === 0 && minute === 0) || (hour === 23 && minute >= 50)) {
+    return null;
+  }
+  return `${String(hour).padStart(2, '0')}h${String(minute).padStart(2, '0')}`;
+}
+
+function stayFromEvent(event: EventPayload, schedule: ScheduleItem[]) {
+  const sorted = [...schedule].sort((a, b) => {
+    const ta = parseDateTime(a.start_time)?.getTime() ?? Number.POSITIVE_INFINITY;
+    const tb = parseDateTime(b.start_time)?.getTime() ?? Number.POSITIVE_INFINITY;
+    return ta - tb;
+  });
+  const first = sorted[0];
+  const last = sorted[sorted.length - 1];
+  const arrivalRaw = first?.start_time ?? event.start_date;
+  const departureRaw = last?.end_time ?? last?.start_time ?? event.end_date;
+  return {
+    arrivalDate: formatStayDate(arrivalRaw),
+    arrivalTime: formatStayTime(first?.start_time) ?? formatStayTime(event.start_date),
+    departureDate: formatStayDate(departureRaw),
+    departureTime: formatStayTime(last?.end_time ?? last?.start_time) ?? formatStayTime(event.end_date),
+  };
+}
+
 function formatTime(value?: string | null) {
   if (!value) return null;
   const trimmed = value.trim();
@@ -203,15 +264,6 @@ function parseDateTime(value?: string | null): Date | null {
   return Number.isFinite(d.getTime()) ? d : null;
 }
 
-function formatWeekdayDate(value?: string | null) {
-  const d = parseDateTime(value);
-  if (!d) return null;
-  const weekday = d.toLocaleDateString('fr-FR', { weekday: 'long' });
-  const day = String(d.getDate()).padStart(2, '0');
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  return `${weekday.charAt(0).toUpperCase()}${weekday.slice(1)} ${day}/${month}`;
-}
-
 function formatScheduleHm(value?: string | null) {
   if (!value) return null;
   const trimmed = value.trim();
@@ -219,6 +271,87 @@ function formatScheduleHm(value?: string | null) {
   const d = parseDateTime(trimmed);
   if (!d) return null;
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+function formatTimelineWeekday(value?: string | null) {
+  const d = parseDateTime(value);
+  if (!d) return null;
+  return d.toLocaleDateString('fr-FR', { weekday: 'short', timeZone: 'Europe/Paris' });
+}
+
+function formatTimelineDayNum(value?: string | null) {
+  const d = parseDateTime(value);
+  if (!d) return null;
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', timeZone: 'Europe/Paris' });
+}
+
+function formatProgrammeTime(item: ScheduleItem) {
+  const start = formatStayTime(item.start_time) ?? formatTime(item.start_time);
+  const end = formatStayTime(item.end_time) ?? formatTime(item.end_time);
+  if (start && end) return `${start} – ${end}`;
+  return start;
+}
+
+function sortedSchedule(items: ScheduleItem[]) {
+  return [...items].sort((a, b) => {
+    const ta = parseDateTime(a.start_time)?.getTime() ?? Number.POSITIVE_INFINITY;
+    const tb = parseDateTime(b.start_time)?.getTime() ?? Number.POSITIVE_INFINITY;
+    if (ta !== tb) return ta - tb;
+    return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+  });
+}
+
+function foldTitle(title: string) {
+  return title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+function titleHas(folded: string, keywords: string[]) {
+  return keywords.some((keyword) => folded.includes(keyword));
+}
+
+function programmeIcon(title: string) {
+  const props = { size: 16, strokeWidth: 1.8, color: INK } as const;
+  const t = foldTitle(title);
+
+  if (titleHas(t, ['train', 'gare', 'trajet'])) return <Train {...props} />;
+  if (
+    titleHas(t, ['navette', 'bus', 'transfert', 'vers lieu']) ||
+    (t.includes('depart') && t.includes('hotel')) ||
+    (t.includes('retour') && t.includes('hotel'))
+  ) {
+    return <Bus {...props} />;
+  }
+  if (titleHas(t, ['hotel', 'accueil', 'check-in', 'check in', 'logement'])) {
+    return <Building2 {...props} />;
+  }
+  if (titleHas(t, ['soiree', 'afterwork', 'cocktail', 'gala'])) return <Music2 {...props} />;
+  if (titleHas(t, ['dejeuner', 'diner', 'repas', 'lunch', 'brunch', 'petit-dejeuner', 'petit dejeuner'])) {
+    return <UtensilsCrossed {...props} />;
+  }
+  if (titleHas(t, ['trophee', 'tournoi', 'competition', 'coupe', 'challenge', 'olympiade', 'volley'])) {
+    return <Trophy {...props} />;
+  }
+  if (titleHas(t, ['producteur', 'immersion', 'ferme', 'artisan', 'vignoble', 'cave', 'fromager'])) {
+    return <Wheat {...props} />;
+  }
+  return <Clock {...props} />;
+}
+
+function ChecklistTick({ size }: { size: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M5 12.4 L10 17.6 L19.2 6.6"
+        stroke="currentColor"
+        strokeWidth="3.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
 function formatDayHeading(value: string) {
@@ -262,59 +395,6 @@ function groupScheduleByDay(items: ScheduleItem[]) {
   });
 }
 
-function transportGroupTitle(type?: string) {
-  const t = (type ?? '').toLowerCase();
-  if (t === 'train') return 'Trajets en train';
-  if (t === 'bus') return 'Transferts en bus';
-  if (t === 'navette' || t === 'shuttle' || t === 'navettes') return 'Navettes';
-  return transportTypeLabel(type) || 'Transport';
-}
-
-function transportGroupIcon(type?: string) {
-  const props = { size: 18, strokeWidth: 1.7, color: INK } as const;
-  const t = (type ?? '').toLowerCase();
-  if (t === 'bus' || t === 'car' || t === 'coach' || t === 'navette') return <Bus {...props} />;
-  return <Train {...props} />;
-}
-
-function transportGroupKey(type?: string) {
-  const t = (type ?? '').trim().toLowerCase();
-  if (t === 'shuttle' || t === 'navettes') return 'navette';
-  return t || 'autre';
-}
-
-function formatTransportLine(slot: TransportItem) {
-  const depTime = formatTime(slot.departure_time);
-  const arrTime = formatTime(slot.arrival_time);
-  const date = formatWeekdayDate(slot.departure_time) ?? formatWeekdayDate(slot.arrival_time);
-  const hasPlaces = Boolean(slot.departure_location || slot.arrival_location);
-
-  if (hasPlaces) {
-    const left = [depTime, slot.departure_location].filter(Boolean).join(' ');
-    const right = [arrTime, slot.arrival_location].filter(Boolean).join(' ');
-    const route = left && right ? `${left} → ${right}` : left || right;
-    const withDate = date && route ? `${date} — ${route}` : route || date || '';
-    return slot.train_number ? `${withDate} (${slot.train_number})` : withDate;
-  }
-
-  const times = [depTime, arrTime].filter(Boolean);
-  const timePart = times.join(' ou ');
-
-  if (slot.label) {
-    return timePart ? `${slot.label} : ${timePart}` : slot.label;
-  }
-  if (date && timePart) return `Départ ${date} : ${timePart}`;
-  return [date, timePart].filter(Boolean).join(' : ');
-}
-
-function transportDisplayLines(slot: TransportItem): string[] {
-  if (slot.notes) {
-    return slot.notes.split('\n');
-  }
-  const line = formatTransportLine(slot);
-  return line ? [line] : [];
-}
-
 function teamDayKey(value?: string | null): TeamDay['key'] | null {
   const t = (value ?? '')
     .trim()
@@ -355,53 +435,36 @@ function groupTeamsByDay(items: TeamMember[]): TeamDay[] {
   return daysOut.some((day) => day.teams.length > 0) ? daysOut : [];
 }
 
-function groupTransports(items: TransportItem[]) {
-  const order: string[] = [];
-  const map = new Map<string, TransportItem[]>();
-  for (const item of items) {
-    const key = transportGroupKey(item.type);
-    if (!map.has(key)) {
-      order.push(key);
-      map.set(key, []);
-    }
-    map.get(key)!.push(item);
-  }
-  return order.map((key) => ({
-    key,
-    title: transportGroupTitle(key === 'autre' ? items.find((i) => transportGroupKey(i.type) === key)?.type : key),
-    items: map.get(key)!,
-  }));
-}
-
-function transportTypeLabel(type?: string) {
-  if (!type) return null;
-  const t = type.toLowerCase();
-  if (t === 'train') return 'Trajets en train';
-  if (t === 'bus') return 'Transferts en bus';
-  if (t === 'car' || t === 'coach') return 'Car';
-  if (t === 'plane' || t === 'avion' || t === 'flight') return 'Avion';
-  if (t === 'taxi') return 'Taxi';
-  if (t === 'shuttle' || t === 'navette') return 'Navette';
-  if (t === 'voiture' || t === 'carpool') return 'Voiture';
-  if (t === 'walk' || t === 'marche') return 'À pied';
-  return type;
-}
-
 function telHref(phone: string) {
   return `tel:${phone.replace(/[^\d+]/g, '')}`;
 }
 
+function smsHref(phone: string) {
+  return `sms:${phone.replace(/[^\d+]/g, '')}`;
+}
+
+type InfosVariant = 'card' | 'plain';
+
 const AccordionCtx = React.createContext<{
   openId: string | null;
   toggle: (id: string) => void;
+  variant: InfosVariant;
 } | null>(null);
 
-function AccordionList({ children }: { children: React.ReactNode }) {
+function AccordionList({
+  children,
+  variant = 'card',
+}: {
+  children: React.ReactNode;
+  variant?: InfosVariant;
+}) {
   const [openId, setOpenId] = useState<string | null>(null);
   const toggle = (id: string) => setOpenId((cur) => (cur === id ? null : id));
   return (
-    <AccordionCtx.Provider value={{ openId, toggle }}>
-      <div className="dash-infos-list">{children}</div>
+    <AccordionCtx.Provider value={{ openId, toggle, variant }}>
+      <div className={`dash-infos-list${variant === 'plain' ? ' dash-infos-list--plain' : ''}`}>
+        {children}
+      </div>
     </AccordionCtx.Provider>
   );
 }
@@ -414,6 +477,7 @@ function InfosRow({
   children,
   href,
   alwaysOpen = false,
+  variant,
 }: {
   id?: string;
   icon: React.ReactNode;
@@ -422,12 +486,14 @@ function InfosRow({
   children?: React.ReactNode;
   href?: string;
   alwaysOpen?: boolean;
+  variant?: InfosVariant;
 }) {
   const accordion = React.useContext(AccordionCtx);
   const rowId = id ?? title;
   const [localOpen, setLocalOpen] = useState(alwaysOpen);
   const open = alwaysOpen || (accordion ? accordion.openId === rowId : localOpen);
   const expandable = Boolean(children);
+  const rowVariant = variant ?? accordion?.variant ?? 'card';
   const rowRef = useRef<HTMLDivElement>(null);
   const lockTopRef = useRef<number | null>(null);
 
@@ -460,14 +526,17 @@ function InfosRow({
         <span className="dash-infos-row-title">{title}</span>
         {subtitle && <span className="dash-infos-row-sub">{subtitle}</span>}
       </span>
-      {!alwaysOpen && (
+      {expandable && !alwaysOpen && (
         <ChevronRight size={18} strokeWidth={1.8} className="dash-infos-row-chevron" aria-hidden />
       )}
     </>
   );
 
   return (
-    <div ref={rowRef} className={`dash-infos-row${open ? ' is-open' : ''}`}>
+    <div
+      ref={rowRef}
+      className={`dash-infos-row${open ? ' is-open' : ''}${rowVariant === 'plain' ? ' dash-infos-row--plain' : ''}`}
+    >
       {href && !expandable ? (
         <a
           className="dash-infos-row-trigger"
@@ -514,6 +583,7 @@ export default function DashboardEventClient() {
   const [unlockError, setUnlockError] = useState('');
   const [unlocking, setUnlocking] = useState(false);
   const [data, setData] = useState<DashboardData | null>(null);
+  const [checklistOpen, setChecklistOpen] = useState(false);
 
   useEffect(() => {
     const code = readSession();
@@ -566,11 +636,6 @@ export default function DashboardEventClient() {
     }
   };
 
-  const dateLabel = useMemo(
-    () => formatDateRange(data?.event.start_date, data?.event.end_date),
-    [data],
-  );
-
   const pageCss = (
     <style>{`
       .dash-page { background: #ffffff; min-height: 100vh; font-family: ${FONT}; color: ${INK}; }
@@ -597,7 +662,7 @@ export default function DashboardEventClient() {
         overflow: hidden;
         background: ${INK};
         border-radius: ${HOME_RADIUS};
-        padding: 4rem 1.25rem;
+        padding: 4.5rem 1.25rem;
         text-align: center;
       }
       .dash-hero-media {
@@ -619,12 +684,29 @@ export default function DashboardEventClient() {
       @media (min-width: 640px) {
         .dash-inner { padding-left: 2rem; padding-right: 1.25rem; }
         .dash-hero-wrap { padding-left: 2rem; padding-right: 1.25rem; }
-        .dash-hero { padding: 5rem 2rem; }
+        .dash-hero { padding: 5.5rem 2rem; }
       }
       @media (min-width: 1024px) {
         .dash-inner { padding-left: 2.5rem; padding-right: 1.5rem; }
         .dash-hero-wrap { padding-left: 2.5rem; padding-right: 1.5rem; }
-        .dash-hero { padding: 6rem 2rem; }
+        .dash-hero {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 28rem;
+          padding: 8.5rem 2rem;
+        }
+        .dash-hero-copy { text-align: center; }
+      }
+      .dash-hero-title {
+        font-family: ${FONT};
+        font-size: clamp(2.35rem, 6.2vw, 3.75rem);
+        font-weight: 700;
+        letter-spacing: -0.075em;
+        line-height: 1.06;
+        color: #fff;
+        margin: 0;
+        text-wrap: balance;
       }
       .dash-kicker {
         font-size: 10px;
@@ -634,18 +716,19 @@ export default function DashboardEventClient() {
         color: ${ORANGE};
         margin: 0 0 10px;
       }
-      .dash-kicker--dash {
-        margin-bottom: 16px;
+      .dash-checklist-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: ${FONT};
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.25;
+        color: ${ORANGE};
+        margin: 0 0 16px;
       }
-      .dash-kicker--dash::after {
-        content: '';
-        display: block;
-        width: 28px;
-        height: 2.5px;
-        margin-top: 10px;
-        background: ${ORANGE};
-        border-radius: 999px;
-      }
+      .dash-checklist-fold { display: none; }
       .dash-title {
         font-family: ${FONT};
         font-size: clamp(28px, 3.4vw, 40px);
@@ -686,16 +769,164 @@ export default function DashboardEventClient() {
         line-height: 1.5;
         color: rgba(12, 29, 34, 0.6);
       }
-      .dash-section { margin: 28px 0 8px; }
+      .dash-section { margin: 0; }
+      .dash-section > .dash-divider {
+        margin: 32px 0 20px;
+      }
       .dash-section-title {
         font-family: ${FONT};
         font-size: clamp(18px, 2.2vw, 22px);
         font-weight: 700;
         letter-spacing: -0.05em;
         color: ${INK};
-        margin: 0 0 12px;
+        margin: 0 0 14px;
       }
+      .dash-stay {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 20px 0 12px;
+        padding: 22px 24px;
+        background: ${HOME_COLORS.gray};
+        border-radius: 16px;
+      }
+      .dash-stay-col {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        min-width: 0;
+      }
+      .dash-stay-col--arrive { text-align: left; padding-right: 18px; }
+      .dash-stay-col--depart {
+        text-align: right;
+        padding-left: 18px;
+        border-left: 1px solid rgba(12, 29, 34, 0.12);
+      }
+      .dash-stay-label {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.25;
+        color: ${INK};
+      }
+      .dash-stay-date {
+        padding-top: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        line-height: 1.4;
+        color: ${INK};
+      }
+      .dash-stay-time {
+        padding-top: 2px;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        line-height: 1.4;
+        color: rgba(12, 29, 34, 0.5);
+      }
+      .dash-actions {
+        margin: 4px 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .dash-quick-card {
+        background: #f7f7f7;
+        border-radius: 16px;
+        padding: 4px 18px;
+      }
+      .dash-quick-card .dash-contact-action {
+        background: #fff;
+      }
+      .dash-divider {
+        height: 1px;
+        background: rgba(12, 29, 34, 0.10);
+        margin: 32px 0 20px;
+        border: 0;
+      }
+      .dash-detail-block { margin: 0 0 22px; }
+      .dash-detail-block:last-child { margin-bottom: 0; }
+      .dash-contact-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+      .dash-contact-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        border: 1px solid rgba(12, 29, 34, 0.12);
+        background: ${HOME_COLORS.gray};
+        color: ${INK};
+        text-decoration: none;
+      }
+      .dash-contact-action:hover { background: rgba(12, 29, 34, 0.06); }
+      .dash-quick-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 0;
+      }
+      .dash-quick-row-icon {
+        flex-shrink: 0;
+        width: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: ${INK};
+      }
+      .dash-quick-row-text {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .dash-quick-row-title {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.25;
+        color: ${INK};
+      }
+      .dash-quick-row-sub {
+        font-size: 13px;
+        font-weight: 500;
+        color: rgba(12, 29, 34, 0.5);
+        line-height: 1.35;
+        overflow-wrap: break-word;
+      }
+      .dash-quick-row-actions {
+        flex-shrink: 0;
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .dash-detail-label {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.3;
+        color: ${INK};
+        margin: 0 0 4px;
+      }
+      .dash-detail-value {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: -0.03em;
+        line-height: 1.5;
+        color: rgba(12, 29, 34, 0.7);
+      }
+      .dash-detail-value a { color: ${ORANGE}; font-weight: 600; text-decoration: none; }
+      .dash-detail-value a:hover { text-decoration: underline; }
       .dash-infos-list { display: flex; flex-direction: column; gap: 8px; overflow-anchor: none; }
+      .dash-infos-list--plain { gap: 0; }
       .dash-infos-row {
         scroll-margin-top: calc(76px + env(safe-area-inset-top, 0px) + 12px);
         overflow-anchor: none;
@@ -757,6 +988,18 @@ export default function DashboardEventClient() {
         transform: rotate(90deg);
         color: ${ORANGE};
       }
+      .dash-infos-row--plain {
+        background: transparent;
+        border: none;
+        border-radius: 0;
+      }
+      .dash-infos-row--plain .dash-infos-row-trigger {
+        padding: 18px 0;
+      }
+      .dash-infos-row--plain .dash-infos-row-trigger:hover { background: transparent; }
+      .dash-infos-row--plain .dash-infos-row-body {
+        padding: 0 0 16px 34px;
+      }
       .dash-infos-row-body {
         padding: 0 16px 14px 50px;
         min-width: 0;
@@ -772,54 +1015,36 @@ export default function DashboardEventClient() {
       }
       .dash-copy a { color: ${ORANGE}; font-weight: 600; text-decoration: none; }
       .dash-copy a:hover { text-decoration: underline; }
-      .dash-transport-lines {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-      .dash-transport-lines li {
-        position: relative;
-        padding-left: 1.1em;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 1.55;
-        letter-spacing: -0.03em;
-        color: rgba(12, 29, 34, 0.7);
-        overflow-wrap: break-word;
-        word-break: break-word;
-      }
-      .dash-transport-lines li::before {
-        content: '•';
-        position: absolute;
-        left: 0;
-        font-weight: 700;
-        color: ${ORANGE};
-      }
-      .dash-inclus { display: flex; flex-direction: column; }
+      .dash-inclus { display: flex; flex-direction: column; gap: 4px; }
       .dash-inclus-item {
         display: flex;
-        align-items: flex-start;
-        gap: 8px;
-        padding: 8px 0;
+        align-items: center;
+        gap: 12px;
+        padding: 6px 0;
       }
       .dash-inclus-icon {
         flex-shrink: 0;
-        width: 18px;
+        width: 32px;
+        height: 32px;
+        border-radius: 12px;
+        background: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding-top: 1px;
         color: ${ORANGE};
       }
       .dash-inclus-label {
-        font-size: 13.5px;
+        font-size: 14px;
         font-weight: 500;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.03em;
         line-height: 1.4;
-        color: rgba(12, 29, 34, 0.75);
+        color: rgba(12, 29, 34, 0.72);
+      }
+      @media (min-width: 1024px) {
+        .dash-inclus { gap: 0; }
+        .dash-inclus-item { padding: 3px 0; gap: 10px; }
+        .dash-inclus-icon { width: 28px; height: 28px; }
+        .dash-inclus-label { line-height: 1.25; }
       }
       .dash-programme { display: flex; flex-direction: column; }
       .dash-programme-step {
@@ -845,6 +1070,135 @@ export default function DashboardEventClient() {
         font-weight: 500;
         line-height: 1.55;
         color: rgba(12, 29, 34, 0.7);
+      }
+      .dash-timeline { display: flex; flex-direction: column; }
+      .dash-timeline-item {
+        display: grid;
+        grid-template-columns: 40px minmax(0, 1fr);
+        column-gap: 14px;
+        align-items: stretch;
+      }
+      .dash-timeline-rail {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 2px;
+      }
+      .dash-timeline-rail::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: rgba(12, 29, 34, 0.12);
+        transform: translateX(-50%);
+      }
+      .dash-timeline-item--dated:not(:first-child) { padding-top: 10px; }
+      .dash-timeline-item:first-child .dash-timeline-rail::before { top: 42px; }
+      .dash-timeline-item:only-child .dash-timeline-rail::before,
+      .dash-timeline-item:last-child:not(.dash-timeline-item--dated) .dash-timeline-rail::before {
+        display: none;
+      }
+      .dash-timeline-item:last-child.dash-timeline-item--dated .dash-timeline-rail::before {
+        display: block;
+        top: 0;
+        bottom: auto;
+        height: 22px;
+      }
+      .dash-timeline-item:first-child:last-child.dash-timeline-item--dated .dash-timeline-rail::before {
+        display: none;
+      }
+      .dash-timeline-weekday {
+        padding-top: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        color: ${INK};
+        margin-bottom: 6px;
+      }
+      .dash-timeline-dot {
+        position: relative;
+        z-index: 1;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: ${HOME_COLORS.gray};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        color: ${INK};
+      }
+      .dash-timeline-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        align-self: start;
+        min-width: 0;
+        margin-bottom: 8px;
+        padding: 10px 12px;
+        background: ${HOME_COLORS.gray};
+        border-radius: 14px;
+      }
+      .dash-timeline-item:last-child .dash-timeline-card { margin-bottom: 0; }
+      .dash-timeline-icon {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: ${INK};
+      }
+      .dash-timeline-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+      .dash-timeline-card-text {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .dash-timeline-card-title {
+        font-size: 13.5px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.25;
+        color: ${INK};
+      }
+      .dash-timeline-card-sub {
+        padding-top: 1px;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        line-height: 1.35;
+        color: rgba(12, 29, 34, 0.5);
+      }
+      @media (min-width: 1024px) {
+        .dash-timeline-card {
+          gap: 12px;
+          margin-bottom: 10px;
+          padding: 16px 16px;
+          min-height: 68px;
+        }
+        .dash-timeline-icon {
+          width: 40px;
+          height: 40px;
+        }
+        .dash-timeline-icon svg {
+          width: 18px;
+          height: 18px;
+        }
+        .dash-timeline-card-title { font-size: 14.5px; }
+        .dash-timeline-card-sub { font-size: 12.5px; }
       }
       .dash-badge {
         display: inline-flex;
@@ -994,9 +1348,8 @@ export default function DashboardEventClient() {
         top: calc(72px + 2.5rem);
         align-self: start;
         background: ${HOME_COLORS.gray};
-        border-radius: ${HOME_RADIUS};
-        border: 1px solid rgba(12, 29, 34, 0.08);
-        padding: 28px 24px;
+        border-radius: 16px;
+        padding: 22px 22px 20px;
         color: ${INK};
       }
       .dash-aside-mobile { display: none; }
@@ -1009,19 +1362,78 @@ export default function DashboardEventClient() {
         }
         .dash-cols { grid-template-columns: 1fr; gap: 0; }
         .dash-aside { display: none; }
-        .dash-aside-mobile {
+        .dash-aside-mobile { display: none; }
+        .dash-checklist-fold {
           display: block;
-          background: ${HOME_COLORS.gray};
-          border-radius: ${HOME_RADIUS};
-          border: 1px solid rgba(12, 29, 34, 0.08);
-          padding: 20px 16px;
-          margin: 20px 0 24px;
+          margin: 28px 0 12px;
+          border: 1.5px solid ${ORANGE};
+          border-radius: 16px;
+          background: #fff;
+          overflow: hidden;
         }
+        .dash-checklist-fold-trigger {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 18px 20px;
+          border: none;
+          background: transparent;
+          color: ${ORANGE};
+          font-family: inherit;
+          cursor: pointer;
+          text-align: left;
+        }
+        .dash-checklist-fold-trigger .dash-quick-row-title {
+          color: ${ORANGE};
+        }
+        .dash-checklist-fold-chevron {
+          margin-left: auto;
+          flex-shrink: 0;
+          color: ${ORANGE};
+          transition: transform 0.22s ease;
+        }
+        .dash-checklist-fold.is-open .dash-checklist-fold-chevron {
+          transform: rotate(90deg);
+        }
+        .dash-checklist-fold-body {
+          padding: 0 20px 16px;
+        }
+        .dash-checklist-fold-body .dash-inclus {
+          gap: 0;
+        }
+        .dash-checklist-fold-body .dash-inclus-item {
+          align-items: flex-start;
+          gap: 8px;
+          padding: 3px 0;
+        }
+        .dash-checklist-fold-body .dash-inclus-icon {
+          width: auto;
+          height: auto;
+          background: transparent;
+          border-radius: 0;
+          padding-top: 1px;
+          color: ${ORANGE};
+        }
+        .dash-checklist-fold-body .dash-inclus-label {
+          color: ${ORANGE};
+          font-size: 13px;
+          font-weight: 500;
+          line-height: 1.15;
+        }
+        .dash-stay { padding: 18px 16px; margin-top: 16px; }
+        .dash-stay-col--arrive { padding-right: 14px; }
+        .dash-stay-col--depart { padding-left: 14px; }
         .dash-infos-row-trigger {
           padding: 14px;
           min-height: 48px;
         }
+        .dash-infos-row--plain .dash-infos-row-trigger {
+          padding: 16px 0;
+          min-height: 0;
+        }
         .dash-infos-row-body { padding: 0 14px 12px 14px; }
+        .dash-infos-row--plain .dash-infos-row-body { padding: 0 0 14px 34px; }
         .dash-input { font-size: 16px; }
         .dash-unlock-code { font-size: 16px; letter-spacing: 0.12em; }
         .dash-cta { font-size: 10px; padding: 14px 18px; }
@@ -1046,7 +1458,7 @@ export default function DashboardEventClient() {
           align-items: center;
           justify-content: center;
           width: 100%;
-          min-height: 52svh;
+          min-height: 64svh;
           border-radius: 0;
           padding: calc(92px + env(safe-area-inset-top, 0px)) 1.5rem 3.5rem;
           box-sizing: border-box;
@@ -1159,12 +1571,16 @@ export default function DashboardEventClient() {
     );
   }
 
-  const { event, checklist, activities, schedule, transport } = data;
+  const { event, checklist, activities, schedule } = data;
   const teamDays = groupTeamsByDay(data.teams ?? []);
+  const stay = stayFromEvent(event, schedule);
+  const hasStay = Boolean(stay.arrivalDate || stay.departureDate);
   const hasLocation = Boolean(event.location_name || event.location_address || event.location_maps_url);
   const hasContact = Boolean(event.contact_name || event.contact_phone);
   const weather = event.weather;
-  const hasInfos = hasLocation || hasContact || Boolean(weather);
+  const hasActions = hasLocation || hasContact;
+  const hasTeams = teamDays.some((day) => day.teams.length > 0);
+  const programme = sortedSchedule(schedule);
 
   return (
     <div className="dash-page dash-page--open">
@@ -1173,8 +1589,8 @@ export default function DashboardEventClient() {
         <div className="dash-hero">
           <div className="dash-hero-media">
             <Image
-              src={HERO_IMAGE}
-              alt={HERO_IMAGE_ALT}
+              src={eventHeroImage(event)}
+              alt={event.location_name || event.name}
               fill
               priority
               sizes="100vw"
@@ -1184,177 +1600,216 @@ export default function DashboardEventClient() {
           <div className="dash-hero-shade" aria-hidden />
           <div className="dash-hero-copy">
             <p
-              className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/85"
+              className="dash-hero-kicker mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/85"
               style={{ fontFamily: FONT }}
             >
               Espace participant
             </p>
-            <h1 className="font-sans text-[clamp(1.85rem,4.5vw,2.85rem)] font-bold leading-[1.08] tracking-[-0.075em] text-white">
+            <h1 className="dash-hero-title">
               {event.company_name || event.name}
             </h1>
-            {dateLabel && (
-              <p className="mt-3 font-sans text-[11px] font-normal tracking-[-0.03em] text-white/90 sm:text-[16px]">
-                {dateLabel}
-              </p>
-            )}
           </div>
         </div>
       </div>
       <div className="dash-inner">
         <div className="dash-cols">
           <div>
-            <header style={{ marginBottom: 8 }}>
+            <header style={{ marginBottom: 28 }}>
               <p className="dash-kicker">Votre séminaire</p>
-              <h2 className="dash-title" style={{ fontSize: 'clamp(24px, 2.8vw, 32px)' }}>
+              <h2 className="dash-title" style={{ fontSize: 'clamp(24px, 2.8vw, 32px)', marginBottom: 0 }}>
                 {event.name}
               </h2>
-              <div className="dash-meta">
-                {dateLabel && <span className="dash-pill">{dateLabel}</span>}
-                {event.location_name && <span className="dash-pill">{event.location_name}</span>}
-              </div>
             </header>
 
-            <aside className="dash-aside-mobile">
-              <p className="dash-kicker dash-kicker--dash">À ne pas oublier</p>
-              <div className="dash-inclus">
-                {checklist.map((item) => (
-                  <div key={item.id} className="dash-inclus-item">
-                    <span className="dash-inclus-icon">
-                      <Check size={15} strokeWidth={2.2} />
-                    </span>
-                    <span className="dash-inclus-label">{item.label}</span>
-                  </div>
-                ))}
+            {hasStay && (
+              <div className="dash-stay">
+                <div className="dash-stay-col dash-stay-col--arrive">
+                  <span className="dash-stay-label">Arrivée</span>
+                  {stay.arrivalDate && <span className="dash-stay-date">{stay.arrivalDate}</span>}
+                  {stay.arrivalTime && <span className="dash-stay-time">{stay.arrivalTime}</span>}
+                </div>
+                <div className="dash-stay-col dash-stay-col--depart">
+                  <span className="dash-stay-label">Départ</span>
+                  {stay.departureDate && <span className="dash-stay-date">{stay.departureDate}</span>}
+                  {stay.departureTime && <span className="dash-stay-time">{stay.departureTime}</span>}
+                </div>
               </div>
-            </aside>
+            )}
 
-            {hasInfos && (
-              <section className="dash-section" aria-labelledby="dash-infos-title">
-                <h2 id="dash-infos-title" className="dash-section-title">
-                  Infos pratiques
-                </h2>
-                <AccordionList>
-                  {hasLocation && (
-                    <InfosRow
-                      id="infos-logement"
-                      icon={<MapPin size={18} strokeWidth={1.7} color={INK} />}
-                      title="Logement"
-                      subtitle={event.location_name || event.location_address}
-                      href={!event.location_address && event.location_maps_url ? event.location_maps_url : undefined}
-                    >
-                      {(event.location_address || event.location_maps_url) && (
-                        <>
-                          {event.location_name && event.location_address && (
-                            <p className="dash-copy" style={{ marginBottom: 6 }}>
-                              {event.location_address}
-                            </p>
-                          )}
-                          {event.location_maps_url && (
-                            <p className="dash-copy">
-                              <a href={event.location_maps_url} target="_blank" rel="noopener noreferrer">
-                                Itinéraire →
-                              </a>
-                            </p>
-                          )}
-                        </>
+            {checklist.length > 0 && (
+              <div className={`dash-checklist-fold${checklistOpen ? ' is-open' : ''}`}>
+                <button
+                  type="button"
+                  className="dash-checklist-fold-trigger"
+                  aria-expanded={checklistOpen}
+                  onClick={() => setChecklistOpen((v) => !v)}
+                >
+                  <span className="dash-quick-row-icon" aria-hidden>
+                    <Briefcase size={18} strokeWidth={1.7} color={ORANGE} />
+                  </span>
+                  <span className="dash-quick-row-text">
+                    <span className="dash-quick-row-title">À ne pas oublier</span>
+                  </span>
+                  <ChevronRight size={18} strokeWidth={1.8} className="dash-checklist-fold-chevron" aria-hidden />
+                </button>
+                {checklistOpen && (
+                  <div className="dash-checklist-fold-body">
+                    <div className="dash-inclus">
+                      {checklist.map((item) => (
+                        <div key={item.id} className="dash-inclus-item">
+                          <span className="dash-inclus-icon">
+                            <ChecklistTick size={13} />
+                          </span>
+                          <span className="dash-inclus-label">{item.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {hasActions && (
+              <div className="dash-actions">
+                {hasLocation && (
+                  <div className="dash-quick-card">
+                  <div className="dash-quick-row">
+                    <span className="dash-quick-row-icon" aria-hidden>
+                      <Building2 size={18} strokeWidth={1.7} color={INK} />
+                    </span>
+                    <span className="dash-quick-row-text">
+                      <span className="dash-quick-row-title">Votre logement</span>
+                      {(event.location_name || event.location_address) && (
+                        <span className="dash-quick-row-sub">
+                          {event.location_name || event.location_address}
+                        </span>
                       )}
-                    </InfosRow>
-                  )}
-                  {hasContact && (
-                    <InfosRow
-                      id="infos-contact"
-                      icon={<Phone size={18} strokeWidth={1.7} color={INK} />}
-                      title="Contact"
-                      subtitle={event.contact_name || event.contact_phone}
-                      href={event.contact_phone && !event.contact_name ? telHref(event.contact_phone) : undefined}
-                    >
-                      {event.contact_phone ? (
-                        <p className="dash-copy">
-                          <a href={telHref(event.contact_phone)}>{event.contact_phone}</a>
-                        </p>
-                      ) : null}
-                    </InfosRow>
-                  )}
-                  {weather && (
-                    <InfosRow
-                      id="infos-meteo"
-                      icon={<CloudSun size={18} strokeWidth={1.7} color={INK} />}
-                      title="Météo"
-                      subtitle={
-                        weather.label +
-                        (weather.temperature != null ? ` · ${Math.round(weather.temperature)}°` : '')
-                      }
-                    >
-                      {(weather.temp_min != null || weather.temp_max != null) && (
-                        <p className="dash-copy">
-                          {weather.temp_min != null ? `${Math.round(weather.temp_min)}°` : ''}
-                          {weather.temp_min != null && weather.temp_max != null ? ' / ' : ''}
-                          {weather.temp_max != null ? `${Math.round(weather.temp_max)}°` : ''}
-                        </p>
+                    </span>
+                    {event.location_maps_url && (
+                      <span className="dash-quick-row-actions">
+                        <a
+                          className="dash-contact-action"
+                          href={event.location_maps_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Ouvrir dans Maps"
+                        >
+                          <MapPin size={16} strokeWidth={1.8} />
+                        </a>
+                      </span>
+                    )}
+                  </div>
+                  </div>
+                )}
+                {hasContact && (
+                  <div className="dash-quick-card">
+                  <div className="dash-quick-row">
+                    <span className="dash-quick-row-icon" aria-hidden>
+                      <MessageCircle size={18} strokeWidth={1.7} color={INK} />
+                    </span>
+                    <span className="dash-quick-row-text">
+                      <span className="dash-quick-row-title">Contacter l&apos;équipe TerraGo</span>
+                      {(event.contact_name || event.contact_phone) && (
+                        <span className="dash-quick-row-sub">
+                          {event.contact_name || event.contact_phone}
+                        </span>
                       )}
-                    </InfosRow>
+                    </span>
+                    {event.contact_phone && (
+                      <span className="dash-quick-row-actions">
+                        <a
+                          className="dash-contact-action"
+                          href={telHref(event.contact_phone)}
+                          aria-label="Appeler l'équipe TerraGo"
+                        >
+                          <Phone size={16} strokeWidth={1.8} />
+                        </a>
+                        <a
+                          className="dash-contact-action"
+                          href={smsHref(event.contact_phone)}
+                          aria-label="Envoyer un message à l'équipe TerraGo"
+                        >
+                          <MessageCircle size={16} strokeWidth={1.8} />
+                        </a>
+                      </span>
+                    )}
+                  </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {weather && (
+              <section className="dash-section">
+                <hr className="dash-divider" />
+                <h2 className="dash-section-title">Météo</h2>
+                <p className="dash-detail-value">
+                  {weather.label}
+                  {weather.temperature != null ? ` · ${Math.round(weather.temperature)}°` : ''}
+                  {(weather.temp_min != null || weather.temp_max != null) && (
+                    <>
+                      {' '}
+                      (
+                      {weather.temp_min != null ? `${Math.round(weather.temp_min)}°` : ''}
+                      {weather.temp_min != null && weather.temp_max != null ? ' / ' : ''}
+                      {weather.temp_max != null ? `${Math.round(weather.temp_max)}°` : ''}
+                      )
+                    </>
                   )}
-                </AccordionList>
+                </p>
               </section>
             )}
 
-            {transport.length > 0 && (
+            {programme.length > 0 && (
               <section className="dash-section">
-                <h2 className="dash-section-title">Transport</h2>
-                <AccordionList>
-                  {groupTransports(transport).map((group) => (
-                    <InfosRow
-                      key={group.key}
-                      id={`transport-${group.key}`}
-                      icon={transportGroupIcon(group.key)}
-                      title={group.title}
-                    >
-                      <ul className="dash-transport-lines">
-                        {group.items.flatMap((slot) =>
-                          transportDisplayLines(slot).map((line, i) => (
-                            <li key={`${slot.id}-${i}`}>{line}</li>
-                          )),
-                        )}
-                      </ul>
-                    </InfosRow>
-                  ))}
-                </AccordionList>
-              </section>
-            )}
-
-            {schedule.length > 0 && (
-              <section className="dash-section">
+                <hr className="dash-divider" />
                 <h2 className="dash-section-title">Planning</h2>
-                <AccordionList>
-                  {groupScheduleByDay(schedule).map((day) => (
-                    <InfosRow
-                      key={day.key}
-                      id={`planning-${day.key}`}
-                      icon={<Calendar size={18} strokeWidth={1.7} color={INK} />}
-                      title={day.title}
-                    >
-                      <div className="dash-programme">
-                        {day.items.map((item) => (
-                          <div key={item.id} className="dash-programme-step">
-                            <span className="dash-programme-time">
-                              {formatScheduleHm(item.start_time) ?? '—'}
-                            </span>
-                            <span className="dash-programme-action">{item.title}</span>
-                          </div>
-                        ))}
+                <div className="dash-timeline">
+                  {programme.map((item, index) => {
+                    const showDate =
+                      index === 0 ||
+                      dayKeyFromStart(item.start_time) !== dayKeyFromStart(programme[index - 1].start_time);
+                    const timeLabel = formatProgrammeTime(item);
+                    return (
+                      <div
+                        key={item.id}
+                        className={`dash-timeline-item${showDate ? ' dash-timeline-item--dated' : ''}`}
+                      >
+                        <div className="dash-timeline-rail" aria-hidden={!showDate}>
+                          {showDate && (
+                            <>
+                              <span className="dash-timeline-weekday">
+                                {formatTimelineWeekday(item.start_time)}
+                              </span>
+                              <span className="dash-timeline-dot">
+                                {formatTimelineDayNum(item.start_time)}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <article className="dash-timeline-card">
+                          <span className="dash-timeline-icon" aria-hidden>
+                            {programmeIcon(item.title)}
+                          </span>
+                          <span className="dash-timeline-card-text">
+                            <span className="dash-timeline-card-title">{item.title}</span>
+                            {timeLabel && <span className="dash-timeline-card-sub">{timeLabel}</span>}
+                          </span>
+                        </article>
                       </div>
-                    </InfosRow>
-                  ))}
-                </AccordionList>
+                    );
+                  })}
+                </div>
               </section>
             )}
 
-            {teamDays.some((day) => day.teams.length > 0) && (
+            {hasTeams && (
               <section className="dash-section" aria-labelledby="dash-teams-title">
+                <hr className="dash-divider" />
                 <h2 id="dash-teams-title" className="dash-section-title">
                   Équipes
                 </h2>
-                <AccordionList>
+                <AccordionList variant="plain">
                   {teamDays
                     .filter((day) => day.teams.length > 0)
                     .map((day) => (
@@ -1385,6 +1840,7 @@ export default function DashboardEventClient() {
 
             {activities.length > 0 && (
               <section className="dash-section">
+                <hr className="dash-divider" />
                 <h2 className="dash-section-title">Activités</h2>
                 {activities.map((activity) => (
                   <article key={activity.id} className="dash-activity">
@@ -1402,19 +1858,24 @@ export default function DashboardEventClient() {
             )}
           </div>
 
-          <aside className="dash-aside">
-            <p className="dash-kicker dash-kicker--dash">À ne pas oublier</p>
-            <div className="dash-inclus">
-              {checklist.map((item) => (
-                <div key={item.id} className="dash-inclus-item">
-                  <span className="dash-inclus-icon">
-                    <Check size={15} strokeWidth={2.2} />
-                  </span>
-                  <span className="dash-inclus-label">{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </aside>
+          {checklist.length > 0 && (
+            <aside className="dash-aside">
+              <h2 className="dash-checklist-title">
+                <Briefcase size={16} strokeWidth={1.8} aria-hidden />
+                À ne pas oublier
+              </h2>
+              <div className="dash-inclus">
+                {checklist.map((item) => (
+                  <div key={item.id} className="dash-inclus-item">
+                    <span className="dash-inclus-icon">
+                      <ChecklistTick size={16} />
+                    </span>
+                    <span className="dash-inclus-label">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            </aside>
+          )}
         </div>
       </div>
     </div>

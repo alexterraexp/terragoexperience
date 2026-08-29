@@ -147,13 +147,24 @@ export async function GET(_req: NextRequest, context: RouteContext) {
 
     const db = supabaseAdmin ?? supabaseServer;
 
-    const { data: event, error: eventError } = await db
+    const EVENT_COLUMNS =
+      'id, code, name, company_name, start_date, end_date, location_name, location_address, location_maps_url, weather_lat, weather_lng, contact_name, contact_phone, image';
+    const EVENT_COLUMNS_FALLBACK =
+      'id, code, name, company_name, start_date, end_date, location_name, location_address, location_maps_url, weather_lat, weather_lng, contact_name, contact_phone';
+
+    let { data: event, error: eventError } = await db
       .from('events')
-      .select(
-        'id, code, name, company_name, start_date, end_date, location_name, location_address, location_maps_url, weather_lat, weather_lng, contact_name, contact_phone',
-      )
+      .select(EVENT_COLUMNS)
       .ilike('code', code)
       .maybeSingle();
+
+    if (eventError && /image/i.test(eventError.message ?? '')) {
+      ({ data: event, error: eventError } = await db
+        .from('events')
+        .select(EVENT_COLUMNS_FALLBACK)
+        .ilike('code', code)
+        .maybeSingle());
+    }
 
     if (eventError) {
       console.error('[dashboard-event] event lookup error:', eventError);
@@ -249,7 +260,7 @@ export async function GET(_req: NextRequest, context: RouteContext) {
     };
     const companyName = filledString(eventRow.company_name ?? eventRow['Company name']);
     if (companyName) publicEvent.company_name = companyName;
-    for (const key of ['start_date', 'end_date', 'location_name', 'location_address', 'location_maps_url', 'contact_name', 'contact_phone'] as const) {
+    for (const key of ['start_date', 'end_date', 'location_name', 'location_address', 'location_maps_url', 'contact_name', 'contact_phone', 'image'] as const) {
       const value = filledString(eventRow[key]);
       if (value) publicEvent[key] = value;
     }

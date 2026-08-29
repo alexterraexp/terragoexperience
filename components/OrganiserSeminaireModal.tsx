@@ -401,6 +401,8 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           .osm-range-wrap {
             padding: 10px 0 18px;
           }
+          .osm-input,
+          input.osm-input { font-size: 16px !important; }
         }
       `}</style>
 
@@ -663,7 +665,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                       Une idée de <strong style={strong}>lieu ?</strong>
                     </h2>
                     <div ref={lieuWrapRef} style={{ position: 'relative', maxWidth: 340 }}>
-                      <span style={{ position: 'absolute', left: 13, top: 14, display: 'flex', color: '#b3b3b3', zIndex: 1, pointerEvents: 'none' }}>
+                      <span style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', display: 'flex', color: '#b3b3b3', zIndex: 1, pointerEvents: 'none' }}>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
                           <circle cx="12" cy="10" r="3" />
@@ -749,8 +751,10 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                     </h2>
                     <input
                       className="osm-input"
-                      style={{ maxWidth: 250 }}
+                      type="text"
+                      style={{ maxWidth: 250, fontSize: 16 }}
                       inputMode="numeric"
+                      autoComplete="off"
                       placeholder="Nombre de participants"
                       value={participants}
                       onChange={(e) => { setParticipants(e.target.value.replace(/\D/g, '')); setErr(''); }}
