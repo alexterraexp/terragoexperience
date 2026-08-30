@@ -350,7 +350,7 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
         <div className="lg:hidden">
           <div
             ref={mobile.trackRef}
-            className="flex items-stretch snap-x snap-mandatory gap-3 overflow-x-auto"
+            className="flex items-stretch snap-x snap-mandatory gap-3 overflow-x-auto [touch-action:pan-x_pan-y]"
             style={{
               WebkitOverflowScrolling: 'touch',
               msOverflowStyle: 'none',
@@ -402,7 +402,7 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
               <div className="relative h-full min-w-0">
                 <div
                   ref={desktop.trackRef}
-                  className="flex h-full snap-x snap-mandatory gap-4 overflow-x-auto"
+                  className="flex h-full snap-x snap-mandatory gap-4 overflow-x-auto [touch-action:pan-x_pan-y]"
                   style={{
                     WebkitOverflowScrolling: 'touch',
                     msOverflowStyle: 'none',
@@ -430,7 +430,7 @@ const CategoryBar: React.FC<{ category: ExperienceCategory }> = ({ category }) =
               <div className="relative h-full min-w-0">
                 <div
                   ref={desktop.trackRef}
-                  className="flex h-full snap-x snap-mandatory gap-4 overflow-x-auto"
+                  className="flex h-full snap-x snap-mandatory gap-4 overflow-x-auto [touch-action:pan-x_pan-y]"
                   style={{
                     WebkitOverflowScrolling: 'touch',
                     msOverflowStyle: 'none',

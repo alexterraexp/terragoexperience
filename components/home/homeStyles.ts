@@ -18,7 +18,7 @@ export const homeFramedHeroSectionClass =
 
 /**
  * Cadre hero encadré — plus haut sur mobile (ex-5/4 trop écrasé sur iPhone).
- * Ne pas appliquer à Charte RSE / Notre approche (contenu plus court).
+ * Ne pas appliquer à Charte RSE (contenu plus court).
  */
 export const homeFramedHeroAspectClass =
   'aspect-[4/5] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-[2.2/1]';

@@ -741,7 +741,7 @@ const Seminaires: React.FC = () => {
           {/* Mobile : carousel swipable */}
           <div
             ref={featuresScrollRef}
-            className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+            className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain [touch-action:pan-x_pan-y] pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
             style={{
               WebkitOverflowScrolling: 'touch',
               scrollPaddingInline: '1.25rem',
@@ -890,7 +890,7 @@ const Seminaires: React.FC = () => {
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div
             ref={universTrackRef}
-            className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2"
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [touch-action:pan-x_pan-y]"
             style={{
               WebkitOverflowScrolling: 'touch',
               msOverflowStyle: 'none',
@@ -965,7 +965,7 @@ const Seminaires: React.FC = () => {
               >
                 <div
                   ref={lieuxTrackRef}
-                  className="flex snap-x snap-mandatory overflow-x-auto"
+                  className="flex snap-x snap-mandatory overflow-x-auto [touch-action:pan-x_pan-y]"
                   style={{
                     WebkitOverflowScrolling: 'touch',
                     msOverflowStyle: 'none',

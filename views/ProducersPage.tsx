@@ -284,6 +284,7 @@ const ProducersPage: React.FC = () => {
           overflow-x: auto;
           scroll-snap-type: x mandatory;
           -webkit-overflow-scrolling: touch;
+          touch-action: pan-x pan-y;
           scrollbar-width: none;
           padding: 16px 0 28px;
           margin: 0 -1.5rem;

@@ -655,7 +655,7 @@ const LinkBlockSwipe: React.FC<{
     <div className="sm:hidden">
       <div
         ref={scrollRef}
-        className="flex min-w-0 cursor-grab snap-x snap-mandatory items-start gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex min-w-0 cursor-grab snap-x snap-mandatory items-start gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain [touch-action:pan-x_pan-y] pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         style={{
           WebkitOverflowScrolling: 'touch',
           scrollPaddingInline: '1.25rem',
@@ -919,7 +919,7 @@ const ThemesRow: React.FC<{
       {/* Mobile : carousel swipable */}
       <div
         ref={scrollRef}
-        className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+        className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain [touch-action:pan-x_pan-y] pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
         style={{
           WebkitOverflowScrolling: 'touch',
           scrollPaddingInline: '1.25rem',

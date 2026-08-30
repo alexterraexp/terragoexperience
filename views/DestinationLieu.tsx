@@ -259,7 +259,7 @@ const LogementCarousel: React.FC<{
       >
         <div
           ref={trackRef}
-          className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [touch-action:pan-x_pan-y]"
         >
           {images.map((img) => (
             <div key={img.src} className="relative aspect-[4/3] w-full shrink-0 snap-center">

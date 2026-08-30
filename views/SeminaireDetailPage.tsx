@@ -907,6 +907,7 @@ export default function SeminaireDetailPage() {
           overflow-x: auto;
           scroll-snap-type: x mandatory;
           -webkit-overflow-scrolling: touch;
+          touch-action: pan-x pan-y;
           scrollbar-width: none;
           padding: 2px 0 4px;
           margin: 0 -24px;

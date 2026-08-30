@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { frenchPlaceKindLabel, matchFrenchPlaces } from '../lib/frenchCities';
+import { frenchPlaceDisplayLabel, frenchPlaceKindLabel, matchFrenchPlaces } from '../lib/frenchCities';
 import {
   MiniDateRangeCalendar,
   fmtDayShort,
@@ -81,7 +81,10 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const lieuWrapRef = useRef<HTMLDivElement>(null);
+  const lieuInputRef = useRef<HTMLInputElement>(null);
+  const [lieuFieldActive, setLieuFieldActive] = useState(false);
 
   const lieuSuggestions = useMemo(() => matchFrenchPlaces(lieu, 8), [lieu]);
   const showLieuSuggestions = lieuOpen && lieuSuggestions.length > 0;
@@ -126,7 +129,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     const prev = meta.getAttribute('content') ?? '';
     meta.setAttribute(
       'content',
-      'width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover',
+      'width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, interactive-widget=resizes-content',
     );
     return () => meta.setAttribute('content', prev);
   }, [isOpen]);
@@ -135,11 +138,39 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     const onDoc = (e: MouseEvent) => {
       if (lieuWrapRef.current && !lieuWrapRef.current.contains(e.target as Node)) {
         setLieuOpen(false);
+        setLieuFieldActive(false);
       }
     };
     document.addEventListener('mousedown', onDoc);
     return () => document.removeEventListener('mousedown', onDoc);
   }, []);
+
+  /** Sur mobile, caler le modal sur la zone visible (au-dessus du clavier). */
+  useEffect(() => {
+    if (!isOpen || !lieuFieldActive) return;
+    const wrap = wrapperRef.current;
+    const vv = window.visualViewport;
+    if (!wrap || !vv || !window.matchMedia('(max-width: 860px)').matches) return;
+
+    const sync = () => {
+      wrap.style.setProperty('--osm-vv-top', `${vv.offsetTop}px`);
+      wrap.style.setProperty('--osm-vv-height', `${vv.height}px`);
+      wrap.classList.add('osm-wrapper--vv');
+      scrollRef.current?.scrollTo({ top: 0 });
+    };
+    sync();
+    const t = window.setTimeout(sync, 320);
+    vv.addEventListener('resize', sync);
+    vv.addEventListener('scroll', sync);
+    return () => {
+      window.clearTimeout(t);
+      vv.removeEventListener('resize', sync);
+      vv.removeEventListener('scroll', sync);
+      wrap.classList.remove('osm-wrapper--vv');
+      wrap.style.removeProperty('--osm-vv-top');
+      wrap.style.removeProperty('--osm-vv-height');
+    };
+  }, [isOpen, lieuFieldActive]);
 
   const reset = () => {
     setStep(1);
@@ -151,6 +182,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     setPeriod('');
     setLieu('');
     setLieuOpen(false);
+    setLieuFieldActive(false);
     setParticipants('');
     setBudget(BUDGET_DEFAULT);
     setNom('');
@@ -417,6 +449,14 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             background:#fff !important;
             pointer-events:auto !important;
           }
+          .osm-wrapper.osm-wrapper--vv:not(.osm-wrapper--confirm) {
+            inset: unset !important;
+            top: var(--osm-vv-top, 0px) !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: auto !important;
+            height: var(--osm-vv-height, 100%) !important;
+          }
           .osm-panel:not(.osm-panel--confirm) {
             display:flex !important;
             flex-direction:column !important;
@@ -506,6 +546,64 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           button.osm-input { font-size: 13px !important; }
           .osm-ph { display:flex; }
           .osm-lieu-icon { height:50px; }
+
+          .osm-panel--lieu-kb .osm-visual {
+            display: none !important;
+            height: 0 !important;
+          }
+          .osm-panel--lieu-kb .osm-dates-block { display: none !important; }
+          .osm-panel--lieu-kb .osm-footer { display: none !important; }
+          .osm-panel--lieu-kb .osm-content-end { display: none !important; }
+          .osm-panel--lieu-kb .osm-content {
+            padding-top: 56px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+          }
+          .osm-panel--lieu-kb .osm-step {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+            min-height: 0;
+          }
+          .osm-panel--lieu-kb .osm-lieu-title { margin: 0 0 14px !important; flex-shrink: 0; }
+          .osm-panel--lieu-kb .osm-lieu-wrap {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            max-width: none !important;
+          }
+          .osm-panel--lieu-kb .osm-lieu-wrap .osm-input { flex-shrink: 0; }
+          .osm-panel--lieu-kb .osm-lieu-suggest {
+            position: relative !important;
+            left: auto !important;
+            right: auto !important;
+            top: auto !important;
+            flex: 1 1 auto;
+            min-height: 0;
+            max-height: none !important;
+            margin-top: 10px !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: none !important;
+          }
+          .osm-panel--lieu-kb .osm-lieu-suggest button {
+            min-height: 48px;
+            padding: 12px 14px !important;
+          }
+          .osm-panel--lieu-kb .osm-lieu-suggest button > span:first-child {
+            font-size: 15px !important;
+          }
+          .osm-panel--lieu-kb .osm-close {
+            position: absolute !important;
+            top: 12px !important;
+            color: ${INK} !important;
+            background: rgba(12,29,34,.06) !important;
+            border: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+          }
         }
       `}</style>
 
@@ -524,6 +622,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
       />
 
       <div
+        ref={wrapperRef}
         className={`osm-wrapper${isConfirm ? ' osm-wrapper--confirm' : ''}`}
         style={{ position: 'fixed', inset: 0, zIndex: 1201, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, pointerEvents: 'none' }}
       >
@@ -632,7 +731,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
         ) : (
         <div
           ref={panelRef}
-          className="osm-panel"
+          className={`osm-panel${lieuFieldActive ? ' osm-panel--lieu-kb' : ''}`}
           role="dialog"
           aria-modal="true"
           aria-label="Organiser votre séminaire"
@@ -697,6 +796,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             >
               <div
                 key={step}
+                className="osm-step"
                 style={{
                   animation: 'osmFade .3s ease both',
                 }}
@@ -727,6 +827,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
                 {step === 2 && (
                   <>
+                    <div className="osm-dates-block">
                     <h2 className="osm-title" style={titleStyle}>
                       Une idée des <strong style={strong}>dates ?</strong>
                     </h2>
@@ -769,11 +870,12 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                         </button>
                       ))}
                     </div>
+                    </div>
 
-                    <h2 className="osm-title" style={{ ...titleStyle, margin: '40px 0 16px' }}>
+                    <h2 className="osm-title osm-lieu-title" style={{ ...titleStyle, margin: '40px 0 16px' }}>
                       Une idée de <strong style={strong}>lieu ?</strong>
                     </h2>
-                    <div ref={lieuWrapRef} style={{ position: 'relative', maxWidth: 340 }}>
+                    <div ref={lieuWrapRef} className="osm-lieu-wrap" style={{ position: 'relative', maxWidth: 420 }}>
                       <span className="osm-lieu-icon">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
@@ -781,18 +883,31 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                         </svg>
                       </span>
                       <input
+                        ref={lieuInputRef}
                         className="osm-input osm-has-ph"
                         style={{ paddingLeft: 34 }}
                         placeholder="Saisissez le lieu souhaité : ville, région, etc"
                         value={lieu}
                         autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck={false}
                         aria-autocomplete="list"
                         aria-expanded={showLieuSuggestions}
                         onChange={(e) => {
                           setLieu(e.target.value);
                           setLieuOpen(true);
                         }}
-                        onFocus={() => setLieuOpen(true)}
+                        onFocus={() => {
+                          setLieuOpen(true);
+                          setLieuFieldActive(true);
+                          window.setTimeout(() => scrollRef.current?.scrollTo({ top: 0 }), 50);
+                        }}
+                        onBlur={() => {
+                          window.setTimeout(() => {
+                            if (lieuWrapRef.current?.contains(document.activeElement)) return;
+                            setLieuFieldActive(false);
+                          }, 180);
+                        }}
                       />
                       {!lieu && (
                         <span className="osm-ph osm-ph--pin" aria-hidden="true">
@@ -802,6 +917,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                       {showLieuSuggestions && (
                         <ul
                           role="listbox"
+                          className="osm-lieu-suggest"
                           style={{
                             position: 'absolute',
                             left: 0,
@@ -824,15 +940,18 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                               <button
                                 type="button"
                                 role="option"
+                                onPointerDown={(e) => e.preventDefault()}
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
-                                  setLieu(s.name);
+                                  setLieu(frenchPlaceDisplayLabel(s));
                                   setLieuOpen(false);
+                                  setLieuFieldActive(false);
+                                  lieuInputRef.current?.blur();
                                 }}
                                 style={{
                                   width: '100%',
                                   display: 'flex',
-                                  alignItems: 'center',
+                                  alignItems: 'flex-start',
                                   justifyContent: 'space-between',
                                   gap: 10,
                                   textAlign: 'left',
@@ -843,8 +962,8 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                                   cursor: 'pointer',
                                 }}
                               >
-                                <span style={{ fontSize: 13, fontWeight: 600, color: INK, letterSpacing: '-.02em' }}>
-                                  {s.name}
+                                <span style={{ fontSize: 13, fontWeight: 600, color: INK, letterSpacing: '-.02em', lineHeight: 1.35, flex: 1, minWidth: 0 }}>
+                                  {frenchPlaceDisplayLabel(s)}
                                 </span>
                                 <span style={{ fontSize: 10, fontWeight: 600, color: '#a5a5a5', letterSpacing: '0.04em', textTransform: 'uppercase', flexShrink: 0 }}>
                                   {frenchPlaceKindLabel(s.kind)}
@@ -940,7 +1059,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
                 )}
 
               </div>
-              <div style={{ height: 26 }} />
+              <div className="osm-content-end" style={{ height: 26 }} />
             </div>
 
             <div className="osm-footer" style={{ flexShrink: 0, padding: '0 46px 26px' }}>

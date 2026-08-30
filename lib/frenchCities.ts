@@ -5,6 +5,8 @@ export type FrenchPlaceKind = 'ville' | 'région' | 'département';
 export type FrenchPlace = {
   name: string;
   kind: FrenchPlaceKind;
+  /** Région administrative (villes et départements). */
+  region?: string;
 };
 
 /** Les 13 régions administratives métropolitaines. */
@@ -267,6 +269,112 @@ function normalizePlace(s: string): string {
     .toLowerCase();
 }
 
+function invertRegionGroups(groups: Record<string, readonly string[]>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [region, names] of Object.entries(groups)) {
+    for (const name of names) out[name] = region;
+  }
+  return out;
+}
+
+const DEPARTMENTS_BY_REGION: Record<string, readonly string[]> = {
+  'Auvergne-Rhône-Alpes': [
+    'Ain', 'Allier', 'Ardèche', 'Cantal', 'Drôme', 'Isère', 'Loire', 'Haute-Loire',
+    'Puy-de-Dôme', 'Rhône', 'Savoie', 'Haute-Savoie',
+  ],
+  'Bourgogne-Franche-Comté': [
+    "Côte-d'Or", 'Doubs', 'Jura', 'Nièvre', 'Haute-Saône', 'Saône-et-Loire', 'Yonne',
+    'Territoire de Belfort',
+  ],
+  'Bretagne': ["Côtes-d'Armor", 'Finistère', 'Ille-et-Vilaine', 'Morbihan'],
+  'Centre-Val de Loire': [
+    'Cher', 'Eure-et-Loir', 'Indre', 'Indre-et-Loire', 'Loir-et-Cher', 'Loiret',
+  ],
+  'Corse': ['Corse-du-Sud', 'Haute-Corse'],
+  'Grand Est': [
+    'Ardennes', 'Aube', 'Marne', 'Haute-Marne', 'Meurthe-et-Moselle', 'Meuse',
+    'Moselle', 'Bas-Rhin', 'Haut-Rhin', 'Vosges',
+  ],
+  'Hauts-de-France': ['Aisne', 'Nord', 'Oise', 'Pas-de-Calais', 'Somme'],
+  'Île-de-France': [
+    'Paris', 'Seine-et-Marne', 'Yvelines', 'Essonne', 'Hauts-de-Seine',
+    'Seine-Saint-Denis', 'Val-de-Marne', "Val-d'Oise",
+  ],
+  'Normandie': ['Calvados', 'Eure', 'Manche', 'Orne', 'Seine-Maritime'],
+  'Nouvelle-Aquitaine': [
+    'Charente', 'Charente-Maritime', 'Corrèze', 'Creuse', 'Dordogne', 'Gironde',
+    'Landes', 'Lot-et-Garonne', 'Pyrénées-Atlantiques', 'Deux-Sèvres', 'Vienne',
+    'Haute-Vienne',
+  ],
+  'Occitanie': [
+    'Ariège', 'Aude', 'Aveyron', 'Gard', 'Haute-Garonne', 'Gers', 'Hérault', 'Lot',
+    'Lozère', 'Hautes-Pyrénées', 'Pyrénées-Orientales', 'Tarn', 'Tarn-et-Garonne',
+  ],
+  'Pays de la Loire': ['Loire-Atlantique', 'Maine-et-Loire', 'Mayenne', 'Sarthe', 'Vendée'],
+  "Provence-Alpes-Côte d'Azur": [
+    'Alpes-de-Haute-Provence', 'Hautes-Alpes', 'Alpes-Maritimes', 'Bouches-du-Rhône',
+    'Var', 'Vaucluse',
+  ],
+  'Guadeloupe': ['Guadeloupe'],
+  'Martinique': ['Martinique'],
+  'Guyane': ['Guyane'],
+  'La Réunion': ['La Réunion'],
+  'Mayotte': ['Mayotte'],
+};
+
+const CITIES_BY_REGION: Record<string, readonly string[]> = {
+  'Auvergne-Rhône-Alpes': [
+    'Lyon', 'Saint-Étienne', 'Villeurbanne', 'Grenoble', 'Clermont-Ferrand', 'Annecy',
+    'Vénissieux', 'Valence', 'Chambéry', 'Vaulx-en-Velin',
+  ],
+  'Bourgogne-Franche-Comté': ['Dijon', 'Besançon'],
+  'Bretagne': ['Rennes', 'Brest', 'Quimper', 'Lorient', 'Vannes'],
+  'Centre-Val de Loire': ['Tours', 'Orléans', 'Bourges'],
+  'Corse': ['Ajaccio'],
+  'Grand Est': ['Reims', 'Nancy', 'Troyes'],
+  'Hauts-de-France': [
+    'Lille', 'Amiens', 'Tourcoing', 'Roubaix', 'Dunkerque', 'Calais',
+    "Villeneuve-d'Ascq", 'Beauvais', 'Saint-Quentin',
+  ],
+  'Île-de-France': [
+    'Paris', 'Boulogne-Billancourt', 'Montreuil', 'Argenteuil', 'Nanterre',
+    'Vitry-sur-Seine', 'Asnières-sur-Seine', 'Créteil', 'Colombes', 'Aubervilliers',
+    'Aulnay-sous-Bois', 'Versailles', 'Courbevoie', 'Rueil-Malmaison',
+    'Champigny-sur-Marne', 'Saint-Maur-des-Fossés', 'Noisy-le-Grand', 'Drancy',
+    'Cergy', 'Levallois-Perret', 'Issy-les-Moulineaux', 'Évry-Courcouronnes',
+    'Ivry-sur-Seine', 'Clichy', 'Antony', 'Le Blanc-Mesnil', 'Pantin', 'Villejuif',
+    'Neuilly-sur-Seine', 'Sarcelles', 'Clamart', 'Bobigny', 'Meaux', 'Maisons-Alfort',
+    'Chelles', 'Corbeil-Essonnes', 'Fontenay-sous-Bois', 'Saint-Ouen-sur-Seine',
+    'Épinay-sur-Seine', 'Sartrouville', 'Sevran', 'Massy', 'Gennevilliers', 'Bondy',
+  ],
+  'Normandie': ['Le Havre', 'Rouen', 'Caen', 'Cherbourg-en-Cotentin'],
+  'Nouvelle-Aquitaine': [
+    'Bordeaux', 'Limoges', 'Poitiers', 'Pau', 'La Rochelle', 'Mérignac', 'Pessac',
+    'Niort', 'Bayonne',
+  ],
+  'Occitanie': [
+    'Toulouse', 'Montpellier', 'Nîmes', 'Perpignan', 'Béziers', 'Montauban',
+    'Narbonne', 'Albi',
+  ],
+  'Pays de la Loire': [
+    'Nantes', 'Angers', 'Le Mans', 'Saint-Nazaire', 'La Roche-sur-Yon', 'Cholet',
+    'Saint-Herblain',
+  ],
+  "Provence-Alpes-Côte d'Azur": [
+    'Marseille', 'Nice', 'Toulon', 'Aix-en-Provence', 'Avignon', 'Antibes', 'Cannes',
+    'La Seyne-sur-Mer', 'Fréjus', 'Hyères', 'Cagnes-sur-Mer', 'Arles', 'Grasse',
+  ],
+  'Guadeloupe': ['Les Abymes'],
+  'Martinique': ['Fort-de-France'],
+  'Guyane': ['Cayenne', 'Saint-Laurent-du-Maroni'],
+  'La Réunion': [
+    'Saint-Denis', 'Saint-Paul', 'Saint-Pierre', 'Le Tampon', 'Saint-André', 'Saint-Louis',
+  ],
+};
+
+const DEPARTMENT_REGION = invertRegionGroups(DEPARTMENTS_BY_REGION);
+const CITY_REGION = invertRegionGroups(CITIES_BY_REGION);
+
 export const FRENCH_CITIES: string[] = Array.from(new Set(FRENCH_CITIES_RAW)).sort((a, b) =>
   a.localeCompare(b, 'fr')
 );
@@ -275,8 +383,16 @@ export { FRENCH_REGIONS, FRENCH_DEPARTMENTS };
 
 const ALL_PLACES: FrenchPlace[] = [
   ...FRENCH_REGIONS.map((name) => ({ name, kind: 'région' as const })),
-  ...FRENCH_DEPARTMENTS.map((name) => ({ name, kind: 'département' as const })),
-  ...FRENCH_CITIES.map((name) => ({ name, kind: 'ville' as const })),
+  ...FRENCH_DEPARTMENTS.map((name) => ({
+    name,
+    kind: 'département' as const,
+    region: DEPARTMENT_REGION[name],
+  })),
+  ...FRENCH_CITIES.map((name) => ({
+    name,
+    kind: 'ville' as const,
+    region: CITY_REGION[name],
+  })),
 ];
 
 const KIND_LABEL: Record<FrenchPlaceKind, string> = {
@@ -287,6 +403,14 @@ const KIND_LABEL: Record<FrenchPlaceKind, string> = {
 
 export function frenchPlaceKindLabel(kind: FrenchPlaceKind): string {
   return KIND_LABEL[kind];
+}
+
+/** Libellé affiché : « Paris, Île-de-France, France » / « Gironde, Nouvelle-Aquitaine, France » / « Bretagne, France ». */
+export function frenchPlaceDisplayLabel(place: FrenchPlace): string {
+  if (place.kind === 'région' || !place.region || place.region === place.name) {
+    return `${place.name}, France`;
+  }
+  return `${place.name}, ${place.region}, France`;
 }
 
 export function matchFrenchCities(query: string, limit = 12): string[] {
@@ -314,7 +438,9 @@ export function matchFrenchPlaces(query: string, limit = 10): FrenchPlace[] {
   const byKey = new Map<string, FrenchPlace>();
 
   for (const p of ALL_PLACES) {
-    if (!normalizePlace(p.name).startsWith(q)) continue;
+    const nameN = normalizePlace(p.name);
+    const labelN = normalizePlace(frenchPlaceDisplayLabel(p));
+    if (!nameN.startsWith(q) && !labelN.startsWith(q)) continue;
     const key = normalizePlace(p.name);
     const existing = byKey.get(key);
     if (!existing || prefer[p.kind] < prefer[existing.kind]) {

@@ -7,8 +7,10 @@ import { useModal } from '../context/ModalContext';
 import {
   HOME_COLORS,
   HOME_RADIUS,
+  homeFramedHeroAspectClass,
   homeFramedHeroH1Class,
   homeFramedHeroSectionClass,
+  homeFramedHeroOverlayClass,
   homeFramedHeroOverlayInnerClass,
   homeFramedHeroSubtitleClass,
   homeSectionPadding,
@@ -91,9 +93,10 @@ const Engagement: React.FC = () => {
       <section className={homeFramedHeroSectionClass}>
         <div className="relative mx-auto max-w-6xl px-5 pb-2 sm:px-8">
           <div
-            className="relative flex aspect-[5/4] w-full flex-col items-center justify-center overflow-hidden px-5 pb-8 pt-10 text-center sm:aspect-[16/9] sm:px-10 sm:pb-10 sm:pt-16 lg:aspect-[2.2/1] lg:pt-20"
+            className={`relative ${homeFramedHeroAspectClass}`}
             style={{ borderRadius: HOME_RADIUS, background: HOME_COLORS.orange }}
           >
+            <div className={homeFramedHeroOverlayClass}>
             <div className={homeFramedHeroOverlayInnerClass}>
             <h1 className={`max-w-3xl font-bold ${homeFramedHeroH1Class}`}>
               Notre approche
@@ -109,6 +112,7 @@ const Engagement: React.FC = () => {
             >
               Rejoindre la communauté
             </button>
+            </div>
             </div>
           </div>
 

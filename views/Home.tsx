@@ -456,7 +456,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
           <div
             ref={conceptScrollRef}
-            className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+            className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain [touch-action:pan-x_pan-y] pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
             style={{
               WebkitOverflowScrolling: 'touch',
               scrollPaddingInline: '1.25rem',
@@ -621,7 +621,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
           <div
             ref={experiencesScrollRef}
-            className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+            className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain [touch-action:pan-x_pan-y] pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
             style={{
               WebkitOverflowScrolling: 'touch',
               scrollPaddingInline: '1.25rem',
@@ -944,7 +944,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
             supprimant la marge de départ (qui, elle, défile avec le carrousel). */}
         <div
           ref={regionScrollRef}
-          className="mt-10 flex gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mt-12"
+          className="mt-10 flex gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [touch-action:pan-x_pan-y] sm:mt-12"
           style={{
             paddingLeft: 'max(6vw, calc((100vw - 72rem) / 2 + 2rem))',
             paddingRight: '1.25rem',
@@ -1033,7 +1033,7 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
           {/* Mobile : carousel swipable */}
           <div
             ref={stepsScrollRef}
-            className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pt-6 pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+            className="flex min-w-0 cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain [touch-action:pan-x_pan-y] pt-6 pb-1 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
             style={{
               WebkitOverflowScrolling: 'touch',
               scrollPaddingInline: '1.25rem',

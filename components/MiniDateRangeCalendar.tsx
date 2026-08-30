@@ -86,7 +86,8 @@ export const MiniDateRangeCalendar: React.FC<{
           const key = toDateKey(d);
           const past = d < today;
           const isStart = key === start;
-          const isEnd = key === end;
+          const isPreviewEnd = !end && !!start && key === hovered && key > start;
+          const isEnd = key === end || isPreviewEnd;
           const inRange = !!start && !!rangeEnd && key > start && key < rangeEnd;
           return (
             <button

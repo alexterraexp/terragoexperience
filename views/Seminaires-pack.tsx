@@ -2731,7 +2731,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
           <>
             <div
               ref={catalogueScrollRef}
-              className="sem-catalogue-swipe flex min-w-0 cursor-grab snap-x snap-mandatory items-stretch gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain touch-pan-x pt-2 pb-10 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
+              className="sem-catalogue-swipe flex min-w-0 cursor-grab snap-x snap-mandatory items-stretch gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain [touch-action:pan-x_pan-y] pt-2 pb-10 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden"
               style={{
                 WebkitOverflowScrolling: 'touch',
                 scrollPaddingInline: '1.25rem',
