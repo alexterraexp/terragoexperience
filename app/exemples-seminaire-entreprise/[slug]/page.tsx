@@ -4,7 +4,6 @@ import { Suspense } from 'react';
 import SeminaireDetailLoading from '@/components/SeminaireDetailLoading';
 import { MapboxTokenProvider } from '@/components/MapboxTokenProvider';
 import {
-  exempleSeminaireEntrepriseCanonicalUrl,
   exempleSeminaireEntreprisePath,
   getSeminaireCanonicalSlugRedirect,
   resolveSeminaireSlugRedirect,
@@ -17,6 +16,7 @@ import {
   generateSlug,
 } from '@/lib/seminaires';
 import { supabaseServer } from '@/lib/supabase';
+import { PAGE_OG, pageMeta } from '@/lib/pageMeta';
 import SeminaireDetailWrapper from './ClientWrapper';
 
 type Props = {
@@ -38,34 +38,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { seminaire, all } = await fetchSeminaireBySlug(resolvedSlug, supabaseServer);
 
   if (!seminaire) {
-    return {
+    return pageMeta({
       title: 'Séminaire producteur – TerraGo',
       description:
         'Découvrez cette offre séminaire packagée à la rencontre d’un producteur du terroir : programme, formats et tarifs. Demandez votre devis personnalisé.',
-      robots: { index: true, follow: true },
-    };
+      path: exempleSeminaireEntreprisePath(resolvedSlug),
+      images: [PAGE_OG.exemples],
+    });
   }
 
   const { title, description } = buildSeminairePageMetadata(seminaire, all);
-  const url = exempleSeminaireEntrepriseCanonicalUrl(resolvedSlug);
 
-  return {
+  return pageMeta({
     title,
     description,
-    robots: { index: true, follow: true },
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: 'TerraGo',
-      locale: 'fr_FR',
-      type: 'website',
-      images: seminaire.image ? [{ url: seminaire.image }] : undefined,
-    },
-    alternates: {
-      canonical: url,
-    },
-  };
+    path: exempleSeminaireEntreprisePath(resolvedSlug),
+    images: seminaire.image ? [{ url: seminaire.image }] : [PAGE_OG.exemples],
+  });
 }
 
 export default async function ExempleSeminaireEntrepriseSlugPage({ params }: Props) {

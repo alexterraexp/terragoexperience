@@ -5,33 +5,18 @@ import { getMapboxPublicToken } from '@/lib/mapbox-public';
 import { EXEMPLES_SEMINAIRE_ENTREPRISE_PATH } from '@/lib/exemplesSeminaireEntreprise';
 import { fetchSeminaires } from '@/lib/seminaires';
 import { supabaseServer } from '@/lib/supabase';
-import { SITE_URL } from '@/lib/siteNav';
+import { PAGE_OG, pageMeta } from '@/lib/pageMeta';
 import SeminairesPack from '../../views/Seminaires-pack';
 
 export const revalidate = 3600;
 
-export async function generateMetadata(): Promise<Metadata> {
-  const url = `${SITE_URL}${EXEMPLES_SEMINAIRE_ENTREPRISE_PATH}`;
-
-  return {
-    title: 'Nos exemples de séminaires responsables à la rencontre des producteurs – TerraGo',
-    description:
-      'Exemples de séminaires d’entreprise à la rencontre de producteurs engagés : formules à la journée ou résidentielles, immersion terroir et cohésion d’équipe.',
-    robots: { index: true, follow: true },
-    openGraph: {
-      title: 'Nos exemples de séminaires responsables à la rencontre des producteurs – TerraGo',
-      description:
-        'Exemples de séminaires d’entreprise à la rencontre de producteurs engagés : formules à la journée ou résidentielles, immersion terroir et cohésion d’équipe.',
-      url,
-      siteName: 'TerraGo',
-      locale: 'fr_FR',
-      type: 'website',
-    },
-    alternates: {
-      canonical: url,
-    },
-  };
-}
+export const metadata: Metadata = pageMeta({
+  title: 'Nos exemples de séminaires responsables à la rencontre des producteurs – TerraGo',
+  description:
+    'Exemples de séminaires d’entreprise à la rencontre de producteurs engagés : formules à la journée ou résidentielles, immersion terroir et cohésion d’équipe.',
+  path: EXEMPLES_SEMINAIRE_ENTREPRISE_PATH,
+  images: [PAGE_OG.exemples],
+});
 
 export default async function ExemplesSeminaireEntreprisePage() {
   const initialSeminaires = await fetchSeminaires(supabaseServer);

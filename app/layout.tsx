@@ -7,34 +7,19 @@ import GoogleTagManager from '../components/GoogleTagManager';
 import ScrollToTop from '../components/ScrollToTop';
 import ImageProtection from '../components/ImageProtection';
 import { ModalProvider } from '../context/ModalContext';
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../lib/siteNav';
 
 export const metadata: Metadata = {
-  title: "TerraGo - L'immersion au cœur du terroir français",
-  description:
-    'Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français.',
-  metadataBase: new URL('https://www.terragoexperiences.fr'),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  metadataBase: new URL(SITE_URL),
   openGraph: {
-    title: "TerraGo - L'immersion au cœur du terroir français",
-    description:
-      'Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français.',
-    url: 'https://www.terragoexperiences.fr',
     siteName: 'TerraGo',
     locale: 'fr_FR',
     type: 'website',
-    images: [
-      {
-        url: '/og-home.jpg',
-        width: 1200,
-        height: 630,
-        alt: "TerraGo — séminaires d'entreprise à la rencontre des producteurs",
-      },
-    ],
   },
   twitter: {
-    title: "TerraGo - L'immersion au cœur du terroir français",
-    description:
-      'Séminaires expérientiels, team buildings vertueux et voyages de groupe authentiques au cœur du terroir français.',
-    images: ['/og-home.jpg'],
+    card: 'summary_large_image',
   },
   icons: {
     icon: [{ url: '/favicon.png', type: 'image/png' }],

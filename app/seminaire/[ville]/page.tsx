@@ -9,6 +9,7 @@ import {
   type VilleSeminaireSlug,
 } from '../../../lib/villesSeminaire';
 import { SITE_URL } from '../../../lib/siteNav';
+import { PAGE_OG, pageMeta } from '../../../lib/pageMeta';
 
 type Props = {
   params: Promise<{ ville: string }>;
@@ -27,28 +28,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Séminaire – TerraGo' };
   }
 
-  const url = `${SITE_URL}${villeSeminairePath(ville.slug)}`;
-
-  return {
+  return pageMeta({
     title: ville.metaTitle,
     description: ville.metaDescription,
-    robots: { index: true, follow: true },
-    openGraph: {
-      title: ville.metaTitle,
-      description: ville.metaDescription,
-      url,
-      siteName: 'TerraGo',
-      locale: 'fr_FR',
-      type: 'website',
-    },
-    twitter: {
-      title: ville.metaTitle,
-      description: ville.metaDescription,
-    },
-    alternates: {
-      canonical: url,
-    },
-  };
+    path: villeSeminairePath(ville.slug),
+    images: [PAGE_OG.seminaires],
+  });
 }
 
 function JsonLd({ slug }: { slug: string }) {

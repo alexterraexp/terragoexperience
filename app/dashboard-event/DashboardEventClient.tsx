@@ -19,23 +19,18 @@ import {
   Wheat,
 } from 'lucide-react';
 import { HOME_COLORS, HOME_RADIUS } from '../../components/home/homeStyles';
+import {
+  DASHBOARD_HERO_IMAGE as HERO_IMAGE,
+  DASHBOARD_HERO_IMAGE_ALT as HERO_IMAGE_ALT,
+  eventHeroImage,
+  seminarSlug,
+} from '../../lib/dashboardEvent';
 
 const FONT = "'Poppins', sans-serif";
 const INK = HOME_COLORS.primary;
 const ORANGE = HOME_COLORS.orange;
 const SESSION_KEY = 'terrago-dashboard-event-session';
 const SESSION_TTL_MS = 10 * 60 * 1000;
-const HERO_IMAGE =
-  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/exception/111112.webp';
-const HERO_IMAGE_ALT = 'Grande salle en pierre d’un domaine d’exception';
-const EVENT_HERO_BY_CODE: Record<string, string> = {
-  'avb.2026':
-    'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/nouvelleaquitaine/hotel-indarra-arbonne-1.webp',
-};
-
-function eventHeroImage(event: { code: string; image?: string }) {
-  return event.image || EVENT_HERO_BY_CODE[event.code.trim().toLowerCase()] || HERO_IMAGE;
-}
 
 type StoredSession = { code: string; expiresAt: number };
 
@@ -162,16 +157,6 @@ type DashboardData = {
 
 function normalizeCode(value: string) {
   return value.trim();
-}
-
-function seminarSlug(name: string) {
-  return name
-    .trim()
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
 }
 
 function syncSeminarUrl(name: string) {

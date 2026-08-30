@@ -7,23 +7,18 @@ import {
   homeSectionPadding,
 } from '../../components/home/homeStyles';
 import BlogCards from './BlogCards';
+import { PAGE_OG, pageMeta } from '../../lib/pageMeta';
 
 /** Régénère la liste depuis Supabase au plus toutes les 60 s (ISR). */
 export const revalidate = 60;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: 'Blog séminaires & terroir – TerraGo',
   description:
     'Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français.',
-  openGraph: {
-    title: 'Blog séminaires & terroir – TerraGo',
-    description:
-      'Conseils, guides et inspirations pour organiser des séminaires engagés et des expériences immersives au cœur du terroir français.',
-    url: 'https://www.terragoexperiences.fr/blog',
-    type: 'website',
-  },
-  alternates: { canonical: 'https://www.terragoexperiences.fr/blog' },
-};
+  path: '/blog',
+  images: [PAGE_OG.seminaires],
+});
 
 interface BlogPost {
   id: string;

@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Confidentialite from '../../views/Confidentialite';
+import { pageMeta } from '../../lib/pageMeta';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: 'Politique de confidentialité – TerraGo',
   description: 'Politique de confidentialité et gestion des données personnelles de TerraGo.',
-  robots: { index: false, follow: false },
-};
+  path: '/confidentialite',
+  index: false,
+});
 
 export default function ConfidentialitePage() {
   return (

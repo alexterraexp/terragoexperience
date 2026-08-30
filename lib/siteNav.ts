@@ -1,6 +1,17 @@
 /** Pages que Google doit privilégier en sitelinks, dans cet ordre. */
 export const SITE_URL = 'https://www.terragoexperiences.fr';
 
+export const SITE_TITLE =
+  "TerraGo | Séminaires d'entreprise engagés à la rencontre des producteurs";
+export const SITE_DESCRIPTION =
+  "Séminaires d'entreprise à impact : cohésion, RSE, inspiration et engagement au contact de producteurs et artisans. Des expériences qui donnent du sens à vos équipes.";
+export const SITE_OG_IMAGE = {
+  url: '/og-home.jpg',
+  width: 1200,
+  height: 630,
+  alt: "TerraGo — séminaires d'entreprise à la rencontre des producteurs",
+} as const;
+
 export const SITELINK_PAGES = [
   {
     path: '/seminaires-entreprise',

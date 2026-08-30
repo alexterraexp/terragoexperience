@@ -12,6 +12,7 @@ import {
 } from '../../../components/home/homeStyles';
 import TableOfContents from './TableOfContents';
 import { EXEMPLES_SEMINAIRE_ENTREPRISE_PATH } from '../../../lib/exemplesSeminaireEntreprise';
+import { pageMeta } from '../../../lib/pageMeta';
 
 /** Régénère l’article depuis Supabase au plus toutes les 60 s (ISR). */
 export const revalidate = 60;
@@ -86,17 +87,13 @@ export async function generateMetadata({
 
   if (!data) return { title: 'Article introuvable – TerraGo' };
 
-  return {
+  return pageMeta({
     title: `${data.title} – TerraGo`,
-    description: data.description ?? undefined,
-    openGraph: {
-      title: `${data.title} – TerraGo`,
-      description: data.description ?? undefined,
-      images: data.cover_url ? [data.cover_url] : [],
-      type: 'article',
-    },
-    alternates: { canonical: `https://www.terragoexperiences.fr/blog/${slug}` },
-  };
+    description: data.description ?? 'Article TerraGo sur les séminaires engagés et le terroir français.',
+    path: `/blog/${slug}`,
+    type: 'article',
+    images: data.cover_url ? [data.cover_url] : undefined,
+  });
 }
 
 // ── Page d'erreur ──────────────────────────────────────────────────────────────

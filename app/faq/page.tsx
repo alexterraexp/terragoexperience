@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Faq from '../../views/Faq';
 import { buildFaqPageJsonLd, FAQ_PATH } from '../../lib/faq';
 import { SITE_URL } from '../../lib/siteNav';
+import { PAGE_OG, pageMeta } from '../../lib/pageMeta';
 
 const title = 'FAQ séminaire d’entreprise, RSE et team building | TerraGo';
 const description =
@@ -9,26 +10,12 @@ const description =
 
 const url = `${SITE_URL}${FAQ_PATH}`;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title,
   description,
-  robots: { index: true, follow: true },
-  openGraph: {
-    title,
-    description,
-    url,
-    siteName: 'TerraGo',
-    locale: 'fr_FR',
-    type: 'website',
-  },
-  twitter: {
-    title,
-    description,
-  },
-  alternates: {
-    canonical: url,
-  },
-};
+  path: FAQ_PATH,
+  images: [PAGE_OG.seminaires],
+});
 
 export default function FaqPage() {
   const faqJsonLd = buildFaqPageJsonLd(SITE_URL);

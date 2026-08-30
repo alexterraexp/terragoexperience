@@ -1,33 +1,24 @@
 import type { Metadata } from 'next';
 import Home from '../views/Home';
 import { getHomeAssetUrls } from '../lib/homeStorage';
-import { SITE_URL, SITELINK_PAGES } from '../lib/siteNav';
-
-const OG_IMAGE = {
-  url: '/og-home.jpg',
-  width: 1200,
-  height: 630,
-  alt: "TerraGo — séminaires d'entreprise à la rencontre des producteurs",
-} as const;
+import { SITE_DESCRIPTION, SITE_OG_IMAGE, SITE_TITLE, SITE_URL, SITELINK_PAGES } from '../lib/siteNav';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "TerraGo | Séminaires d'entreprise engagés à la rencontre des producteurs";
-  const description =
-    "Séminaires d'entreprise à impact : cohésion, RSE, inspiration et engagement au contact de producteurs et artisans. Des expériences qui donnent du sens à vos équipes.";
-
   return {
-    title,
-    description,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     robots: { index: true, follow: true },
     openGraph: {
-      title,
-      description,
-      images: [OG_IMAGE],
+      title: SITE_TITLE,
+      description: SITE_DESCRIPTION,
+      url: SITE_URL,
+      images: [SITE_OG_IMAGE],
     },
     twitter: {
-      title,
-      description,
-      images: [OG_IMAGE.url],
+      card: 'summary_large_image',
+      title: SITE_TITLE,
+      description: SITE_DESCRIPTION,
+      images: [SITE_OG_IMAGE.url],
     },
   };
 }

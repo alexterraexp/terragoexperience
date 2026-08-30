@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import SiteErrorState from '../components/SiteErrorState';
+import { pageMeta } from '../lib/pageMeta';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: 'Page introuvable — TerraGo',
-  robots: { index: false, follow: false },
-};
+  description: 'Cette page est introuvable. Découvrez nos séminaires d’entreprise à la rencontre des producteurs.',
+  path: '/404',
+  index: false,
+});
 
 export default function NotFound() {
   return (
