@@ -429,12 +429,12 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
         style={{ paddingTop: homeSectionPadding, paddingBottom: homeSectionPadding, background: '#ffffff' }}
       >
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="mb-10 text-center sm:mb-14">
-            <h2 className="mx-auto max-w-4xl font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px] lg:text-[48px]">
+          <div className="mb-16 text-left sm:mb-14 sm:text-center">
+            <h2 className="max-w-4xl font-sans text-[34px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:mx-auto sm:text-[40px] lg:text-[48px]">
               Des séminaires qui font{' '}
               <span className="font-bold">bien plus</span> que réunir vos équipes.
             </h2>
-            <p className="mx-auto mt-5 max-w-3xl font-sans text-[15px] font-normal leading-[1.65] tracking-[-0.04em] text-[#0c1d22]/65 sm:mt-6 sm:text-[17px]">
+            <p className="mt-5 max-w-3xl font-sans text-[15px] font-normal leading-[1.65] tracking-[-0.04em] text-[#0c1d22]/65 sm:mx-auto sm:mt-6 sm:text-[17px]">
               Chez TerraGo, un séminaire est l&apos;occasion de sortir du cadre, de vivre quelque chose
               ensemble et de découvrir autrement les territoires qui nous entourent. Chaque expérience
               est pensée pour répondre à vos objectifs : cohésion d&apos;équipe, démarche RSE, réflexion

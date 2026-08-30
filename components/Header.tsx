@@ -696,6 +696,27 @@ const Header: React.FC = () => {
                   'max-lg:fixed max-lg:top-[calc(12px+env(safe-area-inset-top,0px))] max-lg:right-[max(16px,env(safe-area-inset-right,0px))] max-lg:z-[85] max-lg:pointer-events-auto',
               ].filter(Boolean).join(' ')}
             >
+              <Link
+                href="/dashboard-event"
+                aria-label="Espace participants"
+                title="Espace participants"
+                className={[
+                  'hidden lg:inline-flex size-10 shrink-0 items-center justify-center rounded-full transition-all duration-200',
+                  'lg:mr-2.5',
+                  pathname.startsWith('/dashboard-event')
+                    ? isDark
+                      ? 'border border-white/40 bg-white/15 text-white'
+                      : 'text-[#0c1d22]'
+                    : isDark
+                      ? 'border border-white/25 text-white/90 hover:bg-white/10 hover:text-white'
+                      : 'text-[#0c1d22] hover:text-[#ec6435]',
+                ].join(' ')}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.15" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <circle cx="12" cy="8" r="3.25" />
+                  <path d="M5.5 19.2c.9-3.1 3.4-5.2 6.5-5.2s5.6 2.1 6.5 5.2" />
+                </svg>
+              </Link>
               <button
                 type="button"
                 onClick={openModal}

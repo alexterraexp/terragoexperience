@@ -6,6 +6,7 @@ import {
   Briefcase,
   Building2,
   Bus,
+  ChevronLeft,
   ChevronRight,
   Clock,
   MapPin,
@@ -168,6 +169,14 @@ function syncSeminarUrl(name: string) {
   const slug = seminarSlug(name);
   if (!slug) return;
   const next = `/dashboard-event/${slug}`;
+  if (window.location.pathname !== next) {
+    window.history.replaceState(window.history.state, '', next);
+    window.dispatchEvent(new Event('terrago:pathchange'));
+  }
+}
+
+function resetSeminarUrl() {
+  const next = '/dashboard-event';
   if (window.location.pathname !== next) {
     window.history.replaceState(window.history.state, '', next);
     window.dispatchEvent(new Event('terrago:pathchange'));
@@ -404,16 +413,19 @@ function SecretFlipClock({ revealAt }: { revealAt?: string | null }) {
   return (
     <span
       className="dash-flip"
-      aria-label={`Révélé dans ${days} j ${hours} h ${minutes} min`}
+      aria-label={`Un peu de patience, visible dans ${days} j ${hours} h ${minutes} min`}
     >
-      {units.map((unit) => (
-        <span key={unit.label} className="dash-flip-unit">
-          <span className="dash-flip-tile" aria-hidden>
-            <span className="dash-flip-num">{pad2(unit.value)}</span>
+      <span className="dash-flip-caption">Un peu de patience, visible dans</span>
+      <span className="dash-flip-row">
+        {units.map((unit) => (
+          <span key={unit.label} className="dash-flip-unit">
+            <span className="dash-flip-tile" aria-hidden>
+              <span className="dash-flip-num">{pad2(unit.value)}</span>
+            </span>
+            <span className="dash-flip-label">{unit.label}</span>
           </span>
-          <span className="dash-flip-label">{unit.label}</span>
-        </span>
-      ))}
+        ))}
+      </span>
     </span>
   );
 }
@@ -445,11 +457,11 @@ function TimelineItems({ items }: { items: ScheduleItem[] }) {
             >
               <span className="dash-timeline-card-body" aria-hidden={item.is_secret || undefined}>
                 <span className="dash-timeline-icon" aria-hidden>
-                  {programmeIcon(item.is_secret ? '' : item.title)}
+                  {programmeIcon(item.is_secret ? 'immersion producteur' : item.title)}
                 </span>
                 <span className="dash-timeline-card-text">
                   <span className="dash-timeline-card-title">
-                    {item.is_secret ? 'Moment surprise du programme' : item.title}
+                    {item.is_secret ? 'Atelier découverte chez le producteur' : item.title}
                   </span>
                   {timeLabel && <span className="dash-timeline-card-sub">{timeLabel}</span>}
                 </span>
@@ -870,6 +882,17 @@ export default function DashboardEventClient() {
     } finally {
       setUnlocking(false);
     }
+  };
+
+  const handleLeaveEvent = () => {
+    clearSession();
+    setData(null);
+    setInputCode('');
+    setUnlockError('');
+    setChecklistOpen(false);
+    setGate('locked');
+    resetSeminarUrl();
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   };
 
   const pageCss = (
@@ -1521,25 +1544,59 @@ export default function DashboardEventClient() {
         width: 100%;
       }
       .dash-timeline-card--secret {
-        justify-content: space-between;
-        gap: 10px;
-        min-height: 72px;
-        padding-right: 10px;
+        min-height: 88px;
+        overflow: visible;
+      }
+      .dash-timeline-card--secret::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.12);
+        pointer-events: none;
       }
       .dash-timeline-card--secret .dash-timeline-card-body {
-        filter: blur(8px);
+        filter: blur(9px);
         user-select: none;
         pointer-events: none;
-        flex: 1;
-        width: auto;
+      }
+      .dash-timeline-card--secret .dash-timeline-card-title,
+      .dash-timeline-card--secret .dash-timeline-card-sub {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .dash-timeline-card--secret .dash-flip {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        margin-left: 0;
+        z-index: 2;
       }
       .dash-flip {
         display: flex;
-        align-items: flex-end;
-        gap: 5px;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
         flex-shrink: 0;
         margin-left: auto;
         z-index: 1;
+      }
+      .dash-flip-caption {
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        color: rgba(12, 29, 34, 0.55);
+      }
+      .dash-flip-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 5px;
       }
       .dash-flip-unit {
         display: flex;
@@ -1644,12 +1701,7 @@ export default function DashboardEventClient() {
         .dash-timeline-card-body {
           gap: 12px;
         }
-        .dash-timeline-card--secret {
-          min-height: 68px;
-          padding: 12px 14px 12px 16px;
-          gap: 12px;
-        }
-        .dash-flip { gap: 5px; }
+        .dash-flip-row { gap: 5px; }
         .dash-flip-tile {
           width: 28px;
           height: 30px;
@@ -1839,6 +1891,24 @@ export default function DashboardEventClient() {
         grid-area: header;
         margin-bottom: 24px;
       }
+      .dash-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        margin: 0 0 14px;
+        padding: 0;
+        border: none;
+        background: none;
+        font-family: ${FONT};
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: rgba(12, 29, 34, 0.45);
+        text-decoration: none;
+        cursor: pointer;
+        transition: color 0.15s ease;
+      }
+      .dash-back:hover { color: ${ORANGE}; }
       .dash-main-header .dash-kicker { margin-bottom: 8px; }
       .dash-cols > .dash-stay { grid-area: stay; margin: 0; }
       .dash-weather--aside {
@@ -2187,6 +2257,10 @@ export default function DashboardEventClient() {
       <div className="dash-inner">
         <div className="dash-cols">
           <header className="dash-main-header">
+            <button type="button" className="dash-back" onClick={handleLeaveEvent}>
+              <ChevronLeft size={14} strokeWidth={2.2} aria-hidden />
+              Retour
+            </button>
             <p className="dash-kicker">Votre séminaire</p>
             <h2 className="dash-title" style={{ fontSize: 'clamp(24px, 2.8vw, 32px)', marginBottom: 0 }}>
               {event.name}

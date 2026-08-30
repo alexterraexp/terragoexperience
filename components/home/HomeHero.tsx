@@ -11,7 +11,7 @@ import { useModal } from '../../context/ModalContext';
 
 interface HomeHeroProps {
   videoSrc: string;
-  /** Affiché immédiatement pendant le chargement de la vidéo (~12 Mo). */
+  /** Affiché immédiatement pendant le chargement de la vidéo. */
   posterSrc?: string;
 }
 
@@ -105,8 +105,8 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
           }}
         />
 
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-3.5 pt-24 pb-14 text-center sm:px-6 sm:pt-28 sm:pb-12">
-          <h1 className="max-w-none font-sans text-[clamp(2.75rem,9.5vw,3.35rem)] font-normal leading-[1.04] tracking-[-0.075em] text-white sm:text-[clamp(1.85rem,6.6vw,3.75rem)] sm:leading-[1.06]">
+        <div className="relative z-10 flex h-full flex-col items-start justify-center px-5 pt-24 pb-14 text-left sm:items-center sm:px-6 sm:pt-28 sm:pb-12 sm:text-center">
+          <h1 className="max-w-none font-sans text-[clamp(2.05rem,7vw,2.55rem)] font-normal leading-[1.08] tracking-[-0.075em] text-white sm:text-[clamp(1.85rem,6.6vw,3.75rem)] sm:leading-[1.06]">
             <span className="sm:whitespace-nowrap">
               <span className="font-bold">Séminaires d&apos;entreprise engagés,</span>{' '}
               <span className="font-normal">à la</span>
@@ -121,7 +121,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
             Des séminaires d&apos;entreprise au vert, sur mesure et engagés dans une démarche RSE, partout
             en France.
           </p>
-          <div className="mt-10 flex flex-col items-center gap-3 sm:mt-24 sm:flex-row sm:gap-5">
+          <div className="mt-10 flex w-full flex-col items-start gap-3 sm:mt-24 sm:w-auto sm:flex-row sm:items-center sm:justify-center sm:gap-5">
             <Link
               href="/seminaires-entreprise"
               className="hidden rounded-full border-2 border-white px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:inline-flex sm:items-center sm:justify-center sm:px-10 sm:py-2.5 sm:text-[13px]"
@@ -132,7 +132,8 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
             <button
               type="button"
               onClick={openModal}
-              className="rounded-full bg-white px-7 py-2 text-[13px] font-bold tracking-[-0.02em] text-[#0c1d22] transition-colors hover:bg-[#ec6435] hover:text-white sm:px-10 sm:py-2.5 sm:text-[13px]"
+              className="rounded-full border-2 border-white px-7 py-2 text-[13px] font-bold tracking-[-0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px]"
+              style={{ background: 'rgba(12, 29, 34, 0.1)' }}
             >
               Parlons de votre projet
             </button>
