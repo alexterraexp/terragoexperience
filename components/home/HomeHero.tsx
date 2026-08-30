@@ -118,7 +118,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
             </span>
           </h1>
           <p className="mt-4 max-w-5xl px-0 font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.04em] text-white/95 sm:mt-10 sm:text-lg sm:leading-relaxed">
-            Des séminaires d&apos;entreprise au vert qui sortent du cadre, à la rencontre des
+            Des séminaires d&apos;entreprise au vert qui sortent du cadre, en immersion dans nos
             territoires.
           </p>
           <div className="mt-10 flex w-full flex-col items-start gap-3 sm:mt-24 sm:w-auto sm:flex-row sm:items-center sm:justify-center sm:gap-5">
