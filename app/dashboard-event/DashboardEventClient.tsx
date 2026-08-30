@@ -159,6 +159,11 @@ function normalizeCode(value: string) {
   return value.trim();
 }
 
+function formatEventCodeInput(value: string) {
+  if (!value) return '';
+  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+}
+
 function syncSeminarUrl(name: string) {
   const slug = seminarSlug(name);
   if (!slug) return;
@@ -1793,11 +1798,14 @@ export default function DashboardEventClient() {
         overflow: hidden;
       }
       .dash-unlock-code {
-        text-align: center;
-        font-size: 16px;
-        font-weight: 600;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+      }
+      .dash-unlock-code::placeholder {
+        font-weight: 400;
+        color: rgba(12, 29, 34, 0.38);
       }
       .dash-cols {
         display: grid;
@@ -2001,7 +2009,7 @@ export default function DashboardEventClient() {
         .dash-infos-row-body { padding: 0 14px 12px 14px; }
         .dash-infos-row--plain .dash-infos-row-body { padding: 0 0 14px 34px; }
         .dash-input { font-size: 16px; }
-        .dash-unlock-code { font-size: 16px; letter-spacing: 0.12em; }
+        .dash-unlock-code { font-size: 16px; letter-spacing: -0.03em; }
         .dash-cta { font-size: 10px; padding: 14px 18px; }
         .dash-unlock {
           flex-direction: column-reverse;
@@ -2093,22 +2101,21 @@ export default function DashboardEventClient() {
               </p>
               <form onSubmit={handleUnlock} style={{ marginTop: 28 }}>
                 <div className="dash-field">
-                  <label htmlFor="event-code">Code événement</label>
                   <input
                     id="event-code"
                     name="code"
                     value={inputCode}
                     onChange={(e) => {
-                      setInputCode(e.target.value);
+                      setInputCode(formatEventCodeInput(e.target.value));
                       setUnlockError('');
                     }}
                     autoComplete="off"
-                    autoCapitalize="characters"
+                    autoCapitalize="off"
                     autoCorrect="off"
                     spellCheck={false}
                     className="dash-input dash-unlock-code"
-                    style={{ fontSize: 16 }}
-                    placeholder="XXXXXX"
+                    placeholder="Code de l'évènement"
+                    aria-label="Code de l'évènement"
                   />
                 </div>
                 {unlockError && (
