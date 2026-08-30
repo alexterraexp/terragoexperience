@@ -132,8 +132,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
             <button
               type="button"
               onClick={openModal}
-              className="rounded-full border-2 border-white px-7 py-2 text-[13px] font-bold tracking-[-0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:px-10 sm:py-2.5 sm:text-[13px]"
-              style={{ background: 'rgba(12, 29, 34, 0.1)' }}
+              className="rounded-full border-2 border-white bg-[rgba(12,29,34,0.1)] px-7 py-2 text-[13px] font-bold tracking-[-0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:border-0 sm:bg-white sm:px-10 sm:py-2.5 sm:text-[13px] sm:text-[#0c1d22] sm:backdrop-blur-none sm:hover:border-0 sm:hover:bg-[#ec6435] sm:hover:text-white"
             >
               Parlons de votre projet
             </button>
