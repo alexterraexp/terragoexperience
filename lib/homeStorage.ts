@@ -2,7 +2,7 @@ const HOME_PUBLIC_BASE =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
 
 const HOME_FILES = {
-  heroVideo: 'home-terrago.mp4',
+  heroVideo: 'home-hero-terrago.mp4',
   heroPoster: 'Noisettes-recolte.webp',
   conceptAgir: 'Noisettes-recolte.webp',
   conceptLien: 'repas-convivial.webp',
