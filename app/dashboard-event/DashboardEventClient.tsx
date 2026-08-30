@@ -115,6 +115,8 @@ type ScheduleItem = {
   start_time: string | null;
   end_time: string | null;
   is_public: boolean;
+  is_secret?: boolean;
+  reveal_at?: string | null;
   sort_order: number | null;
 };
 
@@ -317,7 +319,7 @@ function titleHas(folded: string, keywords: string[]) {
 }
 
 function programmeIcon(title: string) {
-  const props = { size: 16, strokeWidth: 1.8, color: INK } as const;
+  const props = { size: 16, strokeWidth: 1.8, color: ORANGE } as const;
   const t = foldTitle(title);
 
   if (titleHas(t, ['train', 'gare', 'trajet'])) return <Train {...props} />;
@@ -382,6 +384,50 @@ function dayKeyFromStart(value?: string | null) {
   return `${key.getUTCFullYear()}-${String(key.getUTCMonth() + 1).padStart(2, '0')}-${String(key.getUTCDate()).padStart(2, '0')}`;
 }
 
+function revealCountdownParts(revealAt: string | null | undefined, now: number) {
+  const at = revealAt ? new Date(revealAt).getTime() : NaN;
+  const ms = Number.isFinite(at) ? Math.max(0, at - now) : 0;
+  const totalMinutes = Math.floor(ms / 60_000);
+  return {
+    days: Math.floor(totalMinutes / (24 * 60)),
+    hours: Math.floor((totalMinutes % (24 * 60)) / 60),
+    minutes: totalMinutes % 60,
+  };
+}
+
+function pad2(value: number) {
+  return String(value).padStart(2, '0');
+}
+
+function SecretFlipClock({ revealAt }: { revealAt?: string | null }) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, []);
+  const { days, hours, minutes } = revealCountdownParts(revealAt, now);
+  const units = [
+    { value: days, label: 'Jours' },
+    { value: hours, label: 'Heures' },
+    { value: minutes, label: 'Min' },
+  ];
+  return (
+    <span
+      className="dash-flip"
+      aria-label={`Révélé dans ${days} j ${hours} h ${minutes} min`}
+    >
+      {units.map((unit) => (
+        <span key={unit.label} className="dash-flip-unit">
+          <span className="dash-flip-tile" aria-hidden>
+            <span className="dash-flip-num">{pad2(unit.value)}</span>
+          </span>
+          <span className="dash-flip-label">{unit.label}</span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
 function TimelineItems({ items }: { items: ScheduleItem[] }) {
   return (
     <div className="dash-timeline">
@@ -404,14 +450,21 @@ function TimelineItems({ items }: { items: ScheduleItem[] }) {
                 </>
               )}
             </div>
-            <article className="dash-timeline-card">
-              <span className="dash-timeline-icon" aria-hidden>
-                {programmeIcon(item.title)}
+            <article
+              className={`dash-timeline-card${item.is_secret ? ' dash-timeline-card--secret' : ''}`}
+            >
+              <span className="dash-timeline-card-body" aria-hidden={item.is_secret || undefined}>
+                <span className="dash-timeline-icon" aria-hidden>
+                  {programmeIcon(item.is_secret ? '' : item.title)}
+                </span>
+                <span className="dash-timeline-card-text">
+                  <span className="dash-timeline-card-title">
+                    {item.is_secret ? 'Moment surprise du programme' : item.title}
+                  </span>
+                  {timeLabel && <span className="dash-timeline-card-sub">{timeLabel}</span>}
+                </span>
               </span>
-              <span className="dash-timeline-card-text">
-                <span className="dash-timeline-card-title">{item.title}</span>
-                {timeLabel && <span className="dash-timeline-card-sub">{timeLabel}</span>}
-              </span>
+              {item.is_secret && <SecretFlipClock revealAt={item.reveal_at} />}
             </article>
           </div>
         );
@@ -453,10 +506,29 @@ function groupTeamsByDay(items: TeamMember[]): TeamDay[] {
     }
   }
 
+  const sundayOrder = [
+    'TEAM ROUGE',
+    'TEAM BLANC',
+    'TEAM VERT',
+    'TEAM BLEU',
+    'TEAM JAUNE',
+    'TEAM ORANGE',
+    'TEAM ROSE',
+    'TEAM VIOLET',
+    'TEAM NOIR',
+  ];
+
   const daysOut: TeamDay[] = (['samedi', 'dimanche'] as const).map((key) => ({
     key,
     title: days[key].title,
-    teams: [...days[key].teams.values()],
+    teams: [...days[key].teams.values()].sort((a, b) => {
+      if (key === 'dimanche') {
+        const ia = sundayOrder.indexOf(a.name);
+        const ib = sundayOrder.indexOf(b.name);
+        if (ia !== -1 || ib !== -1) return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+      }
+      return a.name.localeCompare(b.name, 'fr', { numeric: true });
+    }),
   }));
 
   return daysOut.some((day) => day.teams.length > 0) ? daysOut : [];
@@ -1439,16 +1511,102 @@ export default function DashboardEventClient() {
         color: ${INK};
       }
       .dash-timeline-card {
+        position: relative;
         display: flex;
         align-items: center;
-        gap: 10px;
         align-self: start;
         min-width: 0;
         margin-bottom: 8px;
         padding: 15px 12px;
         min-height: 60px;
-        background: ${HOME_COLORS.gray};
-        border-radius: 14px;
+        background: #fafafa;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .dash-timeline-card-body {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        width: 100%;
+      }
+      .dash-timeline-card--secret {
+        justify-content: space-between;
+        gap: 10px;
+        min-height: 72px;
+        padding-right: 10px;
+      }
+      .dash-timeline-card--secret .dash-timeline-card-body {
+        filter: blur(8px);
+        user-select: none;
+        pointer-events: none;
+        flex: 1;
+        width: auto;
+      }
+      .dash-flip {
+        display: flex;
+        align-items: flex-end;
+        gap: 5px;
+        flex-shrink: 0;
+        margin-left: auto;
+        z-index: 1;
+      }
+      .dash-flip-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .dash-flip-tile {
+        position: relative;
+        width: 32px;
+        height: 34px;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #f2f2f2 0%, ${HOME_COLORS.gray} 48%, #e8e8e8 100%);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 1px 3px rgba(12, 29, 34, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .dash-flip-tile::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 1px;
+        background: rgba(12, 29, 34, 0.12);
+        z-index: 2;
+        pointer-events: none;
+      }
+      .dash-flip-tile::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 50%;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent);
+        pointer-events: none;
+      }
+      .dash-flip-num {
+        position: relative;
+        z-index: 1;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: -0.05em;
+        line-height: 1;
+        color: ${INK};
+        font-variant-numeric: tabular-nums;
+      }
+      .dash-flip-label {
+        font-size: 7.5px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: ${ORANGE};
+        line-height: 1;
       }
       .dash-timeline-item:last-child .dash-timeline-card { margin-bottom: 0; }
       .dash-timeline-icon {
@@ -1460,7 +1618,7 @@ export default function DashboardEventClient() {
         display: flex;
         align-items: center;
         justify-content: center;
-        color: ${INK};
+        color: ${ORANGE};
       }
       .dash-timeline-icon svg {
         width: 16px;
@@ -1489,11 +1647,26 @@ export default function DashboardEventClient() {
       }
       @media (min-width: 1024px) {
         .dash-timeline-card {
-          gap: 12px;
           margin-bottom: 10px;
           padding: 16px 16px;
           min-height: 68px;
         }
+        .dash-timeline-card-body {
+          gap: 12px;
+        }
+        .dash-timeline-card--secret {
+          min-height: 68px;
+          padding: 12px 14px 12px 16px;
+          gap: 12px;
+        }
+        .dash-flip { gap: 5px; }
+        .dash-flip-tile {
+          width: 28px;
+          height: 30px;
+          border-radius: 7px;
+        }
+        .dash-flip-num { font-size: 13px; }
+        .dash-flip-label { font-size: 7px; }
         .dash-timeline-icon {
           width: 40px;
           height: 40px;
@@ -1669,7 +1842,11 @@ export default function DashboardEventClient() {
           "header weather"
           "main side";
       }
-      .dash-main-header { grid-area: header; margin-bottom: 28px; }
+      .dash-main-header {
+        grid-area: header;
+        margin-bottom: 24px;
+      }
+      .dash-main-header .dash-kicker { margin-bottom: 8px; }
       .dash-cols > .dash-stay { grid-area: stay; margin: 0; }
       .dash-weather--aside {
         grid-area: weather;
@@ -1690,7 +1867,7 @@ export default function DashboardEventClient() {
         align-self: start;
       }
       .dash-aside {
-        background: ${HOME_COLORS.gray};
+        background: #fafafa;
         border-radius: 16px;
         padding: 22px 22px 20px;
         color: ${INK};
@@ -1717,6 +1894,7 @@ export default function DashboardEventClient() {
             "main";
         }
         .dash-main-header { margin-bottom: 8px; }
+        .dash-main-header .dash-kicker { margin-bottom: 10px; }
         .dash-cols > .dash-stay { margin: 16px 0 8px; }
         .dash-side { display: none; }
         .dash-aside { display: none; }

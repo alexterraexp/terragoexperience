@@ -21,10 +21,11 @@ function toCoord(value: unknown): number | null {
 }
 
 function isRevealed(item: { is_public?: boolean | null; reveal_at?: string | null }): boolean {
-  if (item.is_public) return true;
-  if (!item.reveal_at) return false;
-  const at = new Date(item.reveal_at).getTime();
-  return Number.isFinite(at) && at <= Date.now();
+  if (item.reveal_at) {
+    const at = new Date(item.reveal_at).getTime();
+    return Number.isFinite(at) && at <= Date.now();
+  }
+  return Boolean(item.is_public);
 }
 
 const TRANSPORT_OPTIONAL_KEYS = [
@@ -297,15 +298,22 @@ export async function GET(_req: NextRequest, context: RouteContext) {
       sort_order: row.sort_order,
     }));
 
-    const schedule = (scheduleRes.data ?? []).filter(isRevealed).map((row) => ({
-      id: row.id,
-      activity_id: row.activity_id ?? null,
-      title: row.title,
-      start_time: filledString(row.start_time) ?? null,
-      end_time: filledString(row.end_time) ?? null,
-      is_public: Boolean(row.is_public),
-      sort_order: row.sort_order,
-    }));
+    const schedule = (scheduleRes.data ?? [])
+      .filter((row) => Boolean(row.is_public) || Boolean(row.reveal_at))
+      .map((row) => {
+        const revealed = isRevealed(row);
+        return {
+          id: row.id,
+          activity_id: revealed ? row.activity_id ?? null : null,
+          title: revealed ? row.title : '',
+          start_time: filledString(row.start_time) ?? null,
+          end_time: filledString(row.end_time) ?? null,
+          is_public: Boolean(row.is_public),
+          is_secret: !revealed,
+          reveal_at: revealed ? null : filledString(row.reveal_at) ?? null,
+          sort_order: row.sort_order,
+        };
+      });
 
     const transport = (transportRes.data ?? [])
       .map((row) => compactTransport(row as Record<string, unknown>))
