@@ -9,6 +9,9 @@ import ImageProtection from '../components/ImageProtection';
 import { ModalProvider } from '../context/ModalContext';
 import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../lib/siteNav';
 
+const FAVICON_URL =
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/terragofaviconfinal.png';
+
 export const metadata: Metadata = {
   title: SITE_TITLE,
   description: SITE_DESCRIPTION,
@@ -22,8 +25,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
   },
   icons: {
-    icon: [{ url: '/favicon.png', type: 'image/png' }],
-    apple: [{ url: '/favicon.png' }],
+    icon: [{ url: FAVICON_URL, type: 'image/png' }],
+    apple: [{ url: FAVICON_URL }],
   },
 };
 
@@ -50,8 +53,8 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
           rel="stylesheet"
         />
-        <link rel="icon" type="image/png" href="/favicon.png" />
-        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="icon" type="image/png" href={FAVICON_URL} />
+        <link rel="apple-touch-icon" href={FAVICON_URL} />
       </head>
       <body className="bg-beige-bg text-primary">
         <ScrollToTop />
