@@ -38,6 +38,13 @@ function compactEventCode(value: string) {
   return value.replace(/[^a-zA-Z0-9]/g, '');
 }
 
+function firstRecord(data: unknown): Record<string, unknown> | undefined {
+  if (!Array.isArray(data) || data.length === 0) return undefined;
+  const row = data[0];
+  if (!row || typeof row !== 'object') return undefined;
+  return row as Record<string, unknown>;
+}
+
 const TRANSPORT_OPTIONAL_KEYS = [
   'type',
   'label',
@@ -265,7 +272,7 @@ export async function GET(_req: NextRequest, context: RouteContext) {
           columnSetFailed = true;
           break;
         }
-        const row = res.data?.[0] as Record<string, unknown> | undefined;
+        const row = firstRecord(res.data);
         if (row) {
           event = row;
           break;
@@ -289,19 +296,21 @@ export async function GET(_req: NextRequest, context: RouteContext) {
       .select('teams_is_public, teams_samedi_reveal_at, teams_dimanche_reveal_at')
       .eq('id', eventId)
       .limit(1);
-    if (!visRes.error && visRes.data?.[0]) {
-      const vis = visRes.data[0] as Record<string, unknown>;
-      event.teams_is_public = vis.teams_is_public;
-      event.teams_samedi_reveal_at = vis.teams_samedi_reveal_at;
-      event.teams_dimanche_reveal_at = vis.teams_dimanche_reveal_at;
+    if (!visRes.error) {
+      const vis = firstRecord(visRes.data);
+      if (vis) {
+        event.teams_is_public = vis.teams_is_public;
+        event.teams_samedi_reveal_at = vis.teams_samedi_reveal_at;
+        event.teams_dimanche_reveal_at = vis.teams_dimanche_reveal_at;
+      }
     } else {
       const visFallback = await db
         .from('events')
         .select('teams_is_public, teams_reveal_at')
         .eq('id', eventId)
         .limit(1);
-      if (!visFallback.error && visFallback.data?.[0]) {
-        const vis = visFallback.data[0] as Record<string, unknown>;
+      const vis = firstRecord(visFallback.data);
+      if (!visFallback.error && vis) {
         event.teams_is_public = vis.teams_is_public;
         event.teams_reveal_at = vis.teams_reveal_at;
       }
