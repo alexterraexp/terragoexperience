@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isSupabaseConfigured, supabaseAdmin, supabaseServer } from '@/lib/supabase';
+import { defaultTeamRevealAt, teamDayKey, type TeamDayKey } from '@/lib/dashboardEvent';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -26,6 +27,15 @@ function isRevealed(item: { is_public?: boolean | null; reveal_at?: string | nul
     return Number.isFinite(at) && at <= Date.now();
   }
   return Boolean(item.is_public);
+}
+
+function teamsArePublic(row: Record<string, unknown>): boolean {
+  if (!('teams_is_public' in row) || row.teams_is_public == null) return false;
+  return Boolean(row.teams_is_public);
+}
+
+function compactEventCode(value: string) {
+  return value.replace(/[^a-zA-Z0-9]/g, '');
 }
 
 const TRANSPORT_OPTIONAL_KEYS = [
@@ -120,6 +130,17 @@ function daysBetweenYmd(from: string, to: string): number {
   const [fy, fm, fd] = from.split('-').map(Number);
   const [ty, tm, td] = to.split('-').map(Number);
   return Math.round((Date.UTC(ty, tm - 1, td) - Date.UTC(fy, fm - 1, fd)) / 86400000);
+}
+
+function extremeIso(values: Array<string | undefined>, mode: 'min' | 'max'): string | undefined {
+  let best: number | null = null;
+  for (const value of values) {
+    if (!value) continue;
+    const t = new Date(value).getTime();
+    if (!Number.isFinite(t)) continue;
+    if (best == null || (mode === 'min' ? t < best : t > best)) best = t;
+  }
+  return best == null ? undefined : new Date(best).toISOString();
 }
 
 function weatherDaysFromDaily(
@@ -226,21 +247,34 @@ export async function GET(_req: NextRequest, context: RouteContext) {
     const EVENT_COLUMNS_FALLBACK =
       'id, code, name, company_name, start_date, end_date, location_name, location_address, location_maps_url, weather_lat, weather_lng, contact_name, contact_phone';
 
-    let { data: event, error: eventError } = await db
-      .from('events')
-      .select(EVENT_COLUMNS)
-      .ilike('code', code)
-      .maybeSingle();
+    const codeCandidates = Array.from(
+      new Set([code, compactEventCode(code)].filter((value) => value.length > 0)),
+    );
+    const columnSets = [EVENT_COLUMNS, EVENT_COLUMNS_FALLBACK];
 
-    if (eventError && /image/i.test(eventError.message ?? '')) {
-      ({ data: event, error: eventError } = await db
-        .from('events')
-        .select(EVENT_COLUMNS_FALLBACK)
-        .ilike('code', code)
-        .maybeSingle());
+    let event: Record<string, unknown> | null = null;
+    let eventError: { message?: string } | null = null;
+
+    for (const columns of columnSets) {
+      eventError = null;
+      let columnSetFailed = false;
+      for (const candidate of codeCandidates) {
+        const res = await db.from('events').select(columns).ilike('code', candidate).limit(1);
+        if (res.error) {
+          eventError = res.error;
+          columnSetFailed = true;
+          break;
+        }
+        const row = res.data?.[0] as Record<string, unknown> | undefined;
+        if (row) {
+          event = row;
+          break;
+        }
+      }
+      if (event || !columnSetFailed) break;
     }
 
-    if (eventError) {
+    if (eventError && !event) {
       console.error('[dashboard-event] event lookup error:', eventError);
       return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500, headers: noStore });
     }
@@ -250,6 +284,28 @@ export async function GET(_req: NextRequest, context: RouteContext) {
     }
 
     const eventId = event.id as string;
+    const visRes = await db
+      .from('events')
+      .select('teams_is_public, teams_samedi_reveal_at, teams_dimanche_reveal_at')
+      .eq('id', eventId)
+      .limit(1);
+    if (!visRes.error && visRes.data?.[0]) {
+      const vis = visRes.data[0] as Record<string, unknown>;
+      event.teams_is_public = vis.teams_is_public;
+      event.teams_samedi_reveal_at = vis.teams_samedi_reveal_at;
+      event.teams_dimanche_reveal_at = vis.teams_dimanche_reveal_at;
+    } else {
+      const visFallback = await db
+        .from('events')
+        .select('teams_is_public, teams_reveal_at')
+        .eq('id', eventId)
+        .limit(1);
+      if (!visFallback.error && visFallback.data?.[0]) {
+        const vis = visFallback.data[0] as Record<string, unknown>;
+        event.teams_is_public = vis.teams_is_public;
+        event.teams_reveal_at = vis.teams_reveal_at;
+      }
+    }
 
     const [checklistRes, activitiesRes, scheduleRes, transportRes, teamsRes] = await Promise.all([
       db
@@ -319,7 +375,10 @@ export async function GET(_req: NextRequest, context: RouteContext) {
       .map((row) => compactTransport(row as Record<string, unknown>))
       .filter((row): row is Record<string, unknown> => row != null);
 
-    const teams = (teamsRes.data ?? [])
+    const eventRow = event as Record<string, unknown>;
+    const startDate = filledString(eventRow.start_date);
+    const forceTeamsPublic = teamsArePublic(eventRow);
+    const teamRows = (teamsRes.data ?? [])
       .map((row) => {
         const day_context = filledString(row.day_context);
         const team_name = filledString(row.team_name);
@@ -329,16 +388,53 @@ export async function GET(_req: NextRequest, context: RouteContext) {
       })
       .filter((row): row is { id: string; day_context: string; team_name: string; member_name: string } => row != null);
 
-    const eventRow = event as Record<string, unknown>;
+    const titles: Record<TeamDayKey, string> = { samedi: 'Samedi', dimanche: 'Dimanche' };
+    const membersByDay: Record<TeamDayKey, typeof teamRows> = { samedi: [], dimanche: [] };
+    for (const row of teamRows) {
+      const key = teamDayKey(row.day_context);
+      if (!key) continue;
+      if (row.day_context.trim()) titles[key] = row.day_context.trim();
+      membersByDay[key].push(row);
+    }
+
+    const revealOverride = (day: TeamDayKey) =>
+      filledString(eventRow[`teams_${day}_reveal_at`]) ??
+      (forceTeamsPublic ? new Date(0).toISOString() : filledString(eventRow.teams_reveal_at));
+
+    const team_days = (['samedi', 'dimanche'] as const)
+      .filter((key) => membersByDay[key].length > 0)
+      .map((key) => {
+        const reveal_at = revealOverride(key) ?? defaultTeamRevealAt(key, startDate);
+        const revealed = forceTeamsPublic || isRevealed({ is_public: false, reveal_at });
+        const teamNames = new Set(membersByDay[key].map((row) => row.team_name));
+        return {
+          key,
+          title: titles[key],
+          team_count: teamNames.size,
+          is_secret: !revealed,
+          reveal_at: revealed ? null : reveal_at,
+        };
+      });
+
+    const revealedDays = new Set(team_days.filter((day) => !day.is_secret).map((day) => day.key));
+    const teams = teamRows.filter((row) => {
+      const key = teamDayKey(row.day_context);
+      return key != null && revealedDays.has(key);
+    });
     const lat = toCoord(eventRow.weather_lat);
     const lng = toCoord(eventRow.weather_lng);
+    const stayTimes = [
+      filledString(eventRow.start_date),
+      filledString(eventRow.end_date),
+      ...schedule.flatMap((row) => [filledString(row.start_time), filledString(row.end_time)]),
+    ];
     const weather =
       lat != null && lng != null
         ? await fetchWeather(
             lat,
             lng,
-            filledString(eventRow.start_date),
-            filledString(eventRow.end_date),
+            extremeIso(stayTimes, 'min'),
+            extremeIso(stayTimes, 'max'),
           )
         : null;
 
@@ -367,6 +463,7 @@ export async function GET(_req: NextRequest, context: RouteContext) {
         activities,
         schedule,
         transport,
+        team_days,
         teams,
       },
       { status: 200, headers: noStore },

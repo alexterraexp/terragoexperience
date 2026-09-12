@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import {
   Briefcase,
@@ -25,6 +25,8 @@ import {
   DASHBOARD_HERO_IMAGE_ALT as HERO_IMAGE_ALT,
   eventHeroImage,
   seminarSlug,
+  teamDayKey,
+  type TeamDayKey,
 } from '../../lib/dashboardEvent';
 
 const FONT = "'Poppins', sans-serif";
@@ -141,9 +143,15 @@ type TeamGroup = {
   members: { id: string; name: string }[];
 };
 
-type TeamDay = {
-  key: 'samedi' | 'dimanche';
+type TeamDayMeta = {
+  key: TeamDayKey;
   title: string;
+  team_count: number;
+  is_secret: boolean;
+  reveal_at: string | null;
+};
+
+type TeamDay = TeamDayMeta & {
   teams: TeamGroup[];
 };
 
@@ -154,6 +162,7 @@ type DashboardData = {
   schedule: ScheduleItem[];
   transport: TransportItem[];
   teams?: TeamMember[];
+  team_days?: TeamDayMeta[];
 };
 
 function normalizeCode(value: string) {
@@ -383,54 +392,56 @@ function dayKeyFromStart(value?: string | null) {
   return `${key.getUTCFullYear()}-${String(key.getUTCMonth() + 1).padStart(2, '0')}-${String(key.getUTCDate()).padStart(2, '0')}`;
 }
 
-function revealCountdownParts(revealAt: string | null | undefined, now: number) {
-  const at = revealAt ? new Date(revealAt).getTime() : NaN;
-  const ms = Number.isFinite(at) ? Math.max(0, at - now) : 0;
-  const totalMinutes = Math.floor(ms / 60_000);
-  return {
-    days: Math.floor(totalMinutes / (24 * 60)),
-    hours: Math.floor((totalMinutes % (24 * 60)) / 60),
-    minutes: totalMinutes % 60,
-  };
+function formatVisibleAt(revealAt?: string | null) {
+  const at = revealAt ? new Date(revealAt) : null;
+  if (!at || !Number.isFinite(at.getTime())) return 'visible bientôt';
+  const weekday = new Intl.DateTimeFormat('fr-FR', {
+    weekday: 'long',
+    timeZone: 'Europe/Paris',
+  }).format(at);
+  const dayNum = new Intl.DateTimeFormat('fr-FR', {
+    day: 'numeric',
+    timeZone: 'Europe/Paris',
+  }).format(at);
+  const month = new Intl.DateTimeFormat('fr-FR', {
+    month: 'short',
+    timeZone: 'Europe/Paris',
+  })
+    .format(at)
+    .replace(/\.$/, '');
+  const parts = new Intl.DateTimeFormat('fr-FR', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Europe/Paris',
+  }).formatToParts(at);
+  const hour = parts.find((part) => part.type === 'hour')?.value ?? '0';
+  const minute = parts.find((part) => part.type === 'minute')?.value ?? '00';
+  return `visible ${weekday} ${dayNum} ${month} à ${Number(hour)}h${minute}`;
 }
 
-function pad2(value: number) {
-  return String(value).padStart(2, '0');
-}
-
-function SecretFlipClock({ revealAt }: { revealAt?: string | null }) {
-  const [now, setNow] = useState(() => Date.now());
+function useRevealAt(revealAt: string | null | undefined, onReveal?: () => void) {
   useEffect(() => {
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(id);
-  }, []);
-  const { days, hours, minutes } = revealCountdownParts(revealAt, now);
-  const units = [
-    { value: days, label: 'Jours' },
-    { value: hours, label: 'Heures' },
-    { value: minutes, label: 'Min' },
-  ];
-  return (
-    <span
-      className="dash-flip"
-      aria-label={`Un peu de patience, visible dans ${days} j ${hours} h ${minutes} min`}
-    >
-      <span className="dash-flip-caption">Un peu de patience, visible dans</span>
-      <span className="dash-flip-row">
-        {units.map((unit) => (
-          <span key={unit.label} className="dash-flip-unit">
-            <span className="dash-flip-tile" aria-hidden>
-              <span className="dash-flip-num">{pad2(unit.value)}</span>
-            </span>
-            <span className="dash-flip-label">{unit.label}</span>
-          </span>
-        ))}
-      </span>
-    </span>
-  );
+    if (!revealAt || !onReveal) return;
+    const at = new Date(revealAt).getTime();
+    if (!Number.isFinite(at)) return;
+    const id = window.setTimeout(onReveal, Math.max(0, at - Date.now()));
+    return () => window.clearTimeout(id);
+  }, [revealAt, onReveal]);
 }
 
-function TimelineItems({ items }: { items: ScheduleItem[] }) {
+function VisibleAtPill({
+  revealAt,
+  onReveal,
+}: {
+  revealAt?: string | null;
+  onReveal?: () => void;
+}) {
+  useRevealAt(revealAt, onReveal);
+  return <span className="dash-visible-pill">{formatVisibleAt(revealAt)}</span>;
+}
+
+function TimelineItems({ items, onReveal }: { items: ScheduleItem[]; onReveal?: () => void }) {
   return (
     <div className="dash-timeline">
       {items.map((item, index) => {
@@ -466,7 +477,7 @@ function TimelineItems({ items }: { items: ScheduleItem[] }) {
                   {timeLabel && <span className="dash-timeline-card-sub">{timeLabel}</span>}
                 </span>
               </span>
-              {item.is_secret && <SecretFlipClock revealAt={item.reveal_at} />}
+              {item.is_secret && <VisibleAtPill revealAt={item.reveal_at} onReveal={onReveal} />}
             </article>
           </div>
         );
@@ -475,19 +486,8 @@ function TimelineItems({ items }: { items: ScheduleItem[] }) {
   );
 }
 
-function teamDayKey(value?: string | null): TeamDay['key'] | null {
-  const t = (value ?? '')
-    .trim()
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
-  if (t.includes('samedi') || t.includes('saturday') || t === 'sam' || t === 'sat') return 'samedi';
-  if (t.includes('dimanche') || t.includes('sunday') || t === 'dim' || t === 'sun') return 'dimanche';
-  return null;
-}
-
 function groupTeamsByDay(items: TeamMember[]): TeamDay[] {
-  const days: Record<TeamDay['key'], { title: string; teams: Map<string, TeamGroup> }> = {
+  const days: Record<TeamDayKey, { title: string; teams: Map<string, TeamGroup> }> = {
     samedi: { title: 'Samedi', teams: new Map() },
     dimanche: { title: 'Dimanche', teams: new Map() },
   };
@@ -520,20 +520,35 @@ function groupTeamsByDay(items: TeamMember[]): TeamDay[] {
     'TEAM NOIR',
   ];
 
-  const daysOut: TeamDay[] = (['samedi', 'dimanche'] as const).map((key) => ({
-    key,
-    title: days[key].title,
-    teams: [...days[key].teams.values()].sort((a, b) => {
+  const daysOut: TeamDay[] = (['samedi', 'dimanche'] as const).map((key) => {
+    const teams = [...days[key].teams.values()].sort((a, b) => {
       if (key === 'dimanche') {
         const ia = sundayOrder.indexOf(a.name);
         const ib = sundayOrder.indexOf(b.name);
         if (ia !== -1 || ib !== -1) return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
       }
       return a.name.localeCompare(b.name, 'fr', { numeric: true });
-    }),
-  }));
+    });
+    return {
+      key,
+      title: days[key].title,
+      team_count: teams.length,
+      is_secret: false,
+      reveal_at: null,
+      teams,
+    };
+  });
 
   return daysOut.some((day) => day.teams.length > 0) ? daysOut : [];
+}
+
+function mergeTeamDays(meta: TeamDayMeta[] | undefined, members: TeamMember[]): TeamDay[] {
+  const grouped = groupTeamsByDay(members);
+  if (!meta?.length) return grouped;
+  return meta.map((day) => ({
+    ...day,
+    teams: grouped.find((item) => item.key === day.key)?.teams ?? [],
+  }));
 }
 
 function telHref(phone: string) {
@@ -737,6 +752,44 @@ function InfosRow({
   );
 }
 
+function TeamDayBlock({ day, onReveal }: { day: TeamDay; onReveal?: () => void }) {
+  if (day.is_secret) {
+    return (
+      <div className="dash-infos-row dash-infos-row--plain dash-infos-row--locked">
+        <div className="dash-infos-row-trigger" style={{ cursor: 'default' }}>
+          <span className="dash-infos-row-icon" aria-hidden>
+            <Users size={18} strokeWidth={1.7} color={INK} />
+          </span>
+          <span className="dash-infos-row-title">{day.title}</span>
+          <VisibleAtPill revealAt={day.reveal_at} onReveal={onReveal} />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <InfosRow
+      id={`teams-${day.key}`}
+      icon={<Users size={18} strokeWidth={1.7} color={INK} />}
+      title={day.title}
+      subtitle={`${day.teams.length} équipe${day.teams.length > 1 ? 's' : ''}`}
+    >
+      <div className="dash-teams-grid">
+        {day.teams.map((team) => (
+          <div key={team.name} className="dash-team-block">
+            <p className="dash-team-name">{team.name}</p>
+            <ul className="dash-team-members">
+              {team.members.map((member) => (
+                <li key={member.id}>{member.name}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </InfosRow>
+  );
+}
+
 async function fetchDashboard(code: string): Promise<DashboardData> {
   const res = await fetch(`/api/dashboard-event/${encodeURIComponent(code)}`, { cache: 'no-store' });
   const body = (await res.json().catch(() => ({}))) as DashboardData & { error?: string };
@@ -810,6 +863,50 @@ export default function DashboardEventClient() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [checklistOpen, setChecklistOpen] = useState(false);
   const [mapsChooserOpen, setMapsChooserOpen] = useState(false);
+  const refreshLock = useRef(false);
+
+  const refreshDashboard = useCallback(async () => {
+    if (refreshLock.current) return;
+    const code = readSession();
+    if (!code) return;
+    refreshLock.current = true;
+    try {
+      const payload = await fetchDashboard(code);
+      setData(payload);
+      writeSession(code);
+    } catch {
+      /* keep current view until the next refresh */
+    } finally {
+      refreshLock.current = false;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (gate !== 'open' || !data) return;
+    const dueAt = [
+      ...(data.schedule ?? []).filter((item) => item.is_secret).map((item) => item.reveal_at),
+      ...(data.team_days ?? []).filter((day) => day.is_secret).map((day) => day.reveal_at),
+    ]
+      .map((value) => (value ? new Date(value).getTime() : NaN))
+      .filter((ms) => Number.isFinite(ms));
+    if (!dueAt.length) return;
+
+    const nextAt = Math.min(...dueAt);
+    const revealIfDue = () => {
+      if (Date.now() >= nextAt) void refreshDashboard();
+    };
+    const timeoutId = window.setTimeout(revealIfDue, Math.max(0, nextAt - Date.now()));
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') revealIfDue();
+    };
+    window.addEventListener('focus', revealIfDue);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.removeEventListener('focus', revealIfDue);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [gate, data, refreshDashboard]);
 
   useEffect(() => {
     const code = readSession();
@@ -1544,7 +1641,7 @@ export default function DashboardEventClient() {
         width: 100%;
       }
       .dash-timeline-card--secret {
-        min-height: 88px;
+        min-height: 68px;
         overflow: visible;
       }
       .dash-timeline-card--secret::before {
@@ -1567,93 +1664,27 @@ export default function DashboardEventClient() {
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      .dash-timeline-card--secret .dash-flip {
+      .dash-timeline-card--secret .dash-visible-pill {
         position: absolute;
         right: 10px;
         top: 50%;
         transform: translateY(-50%);
-        margin-left: 0;
         z-index: 2;
       }
-      .dash-flip {
-        display: flex;
-        flex-direction: column;
+      .dash-visible-pill {
+        display: inline-flex;
         align-items: center;
-        gap: 6px;
         flex-shrink: 0;
         margin-left: auto;
-        z-index: 1;
-      }
-      .dash-flip-caption {
-        font-size: 8px;
-        font-weight: 600;
+        padding: 5px 10px;
+        border-radius: 9999px;
+        background: ${ORANGE};
+        color: #fff;
+        font-size: 10.5px;
+        font-weight: 700;
         letter-spacing: -0.02em;
-        line-height: 1;
-        text-align: center;
+        line-height: 1.2;
         white-space: nowrap;
-        color: rgba(12, 29, 34, 0.55);
-      }
-      .dash-flip-row {
-        display: flex;
-        align-items: flex-end;
-        gap: 5px;
-      }
-      .dash-flip-unit {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-      }
-      .dash-flip-tile {
-        position: relative;
-        width: 32px;
-        height: 34px;
-        border-radius: 8px;
-        background: linear-gradient(180deg, #f2f2f2 0%, ${HOME_COLORS.gray} 48%, #e8e8e8 100%);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 1px 3px rgba(12, 29, 34, 0.08);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
-      .dash-flip-tile::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 50%;
-        height: 1px;
-        background: rgba(12, 29, 34, 0.12);
-        z-index: 2;
-        pointer-events: none;
-      }
-      .dash-flip-tile::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        height: 50%;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent);
-        pointer-events: none;
-      }
-      .dash-flip-num {
-        position: relative;
-        z-index: 1;
-        font-size: 14px;
-        font-weight: 700;
-        letter-spacing: -0.05em;
-        line-height: 1;
-        color: ${INK};
-        font-variant-numeric: tabular-nums;
-      }
-      .dash-flip-label {
-        font-size: 7.5px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: ${ORANGE};
-        line-height: 1;
       }
       .dash-timeline-item:last-child .dash-timeline-card { margin-bottom: 0; }
       .dash-timeline-icon {
@@ -1701,14 +1732,6 @@ export default function DashboardEventClient() {
         .dash-timeline-card-body {
           gap: 12px;
         }
-        .dash-flip-row { gap: 5px; }
-        .dash-flip-tile {
-          width: 28px;
-          height: 30px;
-          border-radius: 7px;
-        }
-        .dash-flip-num { font-size: 13px; }
-        .dash-flip-label { font-size: 7px; }
         .dash-timeline-icon {
           width: 40px;
           height: 40px;
@@ -1756,6 +1779,15 @@ export default function DashboardEventClient() {
         grid-template-columns: 1fr 1fr;
         gap: 16px 24px;
         align-items: start;
+      }
+      .dash-infos-row--locked .dash-infos-row-trigger {
+        cursor: default;
+        align-items: center;
+        gap: 10px 12px;
+      }
+      .dash-infos-row--locked .dash-infos-row-title {
+        flex: 1 1 auto;
+        min-width: 0;
       }
       .dash-team-block {
         min-width: 0;
@@ -2076,6 +2108,13 @@ export default function DashboardEventClient() {
           padding: 16px 0;
           min-height: 0;
         }
+        .dash-visible-pill {
+          font-size: 9.5px;
+          padding: 4px 8px;
+          white-space: normal;
+          text-align: center;
+          max-width: 48%;
+        }
         .dash-infos-row-body { padding: 0 14px 12px 14px; }
         .dash-infos-row--plain .dash-infos-row-body { padding: 0 0 14px 34px; }
         .dash-input { font-size: 16px; }
@@ -2215,14 +2254,14 @@ export default function DashboardEventClient() {
   }
 
   const { event, checklist, activities, schedule } = data;
-  const teamDays = groupTeamsByDay(data.teams ?? []);
+  const teamDays = mergeTeamDays(data.team_days, data.teams ?? []);
   const stay = stayFromEvent(event, schedule);
   const hasStay = Boolean(stay.arrivalDate || stay.departureDate);
   const hasLocation = Boolean(event.location_name || event.location_address || event.location_maps_url);
   const hasContact = Boolean(event.contact_name || event.contact_phone);
   const weather = event.weather;
   const hasActions = hasLocation || hasContact;
-  const hasTeams = teamDays.some((day) => day.teams.length > 0);
+  const hasTeams = teamDays.length > 0;
   const programme = sortedSchedule(schedule);
 
   return (
@@ -2400,7 +2439,7 @@ export default function DashboardEventClient() {
               <section className="dash-section">
                 <hr className="dash-divider" />
                 <h2 className="dash-section-title">Planning</h2>
-                <TimelineItems items={programme} />
+                <TimelineItems items={programme} onReveal={refreshDashboard} />
               </section>
             )}
 
@@ -2411,30 +2450,9 @@ export default function DashboardEventClient() {
                   Équipes
                 </h2>
                 <AccordionList variant="plain">
-                  {teamDays
-                    .filter((day) => day.teams.length > 0)
-                    .map((day) => (
-                      <InfosRow
-                        key={day.key}
-                        id={`teams-${day.key}`}
-                        icon={<Users size={18} strokeWidth={1.7} color={INK} />}
-                        title={day.title}
-                        subtitle={`${day.teams.length} équipe${day.teams.length > 1 ? 's' : ''}`}
-                      >
-                        <div className="dash-teams-grid">
-                          {day.teams.map((team) => (
-                            <div key={team.name} className="dash-team-block">
-                              <p className="dash-team-name">{team.name}</p>
-                              <ul className="dash-team-members">
-                                {team.members.map((member) => (
-                                  <li key={member.id}>{member.name}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
-                      </InfosRow>
-                    ))}
+                  {teamDays.map((day) => (
+                    <TeamDayBlock key={day.key} day={day} onReveal={refreshDashboard} />
+                  ))}
                 </AccordionList>
               </section>
             )}
