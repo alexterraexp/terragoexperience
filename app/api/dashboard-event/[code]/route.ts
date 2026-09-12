@@ -39,10 +39,10 @@ function compactEventCode(value: string) {
 }
 
 function firstRecord(data: unknown): Record<string, unknown> | undefined {
-  if (!Array.isArray(data) || data.length === 0) return undefined;
-  const row = data[0];
+  const rows = Array.isArray(data) ? data : [];
+  const row: unknown = rows[0];
   if (!row || typeof row !== 'object') return undefined;
-  return row as Record<string, unknown>;
+  return row as unknown as Record<string, unknown>;
 }
 
 const TRANSPORT_OPTIONAL_KEYS = [
@@ -249,36 +249,24 @@ export async function GET(_req: NextRequest, context: RouteContext) {
 
     const db = supabaseAdmin ?? supabaseServer;
 
-    const EVENT_COLUMNS =
-      'id, code, name, company_name, start_date, end_date, location_name, location_address, location_maps_url, weather_lat, weather_lng, contact_name, contact_phone, image';
-    const EVENT_COLUMNS_FALLBACK =
-      'id, code, name, company_name, start_date, end_date, location_name, location_address, location_maps_url, weather_lat, weather_lng, contact_name, contact_phone';
-
     const codeCandidates = Array.from(
       new Set([code, compactEventCode(code)].filter((value) => value.length > 0)),
     );
-    const columnSets = [EVENT_COLUMNS, EVENT_COLUMNS_FALLBACK];
 
     let event: Record<string, unknown> | null = null;
     let eventError: { message?: string } | null = null;
 
-    for (const columns of columnSets) {
-      eventError = null;
-      let columnSetFailed = false;
-      for (const candidate of codeCandidates) {
-        const res = await db.from('events').select(columns).ilike('code', candidate).limit(1);
-        if (res.error) {
-          eventError = res.error;
-          columnSetFailed = true;
-          break;
-        }
-        const row = firstRecord(res.data);
-        if (row) {
-          event = row;
-          break;
-        }
+    for (const candidate of codeCandidates) {
+      const res = await db.from('events').select('*').ilike('code', candidate).limit(1);
+      if (res.error) {
+        eventError = res.error;
+        continue;
       }
-      if (event || !columnSetFailed) break;
+      const row = firstRecord(res.data);
+      if (row) {
+        event = row;
+        break;
+      }
     }
 
     if (eventError && !event) {
@@ -291,30 +279,6 @@ export async function GET(_req: NextRequest, context: RouteContext) {
     }
 
     const eventId = event.id as string;
-    const visRes = await db
-      .from('events')
-      .select('teams_is_public, teams_samedi_reveal_at, teams_dimanche_reveal_at')
-      .eq('id', eventId)
-      .limit(1);
-    if (!visRes.error) {
-      const vis = firstRecord(visRes.data);
-      if (vis) {
-        event.teams_is_public = vis.teams_is_public;
-        event.teams_samedi_reveal_at = vis.teams_samedi_reveal_at;
-        event.teams_dimanche_reveal_at = vis.teams_dimanche_reveal_at;
-      }
-    } else {
-      const visFallback = await db
-        .from('events')
-        .select('teams_is_public, teams_reveal_at')
-        .eq('id', eventId)
-        .limit(1);
-      const vis = firstRecord(visFallback.data);
-      if (!visFallback.error && vis) {
-        event.teams_is_public = vis.teams_is_public;
-        event.teams_reveal_at = vis.teams_reveal_at;
-      }
-    }
 
     const [checklistRes, activitiesRes, scheduleRes, transportRes, teamsRes] = await Promise.all([
       db
