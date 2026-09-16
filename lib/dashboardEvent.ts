@@ -28,6 +28,40 @@ export function eventHeroImage(event: { code: string; image?: string }) {
   return EVENT_HERO_BY_CODE[compact] || DASHBOARD_HERO_IMAGE;
 }
 
+export type EventPlace = {
+  location_name?: string;
+  location_address?: string;
+  location_maps_url: string;
+};
+
+export const CITE_DE_LOCEAN: EventPlace = {
+  location_name: "Cité De L'océan",
+  location_address: '1 Av. de la Plage, 64200 Biarritz',
+  location_maps_url:
+    'https://www.google.com/maps/search/?api=1&query=43.46253919038132,-1.572977843148794',
+};
+
+export function isAvbEventCode(code?: string | null) {
+  return (code ?? '').trim().toLowerCase().replace(/[^a-z0-9]/g, '') === 'avb2026';
+}
+
+/** Emplacement des navettes retour hôtel du samedi soir (AVB). */
+export function saturdayNightHotelShuttlePlace(
+  title: string,
+  eventCode?: string | null,
+): EventPlace | null {
+  if (!isAvbEventCode(eventCode)) return null;
+  const t = title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+  const isReturnShuttle =
+    t.includes('retour') &&
+    t.includes('hotel') &&
+    (t.includes('navette 1') || t.includes('navette 2'));
+  return isReturnShuttle ? CITE_DE_LOCEAN : null;
+}
+
 export type TeamDayKey = 'samedi' | 'dimanche';
 
 /** Heure locale Paris à laquelle chaque journée d’équipes se dévoile. */

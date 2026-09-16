@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isSupabaseConfigured, supabaseAdmin, supabaseServer } from '@/lib/supabase';
-import { defaultTeamRevealAt, teamDayKey, type TeamDayKey } from '@/lib/dashboardEvent';
+import {
+  defaultTeamRevealAt,
+  saturdayNightHotelShuttlePlace,
+  teamDayKey,
+  type TeamDayKey,
+} from '@/lib/dashboardEvent';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -293,7 +298,9 @@ export async function GET(_req: NextRequest, context: RouteContext) {
         .order('sort_order', { ascending: true }),
       db
         .from('event_schedule')
-        .select('id, event_id, activity_id, title, start_time, end_time, is_public, reveal_at, sort_order')
+        .select(
+          'id, event_id, activity_id, title, start_time, end_time, is_public, reveal_at, sort_order, location_name, location_address, location_maps_url',
+        )
         .eq('event_id', eventId)
         .order('sort_order', { ascending: true }),
       db
@@ -311,7 +318,17 @@ export async function GET(_req: NextRequest, context: RouteContext) {
         .order('member_name', { ascending: true }),
     ]);
 
-    for (const res of [checklistRes, activitiesRes, scheduleRes, transportRes, teamsRes]) {
+    let scheduleRows = scheduleRes;
+    if (scheduleRows.error && /location_/i.test(scheduleRows.error.message ?? '')) {
+      const retry = await db
+        .from('event_schedule')
+        .select('id, event_id, activity_id, title, start_time, end_time, is_public, reveal_at, sort_order')
+        .eq('event_id', eventId)
+        .order('sort_order', { ascending: true });
+      scheduleRows = retry;
+    }
+
+    for (const res of [checklistRes, activitiesRes, scheduleRows, transportRes, teamsRes]) {
       if (res.error) {
         console.error('[dashboard-event] related lookup error:', res.error);
         return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500, headers: noStore });
@@ -327,10 +344,21 @@ export async function GET(_req: NextRequest, context: RouteContext) {
       sort_order: row.sort_order,
     }));
 
-    const schedule = (scheduleRes.data ?? [])
+    const eventCode = filledString(event.code) ?? '';
+    const schedule = (scheduleRows.data ?? [])
       .filter((row) => Boolean(row.is_public) || Boolean(row.reveal_at))
       .map((row) => {
         const revealed = isRevealed(row);
+        const rowRecord = row as Record<string, unknown>;
+        const fromDb = {
+          location_name: filledString(rowRecord.location_name),
+          location_address: filledString(rowRecord.location_address),
+          location_maps_url: filledString(rowRecord.location_maps_url),
+        };
+        const fallback = revealed
+          ? saturdayNightHotelShuttlePlace(String(row.title ?? ''), eventCode)
+          : null;
+        const place = fromDb.location_maps_url ? fromDb : fallback;
         return {
           id: row.id,
           activity_id: revealed ? row.activity_id ?? null : null,
@@ -341,6 +369,9 @@ export async function GET(_req: NextRequest, context: RouteContext) {
           is_secret: !revealed,
           reveal_at: revealed ? null : filledString(row.reveal_at) ?? null,
           sort_order: row.sort_order,
+          ...(revealed && place?.location_name ? { location_name: place.location_name } : {}),
+          ...(revealed && place?.location_address ? { location_address: place.location_address } : {}),
+          ...(revealed && place?.location_maps_url ? { location_maps_url: place.location_maps_url } : {}),
         };
       });
 

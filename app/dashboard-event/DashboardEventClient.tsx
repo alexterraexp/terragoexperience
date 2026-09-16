@@ -24,6 +24,7 @@ import {
   DASHBOARD_HERO_IMAGE as HERO_IMAGE,
   DASHBOARD_HERO_IMAGE_ALT as HERO_IMAGE_ALT,
   eventHeroImage,
+  saturdayNightHotelShuttlePlace,
   seminarSlug,
   teamDayKey,
   type TeamDayKey,
@@ -116,6 +117,15 @@ type ScheduleItem = {
   is_secret?: boolean;
   reveal_at?: string | null;
   sort_order: number | null;
+  location_name?: string;
+  location_address?: string;
+  location_maps_url?: string;
+};
+
+type MapsPlace = {
+  location_name?: string;
+  location_address?: string;
+  location_maps_url: string;
 };
 
 type TransportItem = {
@@ -441,13 +451,23 @@ function VisibleAtPill({
   return <span className="dash-visible-pill">{formatVisibleAt(revealAt)}</span>;
 }
 
-function TimelineItems({ items, onReveal }: { items: ScheduleItem[]; onReveal?: () => void }) {
+function TimelineItems({
+  items,
+  onReveal,
+  onAppleMaps,
+}: {
+  items: ScheduleItem[];
+  onReveal?: () => void;
+  onAppleMaps: (place: MapsPlace) => void;
+}) {
   return (
     <div className="dash-timeline">
       {items.map((item, index) => {
         const showDate =
           index === 0 || dayKeyFromStart(item.start_time) !== dayKeyFromStart(items[index - 1].start_time);
         const timeLabel = formatProgrammeTime(item);
+        const place = scheduleMapsPlace(item);
+        const subParts = [timeLabel, !item.is_secret ? item.location_name : undefined].filter(Boolean);
         return (
           <div
             key={item.id}
@@ -474,9 +494,23 @@ function TimelineItems({ items, onReveal }: { items: ScheduleItem[]; onReveal?: 
                   <span className="dash-timeline-card-title">
                     {item.is_secret ? 'Atelier découverte chez le producteur' : item.title}
                   </span>
-                  {timeLabel && <span className="dash-timeline-card-sub">{timeLabel}</span>}
+                  {subParts.length > 0 && (
+                    <span className="dash-timeline-card-sub">{subParts.join(' · ')}</span>
+                  )}
                 </span>
               </span>
+              {place && (
+                <a
+                  className="dash-contact-action dash-timeline-maps"
+                  href={place.location_maps_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Itinéraire vers ${place.location_name || 'le lieu'}`}
+                  onClick={(e) => handleMapsLinkClick(e, place, onAppleMaps)}
+                >
+                  <MapPin size={16} strokeWidth={1.8} />
+                </a>
+              )}
               {item.is_secret && <VisibleAtPill revealAt={item.reveal_at} onReveal={onReveal} />}
             </article>
           </div>
@@ -564,6 +598,37 @@ function mapsSearchQuery(event: {
   location_address?: string;
 }): string {
   return [event.location_name, event.location_address].filter(Boolean).join(', ');
+}
+
+function scheduleMapsPlace(item: ScheduleItem): MapsPlace | null {
+  if (item.is_secret || !item.location_maps_url) return null;
+  return {
+    location_name: item.location_name,
+    location_address: item.location_address,
+    location_maps_url: item.location_maps_url,
+  };
+}
+
+function withShuttlePlaces(event: EventPayload, items: ScheduleItem[]): ScheduleItem[] {
+  return items.map((item) => {
+    if (item.location_maps_url || item.is_secret) return item;
+    const place = saturdayNightHotelShuttlePlace(item.title, event.code);
+    return place ? { ...item, ...place } : item;
+  });
+}
+
+function handleMapsLinkClick(
+  e: React.MouseEvent<HTMLAnchorElement>,
+  place: MapsPlace,
+  onAppleMaps: (place: MapsPlace) => void,
+) {
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  e.preventDefault();
+  if (isAppleMobile()) {
+    onAppleMaps(place);
+    return;
+  }
+  openInMapsApp(place, place.location_maps_url);
 }
 
 function parseMapsCoords(url: string): { lat: number; lng: number } | null {
@@ -862,7 +927,7 @@ export default function DashboardEventClient() {
   const [unlocking, setUnlocking] = useState(false);
   const [data, setData] = useState<DashboardData | null>(null);
   const [checklistOpen, setChecklistOpen] = useState(false);
-  const [mapsChooserOpen, setMapsChooserOpen] = useState(false);
+  const [mapsPlace, setMapsPlace] = useState<MapsPlace | null>(null);
   const refreshLock = useRef(false);
 
   const refreshDashboard = useCallback(async () => {
@@ -937,18 +1002,18 @@ export default function DashboardEventClient() {
   }, []);
 
   useEffect(() => {
-    if (!mapsChooserOpen) return;
+    if (!mapsPlace) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMapsChooserOpen(false);
+      if (e.key === 'Escape') setMapsPlace(null);
     };
     window.addEventListener('keydown', onKey);
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener('keydown', onKey);
     };
-  }, [mapsChooserOpen]);
+  }, [mapsPlace]);
 
   useEffect(() => {
     if (gate !== 'open') return;
@@ -1638,7 +1703,14 @@ export default function DashboardEventClient() {
         align-items: center;
         gap: 10px;
         min-width: 0;
-        width: 100%;
+        flex: 1;
+      }
+      .dash-timeline-maps {
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        margin-left: 8px;
+        background: #fff;
       }
       .dash-timeline-card--secret {
         min-height: 68px;
@@ -1742,6 +1814,10 @@ export default function DashboardEventClient() {
         }
         .dash-timeline-card-title { font-size: 14.5px; }
         .dash-timeline-card-sub { font-size: 12.5px; }
+        .dash-timeline-maps {
+          width: 40px;
+          height: 40px;
+        }
       }
       .dash-badge {
         display: inline-flex;
@@ -2262,7 +2338,7 @@ export default function DashboardEventClient() {
   const weather = event.weather;
   const hasActions = hasLocation || hasContact;
   const hasTeams = teamDays.length > 0;
-  const programme = sortedSchedule(schedule);
+  const programme = withShuttlePlaces(event, sortedSchedule(schedule));
 
   return (
     <div className="dash-page dash-page--open">
@@ -2380,15 +2456,17 @@ export default function DashboardEventClient() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label="Ouvrir dans Maps"
-                          onClick={(e) => {
-                            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-                            e.preventDefault();
-                            if (isAppleMobile()) {
-                              setMapsChooserOpen(true);
-                              return;
-                            }
-                            openInMapsApp(event, event.location_maps_url!);
-                          }}
+                          onClick={(e) =>
+                            handleMapsLinkClick(
+                              e,
+                              {
+                                location_name: event.location_name,
+                                location_address: event.location_address,
+                                location_maps_url: event.location_maps_url!,
+                              },
+                              setMapsPlace,
+                            )
+                          }
                         >
                           <MapPin size={16} strokeWidth={1.8} />
                         </a>
@@ -2439,7 +2517,11 @@ export default function DashboardEventClient() {
               <section className="dash-section">
                 <hr className="dash-divider" />
                 <h2 className="dash-section-title">Planning</h2>
-                <TimelineItems items={programme} onReveal={refreshDashboard} />
+                <TimelineItems
+                  items={programme}
+                  onReveal={refreshDashboard}
+                  onAppleMaps={setMapsPlace}
+                />
               </section>
             )}
 
@@ -2499,25 +2581,25 @@ export default function DashboardEventClient() {
           )}
         </div>
       </div>
-      {mapsChooserOpen && event.location_maps_url && (
+      {mapsPlace && (
         <div
           className="dash-maps-sheet"
           role="dialog"
           aria-modal="true"
           aria-labelledby="dash-maps-sheet-title"
-          onClick={() => setMapsChooserOpen(false)}
+          onClick={() => setMapsPlace(null)}
         >
           <div className="dash-maps-sheet-panel" onClick={(e) => e.stopPropagation()}>
             <div className="dash-maps-sheet-group">
               <p id="dash-maps-sheet-title" className="dash-maps-sheet-title">
                 Ouvrir avec
               </p>
-              {mapsChooserApps(event, event.location_maps_url).map((app) => (
+              {mapsChooserApps(mapsPlace, mapsPlace.location_maps_url).map((app) => (
                 <a
                   key={app.label}
                   className="dash-maps-sheet-option"
                   href={app.href}
-                  onClick={() => setMapsChooserOpen(false)}
+                  onClick={() => setMapsPlace(null)}
                 >
                   {app.label}
                 </a>
@@ -2526,7 +2608,7 @@ export default function DashboardEventClient() {
             <button
               type="button"
               className="dash-maps-sheet-cancel"
-              onClick={() => setMapsChooserOpen(false)}
+              onClick={() => setMapsPlace(null)}
             >
               Annuler
             </button>
