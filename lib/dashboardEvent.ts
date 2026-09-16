@@ -155,3 +155,21 @@ export function defaultTeamRevealAt(day: TeamDayKey, startDate?: string | null):
   const { hour, minute } = TEAM_DAY_REVEAL_LOCAL[day];
   return parisLocalToIso(ymd, hour, minute);
 }
+
+export const AVB_SATISFACTION_FORM_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSdudK1eVLxBPKoUm0L1Ut7SLHrj0ax8muJyOSdypyuvj7uG1A/viewform';
+
+/** Heure locale Paris à laquelle le questionnaire de satisfaction se dévoile (dimanche). */
+export const SATISFACTION_FORM_REVEAL_LOCAL = { hour: 12, minute: 0 };
+
+export function satisfactionFormRevealAt(
+  eventCode?: string | null,
+  startDate?: string | null,
+): string | null {
+  if (!isAvbEventCode(eventCode)) return null;
+  const saturday = saturdayYmdFromStart(startDate);
+  if (!saturday) return null;
+  const sunday = addDaysYmd(saturday, 1);
+  const { hour, minute } = SATISFACTION_FORM_REVEAL_LOCAL;
+  return parisLocalToIso(sunday, hour, minute);
+}

@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
+  ClipboardList,
   MapPin,
   MessageCircle,
   Music2,
@@ -21,10 +22,12 @@ import {
 } from 'lucide-react';
 import { HOME_COLORS, HOME_RADIUS } from '../../components/home/homeStyles';
 import {
+  AVB_SATISFACTION_FORM_URL,
   DASHBOARD_HERO_IMAGE as HERO_IMAGE,
   DASHBOARD_HERO_IMAGE_ALT as HERO_IMAGE_ALT,
   eventHeroImage,
   saturdayNightHotelShuttlePlace,
+  satisfactionFormRevealAt,
   seminarSlug,
   teamDayKey,
   type TeamDayKey,
@@ -438,6 +441,44 @@ function useRevealAt(revealAt: string | null | undefined, onReveal?: () => void)
     const id = window.setTimeout(onReveal, Math.max(0, at - Date.now()));
     return () => window.clearTimeout(id);
   }, [revealAt, onReveal]);
+}
+
+function useRevealedNow(revealAt: string | null) {
+  const [visible, setVisible] = useState(() => {
+    if (!revealAt) return false;
+    const at = new Date(revealAt).getTime();
+    return Number.isFinite(at) && Date.now() >= at;
+  });
+
+  useEffect(() => {
+    if (!revealAt) {
+      setVisible(false);
+      return;
+    }
+    const at = new Date(revealAt).getTime();
+    if (!Number.isFinite(at)) {
+      setVisible(false);
+      return;
+    }
+    const check = () => {
+      if (Date.now() >= at) setVisible(true);
+    };
+    check();
+    if (Date.now() >= at) return;
+    const timeoutId = window.setTimeout(check, Math.max(0, at - Date.now()));
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') check();
+    };
+    window.addEventListener('focus', check);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.removeEventListener('focus', check);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [revealAt]);
+
+  return visible;
 }
 
 function VisibleAtPill({
@@ -928,7 +969,13 @@ export default function DashboardEventClient() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [checklistOpen, setChecklistOpen] = useState(false);
   const [mapsPlace, setMapsPlace] = useState<MapsPlace | null>(null);
+  const [localPreview, setLocalPreview] = useState(false);
   const refreshLock = useRef(false);
+
+  useEffect(() => {
+    const host = window.location.hostname;
+    setLocalPreview(host === 'localhost' || host === '127.0.0.1');
+  }, []);
 
   const refreshDashboard = useCallback(async () => {
     if (refreshLock.current) return;
@@ -1930,6 +1977,25 @@ export default function DashboardEventClient() {
       }
       .dash-cta:disabled { opacity: 0.6; cursor: default; }
       .dash-cta:hover:not(:disabled) { background: #000; }
+      a.dash-cta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        box-sizing: border-box;
+      }
+      .dash-survey-copy {
+        margin: 8px 0 0;
+        max-width: 36rem;
+      }
+      .dash-survey-cta {
+        margin-top: 18px;
+        max-width: 22rem;
+        text-transform: none;
+        letter-spacing: -0.03em;
+        font-size: 14px;
+        font-weight: 600;
+      }
       .dash-unlock {
         display: flex;
         overflow: hidden;
@@ -2196,6 +2262,7 @@ export default function DashboardEventClient() {
         .dash-input { font-size: 16px; }
         .dash-unlock-code { font-size: 16px; letter-spacing: -0.03em; }
         .dash-cta { font-size: 10px; padding: 14px 18px; }
+        .dash-survey-cta { max-width: none; font-size: 14px; }
         .dash-unlock {
           flex-direction: column-reverse;
           min-height: 0;
@@ -2240,6 +2307,11 @@ export default function DashboardEventClient() {
       }
     `}</style>
   );
+
+  const surveyRevealAt = data
+    ? satisfactionFormRevealAt(data.event.code, data.event.start_date)
+    : null;
+  const surveyVisible = useRevealedNow(surveyRevealAt) || localPreview;
 
   if (gate === 'restoring') {
     return (
@@ -2511,6 +2583,28 @@ export default function DashboardEventClient() {
                   </div>
                 )}
               </div>
+            )}
+
+            {surveyVisible && (
+              <section className="dash-section" aria-labelledby="dash-survey-title">
+                <hr className="dash-divider" />
+                <h2 id="dash-survey-title" className="dash-section-title">
+                  Votre avis
+                </h2>
+                <p className="dash-copy dash-survey-copy">
+                  Ce séminaire touche à sa fin. Deux minutes pour nous dire ce que vous avez
+                  vécu — ça nous aide vraiment à progresser.
+                </p>
+                <a
+                  className="dash-cta dash-survey-cta"
+                  href={AVB_SATISFACTION_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ClipboardList size={15} strokeWidth={2} aria-hidden style={{ marginRight: 8 }} />
+                  Répondre au questionnaire
+                </a>
+              </section>
             )}
 
             {programme.length > 0 && (
