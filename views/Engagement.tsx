@@ -24,7 +24,7 @@ const ASSETS = {
   producteurSoutenu:
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/producteur-sountenu.png',
   paolo: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/emoji/paolo.webp',
-  team: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/team-terrago.webp',
+  team: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/fondateurs.webp',
   seminairesHero:
     'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/arrivee-randonnee.webp',
   partenairesHero:
@@ -302,7 +302,7 @@ const Engagement: React.FC = () => {
             <ScrollAnimate className="mb-5 lg:mb-0">
               <div className="max-w-xl">
                 <p className="font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/70 sm:text-[17px]">
-                  Nous sommes Jérôme et Alex, les fondateurs de TerraGo.
+                  Nous sommes Alex et Jérôme, les fondateurs de TerraGo.
                 </p>
                 <p className="mt-5 font-sans text-[15px] font-normal leading-[1.7] tracking-[-0.04em] text-[#0c1d22]/70 sm:text-[17px]">
                   TerraGo est né d&apos;une envie : sortir des expériences
@@ -337,7 +337,7 @@ const Engagement: React.FC = () => {
                   src={ASSETS.team}
                   alt="Alex et Jérôme, co-fondateurs de TerraGo"
                   fill
-                  className="object-cover object-[center_20%] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                   sizes="(max-width: 1024px) 28rem, 50vw"
                 />
                 <div
@@ -352,18 +352,6 @@ const Engagement: React.FC = () => {
 
             <div className="mx-auto flex w-full max-w-md items-center justify-center gap-3 sm:gap-4 lg:col-start-2 lg:max-w-none">
               <a
-                href="https://www.linkedin.com/in/alexsoulard-ev/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Profil LinkedIn d’Alex"
-                className="inline-flex min-w-[100px] items-center justify-center gap-2 rounded-full bg-[#0c1d22] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[140px] sm:px-10 sm:py-2.5 sm:text-[11px]"
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden className="sm:h-[13px] sm:w-[13px]">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                </svg>
-                Alex
-              </a>
-              <a
                 href="https://www.linkedin.com/in/jeromepeyronengineer/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -374,6 +362,18 @@ const Engagement: React.FC = () => {
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                 </svg>
                 Jérôme
+              </a>
+              <a
+                href="https://www.linkedin.com/in/alexsoulard-ev/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Profil LinkedIn d’Alex"
+                className="inline-flex min-w-[100px] items-center justify-center gap-2 rounded-full bg-[#0c1d22] px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ec6435] sm:min-w-[140px] sm:px-10 sm:py-2.5 sm:text-[11px]"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden className="sm:h-[13px] sm:w-[13px]">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+                Alex
               </a>
             </div>
           </div>
