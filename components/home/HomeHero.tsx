@@ -105,23 +105,23 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
           }}
         />
 
-        <div className="relative z-10 flex h-full flex-col items-start justify-center px-5 pt-24 pb-14 text-left sm:items-center sm:px-6 sm:pt-28 sm:pb-12 sm:text-center">
-          <h1 className="max-w-none font-sans text-[clamp(2.05rem,7vw,2.55rem)] font-normal leading-[1.08] tracking-[-0.075em] text-white sm:text-[clamp(1.85rem,6.6vw,3.75rem)] sm:leading-[1.06]">
-            <span className="sm:whitespace-nowrap">
+        <div className="relative z-10 flex h-full flex-col items-start justify-center px-5 pt-24 pb-14 text-left sm:items-center sm:px-6 sm:pt-28 sm:pb-12 sm:text-center lg:items-start lg:px-0 lg:pr-16 lg:text-left lg:pl-[calc(4.5rem+max(0px,(100vw-4rem-1280px)/2))]">
+          <h1 className="max-w-none font-sans text-[clamp(2.05rem,7vw,2.55rem)] font-normal leading-[1.08] tracking-[-0.075em] text-white sm:text-[clamp(1.85rem,6.6vw,3.75rem)] sm:leading-[1.06] lg:mr-[36vw]">
+            <span className="sm:whitespace-nowrap lg:whitespace-normal">
               <span className="font-bold">Séminaires d&apos;entreprise engagés,</span>{' '}
               <span className="font-normal">à la</span>
             </span>
-            <br className="hidden sm:block" />
+            <br className="hidden sm:block lg:hidden" />
             {' '}
-            <span className="font-normal sm:whitespace-nowrap">
+            <span className="font-normal sm:whitespace-nowrap lg:whitespace-normal">
               rencontre des producteurs français.
             </span>
           </h1>
-          <p className="mt-4 max-w-5xl px-0 font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.04em] text-white/95 sm:mt-10 sm:text-lg sm:leading-relaxed">
-            Des séminaires d&apos;entreprise au vert qui sortent du cadre, en immersion dans nos
-            territoires.
+          <p className="mt-4 max-w-5xl px-0 font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.04em] text-white/95 sm:mt-10 sm:text-lg sm:leading-relaxed lg:mr-[36vw] lg:max-w-none lg:text-[24px] lg:leading-[1.4]">
+            Des séminaires d&apos;entreprise au vert qui sortent du cadre, de 5 à plus de 500
+            personnes, en immersion dans nos territoires.
           </p>
-          <div className="mt-10 flex w-full flex-col items-start gap-3 sm:mt-24 sm:w-auto sm:flex-row sm:items-center sm:justify-center sm:gap-5">
+          <div className="mt-10 flex w-full flex-col items-start gap-3 sm:mt-12 sm:w-auto sm:flex-row sm:items-center sm:justify-center sm:gap-5 lg:justify-start">
             <Link
               href="/seminaires-entreprise"
               className="hidden rounded-full border-2 border-white px-5 py-1.5 text-[11px] font-bold tracking-[-0.02em] text-white backdrop-blur-md transition-colors hover:border-[#ec6435] sm:inline-flex sm:items-center sm:justify-center sm:px-10 sm:py-2.5 sm:text-[13px]"

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
@@ -256,6 +256,9 @@ const SwipeDots: React.FC<{
   </div>
 );
 
+const REGION_LOOP_COPIES = 5;
+const REGION_LOOP_MIDDLE = 2;
+
 const Home: React.FC<HomeProps> = ({ assets }) => {
   const { openModal } = useModal();
   const regionScrollRef = useRef<HTMLDivElement>(null);
@@ -268,8 +271,11 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
 
   const conceptSwipe = useSwipeTrack(conceptScrollRef, 3);
   const stepsSwipe = useSwipeTrack(stepsScrollRef, HOME_STEPS.length);
-  const regionSwipe = useSwipeTrack(regionScrollRef, REGION_IMAGES.length);
   const experiencesSwipe = useSwipeTrack(experiencesScrollRef, 3);
+  const [regionActive, setRegionActive] = useState(0);
+  const [regionCenter, setRegionCenter] = useState<number>(REGION_LOOP_MIDDLE * REGION_IMAGES.length);
+  const [regionReady, setRegionReady] = useState(false);
+  const regionCenterRef = useRef<number>(REGION_LOOP_MIDDLE * REGION_IMAGES.length);
 
   const conceptCards = [
     {
@@ -341,12 +347,163 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
     },
   ];
 
-  /** Défile d'une « page » de cartes région (largeur visible moins un chevauchement). */
+  const regionSlides = useCallback(() => {
+    const track = regionScrollRef.current;
+    if (!track) return [];
+    return [...track.querySelectorAll<HTMLElement>('[data-region-slide]')];
+  }, []);
+
+  const regionPeriod = useCallback(() => {
+    const slides = regionSlides();
+    const count = REGION_IMAGES.length;
+    if (slides.length < count * 2) return 0;
+    return slides[count].offsetLeft - slides[0].offsetLeft;
+  }, [regionSlides]);
+
+  /**
+   * Ramène le scroll dans les copies du milieu, loin des deux bords.
+   * Le seuil de droite de l’ancienne boucle (3 copies) était collé au bout :
+   * le défilement butait avant d’avoir pu boucler.
+   */
+  const normalizeRegionScroll = useCallback(() => {
+    const track = regionScrollRef.current;
+    const period = regionPeriod();
+    if (!track || period <= 0) return;
+    const min = period;
+    const max = period * (REGION_LOOP_COPIES - 2);
+    let left = track.scrollLeft;
+    let guard = 0;
+    while (left < min && guard < REGION_LOOP_COPIES) {
+      left += period;
+      guard += 1;
+    }
+    while (left >= max && guard < REGION_LOOP_COPIES * 2) {
+      left -= period;
+      guard += 1;
+    }
+    if (left !== track.scrollLeft) track.scrollLeft = left;
+  }, [regionPeriod]);
+
+  const goToRegion = useCallback((index: number, behavior: ScrollBehavior = 'smooth') => {
+    const track = regionScrollRef.current;
+    if (!track) return;
+    const count = REGION_IMAGES.length;
+    const target = ((index % count) + count) % count;
+    const slides = regionSlides();
+    const mid = track.scrollLeft + track.clientWidth / 2;
+    const match = slides.reduce<{ slide: HTMLElement; dist: number } | null>((acc, slide, i) => {
+      if (i % count !== target) return acc;
+      const center = slide.offsetLeft + slide.offsetWidth / 2;
+      const dist = Math.abs(center - mid);
+      if (!acc || dist < acc.dist) return { slide, dist };
+      return acc;
+    }, null);
+    if (!match) return;
+    const left = match.slide.offsetLeft + match.slide.offsetWidth / 2 - track.clientWidth / 2;
+    track.scrollTo({ left, behavior });
+  }, [regionSlides]);
+
+  /** Centre la carte voisine : une seule carte par clic sur les flèches. */
+  const regionStepRef = useRef<number | null>(null);
   const scrollRegions = (direction: 1 | -1) => {
     const track = regionScrollRef.current;
     if (!track) return;
-    track.scrollBy({ left: direction * (track.clientWidth * 0.8), behavior: 'smooth' });
+    normalizeRegionScroll();
+    const slides = regionSlides();
+    const count = REGION_IMAGES.length;
+    if (slides.length < count * 2) return;
+
+    let best = regionStepRef.current;
+    if (best == null || best < 0 || best >= slides.length) {
+      const mid = track.scrollLeft + track.clientWidth / 2;
+      best = 0;
+      let bestDist = Infinity;
+      slides.forEach((slide, i) => {
+        const center = slide.offsetLeft + slide.offsetWidth / 2;
+        const dist = Math.abs(center - mid);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = i;
+        }
+      });
+    }
+
+    let target = best + direction;
+    if (target < 0) target = slides.length - 1;
+    if (target >= slides.length) target = 0;
+
+    const period = regionPeriod();
+    const min = period;
+    const max = period * (REGION_LOOP_COPIES - 2);
+    let slide = slides[target];
+    let left = slide.offsetLeft + slide.offsetWidth / 2 - track.clientWidth / 2;
+    if (period > 0 && (left >= max || left < min)) {
+      const shift = left >= max ? -count : count;
+      const shifted = slides[target + shift];
+      if (shifted) {
+        track.scrollLeft += left >= max ? -period : period;
+        target += shift;
+        slide = shifted;
+        left = slide.offsetLeft + slide.offsetWidth / 2 - track.clientWidth / 2;
+      }
+    }
+
+    regionStepRef.current = target;
+    track.scrollTo({ left, behavior: 'smooth' });
   };
+
+  useLayoutEffect(() => {
+    const track = regionScrollRef.current;
+    if (!track) return;
+    const count = REGION_IMAGES.length;
+    const slide = track.querySelectorAll<HTMLElement>('[data-region-slide]')[REGION_LOOP_MIDDLE * count];
+    if (!slide) return;
+    track.scrollLeft = slide.offsetLeft + slide.offsetWidth / 2 - track.clientWidth / 2;
+    setRegionReady(true);
+  }, []);
+
+  useEffect(() => {
+    const track = regionScrollRef.current;
+    if (!track) return;
+    const count = REGION_IMAGES.length;
+    let raf = 0;
+
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        normalizeRegionScroll();
+        const slides = regionSlides();
+        const mid = track.scrollLeft + track.clientWidth / 2;
+        let best = 0;
+        let bestDist = Infinity;
+        slides.forEach((slide, i) => {
+          const center = slide.offsetLeft + slide.offsetWidth / 2;
+          const dist = Math.abs(center - mid);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = i;
+          }
+        });
+        if (regionCenterRef.current === best) return;
+        regionCenterRef.current = best;
+        setRegionCenter(best);
+        setRegionActive(best % count);
+      });
+    };
+
+    const onScrollEnd = () => {
+      regionStepRef.current = null;
+    };
+
+    track.addEventListener('scroll', onScroll, { passive: true });
+    track.addEventListener('scrollend', onScrollEnd);
+    onScroll();
+    return () => {
+      cancelAnimationFrame(raf);
+      track.removeEventListener('scroll', onScroll);
+      track.removeEventListener('scrollend', onScrollEnd);
+    };
+  }, [normalizeRegionScroll, regionSlides]);
 
   /** Drag horizontal (touch + souris) pour les carousels mobile. */
   useEffect(() => {
@@ -940,51 +1097,78 @@ const Home: React.FC<HomeProps> = ({ assets }) => {
           </div>
         </div>
 
-        {/* Pas de scroll-snap : il ramènerait la 1re carte contre le bord dès le chargement,
-            supprimant la marge de départ (qui, elle, défile avec le carrousel). */}
-        <div
-          ref={regionScrollRef}
-          className="mt-10 flex gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [touch-action:pan-x_pan-y] sm:mt-12"
-          style={{
-            paddingLeft: 'max(6vw, calc((100vw - 72rem) / 2 + 2rem))',
-            paddingRight: '1.25rem',
-          }}
-        >
-          {REGION_IMAGES.map((region) => (
-            <Link
-              key={region.name}
-              href={regionDestinationPath(region.slug)}
-              className="group relative aspect-[3/3.4] w-[62vw] shrink-0 overflow-hidden sm:aspect-[3/4.1] sm:w-[255px] lg:aspect-[3/4.2] lg:w-[280px]"
-              style={{ borderRadius: HOME_RADIUS }}
-            >
-              <Image
-                src={region.image}
-                alt={`Séminaire ${region.prep} ${region.name}`}
-                fill
-                sizes="(max-width: 640px) 70vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.12]"
-              />
-              <div
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-500 group-hover:opacity-0"
-              />
-              <div
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-              />
-              <p className="absolute bottom-5 left-0 right-0 z-[1] px-5 font-sans text-[22px] leading-[1.12] tracking-[-0.06em] text-white sm:bottom-7 sm:px-6 sm:text-[24px] lg:text-[26px]">
-                <span className="font-normal">Séminaire {region.prep}</span>
-                <br />
-                <span className={`font-bold ${region.name.length > 20 ? 'text-[0.86em] leading-[1.15]' : ''}`}>
-                  {region.name}
-                </span>
-              </p>
-            </Link>
-          ))}
+        <div className="relative mt-10 sm:mt-12">
+          <div
+            ref={regionScrollRef}
+            className="relative flex items-center gap-4 overflow-x-auto overscroll-x-contain pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [touch-action:pan-x_pan-y]"
+            style={{
+              paddingLeft: '1.25rem',
+              paddingRight: '1.25rem',
+              visibility: regionReady ? 'visible' : 'hidden',
+            }}
+          >
+            {Array.from({ length: REGION_LOOP_COPIES }, (_, copy) =>
+              REGION_IMAGES.map((region, index) => {
+                const loopIndex = copy * REGION_IMAGES.length + index;
+                const isCenter = loopIndex === regionCenter;
+                return (
+                  <div
+                    key={`${copy}-${region.slug}`}
+                    data-region-slide
+                    className="shrink-0"
+                  >
+                    <div
+                      className="origin-center transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                      style={{ transform: isCenter ? 'scale(1)' : 'scale(0.92)' }}
+                    >
+                    <Link
+                      href={regionDestinationPath(region.slug)}
+                      tabIndex={copy === REGION_LOOP_MIDDLE ? undefined : -1}
+                      aria-hidden={copy === REGION_LOOP_MIDDLE ? undefined : true}
+                      className="group relative block aspect-[3/3.4] w-[76vw] shrink-0 overflow-hidden sm:aspect-[3/4.1] sm:w-[305px] lg:aspect-[3/4.2] lg:w-[334px]"
+                      style={{ borderRadius: HOME_RADIUS }}
+                    >
+                      <Image
+                        src={region.image}
+                        alt={copy === REGION_LOOP_MIDDLE ? `Séminaire ${region.prep} ${region.name}` : ''}
+                        fill
+                        sizes="(max-width: 640px) 80vw, (max-width: 1024px) 305px, 334px"
+                        className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.12]"
+                      />
+                      <div
+                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-500 group-hover:opacity-0"
+                      />
+                      <div
+                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                      />
+                      <p className="absolute bottom-[18%] left-0 right-0 z-[1] px-5 font-sans text-[24px] leading-[1.12] tracking-[-0.06em] text-white sm:bottom-[20%] sm:px-6 sm:text-[26px] lg:text-[28px]">
+                        <span className="font-normal">Séminaire {region.prep}</span>
+                        <br />
+                        <span className={`font-bold ${region.name.length > 20 ? 'text-[0.86em] leading-[1.15]' : ''}`}>
+                          {region.name}
+                        </span>
+                      </p>
+                    </Link>
+                    </div>
+                  </div>
+                );
+              }),
+            )}
+          </div>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 z-[2] w-12 bg-gradient-to-r from-[#f7f7f7]/60 via-[#f7f7f7]/20 to-transparent sm:w-20"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 z-[2] w-12 bg-gradient-to-l from-[#f7f7f7]/60 via-[#f7f7f7]/20 to-transparent sm:w-20"
+          />
         </div>
 
         <SwipeDots
           count={REGION_IMAGES.length}
-          activeIndex={regionSwipe.activeIndex}
-          onSelect={regionSwipe.goTo}
+          activeIndex={regionActive}
+          onSelect={goToRegion}
           label="Région"
           className="mt-5 sm:hidden"
         />
