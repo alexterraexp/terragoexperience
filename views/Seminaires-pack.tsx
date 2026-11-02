@@ -1893,6 +1893,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   isOpen: boolean; onClose: () => void; seminaires: Seminaire[];
   initialSeminaire: Seminaire | null; initialFormatId: string;
 }) {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [closing, setClosing] = useState(false);
   const [submitting, setSubmit] = useState(false);
@@ -1918,16 +1919,12 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
 
   useEffect(() => { if (scrollRef.current) scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' }); }, [step]);
   useEffect(() => {
-    const h = (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose(); };
-    document.addEventListener('keydown', h); return () => document.removeEventListener('keydown', h);
-  }, []);
-  useEffect(() => {
     if (isOpen) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = '';
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  const handleClose = () => {
+  const closeModal = (goHome: boolean) => {
     setClosing(true);
     setTimeout(() => {
       setClosing(false); setStep(1); setError('');
@@ -1935,8 +1932,21 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
       setSelectedSeminaireId(null); setSelectedFormatId('journee');
       setStart(''); setEnd(''); setPeriod(''); setCalendarOpen(false);
       onClose();
+      if (goHome) router.push('/');
     }, 280);
   };
+  const handleClose = () => closeModal(false);
+  const handleGoHome = () => closeModal(true);
+
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (step === 4) handleGoHome();
+      else handleClose();
+    };
+    document.addEventListener('keydown', h);
+    return () => document.removeEventListener('keydown', h);
+  }, [step]);
 
   const selectedSeminaire = seminaires.find(s => s.id === selectedSeminaireId) ?? initialSeminaire ?? seminaires[0] ?? null;
   const selectedFormat    = selectedSeminaire && selectedFormatId in selectedSeminaire.formats ? selectedSeminaire.formats[selectedFormatId] : null;
@@ -2118,9 +2128,26 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
         .pack-sem-pill:hover { border-color:rgba(12,29,34,.35) }
         .pack-sem-pill[data-active="true"] { background:${PACK_MODAL_INK}; border-color:${PACK_MODAL_INK}; color:#fff }
 
+        .pack-sem-cta-home {
+          border:none; border-radius:9999px; background:#fff; color:${PACK_MODAL_ORANGE};
+          font-family:inherit; font-size:13px; letter-spacing:-.03em; font-weight:500;
+          padding:11px 26px; cursor:pointer;
+          display:inline-flex; align-items:center; justify-content:center;
+        }
+        .pack-sem-cta-home:hover { background:rgba(255,255,255,.92) }
+
         @media (max-width: 860px) {
-          .pack-sem-wrapper { padding:0 !important }
-          .pack-sem-panel { width:100% !important; max-width:none !important; height:100dvh !important; border-radius:0 !important; flex-direction:column !important }
+          .pack-sem-wrapper:not(.pack-sem-wrapper--confirm) { padding:0 !important }
+          .pack-sem-panel:not(.pack-sem-confirm) { width:100% !important; max-width:none !important; height:100dvh !important; border-radius:0 !important; flex-direction:column !important }
+          .pack-sem-confirm {
+            width:calc(100% - 32px) !important;
+            max-width:560px !important;
+            height:auto !important;
+            max-height:min(88svh, 560px) !important;
+            border-radius:20px !important;
+          }
+          .pack-sem-confirm-copy { padding:48px 24px 28px !important }
+          .pack-sem-confirm-title { font-size:24px !important }
           .pack-sem-visual { width:100% !important; height:100px !important; flex:0 0 100px !important }
           .pack-sem-content { padding:20px 18px 0 !important }
           .pack-sem-footer { padding:0 18px max(14px, env(safe-area-inset-bottom)) !important }
@@ -2130,7 +2157,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
       `}</style>
 
       <div
-        onClick={handleClose}
+        onClick={step === 4 ? undefined : handleClose}
         style={{
           position: 'fixed', inset: 0, zIndex: 999,
           background: 'rgba(12,29,34,0.55)', backdropFilter: 'blur(6px)',
@@ -2139,9 +2166,78 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
       />
 
       <div
-        className="pack-sem-wrapper"
+        className={`pack-sem-wrapper${step === 4 ? ' pack-sem-wrapper--confirm' : ''}`}
         style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}
       >
+        {step === 4 ? (
+          <div
+            className="pack-sem-confirm"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Demande reçue"
+            style={{
+              pointerEvents: 'auto',
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+              maxWidth: 620,
+              background: PACK_MODAL_ORANGE,
+              borderRadius: 20,
+              overflow: 'hidden',
+              boxShadow: '0 24px 70px rgba(12,29,34,.28)',
+              fontFamily: "'Poppins', sans-serif",
+              animation: `${closing ? 'packSemOut' : 'packSemIn'} .28s cubic-bezier(.22,1,.36,1) both`,
+            }}
+          >
+            <button
+              type="button"
+              onClick={handleGoHome}
+              aria-label="Fermer et retourner à l'accueil"
+              style={{
+                position: 'absolute', top: 16, right: 16, zIndex: 2,
+                width: 30, height: 30, border: 'none', background: 'none', cursor: 'pointer',
+                color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                <path d="M2 2 15 15M15 2 2 15" />
+              </svg>
+            </button>
+            <div className="pack-sem-confirm-copy" style={{ padding: '52px 44px 36px', textAlign: 'left', animation: 'packSemFade .3s ease both' }}>
+              <h2
+                className="pack-sem-confirm-title"
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                  fontSize: 28,
+                  fontWeight: 400,
+                  lineHeight: 1.3,
+                  letterSpacing: '-0.04em',
+                  color: '#fff',
+                  margin: '0 0 20px',
+                }}
+              >
+                <strong style={{ fontWeight: 700 }}>Merci !</strong> Votre demande a{' '}
+                <strong style={{ fontWeight: 700 }}>bien été envoyée</strong>.
+              </h2>
+              <p style={{ fontSize: 15.5, lineHeight: 1.65, letterSpacing: '-0.02em', color: 'rgba(255,255,255,.92)', margin: '0 0 14px', maxWidth: 520 }}>
+                On s&apos;occupe de votre demande au plus vite, et nous reviendrons vers vous sous 48&nbsp;heures.
+              </p>
+              <p style={{ fontSize: 15.5, lineHeight: 1.65, letterSpacing: '-0.02em', color: 'rgba(255,255,255,.92)', margin: 0, maxWidth: 520 }}>
+                Vous allez également recevoir un e-mail de confirmation avec le récapitulatif de votre demande.
+              </p>
+              <p style={{ fontSize: 14, lineHeight: 1.55, letterSpacing: '-0.02em', color: 'rgba(255,255,255,.72)', margin: '28px 0 0' }}>
+                À très vite,<br />
+                L&apos;équipe TerraGo
+              </p>
+              <div style={{ marginTop: 28 }}>
+                <button type="button" className="pack-sem-cta-home" onClick={handleGoHome}>
+                  Retour à l&apos;accueil
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
         <div
           className="pack-sem-panel"
           role="dialog"
@@ -2322,17 +2418,6 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
                   </>
                 )}
 
-                {step === 4 && (
-                  <div style={{ paddingTop: 28 }}>
-                    <h2 className="pack-sem-title" style={{ ...titleStyle, marginBottom: 18 }}>
-                      <strong style={strong}>Merci beaucoup !</strong>
-                    </h2>
-                    <p className="pack-sem-title" style={{ ...titleStyle, margin: 0 }}>
-                      On revient vers vous <strong style={strong}>au plus vite.</strong>
-                    </p>
-                    <p style={{ ...leadStyle, fontSize: 12, textAlign: 'center', margin: '18px 0 0' }}>L&apos;équipe TERRAGO</p>
-                  </div>
-                )}
               </div>
               <div style={{ height: 16 }} />
             </div>
@@ -2348,22 +2433,21 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
                     ← Retour
                   </button>
                 )}
-                <button type="button" className="pack-sem-cta" onClick={step === 4 ? handleClose : goNext} disabled={submitting}>
+                <button type="button" className="pack-sem-cta" onClick={goNext} disabled={submitting}>
                   {submitting && (
                     <span style={{ width: 12, height: 12, border: '2px solid rgba(255,255,255,.35)', borderTopColor: '#fff', borderRadius: '50%', animation: 'packSemSpin .7s linear infinite' }} />
                   )}
-                  {step === 4 ? 'Terminé' : submitting ? 'Envoi…' : 'Suivant'}
+                  {submitting ? 'Envoi…' : 'Suivant'}
                 </button>
               </div>
 
               <div style={{ height: 2, marginTop: 12 }}>
-                {step < 4 && (
-                  <div style={{ height: '100%', width: `${progress * 100}%`, borderRadius: 9999, background: PACK_MODAL_ORANGE, transition: 'width .35s cubic-bezier(.22,1,.36,1)' }} />
-                )}
+                <div style={{ height: '100%', width: `${progress * 100}%`, borderRadius: 9999, background: PACK_MODAL_ORANGE, transition: 'width .35s cubic-bezier(.22,1,.36,1)' }} />
               </div>
             </div>
           </div>
         </div>
+        )}
       </div>
     </>
   );
