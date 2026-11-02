@@ -159,6 +159,7 @@ const Confidentialite: React.FC = () => {
                 <li>Votre nom</li>
                 <li>Votre numéro de téléphone professionnel</li>
                 <li>Votre courrier électronique</li>
+                <li>Une précision éventuelle sur votre projet</li>
               </ul>
 
               <h3

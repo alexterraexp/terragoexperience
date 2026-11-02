@@ -1897,7 +1897,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
   const [closing, setClosing] = useState(false);
   const [submitting, setSubmit] = useState(false);
   const [error, setError] = useState('');
-  const [form, setForm] = useState({ prenom: '', nom: '', telephone: '', email: '', entreprise: '', participants: '' });
+  const [form, setForm] = useState({ prenom: '', nom: '', telephone: '', email: '', entreprise: '', participants: '', precision: '' });
   const [selectedSeminaireId, setSelectedSeminaireId] = useState<string | null>(null);
   const [selectedFormatId, setSelectedFormatId] = useState<SeminaireFormatId>('journee');
   const [startDate, setStart] = useState('');
@@ -1931,7 +1931,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
     setClosing(true);
     setTimeout(() => {
       setClosing(false); setStep(1); setError('');
-      setForm({ prenom: '', nom: '', telephone: '', email: '', entreprise: '', participants: '' });
+      setForm({ prenom: '', nom: '', telephone: '', email: '', entreprise: '', participants: '', precision: '' });
       setSelectedSeminaireId(null); setSelectedFormatId('journee');
       setStart(''); setEnd(''); setPeriod(''); setCalendarOpen(false);
       onClose();
@@ -1960,6 +1960,10 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
       return;
     }
     if (step === 2) {
+      setStep(3);
+      return;
+    }
+    if (step === 3) {
       const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
       if (!form.prenom.trim() || !form.nom.trim() || !form.telephone.trim() || !form.email.trim() || !emailOk || !form.entreprise.trim()) {
         setError('Renseignez nom, prénom, téléphone, e-mail et société.');
@@ -1971,8 +1975,8 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
 
   const handleSubmit = async () => {
     setSubmit(true);
-    const selectionLine = selectedSeminaire && selectedFormat
-      ? `${selectedSeminaire.label} — ${formatLabel} (${selectedFormat.titre})`
+    const selectionLine = selectedSeminaire
+      ? `${selectedSeminaire.label} — ${formatLabel}`
       : formatLabel;
     try {
       const res = await fetch('/api/demande-seminaire', {
@@ -1998,7 +2002,9 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
           transport: false,
           transport_type: null,
           activites: null,
-          message: form.telephone.trim() ? `Téléphone : ${form.telephone.trim()}` : null,
+          telephone: form.telephone.trim(),
+          precision: form.precision.trim() || null,
+          message: form.precision.trim() || null,
         }),
       });
 
@@ -2013,7 +2019,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
       }
 
       trackGenerateLead('demande-seminaire');
-      setStep(3);
+      setStep(4);
     } catch (err: any) {
       setError(err.message || 'Erreur lors de l\'envoi. Veuillez réessayer.');
     } finally {
@@ -2027,7 +2033,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
     selectedSeminaire?.images?.[0]
     ?? selectedSeminaire?.image
     ?? PACK_ASSETS.hero;
-  const progress = step >= 3 ? 1 : step / 2;
+  const progress = step >= 4 ? 1 : step / 3;
 
   const titleStyle: CSSProperties = {
     fontFamily: "'Poppins', sans-serif",
@@ -2119,6 +2125,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
           .pack-sem-content { padding:20px 18px 0 !important }
           .pack-sem-footer { padding:0 18px max(14px, env(safe-area-inset-bottom)) !important }
           .pack-sem-title { font-size:20px !important }
+          textarea.pack-sem-input { font-size:16px !important }
         }
       `}</style>
 
@@ -2265,6 +2272,43 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
 
                 {step === 2 && (
                   <>
+                    <h2 className="pack-sem-title" style={{ ...titleStyle, display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px 10px' }}>
+                      <span>Une précision à <strong style={strong}>apporter ?</strong></span>
+                      <span
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          flexShrink: 0,
+                          background: PACK_MODAL_INK,
+                          color: '#fff',
+                          fontSize: 9,
+                          fontWeight: 600,
+                          letterSpacing: '0.06em',
+                          textTransform: 'uppercase',
+                          lineHeight: 1,
+                          borderRadius: 999,
+                          padding: '4px 8px',
+                        }}
+                      >
+                        Facultatif
+                      </span>
+                    </h2>
+                    <p style={leadStyle}>
+                      Contraintes, ambiance, besoins particuliers.
+                    </p>
+                    <textarea
+                      className="pack-sem-input"
+                      rows={5}
+                      value={form.precision}
+                      placeholder="Écrivez librement…"
+                      onChange={e => setForm({ ...form, precision: e.target.value })}
+                      style={{ resize: 'none', lineHeight: 1.55, minHeight: 120 }}
+                    />
+                  </>
+                )}
+
+                {step === 3 && (
+                  <>
                     <h2 className="pack-sem-title" style={titleStyle}>
                       <strong style={strong}>Votre contact,</strong> pour revenir vers vous sous 48 heures.
                     </h2>
@@ -2278,7 +2322,7 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
                   </>
                 )}
 
-                {step === 3 && (
+                {step === 4 && (
                   <div style={{ paddingTop: 28 }}>
                     <h2 className="pack-sem-title" style={{ ...titleStyle, marginBottom: 18 }}>
                       <strong style={strong}>Merci beaucoup !</strong>
@@ -2299,21 +2343,21 @@ export function SeminaireModal({ isOpen, onClose, seminaires, initialSeminaire, 
               )}
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 36 }}>
-                {step === 2 && (
-                  <button type="button" className="pack-sem-back" onClick={() => { setError(''); setStep(1); }} style={{ position: 'absolute', left: 0 }}>
+                {(step === 2 || step === 3) && (
+                  <button type="button" className="pack-sem-back" onClick={() => { setError(''); setStep(step - 1); }} style={{ position: 'absolute', left: 0 }}>
                     ← Retour
                   </button>
                 )}
-                <button type="button" className="pack-sem-cta" onClick={step === 3 ? handleClose : goNext} disabled={submitting}>
+                <button type="button" className="pack-sem-cta" onClick={step === 4 ? handleClose : goNext} disabled={submitting}>
                   {submitting && (
                     <span style={{ width: 12, height: 12, border: '2px solid rgba(255,255,255,.35)', borderTopColor: '#fff', borderRadius: '50%', animation: 'packSemSpin .7s linear infinite' }} />
                   )}
-                  {step === 3 ? 'Terminé' : submitting ? 'Envoi…' : 'Suivant'}
+                  {step === 4 ? 'Terminé' : submitting ? 'Envoi…' : 'Suivant'}
                 </button>
               </div>
 
               <div style={{ height: 2, marginTop: 12 }}>
-                {step < 3 && (
+                {step < 4 && (
                   <div style={{ height: '100%', width: `${progress * 100}%`, borderRadius: 9999, background: PACK_MODAL_ORANGE, transition: 'width .35s cubic-bezier(.22,1,.36,1)' }} />
                 )}
               </div>

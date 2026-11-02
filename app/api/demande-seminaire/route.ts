@@ -31,42 +31,63 @@ export async function POST(req: NextRequest) {
       transport_type,
       activites,
       message,
+      telephone,
+      precision,
     } = body;
 
     // Validation minimale
-    if (!prenom || !nom || !email || !entreprise) {
+    if (!prenom || !nom || !email || !entreprise || !telephone) {
       return NextResponse.json(
         { error: 'Champs obligatoires manquants.' },
         { status: 400 }
       );
     }
 
+    const precisionStr =
+      precision != null && String(precision).trim() !== ''
+        ? String(precision).trim()
+        : message != null && String(message).trim() !== ''
+          ? String(message).trim()
+          : null;
+    const telephoneStr = String(telephone).trim();
+
     const db = supabaseAdmin ?? supabaseServer;
-    const { error } = await db
-      .from('demandes_seminaires')
-      .insert([
+    const row = {
+      seminaire_id,
+      format_id,
+      selection_label,
+      prenom,
+      nom,
+      email,
+      telephone: telephoneStr,
+      entreprise,
+      participants,
+      periode,
+      ville_depart,
+      distance_max_h,
+      hebergement: hebergement ?? false,
+      hebergement_type,
+      transport: transport ?? false,
+      transport_type,
+      activites:
+        activites != null && String(activites).trim() !== '' ? String(activites).trim() : null,
+      message: precisionStr,
+      created_at: new Date().toISOString(),
+    };
+
+    let { error } = await db.from('demandes_seminaires').insert([row]);
+
+    // Repli si la colonne telephone n'a pas encore été ajoutée.
+    if (error?.message?.includes('telephone')) {
+      const { telephone: _telephone, ...withoutPhone } = row;
+      const retry = await db.from('demandes_seminaires').insert([
         {
-          seminaire_id,
-          format_id,
-          selection_label,
-          prenom,
-          nom,
-          email,
-          entreprise,
-          participants,
-          periode,
-          ville_depart,
-          distance_max_h,
-          hebergement: hebergement ?? false,
-          hebergement_type,
-          transport: transport ?? false,
-          transport_type,
-          activites:
-            activites != null && String(activites).trim() !== '' ? String(activites).trim() : null,
-          message: message != null && String(message).trim() !== '' ? String(message).trim() : null,
-          created_at: new Date().toISOString(),
+          ...withoutPhone,
+          message: [precisionStr, `Téléphone : ${telephoneStr}`].filter(Boolean).join('\n') || null,
         },
       ]);
+      error = retry.error;
+    }
 
     if (error) {
       console.error('Supabase insert error:', error);

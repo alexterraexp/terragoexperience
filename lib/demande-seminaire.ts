@@ -7,9 +7,9 @@ import { getNotifyEmails } from './team-notify';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const DEFAULT_OFFRE_IMAGE =
-  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/general/olivierspaysage.jpg';
+  'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME/seminaire/bretagne/184592R0.jpg';
 
-/** URL de la 1re photo producteur (HTTPS uniquement) pour le bandeau e-mail ; repli terroir sinon. */
+/** URL HTTPS de la 1re photo de l'offre, pour le visuel du mail. */
 function safeOffreImageUrl(raw: string | null | undefined): string {
   const u = String(raw ?? '').trim();
   if (/^https:\/\//i.test(u)) {
@@ -53,15 +53,13 @@ export type DemandeSeminairePayload = {
   transport_type?: string | null;
   activites?: string | null;
   message?: string | null;
-  /** Première image de la fiche offre (URL HTTPS), pour le bandeau « Offre & format » dans l’e-mail. */
+  /** Téléphone du volet contact. */
+  telephone?: string | null;
+  /** Champ libre « une précision à apporter ? », saisi avant le volet contact. */
+  precision?: string | null;
+  /** Première image de la fiche offre (URL HTTPS), visuel du mail. */
   offre_image_url?: string | null;
-  /** 3e photo du producteur (URL HTTPS), image paysage en bas du mail ; repli terroir si absente. */
-  offre_footer_image_url?: string | null;
 };
-
-function displayOuiNon(v: boolean | undefined): string {
-  return v ? 'Oui' : 'Non';
-}
 
 function displayOptional(str: string | null | undefined): string {
   const t = str != null ? String(str).trim() : '';
@@ -71,23 +69,16 @@ function displayOptional(str: string | null | undefined): string {
 function buildDevisEmailHtml(data: {
   prenomGreeting: string;
   selectionLabel: string;
-  offreImageUrl: string;
   prenomRecap: string;
   nomFamille: string;
   email: string;
+  telephone: string;
   entreprise: string;
   participants: string;
   periode: string;
-  villeDepart: string;
-  distanceMax: string;
-  hebergement: string;
-  hebergementType: string;
-  transport: string;
-  transportType: string;
-  activites: string;
-  message: string;
+  precision: string;
+  offreImageUrl: string;
   reference: string;
-  footerImageUrl: string;
 }) {
   const templatePath = path.join(process.cwd(), 'email-template-demande-devis-seminaire.html');
   let html = fs.readFileSync(templatePath, 'utf8');
@@ -95,25 +86,22 @@ function buildDevisEmailHtml(data: {
   return html
     .replace(/{{PRENOM}}/g, escapeHtml(data.prenomGreeting))
     .replace(/{{SELECTION_LABEL}}/g, escapeHtml(data.selectionLabel))
-    .replace(/{{OFFRE_IMAGE_URL}}/g, data.offreImageUrl)
-    .replace(/{{FOOTER_IMAGE_URL}}/g, data.footerImageUrl)
     .replace(/{{PRENOM_RECAP}}/g, escapeHtml(data.prenomRecap))
     .replace(/{{NOM_FAMILLE}}/g, escapeHtml(data.nomFamille))
     .replace(/{{EMAIL}}/g, escapeHtml(data.email))
+    .replace(/{{TELEPHONE}}/g, escapeHtml(data.telephone))
     .replace(/{{ENTREPRISE}}/g, escapeHtml(data.entreprise))
     .replace(/{{PARTICIPANTS}}/g, escapeHtml(data.participants))
     .replace(/{{PERIODE}}/g, escapeHtml(data.periode))
-    .replace(/{{VILLE_DEPART}}/g, escapeHtml(data.villeDepart))
-    .replace(/{{DISTANCE_MAX}}/g, escapeHtml(data.distanceMax))
-    .replace(/{{HEBERGEMENT}}/g, escapeHtml(data.hebergement))
-    .replace(/{{HEBERGEMENT_TYPE}}/g, escapeHtml(data.hebergementType))
-    .replace(/{{TRANSPORT}}/g, escapeHtml(data.transport))
-    .replace(/{{TRANSPORT_TYPE}}/g, escapeHtml(data.transportType))
-    .replace(/{{ACTIVITES}}/g, escapeHtml(data.activites))
-    .replace(/{{MESSAGE}}/g, escapeHtml(data.message))
+    .replace(/{{PRECISION}}/g, escapeHtml(data.precision).replace(/\n/g, '<br />'))
+    .replace(/{{OFFRE_IMAGE_URL}}/g, data.offreImageUrl)
     .replace(/{{REFERENCE}}/g, escapeHtml(data.reference))
     .replace(/{{LIEN_SITE}}/g, 'https://www.terragoexperiences.fr')
-    .replace(/{{LIEN_OFFRES}}/g, 'https://www.terragoexperiences.fr/exemples-seminaire-entreprise');
+    .replace(/{{LIEN_OFFRES}}/g, 'https://www.terragoexperiences.fr/exemples-seminaire-entreprise')
+    .replace(/{{LIEN_APPROCHE}}/g, 'https://www.terragoexperiences.fr/notre-approche')
+    .replace(/{{LIEN_CONTACT}}/g, 'https://www.terragoexperiences.fr/contact')
+    .replace(/{{LIEN_DESABONNEMENT}}/g, 'https://www.terragoexperiences.fr/desabonnement')
+    .replace(/{{LIEN_MENTIONS_LEGALES}}/g, 'https://www.terragoexperiences.fr/mentions-legales');
 }
 
 /**
@@ -132,77 +120,50 @@ export async function sendDemandeSeminaireEmails(body: DemandeSeminairePayload):
   const selectionLabel = displayOptional(body.selection_label);
   const seminaireId = body.seminaire_id != null && String(body.seminaire_id).trim() !== '' ? String(body.seminaire_id) : '—';
   const formatId = body.format_id != null && String(body.format_id).trim() !== '' ? String(body.format_id) : '—';
-  const offreImageUrl = safeOffreImageUrl(body.offre_image_url);
-  const footerImageUrl = safeOffreImageUrl(body.offre_footer_image_url);
   const entrepriseStr = String(body.entreprise ?? '').trim() || '—';
+  const telephoneStr = displayOptional(body.telephone);
   const participantsStr =
     body.participants != null && String(body.participants).trim() !== ''
       ? String(body.participants)
       : '—';
   const periodeStr = displayOptional(body.periode);
-  const villeDepartStr = displayOptional(body.ville_depart);
-  const distanceMaxStr =
-    body.distance_max_h != null && Number.isFinite(Number(body.distance_max_h))
-      ? `${Number(body.distance_max_h)} h`
-      : '—';
-  const hebergementLine = displayOuiNon(body.hebergement === true);
-  const hebergementTypeStr =
-    body.hebergement === true ? displayOptional(body.hebergement_type) : '—';
-  const transportLine = displayOuiNon(body.transport === true);
-  const transportTypeStr =
-    body.transport === true ? displayOptional(body.transport_type) : '—';
-  const activitesStr = displayOptional(body.activites);
-  const messageStr = displayOptional(body.message);
+  const precisionSource =
+    body.precision != null && String(body.precision).trim() !== ''
+      ? body.precision
+      : body.message;
+  const precisionStr = displayOptional(precisionSource);
+  const offreImageUrl = safeOffreImageUrl(body.offre_image_url);
 
   const html = buildDevisEmailHtml({
     prenomGreeting,
     selectionLabel,
-    offreImageUrl,
     prenomRecap: prenomStr || '—',
     nomFamille: nomStr || '—',
     email: emailStr,
+    telephone: telephoneStr,
     entreprise: entrepriseStr,
     participants: participantsStr,
     periode: periodeStr,
-    villeDepart: villeDepartStr,
-    distanceMax: distanceMaxStr,
-    hebergement: hebergementLine,
-    hebergementType: hebergementTypeStr,
-    transport: transportLine,
-    transportType: transportTypeStr,
-    activites: activitesStr,
-    message: messageStr,
+    precision: precisionStr,
+    offreImageUrl,
     reference,
-    footerImageUrl,
   });
 
   const textClient = [
     `Bonjour ${prenomGreeting},`,
     '',
-    `Nous avons bien reçu votre demande de devis pour une offre séminaire (réf. ${reference}).`,
+    `Nous avons bien reçu votre demande de devis (réf. ${reference}).`,
+    'Voici le récapitulatif de ce que vous nous avez transmis : si quelque chose vous semble inexact, envoyez-nous un mail à contact@terragoexperiences.fr.',
     '',
-    '01 — Offre',
     `Offre & format : ${selectionLabel}`,
-    '',
-    '02 — Coordonnées',
+    `Dates : ${periodeStr}`,
+    `Participants : ${participantsStr}`,
+    `Précision : ${precisionStr}`,
     `Prénom : ${prenomStr || '—'}`,
     `Nom : ${nomStr || '—'}`,
     `Email : ${emailStr}`,
+    `Téléphone : ${telephoneStr}`,
     `Entreprise : ${entrepriseStr}`,
-    `Participants : ${participantsStr}`,
-    '',
-    '03 — Dates & destination',
-    `Période : ${periodeStr}`,
-    `Ville de départ : ${villeDepartStr}`,
-    `Temps de trajet max. : ${distanceMaxStr}`,
-    '',
-    '04 — Logistique, activités & message',
-    `Hébergement : ${hebergementLine}`,
-    `Type d'hébergement : ${hebergementTypeStr}`,
-    `Transport : ${transportLine}`,
-    `Type de transport : ${transportTypeStr}`,
-    `Activités : ${activitesStr}`,
-    `Message : ${messageStr}`,
     '',
     'TerraGo Expériences',
   ].join('\n');
@@ -243,17 +204,11 @@ export async function sendDemandeSeminaireEmails(body: DemandeSeminairePayload):
           `Prénom : ${prenomStr || '—'}`,
           `Nom : ${nomStr || '—'}`,
           `Email : ${emailStr}`,
+          `Téléphone : ${telephoneStr}`,
           `Entreprise : ${entrepriseStr}`,
           `Participants : ${participantsStr}`,
           `Période : ${periodeStr}`,
-          `Ville de départ : ${villeDepartStr}`,
-          `Temps de trajet max. : ${distanceMaxStr}`,
-          `Hébergement : ${hebergementLine}`,
-          `Type d'hébergement : ${hebergementTypeStr}`,
-          `Transport : ${transportLine}`,
-          `Type de transport : ${transportTypeStr}`,
-          `Activités : ${activitesStr}`,
-          `Message : ${messageStr}`,
+          `Précision : ${precisionStr}`,
           `Référence (e-mail) : ${reference}`,
         ].join('\n'),
       });

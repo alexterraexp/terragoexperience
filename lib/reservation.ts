@@ -34,6 +34,7 @@ type ReservationEmailData = {
   lieu: string;
   budget: string;
   budgetParPersonne: string;
+  precision: string;
   reference: string;
 };
 
@@ -56,6 +57,7 @@ function buildEmailHtml(data: ReservationEmailData) {
     .replace(/{{LIEU}}/g, escapeHtml(data.lieu || '—'))
     .replace(/{{BUDGET}}/g, escapeHtml(data.budget || '—'))
     .replace(/{{BUDGET_PAR_PERSONNE}}/g, escapeHtml(data.budgetParPersonne || '—'))
+    .replace(/{{PRECISION}}/g, escapeHtml(data.precision || '—').replace(/\n/g, '<br />'))
     .replace(/{{REFERENCE}}/g, escapeHtml(data.reference))
     .replace(/{{LIEN_SITE}}/g, 'https://www.terragoexperiences.fr')
     .replace(/{{LIEN_OFFRES}}/g, 'https://www.terragoexperiences.fr/exemples-seminaire-entreprise')
@@ -88,6 +90,7 @@ export async function processReservation(
     lieu,
     budget,
     budgetParPersonne,
+    precision,
   } = b;
 
   const required: Record<string, unknown> = { nom, email, participants, periode };
@@ -117,6 +120,7 @@ export async function processReservation(
   const lieuStr = optional(lieu);
   const budgetStr = optional(budget);
   const budgetParPersonneStr = optional(budgetParPersonne);
+  const precisionStr = optional(precision);
 
   if (isSupabaseConfigured) {
     const db = supabaseAdmin ?? supabaseServer;
@@ -135,6 +139,7 @@ export async function processReservation(
       lieu_souhaite: lieuStr,
       ville_depart: villeDepartStr,
       budget_par_personne: budgetParPersonneStr,
+      message: precisionStr,
     };
     let { error: supabaseError } = await db.from('demandes_organiser_seminaire').insert(row);
 
@@ -154,6 +159,7 @@ export async function processReservation(
           typeEvenementStr ? `Type d'évènement : ${typeEvenementStr}` : '',
           telephoneStr ? `Téléphone : ${telephoneStr}` : '',
           budgetParPersonneStr ? `Budget par personne : ${budgetParPersonneStr}` : '',
+          precisionStr ? `Précision : ${precisionStr}` : '',
         ].filter(Boolean).join('\n') || null,
       });
       supabaseError = retry.error;
@@ -183,6 +189,7 @@ export async function processReservation(
     lieu: lieuStr ?? '—',
     budget: budgetStr ?? '—',
     budgetParPersonne: budgetParPersonneStr ?? '—',
+    precision: precisionStr ?? '—',
     reference,
   });
 
@@ -194,7 +201,25 @@ export async function processReservation(
       to: emailStr,
       subject: 'Votre demande de séminaire a bien été reçue',
       html,
-      text: `Bonjour ${prenom},\n\nNous avons bien reçu votre demande (réf. ${reference}).\nNous vous répondons sous peu.\n\nTerraGo Expériences`,
+      text: [
+        `Bonjour ${prenom},`,
+        '',
+        `Nous avons bien reçu votre demande (réf. ${reference}).`,
+        'Voici le récapitulatif de ce que vous nous avez transmis : si quelque chose vous semble inexact, envoyez-nous un mail à contact@terragoexperiences.fr.',
+        '',
+        `Type d'évènement : ${typeEvenementStr ?? '—'}`,
+        `Lieu souhaité : ${lieuStr ?? '—'}`,
+        `Période : ${periode}`,
+        `Participants : ${participants}`,
+        `Budget total : ${budgetStr ?? '—'}`,
+        `Budget par personne : ${budgetParPersonneStr ?? '—'}`,
+        `Précision : ${precisionStr ?? '—'}`,
+        `Nom : ${nomStr}`,
+        `Email : ${emailStr}`,
+        `Téléphone : ${telephoneStr ?? '—'}`,
+        '',
+        'TerraGo Expériences',
+      ].join('\n'),
     });
   } catch (err) {
     console.error('Erreur Resend (e-mail client) :', err);
@@ -230,6 +255,7 @@ export async function processReservation(
           `Lieu souhaité : ${lieuStr ?? '—'}`,
           `Budget total : ${budgetStr ?? '—'}`,
           `Budget par personne : ${budgetParPersonneStr ?? '—'}`,
+          `Précision : ${precisionStr ?? '—'}`,
           `Référence : ${reference}`,
         ].join('\n'),
       });

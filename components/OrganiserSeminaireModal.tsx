@@ -20,6 +20,7 @@ const STEP_IMAGES = [
   `${HOME_BUCKET}/1596142332133-327e2a0ff006.avif`,
   `${HOME_BUCKET}/paysage-huitres.png`,
   `${HOME_BUCKET}/EXPERIENCES IMG/1749544292533-65b0ec299191.avif`,
+  `${HOME_BUCKET}/Destination/photo-1621148998923-872e8157057a.avif`,
   `${HOME_BUCKET}/seminaire/exception/1111.jpg`,
 ];
 
@@ -75,6 +76,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
   const [lieuOpen, setLieuOpen] = useState(false);
   const [participants, setParticipants] = useState('');
   const [budget, setBudget] = useState(BUDGET_DEFAULT);
+  const [precision, setPrecision] = useState('');
   const [nom, setNom] = useState('');
   const [tel, setTel] = useState('');
   const [email, setEmail] = useState('');
@@ -185,6 +187,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     setLieuFieldActive(false);
     setParticipants('');
     setBudget(BUDGET_DEFAULT);
+    setPrecision('');
     setNom('');
     setTel('');
     setEmail('');
@@ -214,7 +217,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        if (step === 5) handleGoHome();
+        if (step === 6) handleGoHome();
         else handleClose();
       }
     };
@@ -247,12 +250,13 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
           participants: String(participantsNb),
           budget: eur(budget),
           budgetParPersonne: budgetParPersonne != null ? eur(budgetParPersonne) : '',
+          precision: precision.trim(),
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { success?: boolean; message?: string };
       if (res.ok && data.success) {
         trackGenerateLead('reservation');
-        setStep(5);
+        setStep(6);
       } else setErr(data.message || "Erreur lors de l'envoi. Veuillez réessayer.");
     } catch {
       setErr("Erreur lors de l'envoi. Veuillez réessayer.");
@@ -266,7 +270,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
     if (step === 1 && !eventType) return setErr('Sélectionnez un type d’évènement.');
     if (step === 2 && !periodeStr) return setErr('Indiquez des dates précises ou une période.');
     if (step === 3 && !(participantsNb > 0)) return setErr('Indiquez le nombre de participants.');
-    if (step === 4) {
+    if (step === 5) {
       const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
       if (!nom.trim() || !emailOk) return setErr('Indiquez votre nom et une adresse mail valide.');
       return submit();
@@ -276,9 +280,9 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
   if (!isOpen) return null;
 
-  const isConfirm = step === 5;
-  const image = STEP_IMAGES[Math.min(step, 4) - 1];
-  const progress = Math.min(step, 4) / 4;
+  const isConfirm = step === 6;
+  const image = STEP_IMAGES[Math.min(step, 5) - 1];
+  const progress = Math.min(step, 5) / 5;
 
   return (
     <>
@@ -541,7 +545,7 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
             height: 22px;
           }
           /* 16px réel = pas de zoom iOS ; le descriptif overlay reste à 13px */
-          input.osm-input { font-size: 16px !important; touch-action: manipulation; }
+          input.osm-input, textarea.osm-input { font-size: 16px !important; touch-action: manipulation; }
           input.osm-has-ph::placeholder { color:transparent !important; opacity:0; }
           button.osm-input { font-size: 13px !important; }
           .osm-ph { display:flex; }
@@ -1047,6 +1051,26 @@ const OrganiserSeminaireModal: React.FC<OrganiserSeminaireModalProps> = ({ isOpe
 
                 {step === 4 && (
                   <>
+                    <h2 className="osm-title" style={{ ...titleStyle, display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px 12px' }}>
+                      <span>Une précision à <strong style={strong}>apporter ?</strong></span>
+                      <span style={optionalPill}>Facultatif</span>
+                    </h2>
+                    <p style={leadStyle}>
+                      Contraintes, ambiance, besoins particuliers — tout ce qui nous aide à préparer une première proposition.
+                    </p>
+                    <textarea
+                      className="osm-input"
+                      rows={5}
+                      value={precision}
+                      placeholder="Écrivez librement…"
+                      onChange={(e) => setPrecision(e.target.value)}
+                      style={{ resize: 'none', lineHeight: 1.55, minHeight: 140, maxWidth: 420 }}
+                    />
+                  </>
+                )}
+
+                {step === 5 && (
+                  <>
                     <h2 className="osm-title" style={titleStyle}>
                       <strong style={strong}>Votre contact,</strong> pour revenir vers vous sous 48 heures.
                     </h2>
@@ -1104,6 +1128,21 @@ const titleStyle: React.CSSProperties = {
 };
 
 const strong: React.CSSProperties = { fontWeight: 700 };
+
+const optionalPill: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  flexShrink: 0,
+  background: INK,
+  color: '#fff',
+  fontSize: 10,
+  fontWeight: 600,
+  letterSpacing: '0.06em',
+  textTransform: 'uppercase',
+  lineHeight: 1,
+  borderRadius: 999,
+  padding: '5px 9px',
+};
 
 const leadStyle: React.CSSProperties = {
   fontSize: 13,
