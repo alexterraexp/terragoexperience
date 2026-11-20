@@ -17,6 +17,7 @@ import {
   type StudioStatut,
 } from '@/lib/studioTypes';
 import { exempleSeminaireEntreprisePath } from '@/lib/exemplesSeminaireEntreprise';
+import ProducteurSpace from './ProducteurSpace';
 
 type SessionState = {
   configured: boolean;
@@ -49,6 +50,7 @@ export default function StudioApp() {
   const [notice, setNotice] = useState('');
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [space, setSpace] = useState<'seminaire' | 'producteur'>('seminaire');
 
   const dirty = draft != null && baseline !== '' && JSON.stringify(draft) !== baseline;
 
@@ -257,13 +259,37 @@ export default function StudioApp() {
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-[#f6f4f1] text-[#0c1d22]" style={{ fontFamily: "'Poppins', sans-serif" }}>
       <header className="flex shrink-0 items-center justify-between gap-4 border-b border-[#0c1d22]/8 bg-white px-5 py-3 sm:px-8">
-        <Image src="/logo.png" alt="TerraGo" width={116} height={90} priority className="h-9 w-auto object-contain sm:h-10" />
+        <div className="flex min-w-0 items-center gap-4 sm:gap-6">
+          <Image src="/logo.png" alt="TerraGo" width={116} height={90} priority className="h-9 w-auto object-contain sm:h-10" />
+          <nav className="flex rounded-full bg-[#f4f4f4] p-1" aria-label="Espaces">
+            {([
+              ['seminaire', 'Séminaire'],
+              ['producteur', 'Producteur'],
+            ] as const).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={space === id}
+                onClick={() => setSpace(id)}
+                className={`rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] sm:px-4 ${
+                  space === id ? 'bg-white text-[#0c1d22] shadow-sm' : 'text-[#0c1d22]/45'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+        </div>
         <button type="button" onClick={logout} className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#0c1d22]/50">
           Fermer
         </button>
       </header>
 
-      <div className="mx-auto grid min-h-0 w-full max-w-7xl flex-1 gap-6 overflow-hidden px-4 py-6 lg:grid-cols-[380px_minmax(0,1fr)] lg:px-8">
+      <div className={space === 'producteur' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
+        <ProducteurSpace />
+      </div>
+
+      <div className={`${space === 'seminaire' ? 'mx-auto grid min-h-0 w-full max-w-7xl flex-1 gap-6 overflow-hidden px-4 py-6 lg:grid-cols-[380px_minmax(0,1fr)] lg:px-8' : 'hidden'}`}>
         <aside className={draft ? 'hidden min-h-0 lg:flex lg:flex-col' : 'flex min-h-0 flex-col'}>
           <button
             type="button"
