@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { partitionInclus } from './offerPills';
 import { supabase } from './supabase';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -57,6 +58,12 @@ export interface Seminaire {
   lat?: number; lng?: number;
   slug: string;
   comingSoon?: boolean;
+  /** false = brouillon, absent du catalogue. */
+  publie: boolean;
+  /** Pilules catalogue (regen, rse, cohésion…). */
+  pills: string[];
+  /** Activités possibles sur place. */
+  activites: string[];
   partenaire_nom?: string;
   partenaire_logo?: string;
   partenaire_description?: string;
@@ -182,16 +189,27 @@ export async function fetchSeminaires(db: SupabaseClient = supabase): Promise<Se
 
   return data.map((s: any) => {
     const formats: { [key: string]: Format } = {};
+    const pills = new Set<string>(
+      Array.isArray(s.pills) ? s.pills.map((id: unknown) => String(id).trim()).filter(Boolean) : [],
+    );
+    const activites = new Set<string>(
+      Array.isArray(s.activites)
+        ? s.activites.map((item: unknown) => String(item).trim()).filter(Boolean)
+        : [],
+    );
     (s.seminaire_formats ?? []).forEach((f: any) => {
       const type = normalizeFormatType(f.type);
       if (!type) return;
+      const parts = partitionInclus(Array.isArray(f.inclus) ? f.inclus.map(String) : []);
+      parts.pills.forEach((id) => pills.add(id));
+      parts.activites.forEach((item) => activites.add(item));
       formats[type] = {
         titre: f.titre,
         sous_titre: f.sous_titre,
         participants: f.participants,
         duree: f.duree,
         prix: f.prix,
-        inclus: f.inclus ?? [],
+        inclus: parts.inclus,
         programme: [...(f.seminaire_programme ?? [])]
           .sort((a: any, b: any) => a.ordre - b.ordre)
           .map((p: any) => ({ heure: p.heure, action: p.action })),
@@ -213,6 +231,9 @@ export async function fetchSeminaires(db: SupabaseClient = supabase): Promise<Se
       lng: s.lng ?? undefined,
       slug: s.slug ?? generateSlug(s.producteur),
       comingSoon: s.coming_soon ?? false,
+      publie: s.publie !== false,
+      pills: [...pills],
+      activites: [...activites],
       partenaire_nom: s.partenaire_nom ?? undefined,
       partenaire_logo: sanitizeMediaUrl(s.partenaire_logo),
       partenaire_description: s.partenaire_description ?? undefined,
@@ -241,5 +262,5 @@ export async function fetchSeminaires(db: SupabaseClient = supabase): Promise<Se
           ordre: h.ordre ?? 0,
         })),
     };
-  });
+  }).filter((seminaire) => seminaire.publie);
 }

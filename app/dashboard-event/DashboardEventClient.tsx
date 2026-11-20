@@ -2354,7 +2354,7 @@ export default function DashboardEventClient() {
                 <span className="dash-title-light">Entrez</span> votre code
               </h1>
               <p className="dash-lead">
-                Saisissez le code reçu pour accéder au planning et aux informations de votre séminaire.
+                Saisissez le code reçu pour accéder au planning et aux informations de votre évènement, séminaire, ou séjour.
               </p>
               <form onSubmit={handleUnlock} style={{ marginTop: 28 }}>
                 <div className="dash-field">

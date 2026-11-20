@@ -39,6 +39,7 @@ import FramedHeroImage from '../components/FramedHeroImage';
 import { trackGenerateLead } from '../lib/analytics';
 import { useModal } from '../context/ModalContext';
 import { exempleSeminaireEntreprisePath } from '../lib/exemplesSeminaireEntreprise';
+import { OFFER_PILLS, offerPillLabel } from '../lib/offerPills';
 
 const HOME_ASSETS =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
@@ -812,6 +813,27 @@ function SeminaireCard({ s, isActive, onSelect }: {
         >
           {s.label}
         </div>
+        {s.pills.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
+            {s.pills.slice(0, 3).map((id) => (
+              <span
+                key={id}
+                style={{
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: HOME_COLORS.primary,
+                  background: 'rgba(236,100,53,0.12)',
+                  borderRadius: 9999,
+                  padding: '3px 7px',
+                }}
+              >
+                {offerPillLabel(id)}
+              </span>
+            ))}
+          </div>
+        )}
         {isComing ? (
           <div
             style={{
@@ -1160,16 +1182,63 @@ function PartenaireCard({ nom, logo, description, siteWeb }: { nom: string; logo
 
 // ─── Intro éditoriale (inspirée Staycation, DA TerraGo) ───────────────────────
 
+function OfferPillsRow({ ids }: { ids?: string[] }) {
+  if (!ids?.length) return null;
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
+      {ids.map((id) => (
+        <span
+          key={id}
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            color: HOME_COLORS.primary,
+            background: 'rgba(236,100,53,0.12)',
+            borderRadius: 9999,
+            padding: '4px 8px',
+          }}
+        >
+          {offerPillLabel(id)}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function OfferActivites({ activites }: { activites?: string[] }) {
+  if (!activites?.length) return null;
+  return (
+    <div style={{ marginTop: 16 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: HOME_COLORS.primary, marginBottom: 8 }}>
+        Sur place
+      </div>
+      <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {activites.map((activite) => (
+          <li key={activite} style={{ fontSize: 14, lineHeight: 1.5, color: 'rgba(12,29,34,0.72)' }}>
+            {activite}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function OfferIntroBlock({
   title,
   producteur,
   region,
   bestseller,
+  pills,
+  activites,
 }: {
   title: string;
   producteur: string;
   region: string;
   bestseller?: boolean;
+  pills?: string[];
+  activites?: string[];
 }) {
   return (
     <header className="sem-offer-intro">
@@ -1186,6 +1255,8 @@ function OfferIntroBlock({
               </>
             )}
           </div>
+          <OfferPillsRow ids={pills} />
+          <OfferActivites activites={activites} />
         </div>
       </div>
     </header>
@@ -1751,6 +1822,8 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
               producteur={s.producteur}
               region={s.region}
               bestseller={s.bestseller}
+              pills={s.pills}
+              activites={s.activites}
             />
             <InfosPratiquesSection
               s={s}
@@ -1787,6 +1860,8 @@ export function ExpandedSeminaireView({ s, activeFormat, setActiveFormat, onDevi
               title={s.label}
               producteur={s.producteur}
               region={s.region}
+              pills={s.pills}
+              activites={s.activites}
             />
             <InfosPratiquesSection
               s={s}
@@ -2537,6 +2612,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
   const router = useRouter();
   const { openModal } = useModal();
   const [seminaires,    setSeminaires]    = useState<Seminaire[]>(initialSeminaires);
+  const [activePills, setActivePills] = useState<string[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalSem, setModalSem] = useState<Seminaire | null>(null);
@@ -2555,7 +2631,10 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
     setMounted(true);
   }, []);
 
-  const filtered = seminaires;
+  const usedPills = OFFER_PILLS.filter((pill) => seminaires.some((s) => s.pills.includes(pill.id)));
+  const filtered = activePills.length === 0
+    ? seminaires
+    : seminaires.filter((s) => activePills.some((id) => s.pills.includes(id)));
   const catalogueSwipe = useSwipeTrack(catalogueScrollRef, filtered.length);
 
   useEffect(() => {
@@ -2788,7 +2867,45 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
             </p>
           </div>
 
-          {filtered.length === 0 ? (
+          {usedPills.length > 0 && (
+            <div className="mb-8 flex flex-wrap gap-2" role="group" aria-label="Filtrer les offres">
+              {usedPills.map((pill) => {
+                const on = activePills.includes(pill.id);
+                return (
+                  <button
+                    key={pill.id}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => setActivePills((current) =>
+                      current.includes(pill.id)
+                        ? current.filter((id) => id !== pill.id)
+                        : [...current, pill.id],
+                    )}
+                    style={{
+                      background: on ? HOME_COLORS.primary : '#fff',
+                      color: on ? '#fff' : HOME_COLORS.primary,
+                      border: `1px solid ${on ? HOME_COLORS.primary : 'rgba(12,29,34,0.14)'}`,
+                      borderRadius: 9999,
+                      padding: '7px 12px',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      letterSpacing: '-0.02em',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                    }}
+                  >
+                    {pill.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {filtered.length === 0 && seminaires.length > 0 ? (
+            <p style={{ color: 'rgba(12,29,34,0.55)', fontSize: 14, margin: 0 }}>
+              Aucune offre pour ces pilules.
+            </p>
+          ) : filtered.length === 0 ? (
             <div
               style={{
                 background: HOME_COLORS.gray,

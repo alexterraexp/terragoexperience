@@ -117,7 +117,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ videoSrc, posterSrc }) => {
               rencontre des producteurs français.
             </span>
           </h1>
-          <p className="mt-4 max-w-5xl px-0 font-sans text-[13px] font-normal leading-[1.5] tracking-[-0.04em] text-white/95 sm:mt-10 sm:text-lg sm:leading-relaxed lg:mr-[36vw] lg:max-w-none lg:text-[24px] lg:leading-[1.4]">
+          <p className="mt-4 max-w-5xl px-0 font-sans text-[12px] font-normal leading-[1.5] tracking-[-0.04em] text-white/95 sm:mt-10 sm:text-base sm:leading-relaxed lg:mr-[36vw] lg:max-w-none lg:text-[21px] lg:leading-[1.4]">
             Des séminaires d&apos;entreprise au vert qui sortent du cadre, de 5 à plus de 500
             personnes, en immersion dans nos territoires.
           </p>

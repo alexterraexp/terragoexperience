@@ -220,6 +220,8 @@ const Footer: React.FC = () => {
       ? HOME_COLORS.gray
       : undefined;
 
+  if ((pathname ?? '').startsWith('/studio')) return null;
+
   return (
     <div style={{ background: footerCornerBlend }}>
     <footer

@@ -545,6 +545,8 @@ const Header: React.FC = () => {
     isDark ? 'text-white' : 'text-[#0c1d22]',
   ].join(' ');
 
+  if ((pathname ?? '').startsWith('/studio')) return null;
+
   return (
     <>
       {/* ══ HEADER ══ */}
