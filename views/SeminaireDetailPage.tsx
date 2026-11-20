@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { fetchSeminaires } from '../lib/seminaires';
 import type { Seminaire } from '../lib/seminaires';
 import {
@@ -18,6 +18,8 @@ import { ExpandedSeminaireView, SeminaireModal } from './Seminaires-pack';
 
 export default function SeminaireDetailPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const previewMode = searchParams.get('apercu') === '1';
   const slug = resolveSeminaireSlugRedirect(params.slug as string);
   const router = useRouter();
   const offresListPath = EXEMPLES_SEMINAIRE_ENTREPRISE_PATH;
@@ -33,10 +35,19 @@ export default function SeminaireDetailPage() {
     setLoading(true);
     setNotFound(false);
     let cancelled = false;
-    fetchSeminaires()
-      .then(data => {
+    const load = previewMode
+      ? fetch(`/api/studio/apercu?slug=${encodeURIComponent(slug)}`).then(async (response) => {
+          if (!response.ok) throw new Error('apercu');
+          return response.json() as Promise<{ seminaire: Seminaire; all: Seminaire[] }>;
+        }).then((payload) => ({ found: payload.seminaire, data: payload.all }))
+      : fetchSeminaires().then((data) => ({
+          found: findSeminaireByPublicSlug(data, slug) ?? null,
+          data,
+        }));
+
+    load
+      .then(({ found, data }) => {
         if (cancelled) return;
-        const found = findSeminaireByPublicSlug(data, slug) ?? null;
         setSeminaire(found);
         setAllSeminaires(data);
         setNotFound(!found);
@@ -54,7 +65,7 @@ export default function SeminaireDetailPage() {
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, previewMode]);
 
   if (loading) {
     return <SeminaireDetailLoading />;
@@ -66,6 +77,15 @@ export default function SeminaireDetailPage() {
 
   return (
     <div className="sem-detail-page-root" style={{ minHeight: '100vh', fontFamily: 'inherit' }}>
+      {previewMode && (
+        <div className="fixed inset-x-0 bottom-4 z-[80] flex justify-center px-4">
+          <p className="rounded-full bg-[#0c1d22] px-4 py-2 text-center text-[12px] font-semibold text-white shadow-lg">
+            {seminaire.publie
+              ? 'Prévisualisation — fiche telle qu’elle est en ligne.'
+              : 'Prévisualisation — cette fiche est encore en brouillon.'}
+          </p>
+        </div>
+      )}
       <style>{`
         @keyframes spin { to { transform: rotate(360deg) } }
         @keyframes semExpandIn { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: translateY(0) } }

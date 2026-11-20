@@ -151,8 +151,8 @@ export default function StudioApp() {
     }
   };
 
-  const save = async () => {
-    if (!draft) return;
+  const save = async (): Promise<StudioOffre | null> => {
+    if (!draft) return null;
     setSaving(true);
     setFormError('');
     setNotice('');
@@ -171,11 +171,20 @@ export default function StudioApp() {
       const next = await loadOffres();
       setOffres(next);
       setNotice(data.warning || 'Enregistré.');
+      return data.offre;
     } catch (error) {
       setFormError(error instanceof Error ? error.message : 'Enregistrement impossible.');
+      return null;
     } finally {
       setSaving(false);
     }
+  };
+
+  const preview = async () => {
+    if (!draft?.slug && !draft?.producteur) return;
+    const offre = dirty || !draft?.id ? await save() : draft;
+    if (!offre?.slug) return;
+    window.open(`${exempleSeminaireEntreprisePath(offre.slug)}?apercu=1`, '_blank', 'noopener,noreferrer');
   };
 
   const remove = async () => {
@@ -330,6 +339,7 @@ export default function StudioApp() {
               }}
               onUpload={uploadFiles}
               onSave={save}
+              onPreview={preview}
               onDelete={remove}
             />
           )}
@@ -361,6 +371,7 @@ function OffreForm({
   onSlug,
   onUpload,
   onSave,
+  onPreview,
   onDelete,
 }: {
   draft: StudioOffre;
@@ -376,9 +387,9 @@ function OffreForm({
   onSlug: (value: string) => void;
   onUpload: (files: FileList | File[], target: 'offre' | number, at?: number) => void;
   onSave: () => void;
+  onPreview: () => void;
   onDelete: () => void;
 }) {
-  const preview = draft.slug && draft.statut !== 'brouillon' ? exempleSeminaireEntreprisePath(draft.slug) : '';
   const activiteRef = React.useRef<HTMLInputElement>(null);
 
   const addActivite = () => {
@@ -468,6 +479,7 @@ function OffreForm({
         <label className="flex items-center gap-3 text-sm">
           <input
             type="checkbox"
+            className={checkClass}
             checked={draft.hebergement}
             onChange={(event) => {
               const on = event.target.checked;
@@ -585,6 +597,7 @@ function OffreForm({
         <label className="flex items-center gap-3 text-sm">
           <input
             type="checkbox"
+            className={checkClass}
             checked={draft.bestseller}
             onChange={(event) => onChange({ bestseller: event.target.checked })}
           />
@@ -612,11 +625,14 @@ function OffreForm({
         >
           {saving ? 'Enregistrement…' : dirty ? 'Enregistrer' : 'Enregistrer'}
         </button>
-        {preview && (
-          <a href={preview} target="_blank" rel="noreferrer" className="text-sm font-semibold underline">
-            Voir la fiche publique
-          </a>
-        )}
+        <button
+          type="button"
+          onClick={onPreview}
+          disabled={saving || uploading || (!draft.slug && !draft.producteur)}
+          className="rounded-full border border-[#0c1d22] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#0c1d22] disabled:opacity-50"
+        >
+          Prévisualiser
+        </button>
         <button type="button" onClick={onDelete} className="text-sm text-[#0c1d22]/45">
           {draft.id ? 'Supprimer' : 'Annuler'}
         </button>
@@ -639,6 +655,7 @@ function FormatCard({
       <label className="flex items-center gap-3 text-sm font-semibold">
         <input
           type="checkbox"
+          className={checkClass}
           checked={format.actif}
           onChange={(event) => onChange({ ...format, actif: event.target.checked })}
         />
@@ -944,6 +961,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
+const checkClass = 'size-4 accent-orange';
 const inputClass =
   'w-full rounded-xl border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';
 const chipOff =

@@ -179,7 +179,10 @@ export async function fetchSeminaireBySlug(
   };
 }
 
-export async function fetchSeminaires(db: SupabaseClient = supabase): Promise<Seminaire[]> {
+export async function fetchSeminaires(
+  db: SupabaseClient = supabase,
+  options?: { includeUnpublished?: boolean },
+): Promise<Seminaire[]> {
   const { data, error } = await db
     .from('seminaires')
     .select(`*, seminaire_formats (*, seminaire_programme (heure, action, ordre)), seminaire_hebergements (id, nom, type, description, capacite, images, prix_nuit, ordre)`)
@@ -187,7 +190,7 @@ export async function fetchSeminaires(db: SupabaseClient = supabase): Promise<Se
 
   if (error || !data) return [];
 
-  return data.map((s: any) => {
+  const offers = data.map((s: any) => {
     const formats: { [key: string]: Format } = {};
     const pills = new Set<string>(
       Array.isArray(s.pills) ? s.pills.map((id: unknown) => String(id).trim()).filter(Boolean) : [],
@@ -262,5 +265,7 @@ export async function fetchSeminaires(db: SupabaseClient = supabase): Promise<Se
           ordre: h.ordre ?? 0,
         })),
     };
-  }).filter((seminaire) => seminaire.publie);
+  });
+  if (options?.includeUnpublished) return offers;
+  return offers.filter((seminaire) => seminaire.publie);
 }
