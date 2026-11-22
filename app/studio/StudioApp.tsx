@@ -240,14 +240,14 @@ export default function StudioApp() {
               autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-2 w-full rounded-2xl border border-[#0c1d22]/10 bg-[#f4f4f4] px-4 py-3 text-sm outline-none focus:border-[#0c1d22]/30"
+              className="mt-2 w-full rounded-full border border-[#0c1d22]/10 bg-white px-4 py-3 text-sm outline-none focus:border-[#0c1d22]/30"
             />
           </label>
           {loginError && <p className="text-sm text-[#ec6435]">{loginError}</p>}
           <button
             type="submit"
             disabled={loginPending || password.length === 0}
-            className="rounded-full bg-[#0c1d22] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50"
+            className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white disabled:opacity-50 sm:w-auto"
           >
             {loginPending ? 'Ouverture…' : 'Entrer'}
           </button>
@@ -257,60 +257,56 @@ export default function StudioApp() {
   }
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-[#f6f4f1] text-[#0c1d22]" style={{ fontFamily: "'Poppins', sans-serif" }}>
-      <header className="flex shrink-0 items-center justify-between gap-4 border-b border-[#0c1d22]/8 bg-white px-5 py-3 sm:px-8">
-        <div className="flex min-w-0 items-center gap-4 sm:gap-6">
-          <Image src="/logo.png" alt="TerraGo" width={116} height={90} priority className="h-9 w-auto object-contain sm:h-10" />
-          <nav className="flex rounded-full bg-[#f4f4f4] p-1" aria-label="Espaces">
-            {([
-              ['seminaire', 'Séminaire'],
-              ['producteur', 'Producteur'],
-            ] as const).map(([id, label]) => (
-              <button
-                key={id}
-                type="button"
-                aria-pressed={space === id}
-                onClick={() => setSpace(id)}
-                className={`rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] sm:px-4 ${
-                  space === id ? 'bg-white text-[#0c1d22] shadow-sm' : 'text-[#0c1d22]/45'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </nav>
+    <div className="flex h-dvh flex-col overflow-hidden bg-white text-[#0c1d22]" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      <header className="shrink-0 px-3 pt-3 sm:px-6 sm:pt-4">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-2.5">
+          <div className="flex items-center gap-3 rounded-full bg-white px-3 py-2 shadow-[0_8px_30px_rgba(12,29,34,0.08)] ring-1 ring-[#0c1d22]/5 sm:px-4">
+            <Image src="/logo.png" alt="TerraGo" width={116} height={90} priority className="h-8 w-auto object-contain sm:h-10" />
+            <div className="hidden min-w-0 flex-1 justify-center md:flex">
+              <SpaceSwitch space={space} onChange={setSpace} />
+            </div>
+            <button
+              type="button"
+              onClick={logout}
+              className="ml-auto shrink-0 rounded-full border border-[#0c1d22] px-4 py-2 text-sm font-medium text-[#0c1d22]"
+            >
+              Fermer
+            </button>
+          </div>
+          <div className="md:hidden">
+            <SpaceSwitch space={space} onChange={setSpace} stretch />
+          </div>
         </div>
-        <button type="button" onClick={logout} className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#0c1d22]/50">
-          Fermer
-        </button>
       </header>
 
       <div className={space === 'producteur' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
         <ProducteurSpace />
       </div>
 
-      <div className={`${space === 'seminaire' ? 'mx-auto grid min-h-0 w-full max-w-7xl flex-1 gap-6 overflow-hidden px-4 py-6 lg:grid-cols-[380px_minmax(0,1fr)] lg:px-8' : 'hidden'}`}>
-        <aside className={draft ? 'hidden min-h-0 lg:flex lg:flex-col' : 'flex min-h-0 flex-col'}>
-          <button
-            type="button"
-            onClick={() => openOffre(emptyOffre(), false)}
-            className="mb-4 flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-[#0c1d22] px-5 py-4 text-sm font-bold uppercase tracking-[0.12em] text-white"
-          >
-            <Plus className="size-5" aria-hidden />
-            Nouvelle offre
-          </button>
-          {listError && <p className="mb-3 shrink-0 text-sm text-[#ec6435]">{listError}</p>}
-          <ul className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-y-contain pl-0.5 pr-5 [scrollbar-gutter:stable] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#0c1d22]/30 [&::-webkit-scrollbar-track]:bg-transparent">
+      <div className={`${space === 'seminaire' ? 'mx-auto grid min-h-0 w-full min-w-0 max-w-7xl flex-1 grid-cols-1 gap-4 overflow-hidden px-3 py-4 sm:gap-6 sm:px-6 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)]' : 'hidden'}`}>
+        <aside className={draft ? 'hidden min-h-0 min-w-0 lg:flex lg:flex-col' : 'flex min-h-0 min-w-0 flex-col'}>
+          <div className="shrink-0 px-2 pb-4">
+            <button
+              type="button"
+              onClick={() => openOffre(emptyOffre(), false)}
+              className="flex w-full min-w-0 items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white sm:px-5 sm:py-3.5"
+            >
+              <Plus className="size-5 shrink-0" aria-hidden />
+              <span className="truncate">Nouvelle offre</span>
+            </button>
+          </div>
+          {listError && <p className="mb-3 shrink-0 px-1.5 text-sm text-[#ec6435]">{listError}</p>}
+          <ul className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-y-contain px-2 py-2 [scrollbar-gutter:stable] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#0c1d22]/30 [&::-webkit-scrollbar-track]:bg-transparent">
             {offres.map((offre) => (
               <li key={offre.id}>
                 <button
                   type="button"
                   onClick={() => openOffre(offre)}
-                  className={`flex w-full items-center gap-4 rounded-lg border bg-white p-3 text-left ${
-                    draft?.id === offre.id ? 'border-[#0c1d22]' : 'border-[#0c1d22]/10'
+                  className={`flex w-full items-center gap-3 rounded-[1.25rem] bg-[#f3f3f3] p-3 text-left sm:gap-4 ${
+                    draft?.id === offre.id ? 'ring-2 ring-inset ring-[#0c1d22]' : ''
                   }`}
                 >
-                  <span className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-[#f4f4f4]">
+                  <span className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-white sm:h-20 sm:w-20">
                     {offre.images[0] && (
                       // Aperçu d’URL déjà stockées, y compris hors motifs next/image.
                       // eslint-disable-next-line @next/next/no-img-element
@@ -332,9 +328,9 @@ export default function StudioApp() {
           </ul>
         </aside>
 
-        <section className={draft ? 'min-h-0 overflow-y-auto overscroll-y-contain' : 'hidden min-h-0 overflow-y-auto overscroll-y-contain lg:block'}>
+        <section className={draft ? 'min-h-0 min-w-0 overflow-y-auto overscroll-y-contain' : 'hidden min-h-0 min-w-0 overflow-y-auto overscroll-y-contain lg:block'}>
           {!draft ? (
-            <div className="rounded-xl bg-white p-8 text-sm text-[#0c1d22]/60">
+            <div className="rounded-[1.75rem] bg-[#f6f6f6] p-6 text-sm text-[#0c1d22]/60 sm:p-8">
               Choisis une offre, ou crée-en une. Le catalogue public se met à jour à l’enregistrement.
             </div>
           ) : (
@@ -375,10 +371,46 @@ export default function StudioApp() {
   );
 }
 
+function SpaceSwitch({
+  space,
+  onChange,
+  stretch = false,
+}: {
+  space: 'seminaire' | 'producteur';
+  onChange: (space: 'seminaire' | 'producteur') => void;
+  stretch?: boolean;
+}) {
+  return (
+    <div
+      className={`flex rounded-full bg-[#ec6435] p-1 ${stretch ? 'w-full' : ''}`}
+      role="tablist"
+      aria-label="Espaces"
+    >
+      {([
+        ['seminaire', 'Séminaire'],
+        ['producteur', 'Producteur'],
+      ] as const).map(([id, label]) => (
+        <button
+          key={id}
+          type="button"
+          role="tab"
+          aria-selected={space === id}
+          onClick={() => onChange(id)}
+          className={`rounded-full px-4 py-2 text-sm font-medium ${stretch ? 'flex-1' : ''} ${
+            space === id ? 'bg-white text-[#0c1d22] shadow-sm' : 'text-white'
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f6f4f1] px-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm">{children}</div>
+    <main className="flex min-h-screen items-center justify-center bg-white px-4" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      <div className="w-full max-w-md rounded-[1.75rem] bg-[#f6f6f6] p-6 sm:p-8">{children}</div>
     </main>
   );
 }
@@ -433,14 +465,14 @@ function OffreForm({
         onSave();
       }}
     >
-      <div className="flex items-center justify-between gap-3 lg:hidden">
-        <button type="button" onClick={onBack} className="text-sm font-semibold">
+      <div className="lg:hidden">
+        <button type="button" onClick={onBack} className="rounded-full border border-[#0c1d22] bg-white px-4 py-2 text-sm font-medium">
           ← Offres
         </button>
       </div>
 
       {!schemaReady && (
-        <p className="rounded-lg bg-[#fff4ee] px-4 py-3 text-sm leading-relaxed text-[#0c1d22]">
+        <p className="rounded-[1.25rem] bg-[#fff4ee] px-4 py-3 text-sm leading-relaxed text-[#0c1d22]">
           Les pilules et les activités sont enregistrées avec l’offre et s’affichent sur le catalogue.
           Le masquage en brouillon attend encore une colonne Supabase : en attendant, choisis « Bientôt ».
         </p>
@@ -481,7 +513,7 @@ function OffreForm({
       </Block>
 
       <Block title="Pilules">
-        <div className="flex flex-wrap gap-2">
+        <div className={pillTrack}>
           {OFFER_PILLS.map((pill) => {
             const on = draft.pills.includes(pill.id);
             return (
@@ -548,7 +580,7 @@ function OffreForm({
       </Block>
 
       <Block title="Activités sur place">
-        <div className="flex flex-wrap gap-2">
+        <div className={pillTrack}>
           {OFFER_AMENITIES.filter((item) => item.id !== 'hebergement').map((item) => {
             const on = draft.inclus.includes(item.id);
             return (
@@ -566,14 +598,14 @@ function OffreForm({
             );
           })}
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <input ref={activiteRef} placeholder="Visite du chai, atelier pain…" className={inputClass} onKeyDown={(event) => {
             if (event.key === 'Enter') {
               event.preventDefault();
               addActivite();
             }
           }} />
-          <button type="button" onClick={addActivite} className="shrink-0 rounded-full border border-[#0c1d22]/15 px-4 text-[11px] font-bold uppercase tracking-[0.1em]">
+          <button type="button" onClick={addActivite} className="shrink-0 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium">
             Ajouter
           </button>
         </div>
@@ -607,7 +639,7 @@ function OffreForm({
       </Block>
 
       <Block title="Visibilité">
-        <div className="flex flex-wrap gap-2">
+        <div className={pillTrack}>
           {STATUTS.map((statut) => (
             <button
               key={statut.id}
@@ -643,19 +675,19 @@ function OffreForm({
       {error && <p className="text-sm text-[#ec6435]">{error}</p>}
       {notice && <p className="text-sm text-[#0c1d22]/70">{notice}</p>}
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="sticky bottom-0 z-10 flex flex-col gap-2 bg-white/95 py-3 backdrop-blur sm:static sm:flex-row sm:flex-wrap sm:items-center sm:bg-transparent sm:py-0">
         <button
           type="submit"
           disabled={saving || uploading}
-          className="rounded-full bg-[#ec6435] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50"
+          className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white disabled:opacity-50 sm:w-auto"
         >
-          {saving ? 'Enregistrement…' : dirty ? 'Enregistrer' : 'Enregistrer'}
+          {saving ? 'Enregistrement…' : 'Enregistrer'}
         </button>
         <button
           type="button"
           onClick={onPreview}
           disabled={saving || uploading || (!draft.slug && !draft.producteur)}
-          className="rounded-full border border-[#0c1d22] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#0c1d22] disabled:opacity-50"
+          className="w-full rounded-full border border-[#0c1d22] bg-white px-6 py-3 text-sm font-semibold text-[#0c1d22] disabled:opacity-50 sm:w-auto"
         >
           Prévisualiser
         </button>
@@ -677,7 +709,7 @@ function FormatCard({
   onChange: (format: StudioFormat) => void;
 }) {
   return (
-    <div className="rounded-lg border border-[#0c1d22]/8 p-4">
+    <div className="rounded-2xl bg-white p-4">
       <label className="flex items-center gap-3 text-sm font-semibold">
         <input
           type="checkbox"
@@ -692,7 +724,7 @@ function FormatCard({
           <Field label="Phrase courte, affichée sur la carte">
             <input value={format.sousTitre} onChange={(event) => onChange({ ...format, sousTitre: event.target.value })} className={inputClass} />
           </Field>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             <Field label="Effectif">
               <input value={format.participants} onChange={(event) => onChange({ ...format, participants: event.target.value })} placeholder="Jusqu’à 30 pers." className={inputClass} />
             </Field>
@@ -724,20 +756,20 @@ function ProgrammeLines({
     <div className="space-y-2">
       <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#0c1d22]/45">Exemple de déroulé</p>
       {lines.map((line, index) => (
-        <div key={index} className="grid grid-cols-[96px_minmax(0,1fr)_auto] gap-2">
+        <div key={index} className="flex flex-col gap-2 rounded-lg bg-[#f6f6f6] p-3 md:flex-row md:items-center md:bg-transparent md:p-0">
           <input
             value={line.heure}
             onChange={(event) => onChange(lines.map((item, i) => i === index ? { ...item, heure: event.target.value } : item))}
             placeholder="9h30"
-            className={inputClass}
+            className={`${inputClass} md:w-36 md:shrink-0`}
           />
           <input
             value={line.action}
             onChange={(event) => onChange(lines.map((item, i) => i === index ? { ...item, action: event.target.value } : item))}
             placeholder="Accueil au domaine"
-            className={inputClass}
+            className={`${inputClass} min-w-0 md:flex-1`}
           />
-          <button type="button" onClick={() => onChange(lines.filter((_, i) => i !== index))} className="text-[11px] uppercase tracking-[0.08em] text-[#0c1d22]/40">
+          <button type="button" onClick={() => onChange(lines.filter((_, i) => i !== index))} className="self-start text-sm text-[#0c1d22]/45 md:self-center">
             Retirer
           </button>
         </div>
@@ -767,7 +799,7 @@ function HebergementCard({
   onRemove: () => void;
 }) {
   return (
-    <div className="space-y-3 rounded-lg bg-[#f7f6f4] p-4">
+    <div className="space-y-3 rounded-2xl bg-white p-4">
       <div className="grid gap-3 sm:grid-cols-2">
         <Field label="Nom">
           <input value={item.nom} onChange={(event) => onChange({ ...item, nom: event.target.value })} className={inputClass} />
@@ -846,7 +878,7 @@ function PhotoList({
         <span>
           <span className="block">{uploading ? 'Envoi…' : 'Ajouter des photos'}</span>
           {!uploading && (
-            <span className="mt-0.5 block text-xs text-white/70">Glisse une photo sur une autre pour la mettre en premier ou au milieu.</span>
+            <span className="mt-0.5 hidden text-xs text-white/70 sm:block">Glisse une photo sur une autre pour la mettre en premier ou au milieu.</span>
           )}
         </span>
         <input
@@ -861,7 +893,7 @@ function PhotoList({
         />
       </label>
       {images.length > 0 && (
-        <ul className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
+        <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {images.map((url, index) => (
             <li
               key={`${url}-${index}`}
@@ -971,8 +1003,8 @@ function Arrow({ direction }: { direction: 'left' | 'right' }) {
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="space-y-4 rounded-xl bg-white p-5 sm:p-6">
-      <h2 className="font-sans text-lg font-bold tracking-[-0.04em] text-[#0c1d22]">{title}</h2>
+    <section className="space-y-4 rounded-[1.75rem] bg-[#f6f6f6] p-4 sm:p-6">
+      <h2 className="font-sans text-xl font-bold tracking-[-0.04em] text-[#0c1d22]">{title}</h2>
       {children}
     </section>
   );
@@ -989,8 +1021,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 const checkClass = 'size-4 accent-orange';
 const inputClass =
-  'w-full rounded-xl border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';
-const chipOff =
-  'rounded-full border border-[#0c1d22]/12 bg-white px-3 py-1.5 text-[12px] text-[#0c1d22]';
-const chipOn =
-  'rounded-full border border-[#0c1d22] bg-[#0c1d22] px-3 py-1.5 text-[12px] text-white';
+  'w-full rounded-2xl border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';
+const pillTrack = 'flex flex-wrap gap-1 rounded-[1.75rem] bg-[#ec6435] p-1.5';
+const chipOff = 'rounded-full px-3.5 py-2 text-sm font-medium text-white';
+const chipOn = 'rounded-full bg-white px-3.5 py-2 text-sm font-medium text-[#0c1d22] shadow-sm';

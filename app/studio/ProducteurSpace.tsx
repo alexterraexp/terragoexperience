@@ -140,28 +140,30 @@ export default function ProducteurSpace() {
   };
 
   return (
-    <div className="mx-auto grid min-h-0 w-full max-w-7xl flex-1 gap-6 overflow-hidden px-4 py-6 lg:grid-cols-[380px_minmax(0,1fr)] lg:px-8">
-      <aside className={draft ? 'hidden min-h-0 lg:flex lg:flex-col' : 'flex min-h-0 flex-col'}>
-        <button
-          type="button"
-          onClick={() => open(emptyProducteur())}
-          className="mb-4 flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-[#0c1d22] px-5 py-4 text-sm font-bold uppercase tracking-[0.12em] text-white"
-        >
-          <Plus className="size-5" aria-hidden />
-          Nouvelle fiche
-        </button>
-        {listError && <p className="mb-3 shrink-0 text-sm text-[#ec6435]">{listError}</p>}
-        <ul className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-y-contain pl-0.5 pr-5 [scrollbar-gutter:stable] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#0c1d22]/30 [&::-webkit-scrollbar-track]:bg-transparent">
+    <div className="mx-auto grid min-h-0 w-full min-w-0 max-w-7xl flex-1 grid-cols-1 gap-4 overflow-hidden px-3 py-4 sm:gap-6 sm:px-6 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)]">
+      <aside className={draft ? 'hidden min-h-0 min-w-0 lg:flex lg:flex-col' : 'flex min-h-0 min-w-0 flex-col'}>
+        <div className="shrink-0 px-2 pb-4">
+          <button
+            type="button"
+            onClick={() => open(emptyProducteur())}
+            className="flex w-full min-w-0 items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white sm:px-5 sm:py-3.5"
+          >
+            <Plus className="size-5 shrink-0" aria-hidden />
+            <span className="truncate">Nouvelle fiche</span>
+          </button>
+        </div>
+        {listError && <p className="mb-3 shrink-0 px-1.5 text-sm text-[#ec6435]">{listError}</p>}
+        <ul className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-y-contain px-2 py-2 [scrollbar-gutter:stable] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#0c1d22]/30 [&::-webkit-scrollbar-track]:bg-transparent">
           {producteurs.map((producteur) => (
             <li key={producteur.id}>
               <button
                 type="button"
                 onClick={() => open(producteur)}
-                className={`flex w-full items-center gap-4 rounded-lg border bg-white p-3 text-left ${
-                  draft?.id === producteur.id ? 'border-[#0c1d22]' : 'border-[#0c1d22]/10'
+                className={`flex w-full items-center gap-3 rounded-[1.25rem] bg-[#f3f3f3] p-3 text-left sm:gap-4 ${
+                  draft?.id === producteur.id ? 'ring-2 ring-inset ring-[#0c1d22]' : ''
                 }`}
               >
-                <span className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#f4f4f4] text-2xl">
+                <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white text-2xl sm:h-20 sm:w-20">
                   {producteur.avatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={producteur.avatar} alt="" className="h-full w-full object-cover" />
@@ -185,9 +187,9 @@ export default function ProducteurSpace() {
         </ul>
       </aside>
 
-      <section className={draft ? 'min-h-0 overflow-y-auto overscroll-y-contain' : 'hidden min-h-0 overflow-y-auto overscroll-y-contain lg:block'}>
+      <section className={draft ? 'min-h-0 min-w-0 overflow-y-auto overscroll-y-contain' : 'hidden min-h-0 min-w-0 overflow-y-auto overscroll-y-contain lg:block'}>
         {!draft ? (
-          <div className="rounded-xl bg-white p-8 text-sm leading-relaxed text-[#0c1d22]/60">
+          <div className="rounded-[1.75rem] bg-[#f6f6f6] p-6 text-sm leading-relaxed text-[#0c1d22]/60 sm:p-8">
             Choisis un producteur. Son nom, son texte et les expériences possibles se règlent ici, puis apparaissent sur la fiche publique.
           </div>
         ) : (
@@ -266,8 +268,8 @@ function ProducteurForm({
         onSave();
       }}
     >
-      <div className="flex items-center justify-between gap-3 lg:hidden">
-        <button type="button" onClick={onBack} className="text-sm font-semibold">
+      <div className="lg:hidden">
+        <button type="button" onClick={onBack} className="rounded-full border border-[#0c1d22] bg-white px-4 py-2 text-sm font-medium">
           ← Producteurs
         </button>
       </div>
@@ -367,7 +369,7 @@ function ProducteurForm({
         </p>
         <div className="space-y-3">
           {draft.experiences.map((experience, index) => (
-            <article key={experience.id} className="space-y-3 rounded-lg border border-[#0c1d22]/10 p-4">
+            <article key={experience.id} className="space-y-3 rounded-2xl bg-white p-4">
               <div className="flex items-start gap-3">
                 <label className="w-16 shrink-0 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#0c1d22]/45">
                   Picto
@@ -460,7 +462,7 @@ function ProducteurForm({
             const nextId = draft.experiences.reduce((max, item) => Math.max(max, item.id), 0) + 1;
             onChange({ experiences: [...draft.experiences, emptyExperience(nextId)] });
           }}
-          className="flex items-center gap-2 rounded-full border border-[#0c1d22] px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em]"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium sm:w-auto"
         >
           <Plus className="size-4" aria-hidden />
           Ajouter une expérience
@@ -479,7 +481,7 @@ function ProducteurForm({
       <Block title="Avis">
         <div className="space-y-3">
           {draft.reviews.map((review, index) => (
-            <article key={index} className="space-y-3 rounded-lg border border-[#0c1d22]/10 p-4">
+            <article key={index} className="space-y-3 rounded-2xl bg-white p-4">
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Auteur">
                   <input value={review.author} onChange={(event) => patchReview(index, { author: event.target.value })} className={inputClass} />
@@ -526,7 +528,7 @@ function ProducteurForm({
           onClick={() => onChange({
             reviews: [...draft.reviews, { author: '', company: '', date: '', rating: 0, text: '' }],
           })}
-          className="flex items-center gap-2 rounded-full border border-[#0c1d22] px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em]"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium sm:w-auto"
         >
           <Plus className="size-4" aria-hidden />
           Ajouter un avis
@@ -536,19 +538,19 @@ function ProducteurForm({
       {error && <p className="text-sm text-[#ec6435]">{error}</p>}
       {notice && <p className="text-sm text-[#0c1d22]/70">{notice}</p>}
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="sticky bottom-0 z-10 flex flex-col gap-2 bg-white/95 py-3 backdrop-blur sm:static sm:flex-row sm:flex-wrap sm:items-center sm:bg-transparent sm:py-0">
         <button
           type="submit"
           disabled={saving || uploading}
-          className="rounded-full bg-[#ec6435] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50"
+          className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white disabled:opacity-50 sm:w-auto"
         >
-          {saving ? 'Enregistrement…' : dirty ? 'Enregistrer' : 'Enregistrer'}
+          {saving ? 'Enregistrement…' : 'Enregistrer'}
         </button>
         <button
           type="button"
           onClick={onPreview}
           disabled={saving || uploading || (!draft.id && !draft.name)}
-          className="rounded-full border border-[#0c1d22] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#0c1d22] disabled:opacity-50"
+          className="w-full rounded-full border border-[#0c1d22] bg-white px-6 py-3 text-sm font-semibold text-[#0c1d22] disabled:opacity-50 sm:w-auto"
         >
           Prévisualiser
         </button>
@@ -626,7 +628,7 @@ function TokenList({
 
   return (
     <Field label={label}>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <input
           ref={ref}
           placeholder={placeholder}
@@ -641,7 +643,7 @@ function TokenList({
         <button
           type="button"
           onClick={add}
-          className="shrink-0 rounded-full bg-[#0c1d22] px-4 text-[11px] font-bold uppercase tracking-[0.12em] text-white"
+          className="shrink-0 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium"
         >
           Ajouter
         </button>
@@ -676,8 +678,8 @@ function move<T>(items: T[], index: number, delta: number): T[] {
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="space-y-4 rounded-xl bg-white p-5 sm:p-6">
-      <h2 className="font-sans text-lg font-bold tracking-[-0.04em] text-[#0c1d22]">{title}</h2>
+    <section className="space-y-4 rounded-[1.75rem] bg-[#f6f6f6] p-4 sm:p-6">
+      <h2 className="font-sans text-xl font-bold tracking-[-0.04em] text-[#0c1d22]">{title}</h2>
       {children}
     </section>
   );
@@ -694,4 +696,4 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 const checkClass = 'size-4 accent-[#ec6435]';
 const inputClass =
-  'w-full rounded-xl border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';
+  'w-full rounded-2xl border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';
