@@ -13,6 +13,7 @@ import {
 import TableOfContents from './TableOfContents';
 import { EXEMPLES_SEMINAIRE_ENTREPRISE_PATH } from '../../../lib/exemplesSeminaireEntreprise';
 import { pageMeta } from '../../../lib/pageMeta';
+import { isStudioAuthed } from '../../../lib/studioAuth';
 
 /** Régénère l’article depuis Supabase au plus toutes les 60 s (ISR). */
 export const revalidate = 60;
@@ -75,23 +76,28 @@ function extractH2Headings(markdown: string): { text: string; id: string }[] {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ apercu?: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const query = await searchParams;
+  const preview = query.apercu === '1' && (await isStudioAuthed());
   const { data } = await supabase
     .from('blog_posts')
-    .select('title, description, cover_url')
+    .select('title, description, cover_url, published')
     .eq('slug', slug)
     .single();
 
-  if (!data) return { title: 'Article introuvable – TerraGo' };
+  if (!data || (!data.published && !preview)) return { title: 'Article introuvable – TerraGo', robots: { index: false, follow: false } };
 
   return pageMeta({
     title: `${data.title} – TerraGo`,
     description: data.description ?? 'Article TerraGo sur les séminaires engagés et le terroir français.',
     path: `/blog/${slug}`,
     type: 'article',
+    index: Boolean(data.published) && !preview,
     images: data.cover_url ? [data.cover_url] : undefined,
   });
 }
@@ -333,10 +339,14 @@ const CTA_IMAGE =
 
 export default async function BlogArticlePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ apercu?: string }>;
 }) {
   const { slug } = await params;
+  const query = await searchParams;
+  const preview = query.apercu === '1' && (await isStudioAuthed());
 
   const { data: post } = await supabase
     .from('blog_posts')
@@ -344,7 +354,7 @@ export default async function BlogArticlePage({
     .eq('slug', slug)
     .single<BlogPost>();
 
-  if (!post || !post.published) {
+  if (!post || (!post.published && !preview)) {
     return <NotFoundPage />;
   }
 
@@ -550,6 +560,11 @@ export default async function BlogArticlePage({
           </div>
         </div>
       </section>
+      {preview && (
+        <p className="fixed inset-x-0 bottom-0 z-50 bg-[#0c1d22] px-4 py-3 text-center text-sm text-white">
+          Aperçu fondateurs. {post.published ? 'Cet article est en ligne.' : 'Ce brouillon n’ouvre pas encore la page publique.'}
+        </p>
+      )}
     </div>
   );
 }

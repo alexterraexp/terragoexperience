@@ -17,7 +17,10 @@ import {
   type StudioStatut,
 } from '@/lib/studioTypes';
 import { exempleSeminaireEntreprisePath } from '@/lib/exemplesSeminaireEntreprise';
+import ArticleSpace from './ArticleSpace';
 import ProducteurSpace from './ProducteurSpace';
+import RealiseSpace from './RealiseSpace';
+import StudioHome from './StudioHome';
 
 type SessionState = {
   configured: boolean;
@@ -35,6 +38,8 @@ async function readError(response: Response): Promise<string> {
   return data.error || 'Une erreur est survenue.';
 }
 
+type StudioSpace = 'accueil' | 'seminaire' | 'producteur' | 'realises' | 'articles';
+
 export default function StudioApp() {
   const [session, setSession] = useState<SessionState | null>(null);
   const [password, setPassword] = useState('');
@@ -50,7 +55,8 @@ export default function StudioApp() {
   const [notice, setNotice] = useState('');
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [space, setSpace] = useState<'seminaire' | 'producteur'>('seminaire');
+  const [space, setSpace] = useState<StudioSpace>('accueil');
+  const [focus, setFocus] = useState<{ space: 'producteur' | 'realises' | 'articles'; id: string; nonce: number } | null>(null);
 
   const dirty = draft != null && baseline !== '' && JSON.stringify(draft) !== baseline;
 
@@ -90,6 +96,27 @@ export default function StudioApp() {
     setSlugTouched(touched);
     setFormError('');
     setNotice('');
+  };
+
+  const createIn = (next: 'seminaire' | 'producteur' | 'realises' | 'articles') => {
+    if (next === 'seminaire') {
+      setSpace('seminaire');
+      openOffre(emptyOffre(), false);
+      return;
+    }
+    setFocus({ space: next, id: 'new', nonce: Date.now() });
+    setSpace(next);
+  };
+
+  const openIn = (next: 'seminaire' | 'producteur' | 'realises' | 'articles', id: string) => {
+    if (next === 'seminaire') {
+      const offre = offres.find((item) => item.id === id);
+      setSpace('seminaire');
+      if (offre) openOffre(offre);
+      return;
+    }
+    setFocus({ space: next, id, nonce: Date.now() });
+    setSpace(next);
   };
 
   const login = async (event: React.FormEvent) => {
@@ -132,6 +159,7 @@ export default function StudioApp() {
       const urls: string[] = [];
       for (const file of list) {
         const body = new FormData();
+        body.set('folder', 'seminaires');
         body.set('file', await prepareStudioPhoto(file));
         const response = await fetch('/api/studio/upload', { method: 'POST', body });
         if (!response.ok) throw new Error(await readError(response));
@@ -257,30 +285,37 @@ export default function StudioApp() {
   }
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-white text-[#0c1d22]" style={{ fontFamily: "'Poppins', sans-serif" }}>
+    <div className="flex h-dvh flex-col overflow-hidden bg-[#f4f4f4] text-[#0c1d22]" style={{ fontFamily: "'Poppins', sans-serif" }}>
       <header className="shrink-0 px-3 pt-3 sm:px-6 sm:pt-4">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-2.5">
-          <div className="flex items-center gap-3 rounded-full bg-white px-3 py-2 shadow-[0_8px_30px_rgba(12,29,34,0.08)] ring-1 ring-[#0c1d22]/5 sm:px-4">
-            <Image src="/logo.png" alt="TerraGo" width={116} height={90} priority className="h-8 w-auto object-contain sm:h-10" />
-            <div className="hidden min-w-0 flex-1 justify-center md:flex">
-              <SpaceSwitch space={space} onChange={setSpace} />
-            </div>
-            <button
-              type="button"
-              onClick={logout}
-              className="ml-auto shrink-0 rounded-full border border-[#0c1d22] px-4 py-2 text-sm font-medium text-[#0c1d22]"
-            >
-              Fermer
-            </button>
+        <div className="mx-auto flex w-full max-w-7xl items-center gap-3">
+          <Image src="/logo.png" alt="TerraGo" width={116} height={90} priority className="h-8 w-auto shrink-0 object-contain sm:h-10" />
+          <div className="flex min-w-0 flex-1 justify-start overflow-x-auto sm:justify-center">
+            <SpaceSwitch space={space} onChange={setSpace} />
           </div>
-          <div className="md:hidden">
-            <SpaceSwitch space={space} onChange={setSpace} stretch />
-          </div>
+          <button
+            type="button"
+            onClick={logout}
+            className="shrink-0 rounded-full border border-[#0c1d22] px-3 py-2 text-sm font-medium text-[#0c1d22] sm:px-4"
+          >
+            Fermer
+          </button>
         </div>
       </header>
 
+      <div className={space === 'accueil' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
+        <StudioHome active={space === 'accueil'} onCreate={createIn} onOpen={openIn} onSeeAll={setSpace} />
+      </div>
+
       <div className={space === 'producteur' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
-        <ProducteurSpace />
+        <ProducteurSpace focus={focus?.space === 'producteur' ? focus : null} />
+      </div>
+
+      <div className={space === 'realises' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
+        <RealiseSpace focus={focus?.space === 'realises' ? focus : null} />
+      </div>
+
+      <div className={space === 'articles' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
+        <ArticleSpace focus={focus?.space === 'articles' ? focus : null} />
       </div>
 
       <div className={`${space === 'seminaire' ? 'mx-auto grid min-h-0 w-full min-w-0 max-w-7xl flex-1 grid-cols-1 gap-4 overflow-hidden px-3 py-4 sm:gap-6 sm:px-6 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)]' : 'hidden'}`}>
@@ -302,7 +337,7 @@ export default function StudioApp() {
                 <button
                   type="button"
                   onClick={() => openOffre(offre)}
-                  className={`flex w-full items-center gap-3 rounded-[1.25rem] bg-[#f3f3f3] p-3 text-left sm:gap-4 ${
+                  className={`flex w-full items-center gap-3 rounded-lg bg-white p-3 text-left sm:gap-4 ${
                     draft?.id === offre.id ? 'ring-2 ring-inset ring-[#0c1d22]' : ''
                   }`}
                 >
@@ -330,7 +365,7 @@ export default function StudioApp() {
 
         <section className={draft ? 'min-h-0 min-w-0 overflow-y-auto overscroll-y-contain' : 'hidden min-h-0 min-w-0 overflow-y-auto overscroll-y-contain lg:block'}>
           {!draft ? (
-            <div className="rounded-[1.75rem] bg-[#f6f6f6] p-6 text-sm text-[#0c1d22]/60 sm:p-8">
+            <div className="rounded-lg bg-white p-6 text-sm text-[#0c1d22]/60 sm:p-8">
               Choisis une offre, ou crée-en une. Le catalogue public se met à jour à l’enregistrement.
             </div>
           ) : (
@@ -374,21 +409,18 @@ export default function StudioApp() {
 function SpaceSwitch({
   space,
   onChange,
-  stretch = false,
 }: {
-  space: 'seminaire' | 'producteur';
-  onChange: (space: 'seminaire' | 'producteur') => void;
-  stretch?: boolean;
+  space: StudioSpace;
+  onChange: (space: StudioSpace) => void;
 }) {
   return (
-    <div
-      className={`flex rounded-full bg-[#ec6435] p-1 ${stretch ? 'w-full' : ''}`}
-      role="tablist"
-      aria-label="Espaces"
-    >
+    <div className="flex max-w-full rounded-full bg-[#ec6435] p-1" role="tablist" aria-label="Espaces">
       {([
-        ['seminaire', 'Séminaire'],
-        ['producteur', 'Producteur'],
+        ['accueil', 'Accueil'],
+        ['seminaire', 'Séminaires'],
+        ['producteur', 'Producteurs'],
+        ['realises', 'Réalisations'],
+        ['articles', 'Articles'],
       ] as const).map(([id, label]) => (
         <button
           key={id}
@@ -396,7 +428,7 @@ function SpaceSwitch({
           role="tab"
           aria-selected={space === id}
           onClick={() => onChange(id)}
-          className={`rounded-full px-4 py-2 text-sm font-medium ${stretch ? 'flex-1' : ''} ${
+          className={`shrink-0 whitespace-nowrap rounded-full px-2.5 py-2 text-xs font-medium sm:px-4 sm:text-sm ${
             space === id ? 'bg-white text-[#0c1d22] shadow-sm' : 'text-white'
           }`}
         >
@@ -472,7 +504,7 @@ function OffreForm({
       </div>
 
       {!schemaReady && (
-        <p className="rounded-[1.25rem] bg-[#fff4ee] px-4 py-3 text-sm leading-relaxed text-[#0c1d22]">
+        <p className="rounded-lg bg-[#fff4ee] px-4 py-3 text-sm leading-relaxed text-[#0c1d22]">
           Les pilules et les activités sont enregistrées avec l’offre et s’affichent sur le catalogue.
           Le masquage en brouillon attend encore une colonne Supabase : en attendant, choisis « Bientôt ».
         </p>
@@ -709,7 +741,7 @@ function FormatCard({
   onChange: (format: StudioFormat) => void;
 }) {
   return (
-    <div className="rounded-2xl bg-white p-4">
+    <div className="rounded-lg bg-[#f4f4f4] p-4">
       <label className="flex items-center gap-3 text-sm font-semibold">
         <input
           type="checkbox"
@@ -799,7 +831,7 @@ function HebergementCard({
   onRemove: () => void;
 }) {
   return (
-    <div className="space-y-3 rounded-2xl bg-white p-4">
+    <div className="space-y-3 rounded-lg bg-[#f4f4f4] p-4">
       <div className="grid gap-3 sm:grid-cols-2">
         <Field label="Nom">
           <input value={item.nom} onChange={(event) => onChange({ ...item, nom: event.target.value })} className={inputClass} />
@@ -1003,7 +1035,7 @@ function Arrow({ direction }: { direction: 'left' | 'right' }) {
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="space-y-4 rounded-[1.75rem] bg-[#f6f6f6] p-4 sm:p-6">
+    <section className="space-y-4 rounded-lg bg-white p-4 sm:p-6">
       <h2 className="font-sans text-xl font-bold tracking-[-0.04em] text-[#0c1d22]">{title}</h2>
       {children}
     </section>
@@ -1021,7 +1053,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 const checkClass = 'size-4 accent-orange';
 const inputClass =
-  'w-full rounded-2xl border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';
+  'w-full rounded-lg border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';
 const pillTrack = 'flex flex-wrap gap-1 rounded-[1.75rem] bg-[#ec6435] p-1.5';
 const chipOff = 'rounded-full px-3.5 py-2 text-sm font-medium text-white';
 const chipOn = 'rounded-full bg-white px-3.5 py-2 text-sm font-medium text-[#0c1d22] shadow-sm';

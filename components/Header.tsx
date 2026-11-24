@@ -80,7 +80,7 @@ const DESTINATION_LIEUX: DropdownItem[] = LIEU_MENU.map((lieu) => ({
 const SEMINAIRE_MAIN: DropdownItem[] = [
   { label: 'Séminaires d\'entreprise engagés', description: 'Du sens, du vrai, et du vivant', path: '/seminaires-entreprise', emoji: '🌿' },
   { label: 'Exemples de séminaire d\'entreprise', description: 'À la journée, sur 2 jours, ou sur mesure', path: '/exemples-seminaire-entreprise', emoji: '📦' },
-  { label: 'Séminaires réalisés', description: 'Retours d\'expérience sur le terrain', path: '#', comingSoon: true, emoji: '✨' },
+  { label: 'Séminaires réalisés', description: 'Retours d\'expérience sur le terrain', path: '/seminaires-realises', emoji: '✨' },
 ];
 
 const SEMINAIRE_ENJEUX: DropdownItem[] = [
@@ -462,6 +462,7 @@ const Header: React.FC = () => {
     routePath === '/demande-seminaire' ||
     routePath === '/blog' ||
     routePath.startsWith('/blog/') ||
+    routePath === '/seminaires-realises' ||
     isMobileViewport
   );
   const isHeroTransparent = hasHeroTransparent && !isScrolled;
@@ -482,7 +483,9 @@ const Header: React.FC = () => {
         pathname === '/exemples-seminaire-entreprise' ||
         (pathname?.startsWith('/exemples-seminaire-entreprise/') ?? false) ||
         pathname === '/seminaire-exemples' ||
-        (pathname?.startsWith('/seminaire-exemples/') ?? false)
+        (pathname?.startsWith('/seminaire-exemples/') ?? false) ||
+        pathname === '/seminaires-realises' ||
+        (pathname?.startsWith('/seminaires-realises/') ?? false)
       );
     }
     if (nav.path === '/destinations') {

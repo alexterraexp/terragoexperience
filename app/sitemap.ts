@@ -16,6 +16,8 @@ import {
   exempleSeminaireEntreprisePath,
 } from '../lib/exemplesSeminaireEntreprise';
 import { fetchSeminaires, generateSlug } from '../lib/seminaires';
+import { REALISES_PATH, realisePath } from '../lib/seminairesRealises';
+import { listPublishedRealises } from '../lib/studioRealises';
 import { SITE_URL, SITELINK_PAGES } from '../lib/siteNav';
 
 /**
@@ -118,22 +120,34 @@ async function fetchSeminaireExempleSlugs(db: SupabaseClient): Promise<string[]>
   }
 }
 
+async function fetchRealiseSlugs(db: SupabaseClient): Promise<string[]> {
+  try {
+    const items = await listPublishedRealises(db);
+    return items.map((item) => item.id).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
 async function loadDynamicSlugs(): Promise<{
   blogEntries: { slug: string; lastModified?: Date }[];
   seminaireExempleSlugs: string[];
+  realiseSlugs: string[];
 }> {
   const empty = {
     blogEntries: [] as { slug: string; lastModified?: Date }[],
     seminaireExempleSlugs: [] as string[],
+    realiseSlugs: [] as string[],
   };
   try {
     const db = createSitemapSupabase();
     if (!db) return empty;
-    const [blogEntries, seminaireExempleSlugs] = await Promise.all([
+    const [blogEntries, seminaireExempleSlugs, realiseSlugs] = await Promise.all([
       fetchBlogEntries(db),
       fetchSeminaireExempleSlugs(db),
+      fetchRealiseSlugs(db),
     ]);
-    return { blogEntries, seminaireExempleSlugs };
+    return { blogEntries, seminaireExempleSlugs, realiseSlugs };
   } catch {
     return empty;
   }
@@ -210,12 +224,17 @@ function staticSitemapEntries(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.6,
     },
+    {
+      url: `${SITE_URL}${REALISES_PATH}`,
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
   ];
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
-    const { blogEntries, seminaireExempleSlugs } = await loadDynamicSlugs();
+    const { blogEntries, seminaireExempleSlugs, realiseSlugs } = await loadDynamicSlugs();
 
     const blogPages: MetadataRoute.Sitemap = blogEntries.map((entry) => ({
       url: `${SITE_URL}/blog/${entry.slug}`,
@@ -232,7 +251,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }),
     );
 
-    return [...staticSitemapEntries(), ...seminaireExemplePages, ...blogPages].filter(
+    const realisePages: MetadataRoute.Sitemap = realiseSlugs.map((slug) => ({
+      url: `${SITE_URL}${realisePath(slug)}`,
+      changeFrequency: 'monthly' as const,
+      priority: 0.55,
+    }));
+
+    return [...staticSitemapEntries(), ...seminaireExemplePages, ...realisePages, ...blogPages].filter(
       (entry) => isIndexableSitemapUrl(entry.url),
     );
   } catch {

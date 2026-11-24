@@ -18,7 +18,7 @@ async function readError(response: Response): Promise<string> {
   return data.error || 'Une erreur est survenue.';
 }
 
-export default function ProducteurSpace() {
+export default function ProducteurSpace({ focus }: { focus?: { id: string; nonce: number } | null }) {
   const [producteurs, setProducteurs] = useState<StudioProducteur[]>([]);
   const [offres, setOffres] = useState<StudioOffreLien[]>([]);
   const [draft, setDraft] = useState<StudioProducteur | null>(null);
@@ -30,6 +30,7 @@ export default function ProducteurSpace() {
   const [uploading, setUploading] = useState(false);
 
   const dirty = draft != null && baseline !== '' && JSON.stringify(draft) !== baseline;
+  const seenFocus = useRef(0);
 
   const load = useCallback(async () => {
     const response = await fetch('/api/studio/producteurs', { cache: 'no-store' });
@@ -52,6 +53,22 @@ export default function ProducteurSpace() {
     setNotice('');
   };
 
+  const openRef = useRef(open);
+  openRef.current = open;
+
+  useEffect(() => {
+    if (!focus || focus.nonce === seenFocus.current) return;
+    if (focus.id === 'new') {
+      seenFocus.current = focus.nonce;
+      openRef.current(emptyProducteur());
+      return;
+    }
+    const found = producteurs.find((item) => item.id === focus.id);
+    if (!found) return;
+    seenFocus.current = focus.nonce;
+    openRef.current(found);
+  }, [focus, producteurs]);
+
   const patch = (partial: Partial<StudioProducteur>) => {
     setDraft((current) => (current ? { ...current, ...partial } : current));
   };
@@ -63,6 +80,7 @@ export default function ProducteurSpace() {
     setFormError('');
     try {
       const body = new FormData();
+      body.set('folder', 'producteurs');
       body.set('file', await prepareStudioPhoto(file));
       const response = await fetch('/api/studio/upload', { method: 'POST', body });
       if (!response.ok) throw new Error(await readError(response));
@@ -159,7 +177,7 @@ export default function ProducteurSpace() {
               <button
                 type="button"
                 onClick={() => open(producteur)}
-                className={`flex w-full items-center gap-3 rounded-[1.25rem] bg-[#f3f3f3] p-3 text-left sm:gap-4 ${
+                className={`flex w-full items-center gap-3 rounded-lg bg-white p-3 text-left sm:gap-4 ${
                   draft?.id === producteur.id ? 'ring-2 ring-inset ring-[#0c1d22]' : ''
                 }`}
               >
@@ -189,7 +207,7 @@ export default function ProducteurSpace() {
 
       <section className={draft ? 'min-h-0 min-w-0 overflow-y-auto overscroll-y-contain' : 'hidden min-h-0 min-w-0 overflow-y-auto overscroll-y-contain lg:block'}>
         {!draft ? (
-          <div className="rounded-[1.75rem] bg-[#f6f6f6] p-6 text-sm leading-relaxed text-[#0c1d22]/60 sm:p-8">
+          <div className="rounded-lg bg-white p-6 text-sm leading-relaxed text-[#0c1d22]/60 sm:p-8">
             Choisis un producteur. Son nom, son texte et les expériences possibles se règlent ici, puis apparaissent sur la fiche publique.
           </div>
         ) : (
@@ -369,7 +387,7 @@ function ProducteurForm({
         </p>
         <div className="space-y-3">
           {draft.experiences.map((experience, index) => (
-            <article key={experience.id} className="space-y-3 rounded-2xl bg-white p-4">
+            <article key={experience.id} className="space-y-3 rounded-lg bg-[#f4f4f4] p-4">
               <div className="flex items-start gap-3">
                 <label className="w-16 shrink-0 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#0c1d22]/45">
                   Picto
@@ -481,7 +499,7 @@ function ProducteurForm({
       <Block title="Avis">
         <div className="space-y-3">
           {draft.reviews.map((review, index) => (
-            <article key={index} className="space-y-3 rounded-2xl bg-white p-4">
+            <article key={index} className="space-y-3 rounded-lg bg-[#f4f4f4] p-4">
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Auteur">
                   <input value={review.author} onChange={(event) => patchReview(index, { author: event.target.value })} className={inputClass} />
@@ -678,7 +696,7 @@ function move<T>(items: T[], index: number, delta: number): T[] {
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="space-y-4 rounded-[1.75rem] bg-[#f6f6f6] p-4 sm:p-6">
+    <section className="space-y-4 rounded-lg bg-white p-4 sm:p-6">
       <h2 className="font-sans text-xl font-bold tracking-[-0.04em] text-[#0c1d22]">{title}</h2>
       {children}
     </section>
@@ -696,4 +714,4 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 const checkClass = 'size-4 accent-[#ec6435]';
 const inputClass =
-  'w-full rounded-2xl border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';
+  'w-full rounded-lg border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';

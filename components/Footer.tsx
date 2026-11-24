@@ -47,6 +47,7 @@ const NAV_GROUPS: { title: string; links: FooterLink[] }[] = [
     links: [
       { to: '/seminaires-entreprise', label: "Séminaires d'entreprise engagés" },
       { to: EXEMPLES_SEMINAIRE_ENTREPRISE_PATH, label: 'Exemples de séminaire' },
+      { to: '/seminaires-realises', label: 'Séminaires réalisés' },
       ...SEMINAIRE_ENJEUX.filter((enjeu) =>
         SEMINAIRE_ENJEU_MENU_SLUGS.includes(enjeu.slug),
       ).map((enjeu) => ({

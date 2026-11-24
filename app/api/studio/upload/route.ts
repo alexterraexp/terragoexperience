@@ -7,6 +7,7 @@ export const dynamic = 'force-dynamic';
 
 const MAX_BYTES = 20 * 1024 * 1024;
 const TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif']);
+const FOLDERS = new Set(['seminaires', 'producteurs', 'realisations', 'articles']);
 
 export async function POST(request: Request) {
   const denied = await studioGuard();
@@ -19,6 +20,10 @@ export async function POST(request: Request) {
   }
 
   const form = await request.formData().catch(() => null);
+  const folder = String(form?.get('folder') ?? '');
+  if (!FOLDERS.has(folder)) {
+    return NextResponse.json({ error: 'Dossier d’image inconnu.' }, { status: 400 });
+  }
   const file = form?.get('file');
   if (!(file instanceof File)) {
     return NextResponse.json({ error: 'Choisis une image.' }, { status: 400 });
@@ -40,7 +45,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Cette image n’a pas pu être lue.' }, { status: 400 });
   }
 
-  const path = `studio/${crypto.randomUUID()}.webp`;
+  const path = `${folder}/${crypto.randomUUID()}.webp`;
   const uploaded = await supabaseAdmin.storage.from('producers').upload(path, image, {
     contentType: 'image/webp',
     upsert: false,
