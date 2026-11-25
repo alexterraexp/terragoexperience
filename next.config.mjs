@@ -57,6 +57,8 @@ const DESTINATION_LIEUX = [
 ];
 
 const nextConfig = {
+  // sharp reste un module natif : sinon la fonction d’upload plante au démarrage sur Vercel.
+  serverExternalPackages: ['sharp'],
   images: {
     // Images déjà optimisées sur Supabase (webp/avif) : pas de re-traitement Vercel (/_next/image).
     unoptimized: true,
