@@ -1,5 +1,8 @@
 export const REALISES_PATH = '/seminaires-realises';
 
+/** Photos d’une journée de programme. Le bloc public garde la même taille. */
+export const JOUR_PHOTO_MAX = 12;
+
 export function realisePath(slug: string): string {
   return `${REALISES_PATH}/${slug}`;
 }
@@ -18,12 +21,15 @@ export type RealiseLigne = {
 export type RealiseJour = {
   label: string;
   lignes: RealiseLigne[];
+  photos: string[];
 };
 
 export type RealiseAvis = {
   auteur: string;
   entreprise: string;
   texte: string;
+  /** 1 à 5. 0 si l’avis n’a pas de note. */
+  note: number;
 };
 
 /** Récit d'un séminaire déjà vécu. `id` est l'adresse publique. */
@@ -52,11 +58,11 @@ export function emptyLieu(): RealiseLieu {
 }
 
 export function emptyJour(label = 'Jour 1'): RealiseJour {
-  return { label, lignes: [{ heure: '', action: '' }] };
+  return { label, lignes: [{ heure: '', action: '' }], photos: [] };
 }
 
 export function emptyAvis(): RealiseAvis {
-  return { auteur: '', entreprise: '', texte: '' };
+  return { auteur: '', entreprise: '', texte: '', note: 5 };
 }
 
 export function emptyRealise(): SeminaireRealise {
@@ -131,14 +137,18 @@ function mapLigne(raw: unknown): RealiseLigne | null {
   return { heure, action };
 }
 
-function mapJour(raw: unknown, index: number): RealiseJour | null {
+function mapJour(raw: unknown, index: number, strict: boolean): RealiseJour | null {
   if (!raw || typeof raw !== 'object') return null;
   const row = raw as Record<string, unknown>;
   const lignes = Array.isArray(row.lignes)
     ? row.lignes.map(mapLigne).filter((ligne): ligne is RealiseLigne => ligne != null).slice(0, 30)
     : [];
-  if (lignes.length === 0) return null;
-  return { label: clip(row.label, 40) || `Jour ${index + 1}`, lignes };
+  const photos = (Array.isArray(row.photos) ? row.photos : [])
+    .map((item) => httpsUrl(item, strict))
+    .filter(Boolean)
+    .slice(0, JOUR_PHOTO_MAX);
+  if (lignes.length === 0 && photos.length === 0) return null;
+  return { label: clip(row.label, 40) || `Jour ${index + 1}`, lignes, photos };
 }
 
 function mapAvis(raw: unknown, strict: boolean): RealiseAvis | null {
@@ -147,10 +157,12 @@ function mapAvis(raw: unknown, strict: boolean): RealiseAvis | null {
   const auteur = clip(row.auteur, 80);
   const entreprise = clip(row.entreprise, 80);
   const texte = paragraph(row.texte, 800);
+  const noteRaw = Number(row.note);
+  const note = Number.isInteger(noteRaw) && noteRaw >= 1 && noteRaw <= 5 ? noteRaw : 0;
   if (!auteur && !entreprise && !texte) return null;
   if (strict && !texte) throw new RealiseInputError('Chaque avis a besoin d’un texte.');
   if (!texte) return null;
-  return { auteur, entreprise, texte };
+  return { auteur, entreprise, texte, note };
 }
 
 export function parseRealise(row: Record<string, unknown>, strict = false): SeminaireRealise | null {
@@ -179,7 +191,7 @@ export function parseRealise(row: Record<string, unknown>, strict = false): Semi
     .slice(0, 12);
 
   const programme = (Array.isArray(row.programme) ? row.programme : [])
-    .map(mapJour)
+    .map((item, index) => mapJour(item, index, strict))
     .filter((item): item is RealiseJour => item != null)
     .slice(0, 8);
 

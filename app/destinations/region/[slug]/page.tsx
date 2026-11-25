@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import DestinationRegion from '../../../views/DestinationRegion';
+import DestinationRegion from '../../../../views/DestinationRegion';
 import {
   DESTINATION_SLUGS,
   destinationHeroHeading,
   destinationSeoTitle,
   getDestination,
   type DestinationSlug,
-} from '../../../lib/destinations';
-import { regionDestinationPath } from '../../../lib/homeStorage';
-import { stripInlineLinks } from '../../../lib/seminaireEnjeux';
+} from '../../../../lib/destinations';
+import { regionDestinationPath } from '../../../../lib/homeStorage';
+import { stripInlineLinks } from '../../../../lib/seminaireEnjeux';
 
 type Props = {
   params: Promise<{ slug: string }>;

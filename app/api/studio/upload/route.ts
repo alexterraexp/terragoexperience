@@ -7,7 +7,13 @@ export const dynamic = 'force-dynamic';
 
 const MAX_BYTES = 20 * 1024 * 1024;
 const TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif']);
-const FOLDERS = new Set(['seminaires', 'producteurs', 'realisations', 'articles']);
+/** Séminaires et producteurs ont leur bucket. Le reste reste dans `producers`. */
+const BUCKETS: Record<string, string> = {
+  seminaires: 'seminaires',
+  producteurs: 'producteurs',
+  realisations: 'producers',
+  articles: 'producers',
+};
 
 export async function POST(request: Request) {
   const denied = await studioGuard();
@@ -21,7 +27,8 @@ export async function POST(request: Request) {
 
   const form = await request.formData().catch(() => null);
   const folder = String(form?.get('folder') ?? '');
-  if (!FOLDERS.has(folder)) {
+  const bucket = BUCKETS[folder];
+  if (!bucket) {
     return NextResponse.json({ error: 'Dossier d’image inconnu.' }, { status: 400 });
   }
   const file = form?.get('file');
@@ -45,8 +52,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Cette image n’a pas pu être lue.' }, { status: 400 });
   }
 
-  const path = `${folder}/${crypto.randomUUID()}.webp`;
-  const uploaded = await supabaseAdmin.storage.from('producers').upload(path, image, {
+  const path = bucket === 'producers'
+    ? `${folder}/${crypto.randomUUID()}.webp`
+    : `${crypto.randomUUID()}.webp`;
+  const uploaded = await supabaseAdmin.storage.from(bucket).upload(path, image, {
     contentType: 'image/webp',
     upsert: false,
   });
@@ -54,6 +63,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: uploaded.error.message }, { status: 500 });
   }
 
-  const { data } = supabaseAdmin.storage.from('producers').getPublicUrl(path);
+  const { data } = supabaseAdmin.storage.from(bucket).getPublicUrl(path);
   return NextResponse.json({ url: data.publicUrl });
 }

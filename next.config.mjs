@@ -23,7 +23,7 @@ const VILLE_SEMINAIRE_SLUGS = [
   'biarritz',
 ];
 
-/** Régions : URL publique `seminaire-entreprise-{prep}-{slug}` → `/destinations/{slug}` */
+/** Régions : URL publique → page interne `/destinations/region/{slug}` (pas l’URL redirigée). */
 const DESTINATION_REGIONS = [
   { slug: 'nouvelle-aquitaine', prep: 'en' },
   { slug: 'provence-alpes-cote-d-azur', prep: 'en' },
@@ -44,7 +44,7 @@ const DESTINATION_REGION_SLUG_REDIRECTS = [
   { from: 'bourgogne', to: 'bourgogne-franche-comte', prep: 'en' },
 ];
 
-/** Lieux : URL publique `seminaire-entreprise-{pathSlug}` → `/destinations/lieux/{slug}` */
+/** Lieux : URL publique → page interne `/destinations/lieu/{slug}` (pas l’URL redirigée). */
 const DESTINATION_LIEUX = [
   { slug: 'chez-le-producteur', pathSlug: 'chez-producteur' },
   { slug: 'au-vignoble', pathSlug: 'vignoble' },
@@ -78,11 +78,11 @@ const nextConfig = {
       })),
       ...DESTINATION_REGIONS.map(({ slug, prep }) => ({
         source: `/destinations/seminaire-entreprise-${prep}-${slug}`,
-        destination: `/destinations/${slug}`,
+        destination: `/destinations/region/${slug}`,
       })),
       ...DESTINATION_LIEUX.map(({ slug, pathSlug }) => ({
         source: `/destinations/seminaire-entreprise-${pathSlug}`,
-        destination: `/destinations/lieux/${slug}`,
+        destination: `/destinations/lieu/${slug}`,
       })),
     ];
   },
@@ -175,6 +175,11 @@ const nextConfig = {
         destination: '/experiences-entreprise',
         permanent: true,
       },
+      {
+        source: '/seminaires-realises/seminaire',
+        destination: '/seminaires-realises/seminaire-pimente-avb',
+        permanent: true,
+      },
       ...VILLE_SEMINAIRE_SLUGS.map((ville) => ({
         source: `/seminaire-${ville}`,
         destination: `/seminaire-entreprise-${ville}`,
@@ -192,16 +197,9 @@ const nextConfig = {
           permanent: true,
         },
       ]),
-      ...DESTINATION_REGIONS.map(({ slug, prep }) => ({
-        source: `/destinations/${slug}`,
-        destination: `/destinations/seminaire-entreprise-${prep}-${slug}`,
-        permanent: true,
-      })),
-      ...DESTINATION_LIEUX.map(({ slug, pathSlug }) => ({
-        source: `/destinations/lieux/${slug}`,
-        destination: `/destinations/seminaire-entreprise-${pathSlug}`,
-        permanent: true,
-      })),
+      // Ne pas rediriger ici `/destinations/{slug}` ni `/destinations/lieux/{slug}`
+      // vers l’URL publique : Next applique ces redirects à la cible du rewrite,
+      // ce qui bouclait (308 vers la même URL). La canonisation est dans middleware.ts.
     ];
   },
 };

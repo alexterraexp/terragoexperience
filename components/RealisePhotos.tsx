@@ -17,11 +17,10 @@ export default function RealisePhotos({ images, label }: { images: string[]; lab
           side.length > 0 ? 'md:h-[min(68vw,520px)] md:grid-cols-2 md:grid-rows-2' : ''
         }`}
       >
-        <PhotoButton
+        <PhotoFrame
           src={main}
           alt={label}
           className={side.length > 0 ? 'aspect-[4/3] md:col-start-1 md:row-span-2 md:aspect-auto md:h-full' : 'aspect-[4/3] md:aspect-[2.2/1]'}
-          onClick={() => setOpenAt(0)}
         />
         {side.map((src, index) => {
           const isLast = index === side.length - 1;
@@ -47,6 +46,26 @@ export default function RealisePhotos({ images, label }: { images: string[]; lab
         <RealiseLightbox images={images} label={label} initialIndex={openAt} onClose={() => setOpenAt(null)} />
       )}
     </>
+  );
+}
+
+function PhotoFrame({
+  src,
+  alt,
+  className,
+  children,
+}: {
+  src: string;
+  alt: string;
+  className: string;
+  children?: ReactNode;
+}) {
+  return (
+    <div className={`relative block w-full overflow-hidden bg-[#0c1d22] ${className}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={alt} className="h-full w-full object-cover" />
+      {children}
+    </div>
   );
 }
 

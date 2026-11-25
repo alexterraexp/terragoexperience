@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, ImagePlus, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ImagePlus, Plus, Star } from 'lucide-react';
 import { prepareStudioPhoto } from '@/lib/prepareStudioPhoto';
-import { slugifyOffre } from '@/lib/studioTypes';
+import { slugifyOffre, slugifyOffreTyping } from '@/lib/studioTypes';
 import {
+  JOUR_PHOTO_MAX,
   emptyAvis,
   emptyJour,
   emptyLieu,
@@ -192,7 +193,7 @@ export default function RealiseSpace({ focus }: { focus?: { id: string; nonce: n
           <button
             type="button"
             onClick={() => open(emptyRealise(), true)}
-            className="flex w-full min-w-0 items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white sm:px-5 sm:py-3.5"
+            className="flex w-full min-w-0 items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#ec6435] sm:px-5 sm:py-3.5"
           >
             <Plus className="size-5 shrink-0" aria-hidden />
             <span className="truncate">Nouveau séminaire</span>
@@ -210,7 +211,7 @@ export default function RealiseSpace({ focus }: { focus?: { id: string; nonce: n
               <button
                 type="button"
                 onClick={() => open(item)}
-                className={`flex w-full items-center gap-3 rounded-lg bg-white p-3 text-left sm:gap-4 ${
+                className={`flex w-full items-center gap-3 rounded-lg bg-white p-3 text-left transition-shadow duration-200 hover:shadow-[0_6px_16px_rgba(12,29,34,0.08)] sm:gap-4 ${
                   savedId === item.id ? 'ring-2 ring-inset ring-[#0c1d22]' : ''
                 }`}
               >
@@ -258,7 +259,7 @@ export default function RealiseSpace({ focus }: { focus?: { id: string; nonce: n
             onTitre={onTitre}
             onSlug={(slug) => {
               setSlugTouched(true);
-              patch({ id: slugifyOffre(slug) });
+              patch({ id: slugifyOffreTyping(slug) });
             }}
             onUpload={uploadFile}
             onUploadImages={uploadFiles}
@@ -335,7 +336,7 @@ function RealiseForm({
       }}
     >
       <div className="lg:hidden">
-        <button type="button" onClick={onBack} className="rounded-full border border-[#0c1d22] bg-white px-4 py-2 text-sm font-medium">
+        <button type="button" onClick={onBack} className="rounded-full border border-[#0c1d22] bg-white px-4 py-2 text-sm font-medium transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white">
           ← Réalisés
         </button>
       </div>
@@ -367,6 +368,9 @@ function RealiseForm({
         {!savedId ? (
           <Field label="Adresse">
             <input value={draft.id} onChange={(event) => onSlug(event.target.value)} placeholder="deux-jours-chez-sabine" className={inputClass} />
+            <span className="mt-2 block text-sm font-normal normal-case tracking-normal text-[#0c1d22]/55">
+              Ajoute le mot suivant avec un espace, par exemple « seminaire somfy ». Le tiret se place tout seul.
+            </span>
           </Field>
         ) : (
           <p className="text-sm text-[#0c1d22]/55">{realisePath(savedId)}</p>
@@ -399,6 +403,9 @@ function RealiseForm({
       </Block>
 
       <Block title="Les lieux">
+        <p className="text-sm leading-relaxed text-[#0c1d22]/55">
+          Facultatif. La page s’organise autour du programme. Un lieu n’apparaît que s’il est rempli.
+        </p>
         <div className="space-y-3">
           {draft.lieux.map((lieu, index) => (
             <article key={index} className="space-y-3 rounded-lg bg-[#f4f4f4] p-4">
@@ -442,6 +449,21 @@ function RealiseForm({
               <Field label="Jour">
                 <input value={jour.label} onChange={(event) => setJour(jourIndex, { label: event.target.value })} placeholder="Jour 1" className={inputClass} />
               </Field>
+              <DayPhotos
+                photos={jour.photos}
+                uploading={uploading}
+                onAdd={async (files) => {
+                  const urls = await onUploadImages(files);
+                  if (urls.length === 0) return;
+                  onChange((current) => ({
+                    ...current,
+                    programme: current.programme.map((item, i) => (
+                      i === jourIndex ? { ...item, photos: [...item.photos, ...urls].slice(0, JOUR_PHOTO_MAX) } : item
+                    )),
+                  }));
+                }}
+                onChange={(photos) => setJour(jourIndex, { photos })}
+              />
               <div className="space-y-3">
                 {jour.lignes.map((ligne, ligneIndex) => (
                   <div key={ligneIndex} className="flex flex-col gap-2 md:flex-row md:items-end">
@@ -466,7 +488,7 @@ function RealiseForm({
                     <button
                       type="button"
                       onClick={() => setJour(jourIndex, { lignes: jour.lignes.filter((_, i) => i !== ligneIndex) })}
-                      className="pb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45"
+                      className="pb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]"
                     >
                       Retirer
                     </button>
@@ -507,6 +529,12 @@ function RealiseForm({
               <Field label="La phrase">
                 <textarea value={avis.texte} onChange={(event) => setAvis(index, { texte: event.target.value })} rows={3} className={inputClass} />
               </Field>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#0c1d22]/45">Note</p>
+                <div className="mt-2">
+                  <NoteStars value={avis.note} onChange={(note) => setAvis(index, { note })} />
+                </div>
+              </div>
               <ItemTools
                 index={index}
                 total={draft.avis.length}
@@ -526,7 +554,7 @@ function RealiseForm({
             role="tab"
             aria-selected={!draft.publie}
             onClick={() => onChange({ publie: false })}
-            className={`rounded-full px-4 py-2 text-sm font-medium ${draft.publie ? 'text-white' : 'bg-white text-[#0c1d22] shadow-sm'}`}
+            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${draft.publie ? 'text-white hover:bg-white/20' : 'bg-white text-[#0c1d22] shadow-sm'}`}
           >
             Brouillon
           </button>
@@ -535,7 +563,7 @@ function RealiseForm({
             role="tab"
             aria-selected={draft.publie}
             onClick={() => onChange({ publie: true })}
-            className={`rounded-full px-4 py-2 text-sm font-medium ${draft.publie ? 'bg-white text-[#0c1d22] shadow-sm' : 'text-white'}`}
+            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${draft.publie ? 'bg-white text-[#0c1d22] shadow-sm' : 'text-white hover:bg-white/20'}`}
           >
             Publié
           </button>
@@ -561,7 +589,7 @@ function RealiseForm({
         <button
           type="submit"
           disabled={saving || uploading}
-          className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white disabled:opacity-50 sm:w-auto"
+          className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#d45428] disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
         >
           {saving ? 'Enregistrement…' : 'Enregistrer'}
         </button>
@@ -569,15 +597,75 @@ function RealiseForm({
           type="button"
           onClick={onPreview}
           disabled={saving || uploading || (!savedId && !draft.titre) || (dirty && !draft.titre)}
-          className="w-full rounded-full border border-[#0c1d22] bg-white px-6 py-3 text-sm font-semibold text-[#0c1d22] disabled:opacity-50 sm:w-auto"
+          className="w-full rounded-full border border-[#0c1d22] bg-white px-6 py-3 text-sm font-semibold text-[#0c1d22] transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
         >
           Prévisualiser
         </button>
-        <button type="button" onClick={onDelete} className="text-sm text-[#0c1d22]/45">
+        <button type="button" onClick={onDelete} className="text-sm text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]">
           {savedId ? 'Supprimer' : 'Annuler'}
         </button>
       </div>
     </form>
+  );
+}
+
+function DayPhotos({
+  photos,
+  uploading,
+  onAdd,
+  onChange,
+}: {
+  photos: string[];
+  uploading: boolean;
+  onAdd: (files: FileList) => void;
+  onChange: (photos: string[]) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#0c1d22]/45">Photos de la journée</p>
+      <p className="text-sm leading-relaxed text-[#0c1d22]/55">
+        Le premier jour les place à droite du programme, puis elles alternent. Le même écart les sépare, jusqu’à {JOUR_PHOTO_MAX} photos.
+      </p>
+      <label className="relative flex h-12 cursor-pointer items-center gap-2 overflow-hidden rounded-lg bg-[#0c1d22] px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#ec6435]">
+        <ImagePlus className="size-4 shrink-0" aria-hidden />
+        {uploading ? 'Envoi…' : 'Ajouter des photos'}
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+          multiple
+          className={fileInputClass}
+          onChange={(event) => {
+            if (event.target.files?.length) onAdd(event.target.files);
+            event.target.value = '';
+          }}
+        />
+      </label>
+      {photos.length > 0 && (
+        <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+          {photos.map((url, index) => (
+            <li key={`${url}-${index}`}>
+              <div className="flex h-24 items-center justify-center overflow-hidden rounded-lg bg-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="" className="max-h-full max-w-full object-contain" />
+              </div>
+              <span className="mt-1.5 flex items-center justify-between">
+                <span className="flex gap-1">
+                  <button type="button" aria-label="Déplacer avant" disabled={index === 0} onClick={() => onChange(move(photos, index, -1))} className="flex size-7 items-center justify-center rounded-full border border-[#0c1d22]/10 transition-colors duration-200 hover:bg-[#0c1d22]/[0.06] disabled:pointer-events-none disabled:opacity-30">
+                    <ChevronLeft className="size-4" />
+                  </button>
+                  <button type="button" aria-label="Déplacer après" disabled={index === photos.length - 1} onClick={() => onChange(move(photos, index, 1))} className="flex size-7 items-center justify-center rounded-full border border-[#0c1d22]/10 transition-colors duration-200 hover:bg-[#0c1d22]/[0.06] disabled:pointer-events-none disabled:opacity-30">
+                    <ChevronRight className="size-4" />
+                  </button>
+                </span>
+                <button type="button" onClick={() => onChange(photos.filter((_, i) => i !== index))} className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]">
+                  Retirer
+                </button>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
@@ -597,7 +685,7 @@ function PhotosField({
       <p className="text-sm leading-relaxed text-[#0c1d22]/55">
         La première est la grande photo. Les deux suivantes s’affichent à droite. Au-delà, un + ouvre toutes les photos.
       </p>
-      <label className="flex h-16 cursor-pointer items-center gap-3 rounded-lg bg-[#0c1d22] px-4 text-white">
+      <label className="relative flex h-16 cursor-pointer items-center gap-3 overflow-hidden rounded-lg bg-[#0c1d22] px-4 text-white transition-colors duration-200 hover:bg-[#ec6435]">
         <ImagePlus className="size-5 shrink-0" aria-hidden />
         <span>
           <span className="block text-sm font-semibold">{uploading ? 'Envoi…' : 'Ajouter des photos'}</span>
@@ -607,7 +695,7 @@ function PhotosField({
           type="file"
           accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
           multiple
-          className="sr-only"
+          className={fileInputClass}
           onChange={(event) => {
             if (event.target.files?.length) onAdd(event.target.files);
             event.target.value = '';
@@ -632,7 +720,7 @@ function PhotosField({
                     aria-label="Déplacer avant"
                     disabled={index === 0}
                     onClick={() => onChange(move(images, index, -1))}
-                    className="flex size-7 items-center justify-center rounded-full bg-white/90 text-[#0c1d22] shadow-sm disabled:opacity-30"
+                    className="flex size-7 items-center justify-center rounded-full bg-white/90 text-[#0c1d22] shadow-sm transition-colors duration-200 hover:bg-white disabled:pointer-events-none disabled:opacity-30"
                   >
                     <ChevronLeft className="size-4" />
                   </button>
@@ -641,7 +729,7 @@ function PhotosField({
                     aria-label="Déplacer après"
                     disabled={index === images.length - 1}
                     onClick={() => onChange(move(images, index, 1))}
-                    className="flex size-7 items-center justify-center rounded-full bg-white/90 text-[#0c1d22] shadow-sm disabled:opacity-30"
+                    className="flex size-7 items-center justify-center rounded-full bg-white/90 text-[#0c1d22] shadow-sm transition-colors duration-200 hover:bg-white disabled:pointer-events-none disabled:opacity-30"
                   >
                     <ChevronRight className="size-4" />
                   </button>
@@ -650,7 +738,7 @@ function PhotosField({
               <button
                 type="button"
                 onClick={() => onChange(images.filter((_, i) => i !== index))}
-                className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45"
+                className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]"
               >
                 Retirer
               </button>
@@ -682,7 +770,7 @@ function PhotoField({
       <div className="flex items-center gap-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={url} alt="" className="h-20 w-20 rounded-lg object-cover" />
-        <button type="button" onClick={onClear} className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45">
+        <button type="button" onClick={onClear} className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]">
           Retirer la photo
         </button>
       </div>
@@ -690,7 +778,7 @@ function PhotoField({
   }
 
   return (
-    <label className="flex h-16 cursor-pointer items-center gap-3 rounded-lg bg-[#0c1d22] px-4 text-white">
+    <label className="relative flex h-16 cursor-pointer items-center gap-3 overflow-hidden rounded-lg bg-[#0c1d22] px-4 text-white transition-colors duration-200 hover:bg-[#ec6435]">
       <ImagePlus className="size-5 shrink-0" aria-hidden />
       <span>
         <span className="block text-sm font-semibold">{uploading ? 'Envoi…' : label}</span>
@@ -699,7 +787,7 @@ function PhotoField({
       <input
         type="file"
         accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
-        className="sr-only"
+        className={fileInputClass}
         onChange={(event) => {
           const file = event.target.files?.[0];
           if (file) onPick(file);
@@ -729,7 +817,7 @@ function ItemTools({
           aria-label="Déplacer avant"
           disabled={index === 0}
           onClick={() => onMove(-1)}
-          className="flex size-8 items-center justify-center rounded-full border border-[#0c1d22]/10 disabled:opacity-30"
+          className="flex size-8 items-center justify-center rounded-full border border-[#0c1d22]/10 transition-colors duration-200 hover:bg-[#0c1d22]/[0.06] disabled:pointer-events-none disabled:opacity-30"
         >
           <ChevronLeft className="size-4" />
         </button>
@@ -738,14 +826,34 @@ function ItemTools({
           aria-label="Déplacer après"
           disabled={index === total - 1}
           onClick={() => onMove(1)}
-          className="flex size-8 items-center justify-center rounded-full border border-[#0c1d22]/10 disabled:opacity-30"
+          className="flex size-8 items-center justify-center rounded-full border border-[#0c1d22]/10 transition-colors duration-200 hover:bg-[#0c1d22]/[0.06] disabled:pointer-events-none disabled:opacity-30"
         >
           <ChevronRight className="size-4" />
         </button>
       </span>
-      <button type="button" onClick={onRemove} className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45">
+      <button type="button" onClick={onRemove} className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]">
         Retirer
       </button>
+    </div>
+  );
+}
+
+function NoteStars({ value, onChange }: { value: number; onChange: (note: number) => void }) {
+  return (
+    <div className="flex gap-1" role="radiogroup" aria-label="Note">
+      {[1, 2, 3, 4, 5].map((note) => (
+        <button
+          key={note}
+          type="button"
+          role="radio"
+          aria-checked={value === note}
+          aria-label={`${note} sur 5`}
+          onClick={() => onChange(value === note ? 0 : note)}
+          className="text-[#ec6435] transition-transform duration-150 hover:scale-110"
+        >
+          <Star className="size-5" fill={note <= value ? 'currentColor' : 'none'} aria-hidden />
+        </button>
+      ))}
     </div>
   );
 }
@@ -755,7 +863,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium sm:w-auto"
+      className="flex w-full items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white sm:w-auto"
     >
       <Plus className="size-4" aria-hidden />
       {label}
@@ -792,3 +900,5 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 const inputClass =
   'w-full rounded-lg border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';
+
+const fileInputClass = 'absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0';

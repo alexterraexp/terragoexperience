@@ -7,8 +7,8 @@ import { supabase } from '../lib/supabase';
 import {
   type ProducerFull,
   type SupabaseProducerRow,
-  mapSupabaseRowToFull,
 } from '../lib/producerTypes';
+import { mapProducersWithOwnPhotos } from '../lib/producerGallery';
 import { fetchSeminaires } from '../lib/seminaires';
 import type { Seminaire } from '../lib/seminaires';
 import { exempleSeminaireEntreprisePath } from '../lib/exemplesSeminaireEntreprise';
@@ -181,7 +181,11 @@ const ProducerDetailPage: React.FC = () => {
           .from('producers_full').select('*').eq('id', producerId).maybeSingle();
         if (cancelled) return;
         if (err) { setError(err.message); setProducer(null); }
-        else { setProducer(data ? mapSupabaseRowToFull(data as SupabaseProducerRow) : null); }
+        else {
+          const rows = data ? [data as SupabaseProducerRow] : [];
+          const [producer] = await mapProducersWithOwnPhotos(supabase, rows);
+          setProducer(producer ?? null);
+        }
       } catch (e) {
         if (!cancelled) { setError(e instanceof Error ? e.message : 'Erreur chargement'); setProducer(null); }
       } finally {
@@ -221,8 +225,7 @@ const ProducerDetailPage: React.FC = () => {
 
   if (!producer) return null;
 
-  // Images pour la grille photo
-  // gallery = s.images (tableau complet depuis seminaires), cover = s.images[1] déjà inclus
+  // Galerie du producteur lorsqu’elle est renseignée, sinon celle du séminaire lié.
   const allImages = producer.gallery.length > 0
     ? producer.gallery
     : producer.cover ? [producer.cover] : [];

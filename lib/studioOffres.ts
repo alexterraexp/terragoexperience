@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { imageUrlList, removeUnusedStorage } from './studioStorage';
 import { encodeStudioExtras, OFFER_AMENITIES, OFFER_PILLS, partitionInclus } from './offerPills';
 import {
   SEMINAIRE_FORMAT_IDS,
@@ -534,6 +535,46 @@ function schemaWarning(stripped: string[]): string | undefined {
   return 'Enregistré. Les pilules et les activités sont visibles sur le catalogue. Le statut brouillon attend encore une colonne Supabase.';
 }
 
+function listedImages(value: unknown): string[] {
+  return imageUrlList(value);
+}
+
+async function photosOfOffer(db: SupabaseClient, id: string): Promise<string[]> {
+  const [offer, stays] = await Promise.all([
+    db.from('seminaires').select('images').eq('id', id).maybeSingle(),
+    db.from('seminaire_hebergements').select('images').eq('seminaire_id', id),
+  ]);
+  if (offer.error) throw new Error(offer.error.message);
+  if (stays.error) throw new Error(stays.error.message);
+  return [
+    ...listedImages(offer.data?.images),
+    ...(stays.data ?? []).flatMap((row) => listedImages(row.images)),
+  ];
+}
+
+async function allSeminarPhotoUrls(db: SupabaseClient): Promise<Set<string>> {
+  const [offers, stays] = await Promise.all([
+    db.from('seminaires').select('images'),
+    db.from('seminaire_hebergements').select('images'),
+  ]);
+  if (offers.error) throw new Error(offers.error.message);
+  if (stays.error) throw new Error(stays.error.message);
+  const used = new Set<string>();
+  for (const row of offers.data ?? []) {
+    for (const url of listedImages(row.images)) used.add(url);
+  }
+  for (const row of stays.data ?? []) {
+    for (const url of listedImages(row.images)) used.add(url);
+  }
+  return used;
+}
+
+async function dropSeminarPhotos(db: SupabaseClient, removed: string[]): Promise<void> {
+  if (removed.length === 0) return;
+  const still = await allSeminarPhotoUrls(db);
+  await removeUnusedStorage(db, 'seminaires', removed, still);
+}
+
 export async function saveStudioOffre(
   db: SupabaseClient,
   raw: unknown,
@@ -576,6 +617,7 @@ export async function saveStudioOffre(
 
   const created = !offre.id;
   let savedId = '';
+  const previousPhotos = offre.id ? await photosOfOffer(db, offre.id) : [];
   try {
     const written = offre.id
       ? await writeFlexible(db, 'seminaires', values, offre.id)
@@ -590,10 +632,21 @@ export async function saveStudioOffre(
 
     const { data, error } = await db.from('seminaires').select(OFFER_SELECT).eq('id', savedId).single();
     if (error || !data) throw new Error(error?.message || 'Offre introuvable après enregistrement.');
-    return {
-      offre: mapRowToOffre(data as Record<string, unknown>),
-      warning: schemaWarning(written.stripped),
-    };
+    const saved = mapRowToOffre(data as Record<string, unknown>);
+    const kept = new Set<string>([
+      ...saved.images,
+      ...saved.hebergements.flatMap((item) => item.images),
+    ]);
+    let warning = schemaWarning(written.stripped);
+    try {
+      await dropSeminarPhotos(db, previousPhotos.filter((url) => !kept.has(url)));
+    } catch (storageError) {
+      const detail = storageError instanceof Error ? storageError.message : 'suppression impossible';
+      warning = [warning, `Les photos retirées sont encore dans le bucket séminaires (${detail}).`]
+        .filter(Boolean)
+        .join(' ');
+    }
+    return { offre: saved, warning };
   } catch (error) {
     if (created && savedId) {
       await deleteStudioOffre(db, savedId).catch(() => undefined);
@@ -603,6 +656,7 @@ export async function saveStudioOffre(
 }
 
 export async function deleteStudioOffre(db: SupabaseClient, id: string): Promise<void> {
+  const previousPhotos = await photosOfOffer(db, id);
   const { data: formats, error: formatsError } = await db
     .from('seminaire_formats')
     .select('id')
@@ -646,4 +700,5 @@ export async function deleteStudioOffre(db: SupabaseClient, id: string): Promise
     }
     throw new Error(deleted.error.message);
   }
+  await dropSeminarPhotos(db, previousPhotos);
 }

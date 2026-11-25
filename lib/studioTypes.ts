@@ -104,3 +104,11 @@ export function slugifyOffre(value: string): string {
     .replace(/^-+|-+$/g, '')
     .slice(0, 80);
 }
+
+/** Comme slugifyOffre, mais garde le séparateur final le temps d’écrire le mot suivant. */
+export function slugifyOffreTyping(value: string): string {
+  const slug = slugifyOffre(value);
+  if (!slug) return '';
+  if (/[\s_-]$/.test(value)) return `${slug}-`.slice(0, 80);
+  return slug;
+}

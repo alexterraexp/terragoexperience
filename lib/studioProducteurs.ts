@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { StudioInputError } from './studioOffres';
+import { imageUrlList, removeUnusedStorage } from './studioStorage';
 import { slugifyOffre } from './studioTypes';
 
 export type StudioExperience = {
@@ -28,7 +29,7 @@ export type StudioOffreLien = {
   producteurId: string;
 };
 
-/** Fiche producteur éditée dans l’espace fondateurs. Les photos du lieu restent sur l’offre. */
+/** Fiche producteur éditée dans l’espace fondateurs. Sa galerie est distincte de celle du séminaire. */
 export type StudioProducteur = {
   id: string;
   seminaireId: string;
@@ -37,12 +38,14 @@ export type StudioProducteur = {
   bio: boolean;
   heroBadge: string;
   avatar: string;
+  images: string[];
   highlight: string;
   description: string;
   tags: string[];
   certifications: string[];
   experiences: StudioExperience[];
   reviews: StudioAvis[];
+  ordre: number;
   offreLabel: string;
   offreSlug: string;
 };
@@ -56,12 +59,14 @@ export function emptyProducteur(): StudioProducteur {
     bio: false,
     heroBadge: '',
     avatar: '',
+    images: [],
     highlight: '',
     description: '',
     tags: [],
     certifications: [],
     experiences: [],
     reviews: [],
+    ordre: 0,
     offreLabel: '',
     offreSlug: '',
   };
@@ -89,6 +94,39 @@ function stringList(value: unknown, maxItems: number, maxLen: number): string[] 
     seen.add(text.toLowerCase());
     list.push(text);
     if (list.length >= maxItems) break;
+  }
+  return list;
+}
+
+function readOrdre(value: unknown): number {
+  const ordre = Math.round(Number(value));
+  if (!Number.isFinite(ordre) || ordre <= 0) return 0;
+  return Math.min(ordre, 999);
+}
+
+function compareProducteurs(a: { ordre: number; name: string }, b: { ordre: number; name: string }): number {
+  const rank = (ordre: number) => (ordre > 0 ? ordre : Number.POSITIVE_INFINITY);
+  const diff = rank(a.ordre) - rank(b.ordre);
+  if (diff !== 0) return diff;
+  return a.name.localeCompare(b.name, 'fr');
+}
+
+function readImages(value: unknown): string[] {
+  let source = value;
+  if (typeof value === 'string' && value.trim().startsWith('[')) {
+    try {
+      source = JSON.parse(value) as unknown;
+    } catch {
+      source = [];
+    }
+  }
+  const seen = new Set<string>();
+  const list: string[] = [];
+  for (const url of imageUrlList(source)) {
+    if (!/^https?:\/\//i.test(url) || seen.has(url)) continue;
+    seen.add(url);
+    list.push(url.slice(0, 500));
+    if (list.length >= 24) break;
   }
   return list;
 }
@@ -161,12 +199,14 @@ function mapRow(row: Record<string, unknown>, offers: Map<string, { label: strin
     bio: row.bio === true,
     heroBadge: clip(row.hero_badge, 40),
     avatar: paragraph(row.avatar, 500),
+    images: readImages(row.images).length > 0 ? readImages(row.images) : readImages(row.accommodation),
     highlight: clip(row.highlight, 240),
     description: paragraph(row.description, 8000),
     tags: stringList(row.tags, 16, 80),
     certifications: stringList(row.certifications, 16, 80),
     experiences,
     reviews,
+    ordre: readOrdre(row.ordre),
     offreLabel: offer ? clip(offer.label || offer.producteur, 160) : '',
     offreSlug: offer?.slug ? slugifyOffre(offer.slug) : '',
   };
@@ -206,7 +246,7 @@ export async function listStudioProducteurs(
   const offerMap = new Map(offers.map((offer) => [offer.id, offer]));
   const producteurs = ((rows.data ?? []) as Record<string, unknown>[])
     .map((row) => mapRow(row, offerMap))
-    .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+    .sort(compareProducteurs);
   return { producteurs, offres: withLinks(producteurs, offers) };
 }
 
@@ -233,12 +273,14 @@ export function parseStudioProducteur(input: unknown, id: string): StudioProduct
     bio: body.bio === true,
     heroBadge: clip(body.heroBadge, 40),
     avatar: imageUrl(body.avatar),
+    images: readImages(body.images),
     highlight: clip(body.highlight, 240),
     description: paragraph(body.description, 8000),
     tags: stringList(body.tags, 16, 80),
     certifications: stringList(body.certifications, 16, 80),
     experiences,
     reviews,
+    ordre: readOrdre(body.ordre),
   };
   if (!producteur.name) throw new StudioInputError('Le nom du producteur est obligatoire.');
   return producteur;
@@ -253,6 +295,8 @@ function toRow(producteur: StudioProducteur, id: string) {
     bio: producteur.bio,
     hero_badge: producteur.heroBadge || null,
     avatar: producteur.avatar || null,
+    images: producteur.images,
+    accommodation: JSON.stringify(producteur.images),
     highlight: producteur.highlight || null,
     title: producteur.highlight || null,
     description: producteur.description || null,
@@ -277,6 +321,7 @@ function toRow(producteur: StudioProducteur, id: string) {
       rating: item.rating,
       text: item.text,
     })),
+    ordre: producteur.ordre,
   };
 }
 
@@ -322,6 +367,74 @@ function raiseWrite(error: { message: string; code?: string }): never {
   throw new Error(error.message);
 }
 
+function missingImagesColumn(error: { message: string } | null): boolean {
+  return Boolean(error && /images/i.test(error.message) && /column/i.test(error.message));
+}
+
+function producerPhotoUrls(row: { avatar?: unknown; images?: unknown; accommodation?: unknown } | null | undefined): string[] {
+  if (!row) return [];
+  const images = readImages(row.images);
+  const gallery = images.length > 0 ? images : readImages(row.accommodation);
+  const avatar = typeof row.avatar === 'string' ? row.avatar.trim() : '';
+  return [...gallery, ...(avatar ? [avatar] : [])];
+}
+
+async function readProducerRecord(db: SupabaseClient, id: string) {
+  const withImages = await db.from('producers').select('id, seminaire_id, avatar, images, accommodation').eq('id', id).maybeSingle();
+  if (!withImages.error) return withImages.data;
+  if (!missingImagesColumn(withImages.error)) throw new Error(withImages.error.message);
+  const basic = await db.from('producers').select('id, seminaire_id, avatar, accommodation').eq('id', id).maybeSingle();
+  if (basic.error) throw new Error(basic.error.message);
+  return basic.data;
+}
+
+async function writeProducer(
+  db: SupabaseClient,
+  id: string,
+  values: Record<string, unknown>,
+  creating: boolean,
+): Promise<void> {
+  const current: Record<string, unknown> = { ...values };
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    const result = creating
+      ? await db.from('producers').insert(current)
+      : await db.from('producers').update(current).eq('id', id);
+    if (!result.error) return;
+    const missing = result.error.message.match(/Could not find the '([^']+)' column/)?.[1];
+    if (missing && missing in current) {
+      delete current[missing];
+      continue;
+    }
+    raiseWrite(result.error);
+  }
+  raiseWrite({ message: 'Enregistrement impossible.' });
+}
+
+async function allProducerPhotoUrls(db: SupabaseClient): Promise<Set<string>> {
+  const withImages = await db.from('producers').select('avatar, images, accommodation');
+  const rows = withImages.error && missingImagesColumn(withImages.error)
+    ? await db.from('producers').select('avatar, accommodation')
+    : withImages;
+  if (rows.error) throw new Error(rows.error.message);
+  const used = new Set<string>();
+  for (const row of rows.data ?? []) {
+    for (const url of producerPhotoUrls(row)) used.add(url);
+  }
+  return used;
+}
+
+async function dropProducerPhotos(db: SupabaseClient, removed: string[]): Promise<string | undefined> {
+  if (removed.length === 0) return undefined;
+  try {
+    const still = await allProducerPhotoUrls(db);
+    await removeUnusedStorage(db, 'producteurs', removed, still);
+    return undefined;
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : 'suppression impossible';
+    return `Les photos retirées sont encore dans le bucket producteurs (${detail}).`;
+  }
+}
+
 async function slugsFor(db: SupabaseClient, seminaireIds: string[]): Promise<string[]> {
   const ids = [...new Set(seminaireIds.map((id) => id.trim()).filter(Boolean))];
   if (ids.length === 0) return [];
@@ -334,33 +447,36 @@ export async function saveStudioProducteur(
   db: SupabaseClient,
   input: unknown,
   id: string,
-): Promise<{ producteur: StudioProducteur; slugs: string[] }> {
+): Promise<{ producteur: StudioProducteur; slugs: string[]; warning?: string }> {
   const creating = !id;
   const producteur = parseStudioProducteur(input, id);
   const savedId = creating ? await uniqueId(db, producteur.name) : id;
   await assertOfferLink(db, producteur.seminaireId, savedId);
 
   let previousSeminaireId = '';
+  let previousPhotos: string[] = [];
   if (!creating) {
-    const existing = await db.from('producers').select('id, seminaire_id').eq('id', savedId).maybeSingle();
-    if (existing.error) throw new Error(existing.error.message);
-    if (!existing.data) throw new StudioInputError('Producteur introuvable.');
-    previousSeminaireId = clip(existing.data.seminaire_id, 80);
+    const existing = await readProducerRecord(db, savedId);
+    if (!existing) throw new StudioInputError('Producteur introuvable.');
+    previousSeminaireId = clip(existing.seminaire_id, 80);
+    previousPhotos = producerPhotoUrls(existing);
   }
 
   const row = toRow(producteur, savedId);
   if (creating) {
-    const inserted = await db.from('producers').insert(row);
-    if (inserted.error) raiseWrite(inserted.error);
+    await writeProducer(db, savedId, row, true);
   } else {
     const { id: _ignored, ...values } = row;
-    const updated = await db.from('producers').update(values).eq('id', savedId);
-    if (updated.error) raiseWrite(updated.error);
+    await writeProducer(db, savedId, values, false);
   }
 
+  const saved = await readOne(db, savedId);
+  const kept = new Set(producerPhotoUrls(saved));
+  const warning = await dropProducerPhotos(db, previousPhotos.filter((url) => !kept.has(url)));
   return {
-    producteur: await readOne(db, savedId),
+    producteur: saved,
     slugs: await slugsFor(db, [previousSeminaireId, producteur.seminaireId]),
+    warning,
   };
 }
 
@@ -368,11 +484,12 @@ export async function deleteStudioProducteur(
   db: SupabaseClient,
   id: string,
 ): Promise<{ slugs: string[] }> {
-  const existing = await db.from('producers').select('id, seminaire_id').eq('id', id).maybeSingle();
-  if (existing.error) throw new Error(existing.error.message);
-  if (!existing.data) throw new StudioInputError('Producteur introuvable.');
-  const slugs = await slugsFor(db, [clip(existing.data.seminaire_id, 80)]);
+  const existing = await readProducerRecord(db, id);
+  if (!existing) throw new StudioInputError('Producteur introuvable.');
+  const previousPhotos = producerPhotoUrls(existing);
+  const slugs = await slugsFor(db, [clip(existing.seminaire_id, 80)]);
   const deleted = await db.from('producers').delete().eq('id', id);
   if (deleted.error) raiseWrite(deleted.error);
+  await dropProducerPhotos(db, previousPhotos);
   return { slugs };
 }

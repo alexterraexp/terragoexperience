@@ -14,7 +14,7 @@ export const metadata: Metadata = pageMeta({
   description:
     'Retours d’expérience de séminaires déjà vécus avec TerraGo : le brief, les lieux, le programme et les avis des équipes.',
   path: REALISES_PATH,
-  images: [PAGE_OG.seminaires],
+  images: [PAGE_OG.realises],
 });
 
 export default async function SeminairesRealisesPage() {
@@ -22,13 +22,13 @@ export default async function SeminairesRealisesPage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-white font-sans" style={{ fontFamily: "'Poppins', sans-serif" }}>
-      <section className="relative flex h-[68vh] min-h-[480px] w-full items-end justify-center overflow-hidden sm:h-[72vh]">
+      <section className="relative flex h-[56vh] min-h-[380px] w-full items-end justify-center overflow-hidden sm:h-[52vh] sm:max-h-[520px]">
         <Image
-          src={PAGE_OG.seminaires.url}
-          alt={PAGE_OG.seminaires.alt}
+          src={PAGE_OG.realises.url}
+          alt={PAGE_OG.realises.alt}
           fill
           priority
-          className="object-cover"
+          className="object-cover object-[center_38%]"
           sizes="100vw"
         />
         <div
@@ -38,7 +38,7 @@ export default async function SeminairesRealisesPage() {
               'linear-gradient(to bottom, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.16) 55%, rgba(0,0,0,0.42) 100%)',
           }}
         />
-        <div className="relative z-10 mx-auto w-full max-w-[1100px] px-4 pb-14 text-center sm:px-6 sm:pb-20">
+        <div className="relative z-10 mx-auto w-full max-w-[1100px] px-4 pb-10 text-center sm:px-6 sm:pb-14">
           <h1 className="font-sans text-[clamp(2rem,5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.075em] text-white">
             Séminaires <span className="font-bold">réalisés.</span>
           </h1>
@@ -81,8 +81,13 @@ export default async function SeminairesRealisesPage() {
                         {item.titre}
                       </span>
                       {facts.length > 0 && (
-                        <span className="mt-2 block text-sm tracking-[-0.03em] text-[#0c1d22]/55">
-                          {facts.join(' · ')}
+                        <span className="mt-2 flex flex-wrap items-center text-sm tracking-[-0.03em] text-[#0c1d22]/55">
+                          {facts.map((fact, index) => (
+                            <span key={`${fact}-${index}`} className="inline-flex items-center">
+                              {index > 0 && <span aria-hidden className="mx-2.5 h-[0.85em] w-px bg-current opacity-40" />}
+                              {fact}
+                            </span>
+                          ))}
                         </span>
                       )}
                     </span>

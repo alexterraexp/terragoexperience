@@ -8,6 +8,10 @@ export const PAGE_OG = {
     url: `${HOME}/arrivee-randonnee.webp`,
     alt: 'Arrivée d’une randonnée – séminaire TerraGo',
   },
+  realises: {
+    url: `${HOME}/seminaire/sainte-victoire.webp`,
+    alt: 'La Sainte-Victoire au soleil couchant – séminaires réalisés TerraGo',
+  },
   destinations: {
     url: `${HOME}/seminaire/nouvelleaquitaine/pexels-ertabbt-150087708-13678581.webp`,
     alt: 'Paysage de séminaire en Nouvelle-Aquitaine – TerraGo',

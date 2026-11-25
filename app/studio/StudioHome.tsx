@@ -139,7 +139,7 @@ export default function StudioHome({
             {producteurs.slice(0, 4).map((producteur) => (
               <Row
                 key={producteur.id}
-                image={producteur.avatar}
+                image={producteur.images[0] || producteur.avatar}
                 title={producteur.name || 'Sans nom'}
                 meta={producteur.type || 'Producteur'}
                 aside={`${producteur.experiences.length} exp.`}
@@ -189,7 +189,7 @@ function Action({ label, onClick }: { label: string; onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22]/10 bg-white px-4 py-2.5 text-sm font-medium text-[#0c1d22] shadow-[0_1px_2px_rgba(12,29,34,0.04)]"
+      className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0c1d22]/10 bg-white px-4 py-2.5 text-sm font-medium text-[#0c1d22] shadow-[0_1px_2px_rgba(12,29,34,0.04)] transition-all duration-200 hover:-translate-y-px hover:border-[#ec6435]/40 hover:shadow-[0_6px_16px_rgba(236,100,53,0.14)]"
     >
       <Plus className="size-4 text-[#ec6435]" aria-hidden />
       {label}
@@ -223,7 +223,7 @@ function Attention({
       <p className="text-sm text-[#0c1d22]/55">{label}</p>
       <p className="mt-1 font-sans text-2xl font-semibold tracking-[-0.04em]">{count}</p>
       {count > 0 && (
-        <button type="button" onClick={onClick} className="mt-3 rounded-full bg-[#0c1d22] px-4 py-2 text-sm font-medium text-white">
+        <button type="button" onClick={onClick} className="mt-3 rounded-full bg-[#0c1d22] px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-[#ec6435]">
           {action}
         </button>
       )}
@@ -244,7 +244,7 @@ function Column({
     <section className="flex flex-col rounded-lg bg-white px-4 py-4 sm:px-5">
       <h2 className="font-sans text-base font-semibold tracking-[-0.03em]">{title}</h2>
       <ul className="mt-3 flex flex-1 flex-col gap-1">{children}</ul>
-      <button type="button" onClick={onSeeAll} className="mt-3 py-2 text-sm font-semibold text-[#ec6435]">
+      <button type="button" onClick={onSeeAll} className="mt-3 py-2 text-sm font-semibold text-[#ec6435] transition-colors duration-200 hover:text-[#0c1d22]">
         Voir toutes
       </button>
     </section>
@@ -266,7 +266,7 @@ function Row({
 }) {
   return (
     <li>
-      <button type="button" onClick={onClick} className="flex w-full items-center gap-3 rounded-lg px-1 py-2 text-left hover:bg-[#f4f4f4]">
+      <button type="button" onClick={onClick} className="flex w-full items-center gap-3 rounded-lg px-1 py-2 text-left transition-colors duration-150 hover:bg-[#f4f4f4]">
         <span className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-[#f4f4f4]">
           {image && (
             // eslint-disable-next-line @next/next/no-img-element

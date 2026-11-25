@@ -112,6 +112,65 @@ export async function listStudioRealises(
   return { realises, schemaReady: true };
 }
 
+const STORAGE_BUCKET = 'producers';
+const PUBLIC_MARKER = '/storage/v1/object/public/producers/';
+
+function photoUrls(item: SeminaireRealise): Set<string> {
+  const urls = new Set<string>();
+  for (const url of item.images) if (url) urls.add(url);
+  if (item.couverture) urls.add(item.couverture);
+  for (const lieu of item.lieux) if (lieu.photo) urls.add(lieu.photo);
+  for (const jour of item.programme) {
+    for (const photo of jour.photos) if (photo) urls.add(photo);
+  }
+  return urls;
+}
+
+/** Chemin d’un fichier envoyé par le studio, dans le dossier des réalisations. */
+function realisationObjectPath(url: string): string | null {
+  let pathname = '';
+  try {
+    pathname = new URL(url).pathname;
+  } catch {
+    return null;
+  }
+  const marker = pathname.indexOf(PUBLIC_MARKER);
+  if (marker === -1) return null;
+  let objectPath = decodeURIComponent(pathname.slice(marker + PUBLIC_MARKER.length));
+  if (objectPath.startsWith('/')) objectPath = objectPath.slice(1);
+  if (!objectPath.startsWith('realisations/') || objectPath.includes('..') || objectPath.includes('\\')) return null;
+  return objectPath;
+}
+
+async function pathsUsedByOtherRealises(db: SupabaseClient, paths: string[], skipId: string): Promise<Set<string>> {
+  const wanted = new Set(paths);
+  const { data, error } = await db.from(TABLE).select('id, images, couverture, lieux, programme').neq('id', skipId);
+  if (error) {
+    if (isMissingRealisesTable(error)) return new Set();
+    throw new Error(error.message);
+  }
+  const used = new Set<string>();
+  for (const row of data ?? []) {
+    const item = fromRow(row as Record<string, unknown>);
+    if (!item) continue;
+    for (const url of photoUrls(item)) {
+      const path = realisationObjectPath(url);
+      if (path && wanted.has(path)) used.add(path);
+    }
+  }
+  return used;
+}
+
+async function removeRealisationFiles(db: SupabaseClient, urls: Iterable<string>, skipId: string): Promise<void> {
+  const paths = [...new Set([...urls].map(realisationObjectPath).filter((path): path is string => path != null))];
+  if (paths.length === 0) return;
+  const stillUsed = await pathsUsedByOtherRealises(db, paths, skipId);
+  const removable = paths.filter((path) => !stillUsed.has(path));
+  if (removable.length === 0) return;
+  const { error } = await db.storage.from(STORAGE_BUCKET).remove(removable);
+  if (error) throw new Error(error.message);
+}
+
 async function nextOrdre(db: SupabaseClient): Promise<number> {
   const { data } = await db.from(TABLE).select('ordre').order('ordre', { ascending: false }).limit(1);
   const current = Number(data?.[0]?.ordre);
@@ -145,6 +204,7 @@ export async function saveStudioRealise(
 
   const currentId = existingId.trim();
   let id = currentId;
+  let previous: SeminaireRealise | null = null;
   if (!id) {
     id = await uniqueSlug(db, slugifyOffre(parsed.id || parsed.titre));
     if (parsed.ordre <= 0) parsed.ordre = await nextOrdre(db);
@@ -157,6 +217,7 @@ export async function saveStudioRealise(
       throw new Error(error.message);
     }
     if (!data) throw new RealiseInputError('Ce séminaire réalisé est introuvable.');
+    previous = await getRealiseBySlug(db, id, true);
   }
 
   const row = toRow({ ...parsed, id }, new Date().toISOString());
@@ -175,12 +236,18 @@ export async function saveStudioRealise(
   }
   const saved = fromRow(data as Record<string, unknown>);
   if (!saved) throw new Error('Enregistrement impossible.');
+  if (previous) {
+    const kept = photoUrls(saved);
+    const dropped = [...photoUrls(previous)].filter((url) => !kept.has(url));
+    await removeRealisationFiles(db, dropped, saved.id);
+  }
   return saved;
 }
 
 export async function deleteStudioRealise(db: SupabaseClient, id: string): Promise<void> {
   const slug = id.trim();
   if (!slug) throw new RealiseInputError('Séminaire introuvable.');
+  const existing = await getRealiseBySlug(db, slug, true);
   const { error } = await db.from(TABLE).delete().eq('id', slug);
   if (error) {
     if (isMissingRealisesTable(error)) {
@@ -188,4 +255,5 @@ export async function deleteStudioRealise(db: SupabaseClient, id: string): Promi
     }
     throw new Error(error.message);
   }
+  if (existing) await removeRealisationFiles(db, photoUrls(existing), slug);
 }

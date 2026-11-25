@@ -9,9 +9,9 @@ import {
   type Producer,
   type ProducerFull,
   type SupabaseProducerRow,
-  mapSupabaseRowToFull,
   fullToProducer,
 } from '../lib/producerTypes';
+import { mapProducersWithOwnPhotos } from '../lib/producerGallery';
 import {
   HOME_COLORS,
   HOME_RADIUS,
@@ -232,7 +232,7 @@ const ProducersPage: React.FC = () => {
           setProducersFull([]);
         } else {
           const rows = (data ?? []) as SupabaseProducerRow[];
-          setProducersFull(rows.map((row) => mapSupabaseRowToFull(row)));
+          setProducersFull(await mapProducersWithOwnPhotos(supabase, rows));
         }
       } catch (e) {
         if (!cancelled) {

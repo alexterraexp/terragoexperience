@@ -275,7 +275,7 @@ export default function StudioApp() {
           <button
             type="submit"
             disabled={loginPending || password.length === 0}
-            className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white disabled:opacity-50 sm:w-auto"
+            className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#d45428] disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
           >
             {loginPending ? 'Ouverture…' : 'Entrer'}
           </button>
@@ -295,7 +295,7 @@ export default function StudioApp() {
           <button
             type="button"
             onClick={logout}
-            className="shrink-0 rounded-full border border-[#0c1d22] px-3 py-2 text-sm font-medium text-[#0c1d22] sm:px-4"
+            className="shrink-0 rounded-full border border-[#0c1d22] px-3 py-2 text-sm font-medium text-[#0c1d22] transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white sm:px-4"
           >
             Fermer
           </button>
@@ -324,7 +324,7 @@ export default function StudioApp() {
             <button
               type="button"
               onClick={() => openOffre(emptyOffre(), false)}
-              className="flex w-full min-w-0 items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white sm:px-5 sm:py-3.5"
+              className="flex w-full min-w-0 items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#ec6435] sm:px-5 sm:py-3.5"
             >
               <Plus className="size-5 shrink-0" aria-hidden />
               <span className="truncate">Nouvelle offre</span>
@@ -337,7 +337,7 @@ export default function StudioApp() {
                 <button
                   type="button"
                   onClick={() => openOffre(offre)}
-                  className={`flex w-full items-center gap-3 rounded-lg bg-white p-3 text-left sm:gap-4 ${
+                  className={`flex w-full items-center gap-3 rounded-lg bg-white p-3 text-left transition-shadow duration-200 hover:shadow-[0_6px_16px_rgba(12,29,34,0.08)] sm:gap-4 ${
                     draft?.id === offre.id ? 'ring-2 ring-inset ring-[#0c1d22]' : ''
                   }`}
                 >
@@ -428,8 +428,8 @@ function SpaceSwitch({
           role="tab"
           aria-selected={space === id}
           onClick={() => onChange(id)}
-          className={`shrink-0 whitespace-nowrap rounded-full px-2.5 py-2 text-xs font-medium sm:px-4 sm:text-sm ${
-            space === id ? 'bg-white text-[#0c1d22] shadow-sm' : 'text-white'
+          className={`shrink-0 whitespace-nowrap rounded-full px-2.5 py-2 text-xs font-medium transition-colors duration-200 sm:px-4 sm:text-sm ${
+            space === id ? 'bg-white text-[#0c1d22] shadow-sm' : 'text-white hover:bg-white/20'
           }`}
         >
           {label}
@@ -498,7 +498,7 @@ function OffreForm({
       }}
     >
       <div className="lg:hidden">
-        <button type="button" onClick={onBack} className="rounded-full border border-[#0c1d22] bg-white px-4 py-2 text-sm font-medium">
+        <button type="button" onClick={onBack} className="rounded-full border border-[#0c1d22] bg-white px-4 py-2 text-sm font-medium transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white">
           ← Offres
         </button>
       </div>
@@ -603,7 +603,7 @@ function OffreForm({
             <button
               type="button"
               onClick={() => onChange({ hebergements: [...draft.hebergements, emptyHebergement()] })}
-              className="text-sm font-semibold text-[#ec6435]"
+              className="text-sm font-semibold text-[#ec6435] transition-colors duration-200 hover:text-[#0c1d22]"
             >
               Ajouter un logement
             </button>
@@ -637,7 +637,7 @@ function OffreForm({
               addActivite();
             }
           }} />
-          <button type="button" onClick={addActivite} className="shrink-0 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium">
+          <button type="button" onClick={addActivite} className="shrink-0 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white">
             Ajouter
           </button>
         </div>
@@ -648,7 +648,7 @@ function OffreForm({
               <button
                 type="button"
                 onClick={() => onChange({ activites: draft.activites.filter((_, i) => i !== index) })}
-                className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45"
+                className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]"
               >
                 Retirer
               </button>
@@ -711,7 +711,7 @@ function OffreForm({
         <button
           type="submit"
           disabled={saving || uploading}
-          className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white disabled:opacity-50 sm:w-auto"
+          className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#d45428] disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
         >
           {saving ? 'Enregistrement…' : 'Enregistrer'}
         </button>
@@ -719,11 +719,11 @@ function OffreForm({
           type="button"
           onClick={onPreview}
           disabled={saving || uploading || (!draft.slug && !draft.producteur)}
-          className="w-full rounded-full border border-[#0c1d22] bg-white px-6 py-3 text-sm font-semibold text-[#0c1d22] disabled:opacity-50 sm:w-auto"
+          className="w-full rounded-full border border-[#0c1d22] bg-white px-6 py-3 text-sm font-semibold text-[#0c1d22] transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
         >
           Prévisualiser
         </button>
-        <button type="button" onClick={onDelete} className="text-sm text-[#0c1d22]/45">
+        <button type="button" onClick={onDelete} className="text-sm text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]">
           {draft.id ? 'Supprimer' : 'Annuler'}
         </button>
       </div>
@@ -801,7 +801,7 @@ function ProgrammeLines({
             placeholder="Accueil au domaine"
             className={`${inputClass} min-w-0 md:flex-1`}
           />
-          <button type="button" onClick={() => onChange(lines.filter((_, i) => i !== index))} className="self-start text-sm text-[#0c1d22]/45 md:self-center">
+          <button type="button" onClick={() => onChange(lines.filter((_, i) => i !== index))} className="self-start text-sm text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435] md:self-center">
             Retirer
           </button>
         </div>
@@ -809,7 +809,7 @@ function ProgrammeLines({
       <button
         type="button"
         onClick={() => onChange([...lines, { heure: '', action: '' }])}
-        className="text-sm font-semibold text-[#ec6435]"
+        className="text-sm font-semibold text-[#ec6435] transition-colors duration-200 hover:text-[#0c1d22]"
       >
         Ajouter un créneau
       </button>
@@ -863,7 +863,7 @@ function HebergementCard({
         />
       </Field>
       <PhotoList images={item.images} uploading={uploading} onUpload={onUpload} onChange={(images) => onChange({ ...item, images })} />
-      <button type="button" onClick={onRemove} className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#0c1d22]/45">
+      <button type="button" onClick={onRemove} className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]">
         Retirer ce logement
       </button>
     </div>
@@ -898,7 +898,7 @@ function PhotoList({
   return (
     <div>
       <label
-        className="flex cursor-pointer items-center gap-3 rounded-lg bg-primary px-4 py-3 text-left text-sm text-white"
+        className="flex cursor-pointer items-center gap-3 rounded-lg bg-primary px-4 py-3 text-left text-sm text-white transition-colors duration-200 hover:bg-[#ec6435]"
         onDragOver={(event) => event.preventDefault()}
         onDrop={(event) => {
           event.preventDefault();
@@ -963,7 +963,7 @@ function PhotoList({
                     aria-label="Déplacer avant"
                     disabled={index === 0}
                     onClick={() => onChange(move(images, index, -1))}
-                    className="flex size-7 items-center justify-center rounded-full bg-white/90 text-[#0c1d22] shadow-sm disabled:opacity-30"
+                    className="flex size-7 items-center justify-center rounded-full bg-white/90 text-[#0c1d22] shadow-sm transition-colors duration-200 hover:bg-white disabled:pointer-events-none disabled:opacity-30"
                   >
                     <Arrow direction="left" />
                   </button>
@@ -972,7 +972,7 @@ function PhotoList({
                     aria-label="Déplacer après"
                     disabled={index === images.length - 1}
                     onClick={() => onChange(move(images, index, 1))}
-                    className="flex size-7 items-center justify-center rounded-full bg-white/90 text-[#0c1d22] shadow-sm disabled:opacity-30"
+                    className="flex size-7 items-center justify-center rounded-full bg-white/90 text-[#0c1d22] shadow-sm transition-colors duration-200 hover:bg-white disabled:pointer-events-none disabled:opacity-30"
                   >
                     <Arrow direction="right" />
                   </button>
@@ -981,7 +981,7 @@ function PhotoList({
               <button
                 type="button"
                 onClick={() => onChange(images.filter((_, i) => i !== index))}
-                className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45"
+                className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]"
               >
                 Retirer
               </button>
@@ -1055,5 +1055,5 @@ const checkClass = 'size-4 accent-orange';
 const inputClass =
   'w-full rounded-lg border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';
 const pillTrack = 'flex flex-wrap gap-1 rounded-[1.75rem] bg-[#ec6435] p-1.5';
-const chipOff = 'rounded-full px-3.5 py-2 text-sm font-medium text-white';
+const chipOff = 'rounded-full px-3.5 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-white/20';
 const chipOn = 'rounded-full bg-white px-3.5 py-2 text-sm font-medium text-[#0c1d22] shadow-sm';

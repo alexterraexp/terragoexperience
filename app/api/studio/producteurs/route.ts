@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const result = await saveStudioProducteur(supabaseAdmin, { ...body, id: '' }, '');
     refresh(result.slugs);
-    return NextResponse.json({ producteur: result.producteur });
+    return NextResponse.json({ producteur: result.producteur, warning: result.warning });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Enregistrement impossible.';
     const status = error instanceof StudioInputError ? 400 : 500;

@@ -38,6 +38,7 @@ export default function ProducteurSpace({ focus }: { focus?: { id: string; nonce
     const data = (await response.json()) as { producteurs: StudioProducteur[]; offres: StudioOffreLien[] };
     setProducteurs(data.producteurs);
     setOffres(data.offres);
+    setListError('');
     return data.producteurs;
   }, []);
 
@@ -73,19 +74,25 @@ export default function ProducteurSpace({ focus }: { focus?: { id: string; nonce
     setDraft((current) => (current ? { ...current, ...partial } : current));
   };
 
-  const uploadAvatar = async (files: FileList | null) => {
-    const file = files?.[0];
-    if (!file) return;
+  const uploadImages = async (files: FileList | null) => {
+    const list = files ? [...files] : [];
+    if (list.length === 0) return;
     setUploading(true);
     setFormError('');
     try {
-      const body = new FormData();
-      body.set('folder', 'producteurs');
-      body.set('file', await prepareStudioPhoto(file));
-      const response = await fetch('/api/studio/upload', { method: 'POST', body });
-      if (!response.ok) throw new Error(await readError(response));
-      const data = (await response.json()) as { url: string };
-      patch({ avatar: data.url });
+      const urls: string[] = [];
+      for (const file of list) {
+        const body = new FormData();
+        body.set('folder', 'producteurs');
+        body.set('file', await prepareStudioPhoto(file));
+        const response = await fetch('/api/studio/upload', { method: 'POST', body });
+        if (!response.ok) throw new Error(await readError(response));
+        const data = (await response.json()) as { url: string };
+        urls.push(data.url);
+      }
+      setDraft((current) => (
+        current ? { ...current, images: [...current.images, ...urls].slice(0, 24) } : current
+      ));
     } catch (error) {
       setFormError(error instanceof Error ? error.message : 'Envoi impossible.');
     } finally {
@@ -109,11 +116,11 @@ export default function ProducteurSpace({ focus }: { focus?: { id: string; nonce
         },
       );
       if (!response.ok) throw new Error(await readError(response));
-      const data = (await response.json()) as { producteur: StudioProducteur };
+      const data = (await response.json()) as { producteur: StudioProducteur; warning?: string };
       setDraft(data.producteur);
       setBaseline(JSON.stringify(data.producteur));
       await load();
-      setNotice('Enregistré. La fiche publique se met à jour.');
+      setNotice(data.warning || 'Enregistré. La fiche publique se met à jour.');
       return data.producteur;
     } catch (error) {
       setFormError(error instanceof Error ? error.message : 'Enregistrement impossible.');
@@ -164,7 +171,7 @@ export default function ProducteurSpace({ focus }: { focus?: { id: string; nonce
           <button
             type="button"
             onClick={() => open(emptyProducteur())}
-            className="flex w-full min-w-0 items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white sm:px-5 sm:py-3.5"
+            className="flex w-full min-w-0 items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#ec6435] sm:px-5 sm:py-3.5"
           >
             <Plus className="size-5 shrink-0" aria-hidden />
             <span className="truncate">Nouvelle fiche</span>
@@ -177,14 +184,14 @@ export default function ProducteurSpace({ focus }: { focus?: { id: string; nonce
               <button
                 type="button"
                 onClick={() => open(producteur)}
-                className={`flex w-full items-center gap-3 rounded-lg bg-white p-3 text-left sm:gap-4 ${
+                className={`flex w-full items-center gap-3 rounded-lg bg-white p-3 text-left transition-shadow duration-200 hover:shadow-[0_6px_16px_rgba(12,29,34,0.08)] sm:gap-4 ${
                   draft?.id === producteur.id ? 'ring-2 ring-inset ring-[#0c1d22]' : ''
                 }`}
               >
                 <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white text-2xl sm:h-20 sm:w-20">
-                  {producteur.avatar ? (
+                  {producteur.images[0] || producteur.avatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={producteur.avatar} alt="" className="h-full w-full object-cover" />
+                    <img src={producteur.images[0] || producteur.avatar} alt="" className="h-full w-full object-cover" />
                   ) : (
                     <span aria-hidden>{producteur.experiences[0]?.icon || '🌿'}</span>
                   )}
@@ -213,6 +220,7 @@ export default function ProducteurSpace({ focus }: { focus?: { id: string; nonce
         ) : (
           <ProducteurForm
             draft={draft}
+            producteurs={producteurs}
             offres={offres}
             dirty={dirty}
             saving={saving}
@@ -224,7 +232,7 @@ export default function ProducteurSpace({ focus }: { focus?: { id: string; nonce
               setDraft(null);
             }}
             onChange={patch}
-            onUpload={uploadAvatar}
+            onUploadImages={uploadImages}
             onSave={save}
             onPreview={preview}
             onDelete={remove}
@@ -237,6 +245,7 @@ export default function ProducteurSpace({ focus }: { focus?: { id: string; nonce
 
 function ProducteurForm({
   draft,
+  producteurs,
   offres,
   dirty,
   saving,
@@ -245,12 +254,13 @@ function ProducteurForm({
   notice,
   onBack,
   onChange,
-  onUpload,
+  onUploadImages,
   onSave,
   onPreview,
   onDelete,
 }: {
   draft: StudioProducteur;
+  producteurs: StudioProducteur[];
   offres: StudioOffreLien[];
   dirty: boolean;
   saving: boolean;
@@ -259,12 +269,19 @@ function ProducteurForm({
   notice: string;
   onBack: () => void;
   onChange: (partial: Partial<StudioProducteur>) => void;
-  onUpload: (files: FileList | null) => void;
+  onUploadImages: (files: FileList | null) => void;
   onSave: () => void;
   onPreview: () => void;
   onDelete: () => void;
 }) {
   const knownOffer = offres.some((offer) => offer.id === draft.seminaireId);
+  const taken = draft.ordre > 0
+    ? producteurs.filter((item) => item.id !== draft.id && item.ordre === draft.ordre)
+    : [];
+  const takenNames = taken.map((item) => item.name || 'Un producteur');
+  const takenLabel = takenNames.length <= 1
+    ? takenNames[0]
+    : `${takenNames.slice(0, -1).join(', ')} et ${takenNames[takenNames.length - 1]}`;
 
   const patchExperience = (index: number, partial: Partial<StudioExperience>) => {
     onChange({
@@ -287,7 +304,7 @@ function ProducteurForm({
       }}
     >
       <div className="lg:hidden">
-        <button type="button" onClick={onBack} className="rounded-full border border-[#0c1d22] bg-white px-4 py-2 text-sm font-medium">
+        <button type="button" onClick={onBack} className="rounded-full border border-[#0c1d22] bg-white px-4 py-2 text-sm font-medium transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white">
           ← Producteurs
         </button>
       </div>
@@ -332,28 +349,38 @@ function ProducteurForm({
           </select>
         </Field>
         <p className="text-sm leading-relaxed text-[#0c1d22]/55">
-          Le nom apparaît dans « Partir à la rencontre de… ». Les photos du lieu, l’hébergement et les formats restent dans Séminaire.
+          Le nom apparaît dans « Partir à la rencontre de… ». L’hébergement et les formats restent dans Séminaire.
         </p>
-        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_180px] sm:items-end">
-          <Field label="Pastille">
-            <input
-              value={draft.heroBadge}
-              onChange={(event) => onChange({ heroBadge: event.target.value })}
-              placeholder="BIO"
-              className={inputClass}
-            />
-          </Field>
-          <label className="flex items-center gap-3 pb-2.5 text-sm">
-            <input
-              type="checkbox"
-              className={checkClass}
-              checked={draft.bio}
-              onChange={(event) => onChange({ bio: event.target.checked })}
-            />
-            Bio
-          </label>
-        </div>
-        <AvatarField avatar={draft.avatar} uploading={uploading} onUpload={onUpload} onClear={() => onChange({ avatar: '' })} />
+        <Field label="Ordre">
+          <input
+            type="number"
+            min={0}
+            value={draft.ordre || ''}
+            onChange={(event) => onChange({ ordre: Math.max(0, Math.round(Number(event.target.value) || 0)) })}
+            placeholder="0"
+            className={`${inputClass} max-w-[140px]`}
+          />
+        </Field>
+        {taken.length > 0 && (
+          <p className="w-fit rounded-full bg-primary px-3 py-1 text-xs leading-relaxed text-white">
+            {taken.length > 1 ? `${takenLabel} sont déjà à cette place.` : `${takenLabel} est déjà à cette place.`}
+          </p>
+        )}
+        <p className="text-sm leading-relaxed text-[#0c1d22]/55">
+          1 s’affiche en premier, puis 2, puis 3. 0 laisse ce producteur dans l’ordre alphabétique, après ceux qui ont un numéro.
+        </p>
+      </Block>
+
+      <Block title="Photos">
+        <p className="text-sm leading-relaxed text-[#0c1d22]/55">
+          Ces photos sont celles du producteur. Retire celles que tu ne veux pas ici, puis enregistre : le fichier quitte aussi le bucket. La première est la couverture de la fiche.
+        </p>
+        <PhotoField
+          images={draft.images}
+          uploading={uploading}
+          onUpload={onUploadImages}
+          onChange={(images) => onChange({ images })}
+        />
       </Block>
 
       <Block title="Présentation">
@@ -449,7 +476,7 @@ function ProducteurForm({
                     aria-label="Déplacer avant"
                     disabled={index === 0}
                     onClick={() => onChange({ experiences: move(draft.experiences, index, -1) })}
-                    className="flex size-8 items-center justify-center rounded-full border border-[#0c1d22]/10 disabled:opacity-30"
+                    className="flex size-8 items-center justify-center rounded-full border border-[#0c1d22]/10 transition-colors duration-200 hover:bg-[#0c1d22]/[0.06] disabled:pointer-events-none disabled:opacity-30"
                   >
                     <ChevronLeft className="size-4" />
                   </button>
@@ -458,7 +485,7 @@ function ProducteurForm({
                     aria-label="Déplacer après"
                     disabled={index === draft.experiences.length - 1}
                     onClick={() => onChange({ experiences: move(draft.experiences, index, 1) })}
-                    className="flex size-8 items-center justify-center rounded-full border border-[#0c1d22]/10 disabled:opacity-30"
+                    className="flex size-8 items-center justify-center rounded-full border border-[#0c1d22]/10 transition-colors duration-200 hover:bg-[#0c1d22]/[0.06] disabled:pointer-events-none disabled:opacity-30"
                   >
                     <ChevronRight className="size-4" />
                   </button>
@@ -466,7 +493,7 @@ function ProducteurForm({
                 <button
                   type="button"
                   onClick={() => onChange({ experiences: draft.experiences.filter((_, i) => i !== index) })}
-                  className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45"
+                  className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]"
                 >
                   Retirer
                 </button>
@@ -480,7 +507,7 @@ function ProducteurForm({
             const nextId = draft.experiences.reduce((max, item) => Math.max(max, item.id), 0) + 1;
             onChange({ experiences: [...draft.experiences, emptyExperience(nextId)] });
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium sm:w-auto"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white sm:w-auto"
         >
           <Plus className="size-4" aria-hidden />
           Ajouter une expérience
@@ -534,7 +561,7 @@ function ProducteurForm({
               <button
                 type="button"
                 onClick={() => onChange({ reviews: draft.reviews.filter((_, i) => i !== index) })}
-                className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45"
+                className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]"
               >
                 Retirer
               </button>
@@ -546,7 +573,7 @@ function ProducteurForm({
           onClick={() => onChange({
             reviews: [...draft.reviews, { author: '', company: '', date: '', rating: 0, text: '' }],
           })}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium sm:w-auto"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white sm:w-auto"
         >
           <Plus className="size-4" aria-hidden />
           Ajouter un avis
@@ -560,7 +587,7 @@ function ProducteurForm({
         <button
           type="submit"
           disabled={saving || uploading}
-          className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white disabled:opacity-50 sm:w-auto"
+          className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#d45428] disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
         >
           {saving ? 'Enregistrement…' : 'Enregistrer'}
         </button>
@@ -568,11 +595,11 @@ function ProducteurForm({
           type="button"
           onClick={onPreview}
           disabled={saving || uploading || (!draft.id && !draft.name)}
-          className="w-full rounded-full border border-[#0c1d22] bg-white px-6 py-3 text-sm font-semibold text-[#0c1d22] disabled:opacity-50 sm:w-auto"
+          className="w-full rounded-full border border-[#0c1d22] bg-white px-6 py-3 text-sm font-semibold text-[#0c1d22] transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
         >
           Prévisualiser
         </button>
-        <button type="button" onClick={onDelete} className="text-sm text-[#0c1d22]/45">
+        <button type="button" onClick={onDelete} className="text-sm text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]">
           {draft.id ? 'Supprimer' : 'Annuler'}
         </button>
       </div>
@@ -580,46 +607,81 @@ function ProducteurForm({
   );
 }
 
-function AvatarField({
-  avatar,
+function PhotoField({
+  images,
   uploading,
   onUpload,
-  onClear,
+  onChange,
 }: {
-  avatar: string;
+  images: string[];
   uploading: boolean;
   onUpload: (files: FileList | null) => void;
-  onClear: () => void;
+  onChange: (images: string[]) => void;
 }) {
-  const inputRef = useRef<HTMLInputElement>(null);
   return (
     <div>
-      {avatar ? (
-        <div className="flex items-center gap-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={avatar} alt="" className="h-20 w-20 rounded-lg object-cover" />
-          <button type="button" onClick={onClear} className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45">
-            Retirer la photo
-          </button>
-        </div>
-      ) : (
-        <label className="flex h-16 cursor-pointer items-center gap-3 rounded-lg bg-[#0c1d22] px-4 text-white">
-          <ImagePlus className="size-5 shrink-0" aria-hidden />
-          <span>
-            <span className="block text-sm font-semibold">{uploading ? 'Envoi…' : 'Ajouter une photo'}</span>
-            <span className="block text-[11px] text-white/70">Portrait affiché à côté du nom.</span>
-          </span>
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
-            className="sr-only"
-            onChange={(event) => {
-              onUpload(event.target.files);
-              event.target.value = '';
-            }}
-          />
-        </label>
+      <label className="flex cursor-pointer items-center gap-3 rounded-lg bg-primary px-4 py-3 text-left text-sm text-white transition-colors duration-200 hover:bg-[#ec6435]">
+        <ImagePlus className="size-5 shrink-0" aria-hidden />
+        <span>
+          <span className="block font-semibold">{uploading ? 'Envoi…' : 'Ajouter des photos'}</span>
+          <span className="block text-[11px] text-white/70">Jusqu’à 24. La première sert de couverture.</span>
+        </span>
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+          multiple
+          className="sr-only"
+          onChange={(event) => {
+            onUpload(event.target.files);
+            event.target.value = '';
+          }}
+        />
+      </label>
+      {images.length > 0 && (
+        <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {images.map((url, index) => (
+            <li key={`${url}-${index}`}>
+              <div className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="" className="aspect-[4/3] w-full rounded-lg object-cover" />
+                {index === 0 && (
+                  <span className="absolute left-1.5 top-1.5 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em]">
+                    Couverture
+                  </span>
+                )}
+              </div>
+              <span className="mt-1.5 flex items-center justify-between gap-2">
+                <span className="flex gap-1">
+                  <button
+                    type="button"
+                    aria-label="Déplacer avant"
+                    disabled={index === 0}
+                    onClick={() => onChange(move(images, index, -1))}
+                    className="flex size-7 items-center justify-center rounded-full border border-[#0c1d22]/10 disabled:opacity-30"
+                  >
+                    <ChevronLeft className="size-4" aria-hidden />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Déplacer après"
+                    disabled={index === images.length - 1}
+                    onClick={() => onChange(move(images, index, 1))}
+                    className="flex size-7 items-center justify-center rounded-full border border-[#0c1d22]/10 disabled:opacity-30"
+                  >
+                    <ChevronRight className="size-4" aria-hidden />
+                  </button>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onChange(images.filter((_, i) => i !== index))}
+                  className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]"
+                >
+                  Retirer
+                </button>
+              </span>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
@@ -661,7 +723,7 @@ function TokenList({
         <button
           type="button"
           onClick={add}
-          className="shrink-0 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium"
+          className="shrink-0 rounded-full border border-[#0c1d22] bg-white px-4 py-2.5 text-sm font-medium transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white"
         >
           Ajouter
         </button>
@@ -673,7 +735,7 @@ function TokenList({
               <button
                 type="button"
                 onClick={() => onChange(values.filter((value) => value !== item))}
-                className="rounded-full bg-[#f4f4f4] px-3 py-1.5 text-xs"
+                className="rounded-full bg-[#f4f4f4] px-3 py-1.5 text-xs transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white"
               >
                 {item} ×
               </button>
@@ -712,6 +774,5 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-const checkClass = 'size-4 accent-[#ec6435]';
 const inputClass =
   'w-full rounded-lg border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';

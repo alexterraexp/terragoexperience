@@ -159,7 +159,7 @@ export default function ArticleSpace({ focus }: { focus?: { id: string; nonce: n
           <button
             type="button"
             onClick={() => open(emptyArticle(), true)}
-            className="flex w-full min-w-0 items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white sm:px-5 sm:py-3.5"
+            className="flex w-full min-w-0 items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#ec6435] sm:px-5 sm:py-3.5"
           >
             <Plus className="size-5 shrink-0" aria-hidden />
             <span className="truncate">Nouvel article</span>
@@ -172,7 +172,7 @@ export default function ArticleSpace({ focus }: { focus?: { id: string; nonce: n
               <button
                 type="button"
                 onClick={() => open(item)}
-                className={`flex w-full items-center gap-3 rounded-lg bg-white p-3 text-left sm:gap-4 ${
+                className={`flex w-full items-center gap-3 rounded-lg bg-white p-3 text-left transition-shadow duration-200 hover:shadow-[0_6px_16px_rgba(12,29,34,0.08)] sm:gap-4 ${
                   savedId === item.id ? 'ring-2 ring-inset ring-[#0c1d22]' : ''
                 }`}
               >
@@ -326,7 +326,7 @@ function ArticleForm({
               )}
             </span>
             <div className="flex flex-wrap gap-2">
-              <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white">
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#ec6435]">
                 <ImagePlus className="size-4" aria-hidden />
                 {uploading ? 'Envoi…' : draft.coverUrl ? 'Changer la photo' : 'Ajouter une photo'}
                 <input
@@ -342,7 +342,7 @@ function ArticleForm({
                 />
               </label>
               {draft.coverUrl && (
-                <button type="button" onClick={() => onChange({ coverUrl: '' })} className="text-sm text-[#0c1d22]/45">
+                <button type="button" onClick={() => onChange({ coverUrl: '' })} className="text-sm text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]">
                   Retirer
                 </button>
               )}
@@ -371,7 +371,7 @@ function ArticleForm({
             role="tab"
             aria-selected={!draft.published}
             onClick={() => onChange({ published: false, featured: false })}
-            className={`rounded-full px-4 py-2 text-sm font-medium ${draft.published ? 'text-white' : 'bg-white text-[#0c1d22] shadow-sm'}`}
+            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${draft.published ? 'text-white hover:bg-white/20' : 'bg-white text-[#0c1d22] shadow-sm'}`}
           >
             Brouillon
           </button>
@@ -380,7 +380,7 @@ function ArticleForm({
             role="tab"
             aria-selected={draft.published}
             onClick={() => onChange({ published: true })}
-            className={`rounded-full px-4 py-2 text-sm font-medium ${draft.published ? 'bg-white text-[#0c1d22] shadow-sm' : 'text-white'}`}
+            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${draft.published ? 'bg-white text-[#0c1d22] shadow-sm' : 'text-white hover:bg-white/20'}`}
           >
             Publié
           </button>
@@ -407,7 +407,7 @@ function ArticleForm({
         <button
           type="submit"
           disabled={saving || uploading}
-          className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white disabled:opacity-50 sm:w-auto"
+          className="w-full rounded-full bg-[#ec6435] px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#d45428] disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
         >
           {saving ? 'Enregistrement…' : 'Enregistrer'}
         </button>
@@ -415,11 +415,11 @@ function ArticleForm({
           type="button"
           onClick={onPreview}
           disabled={saving || uploading || !draft.title}
-          className="w-full rounded-full border border-[#0c1d22] bg-white px-6 py-3 text-sm font-semibold text-[#0c1d22] disabled:opacity-50 sm:w-auto"
+          className="w-full rounded-full border border-[#0c1d22] bg-white px-6 py-3 text-sm font-semibold text-[#0c1d22] transition-colors duration-200 hover:bg-[#0c1d22] hover:text-white disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
         >
           Prévisualiser
         </button>
-        <button type="button" onClick={onDelete} className="text-sm text-[#0c1d22]/45">
+        <button type="button" onClick={onDelete} className="text-sm text-[#0c1d22]/45 transition-colors duration-200 hover:text-[#ec6435]">
           {savedId ? 'Supprimer' : 'Annuler'}
         </button>
       </div>
