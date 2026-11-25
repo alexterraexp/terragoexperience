@@ -94,7 +94,7 @@ function DayPhotos({ photos }: { photos: string[] }) {
               return (
                 <div
                   key={`${src}-${photoIndex}`}
-                  className="overflow-hidden rounded-[14px] bg-[#f4f4f4]"
+                  className="overflow-hidden rounded-[15px] bg-[#f4f4f4]"
                   style={sized ? { width: layout.widths[index], height: layout.height } : { flex: '1 1 0', minHeight: 140 }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}

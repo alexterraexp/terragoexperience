@@ -4,11 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '../lib/supabase';
-import {
-  type ProducerFull,
-  type SupabaseProducerRow,
-} from '../lib/producerTypes';
-import { mapProducersWithOwnPhotos } from '../lib/producerGallery';
+import { type ProducerFull } from '../lib/producerTypes';
+import { loadPublicProducer } from '../lib/producerGallery';
 import { fetchSeminaires } from '../lib/seminaires';
 import type { Seminaire } from '../lib/seminaires';
 import { exempleSeminaireEntreprisePath } from '../lib/exemplesSeminaireEntreprise';
@@ -177,15 +174,9 @@ const ProducerDetailPage: React.FC = () => {
     async function fetchProducer() {
       setLoading(true); setError(null);
       try {
-        const { data, error: err } = await supabase
-          .from('producers_full').select('*').eq('id', producerId).maybeSingle();
+        const producer = await loadPublicProducer(supabase, producerId);
         if (cancelled) return;
-        if (err) { setError(err.message); setProducer(null); }
-        else {
-          const rows = data ? [data as SupabaseProducerRow] : [];
-          const [producer] = await mapProducersWithOwnPhotos(supabase, rows);
-          setProducer(producer ?? null);
-        }
+        setProducer(producer);
       } catch (e) {
         if (!cancelled) { setError(e instanceof Error ? e.message : 'Erreur chargement'); setProducer(null); }
       } finally {

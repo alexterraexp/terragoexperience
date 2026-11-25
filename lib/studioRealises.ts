@@ -1,6 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { slugifyOffre } from './studioTypes';
 import {
+  emptyLogement,
+  logementRempli,
   parseRealise,
   RealiseInputError,
   type SeminaireRealise,
@@ -31,13 +33,20 @@ function toRow(item: SeminaireRealise, now: string) {
     brief: item.brief,
     couverture: item.images[0] ?? item.couverture,
     images: item.images,
-    lieux: item.lieux,
+    lieux: packLieux(item),
     programme: item.programme,
     avis: item.avis,
     publie: item.publie,
     ordre: item.ordre,
     updated_at: now,
   };
+}
+
+/** Le logement voyage dans `lieux` : `{ items, logement }` dès qu’il est rempli, sinon le tableau habituel. */
+function packLieux(item: SeminaireRealise): SeminaireRealise['lieux'] | { items: SeminaireRealise['lieux']; logement: SeminaireRealise['logement'] } {
+  const logement = item.logement ?? emptyLogement();
+  if (!logementRempli(logement)) return item.lieux;
+  return { items: item.lieux, logement };
 }
 
 function fromRow(row: Record<string, unknown>): SeminaireRealise | null {
@@ -120,6 +129,7 @@ function photoUrls(item: SeminaireRealise): Set<string> {
   for (const url of item.images) if (url) urls.add(url);
   if (item.couverture) urls.add(item.couverture);
   for (const lieu of item.lieux) if (lieu.photo) urls.add(lieu.photo);
+  for (const photo of item.logement?.images ?? []) if (photo) urls.add(photo);
   for (const jour of item.programme) {
     for (const photo of jour.photos) if (photo) urls.add(photo);
   }

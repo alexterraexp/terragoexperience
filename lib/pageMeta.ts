@@ -33,8 +33,8 @@ export const PAGE_OG = {
     alt: 'Pique-nique convivial – expériences privées TerraGo',
   },
   exemples: {
-    url: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/LOGEMENTS/TRINQUET-PIMENT/trinquet7.jpg',
-    alt: 'Exemple de séminaire TerraGo chez un producteur',
+    url: `${HOME}/exemples-seminaire.webp`,
+    alt: 'Vue aérienne d’une cueillette dans les rangs – exemples de séminaires TerraGo',
   },
   charte: {
     url: `${HOME}/Etapes/1087462-12111234.webp`,

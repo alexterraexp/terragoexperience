@@ -3,6 +3,9 @@ export const REALISES_PATH = '/seminaires-realises';
 /** Photos d’une journée de programme. Le bloc public garde la même taille. */
 export const JOUR_PHOTO_MAX = 12;
 
+/** Photos du logement, défilantes à droite du descriptif. */
+export const LOGEMENT_PHOTO_MAX = 12;
+
 export function realisePath(slug: string): string {
   return `${REALISES_PATH}/${slug}`;
 }
@@ -32,6 +35,23 @@ export type RealiseAvis = {
   note: number;
 };
 
+/** Lignes du logement, dans l’ordre d’affichage. */
+export const LOGEMENT_CHAMPS = [
+  { id: 'localisation', label: 'Localisation', placeholder: 'Arbonne, Pays basque' },
+  { id: 'hebergement', label: 'Hébergement', placeholder: 'Nombre de chambres et de couchages' },
+  { id: 'capacite', label: "Capacité d'accueil", placeholder: 'Nombre de participants' },
+  { id: 'travail', label: 'Espaces de travail', placeholder: 'Nombre de salles de réunion et capacité' },
+  { id: 'convivialite', label: 'Espaces de convivialité', placeholder: 'Jardin, terrasse, piscine… selon le lieu' },
+  { id: 'accessibilite', label: 'Accessibilité', placeholder: 'Gare et aéroport à proximité' },
+] as const;
+
+export type LogementChamp = (typeof LOGEMENT_CHAMPS)[number]['id'];
+
+/** Bloc facultatif, entre le programme et les avis. */
+export type RealiseLogement = Record<LogementChamp, string> & {
+  images: string[];
+};
+
 /** Récit d'un séminaire déjà vécu. `id` est l'adresse publique. */
 export type SeminaireRealise = {
   id: string;
@@ -46,6 +66,7 @@ export type SeminaireRealise = {
   images: string[];
   lieux: RealiseLieu[];
   programme: RealiseJour[];
+  logement: RealiseLogement;
   avis: RealiseAvis[];
   publie: boolean;
   ordre: number;
@@ -65,6 +86,24 @@ export function emptyAvis(): RealiseAvis {
   return { auteur: '', entreprise: '', texte: '', note: 5 };
 }
 
+export function emptyLogement(): RealiseLogement {
+  return {
+    localisation: '',
+    hebergement: '',
+    capacite: '',
+    travail: '',
+    convivialite: '',
+    accessibilite: '',
+    images: [],
+  };
+}
+
+export function logementRempli(logement: RealiseLogement | undefined): boolean {
+  if (!logement) return false;
+  if (logement.images.length > 0) return true;
+  return LOGEMENT_CHAMPS.some((champ) => logement[champ.id].trim() !== '');
+}
+
 export function emptyRealise(): SeminaireRealise {
   return {
     id: '',
@@ -77,6 +116,7 @@ export function emptyRealise(): SeminaireRealise {
     images: [],
     lieux: [],
     programme: [emptyJour()],
+    logement: emptyLogement(),
     avis: [],
     publie: false,
     ordre: 0,
@@ -151,6 +191,36 @@ function mapJour(raw: unknown, index: number, strict: boolean): RealiseJour | nu
   return { label: clip(row.label, 40) || `Jour ${index + 1}`, lignes, photos };
 }
 
+function mapLogement(raw: unknown, strict: boolean): RealiseLogement {
+  const logement = emptyLogement();
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return logement;
+  const row = raw as Record<string, unknown>;
+  for (const champ of LOGEMENT_CHAMPS) logement[champ.id] = clip(row[champ.id], 160);
+  logement.images = (Array.isArray(row.images) ? row.images : [])
+    .map((item) => httpsUrl(item, strict))
+    .filter(Boolean)
+    .slice(0, LOGEMENT_PHOTO_MAX);
+  return logement;
+}
+
+/** Le logement est rangé dans `lieux` pour éviter une nouvelle colonne. */
+function readLieux(raw: unknown, logementRaw: unknown, strict: boolean): { lieux: RealiseLieu[]; logement: RealiseLogement } {
+  let lieuxRaw = raw;
+  let packedLogement = logementRaw;
+  if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+    const packed = raw as Record<string, unknown>;
+    if ('items' in packed || 'logement' in packed) {
+      lieuxRaw = packed.items;
+      if (packedLogement == null) packedLogement = packed.logement;
+    }
+  }
+  const lieux = (Array.isArray(lieuxRaw) ? lieuxRaw : [])
+    .map((item) => mapLieu(item, strict))
+    .filter((item): item is RealiseLieu => item != null)
+    .slice(0, 12);
+  return { lieux, logement: mapLogement(packedLogement, strict) };
+}
+
 function mapAvis(raw: unknown, strict: boolean): RealiseAvis | null {
   if (!raw || typeof raw !== 'object') return null;
   const row = raw as Record<string, unknown>;
@@ -185,10 +255,7 @@ export function parseRealise(row: Record<string, unknown>, strict = false): Semi
   const ordreRaw = Number(row.ordre);
   const ordre = Number.isFinite(ordreRaw) ? Math.max(0, Math.min(9999, Math.round(ordreRaw))) : 0;
 
-  const lieux = (Array.isArray(row.lieux) ? row.lieux : [])
-    .map((item) => mapLieu(item, strict))
-    .filter((item): item is RealiseLieu => item != null)
-    .slice(0, 12);
+  const { lieux, logement } = readLieux(row.lieux, row.logement, strict);
 
   const programme = (Array.isArray(row.programme) ? row.programme : [])
     .map((item, index) => mapJour(item, index, strict))
@@ -217,6 +284,7 @@ export function parseRealise(row: Record<string, unknown>, strict = false): Semi
     images,
     lieux,
     programme,
+    logement,
     avis,
     publie: row.publie === true,
     ordre,

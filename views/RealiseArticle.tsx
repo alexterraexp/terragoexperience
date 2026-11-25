@@ -2,11 +2,19 @@
 
 import Link from 'next/link';
 import { Check, Star } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useModal } from '@/context/ModalContext';
+import RealiseLogement from '@/components/RealiseLogement';
 import RealisePhotos from '@/components/RealisePhotos';
 import RealiseProgramme from '@/components/RealiseProgramme';
 import { HOME_RADIUS } from '@/components/home/homeStyles';
-import { REALISES_PATH, realiseFacts, type SeminaireRealise } from '@/lib/seminairesRealises';
+import {
+  REALISES_PATH,
+  logementRempli,
+  realiseFacts,
+  type RealiseAvis,
+  type SeminaireRealise,
+} from '@/lib/seminairesRealises';
 
 const titleClass =
   'font-sans text-[32px] font-normal leading-[1.08] tracking-[-0.075em] text-[#0c1d22] sm:text-[40px]';
@@ -20,6 +28,7 @@ export default function RealiseArticle({
 }) {
   const facts = realiseFacts(item);
   const { openModal } = useModal();
+  const showLogement = logementRempli(item.logement);
 
   return (
     <article className={`bg-white font-sans ${preview ? 'pb-16' : ''}`} style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -51,7 +60,7 @@ export default function RealiseArticle({
         </div>
       </header>
 
-      <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-16 px-4 py-10 sm:px-6 sm:py-14">
+      <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-20 px-4 py-10 sm:gap-24 sm:px-6 sm:py-14">
         {item.brief && (
           <section className="px-6 py-8 sm:px-10 sm:py-12" style={{ background: '#f4f4f4', borderRadius: HOME_RADIUS }}>
             <h2 className={titleClass}>
@@ -70,7 +79,7 @@ export default function RealiseArticle({
             </h2>
             <ul className="mt-8 grid gap-4 sm:grid-cols-2">
               {item.lieux.filter((lieu) => lieu.photo || lieu.phrase).map((lieu) => (
-                <li key={`${lieu.nom}-${lieu.photo}`} className="overflow-hidden bg-[#f4f4f4]" style={{ borderRadius: HOME_RADIUS }}>
+                <li key={`${lieu.nom}-${lieu.photo}`} className="overflow-hidden rounded-[22px] bg-[#f4f4f4]">
                   {lieu.photo && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={lieu.photo} alt="" className="aspect-[4/3] w-full object-cover" />
@@ -100,34 +109,21 @@ export default function RealiseArticle({
           </section>
         )}
 
+        {showLogement && (
+          <section>
+            <h2 className={titleClass}>
+              Le <span className="font-bold">logement</span>
+            </h2>
+            <RealiseLogement logement={item.logement} />
+          </section>
+        )}
+
         {item.avis.length > 0 && (
           <section>
             <h2 className={titleClass}>
               Les <span className="font-bold">avis</span>
             </h2>
-            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-              {item.avis.map((avis) => (
-                <li key={`${avis.auteur}-${avis.texte.slice(0, 24)}`} className="bg-[#f4f4f4] px-5 py-5" style={{ borderRadius: HOME_RADIUS }}>
-                  <blockquote>
-                    {avis.note > 0 && (
-                      <p className="mb-3 flex gap-0.5 text-[#ec6435]" aria-label={`${avis.note} sur 5`}>
-                        {[1, 2, 3, 4, 5].map((note) => (
-                          <Star key={note} className="size-3.5" fill={note <= avis.note ? 'currentColor' : 'none'} aria-hidden />
-                        ))}
-                      </p>
-                    )}
-                    <p className="whitespace-pre-wrap font-sans text-[13px] font-normal leading-[1.55] tracking-[-0.02em] text-[#0c1d22]">
-                      « {avis.texte} »
-                    </p>
-                    {(avis.auteur || avis.entreprise) && (
-                      <footer className="mt-2.5 font-sans text-[11px] font-semibold tracking-[-0.02em] text-[#ec6435]">
-                        {[avis.auteur, avis.entreprise].filter(Boolean).join(' · ')}
-                      </footer>
-                    )}
-                  </blockquote>
-                </li>
-              ))}
-            </ul>
+            <AvisSwipe avis={item.avis} />
           </section>
         )}
 
@@ -167,5 +163,109 @@ export default function RealiseArticle({
         </div>
       )}
     </article>
+  );
+}
+
+function AvisCard({ avis }: { avis: RealiseAvis }) {
+  return (
+    <blockquote className="bg-[#f4f4f4] px-6 py-6 sm:px-8 sm:py-7" style={{ borderRadius: HOME_RADIUS }}>
+      {avis.note > 0 && (
+        <p className="mb-3.5 flex gap-0.5 text-[#ec6435]" aria-label={`${avis.note} sur 5`}>
+          {[1, 2, 3, 4, 5].map((note) => (
+            <Star key={note} className="size-4" fill={note <= avis.note ? 'currentColor' : 'none'} aria-hidden />
+          ))}
+        </p>
+      )}
+      <p className="whitespace-pre-wrap font-sans text-[15px] font-normal leading-[1.6] tracking-[-0.02em] text-[#0c1d22] sm:text-[16px]">
+        « {avis.texte} »
+      </p>
+      {(avis.auteur || avis.entreprise) && (
+        <footer className="mt-3 font-sans text-[12px] font-semibold tracking-[-0.02em] text-[#ec6435]">
+          {[avis.auteur, avis.entreprise].filter(Boolean).join(' · ')}
+        </footer>
+      )}
+    </blockquote>
+  );
+}
+
+function AvisSwipe({ avis }: { avis: RealiseAvis[] }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  const stepOf = (track: HTMLElement) => {
+    const slide = track.children[0] as HTMLElement | undefined;
+    const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
+    return (slide?.getBoundingClientRect().width || track.clientWidth || 1) + gap;
+  };
+
+  const sync = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const index = Math.round(track.scrollLeft / stepOf(track));
+    setActive(Math.max(0, Math.min(index, avis.length - 1)));
+  }, [avis.length]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || avis.length < 2) return;
+    const onScroll = () => sync();
+    track.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', sync);
+    return () => {
+      track.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', sync);
+    };
+  }, [avis.length, sync]);
+
+  const goTo = (index: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+    track.scrollTo({ left: index * stepOf(track), behavior: 'smooth' });
+    setActive(index);
+  };
+
+  if (avis.length === 1) {
+    return (
+      <div className="mt-8">
+        <AvisCard avis={avis[0]} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-8">
+      <div
+        ref={trackRef}
+        className="flex snap-x snap-mandatory gap-8 overflow-x-auto overscroll-x-contain scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [touch-action:pan-x_pan-y] [&::-webkit-scrollbar]:hidden"
+        aria-label="Avis"
+      >
+        {avis.map((item, index) => (
+          <div
+            key={`${item.auteur}-${index}`}
+            className="w-full min-w-0 max-w-full shrink-0 basis-full snap-start snap-always overflow-hidden"
+            role="group"
+            aria-label={`Avis ${index + 1} sur ${avis.length}`}
+          >
+            <AvisCard avis={item} />
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 flex items-center justify-center gap-2">
+        {avis.map((item, index) => (
+          <button
+            key={`${item.auteur}-dot-${index}`}
+            type="button"
+            aria-label={`Avis ${index + 1}`}
+            aria-current={index === active ? 'true' : undefined}
+            onClick={() => goTo(index)}
+            className="h-2 rounded-full transition-all duration-300"
+            style={{
+              width: index === active ? 28 : 8,
+              background: index === active ? '#ec6435' : 'rgba(12,29,34,0.18)',
+            }}
+          />
+        ))}
+      </div>
+    </div>
   );
 }

@@ -45,7 +45,7 @@ const HOME_ASSETS =
   'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/HOME';
 
 const PACK_ASSETS = {
-  hero: 'https://lxlvcwwvnujfbqgcfzze.supabase.co/storage/v1/object/public/producers/LOGEMENTS/TRINQUET-PIMENT/trinquet7.jpg',
+  hero: `${HOME_ASSETS}/exemples-seminaire.webp`,
   producteurSoutenu: `${HOME_ASSETS}/emoji/producteur-sountenu.png`,
   sOrange: `${HOME_ASSETS}/emoji/s-picto-orange.png`,
   branche: `${HOME_ASSETS}/emoji/emoji-branche.png`,
@@ -2763,7 +2763,7 @@ export default function SeminairesPage({ initialSeminaires }: { initialSeminaire
           >
             <FramedHeroImage
               src={PACK_ASSETS.hero}
-              alt="Séminaire TerraGo chez un producteur"
+              alt="Vue aérienne d’une cueillette dans les rangs chez un producteur"
             />
             <div className={`${bottomImageGradientClass} z-[1]`} />
             <div

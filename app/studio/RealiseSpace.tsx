@@ -6,9 +6,12 @@ import { prepareStudioPhoto } from '@/lib/prepareStudioPhoto';
 import { slugifyOffre, slugifyOffreTyping } from '@/lib/studioTypes';
 import {
   JOUR_PHOTO_MAX,
+  LOGEMENT_CHAMPS,
+  LOGEMENT_PHOTO_MAX,
   emptyAvis,
   emptyJour,
   emptyLieu,
+  emptyLogement,
   emptyRealise,
   forEditor,
   realisePath,
@@ -514,6 +517,46 @@ function RealiseForm({
         />
       </Block>
 
+      <Block title="Le logement">
+        <p className="text-sm leading-relaxed text-[#0c1d22]/55">
+          Facultatif. Chaque ligne remplie s’affiche à gauche, avec son icône. Les photos défilent à droite.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {LOGEMENT_CHAMPS.map((champ) => (
+            <Field key={champ.id} label={champ.label}>
+              <input
+                value={draft.logement?.[champ.id] ?? ''}
+                onChange={(event) => onChange({
+                  logement: { ...(draft.logement ?? emptyLogement()), [champ.id]: event.target.value },
+                })}
+                placeholder={champ.placeholder}
+                className={inputClass}
+              />
+            </Field>
+          ))}
+        </div>
+        <DayPhotos
+          title="Photos du logement"
+          hint={`Elles défilent à droite du texte, jusqu’à ${LOGEMENT_PHOTO_MAX} photos.`}
+          photos={draft.logement?.images ?? []}
+          uploading={uploading}
+          onAdd={async (files) => {
+            const urls = await onUploadImages(files);
+            if (urls.length === 0) return;
+            onChange((current) => {
+              const logement = current.logement ?? emptyLogement();
+              return {
+                ...current,
+                logement: { ...logement, images: [...logement.images, ...urls].slice(0, LOGEMENT_PHOTO_MAX) },
+              };
+            });
+          }}
+          onChange={(images) => onChange({
+            logement: { ...(draft.logement ?? emptyLogement()), images },
+          })}
+        />
+      </Block>
+
       <Block title="Les avis">
         <div className="space-y-3">
           {draft.avis.map((avis, index) => (
@@ -614,17 +657,21 @@ function DayPhotos({
   uploading,
   onAdd,
   onChange,
+  title = 'Photos de la journée',
+  hint = `Le premier jour les place à droite du programme, puis elles alternent. Le même écart les sépare, jusqu’à ${JOUR_PHOTO_MAX} photos.`,
 }: {
   photos: string[];
   uploading: boolean;
   onAdd: (files: FileList) => void;
   onChange: (photos: string[]) => void;
+  title?: string;
+  hint?: string;
 }) {
   return (
     <div className="space-y-2">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#0c1d22]/45">Photos de la journée</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#0c1d22]/45">{title}</p>
       <p className="text-sm leading-relaxed text-[#0c1d22]/55">
-        Le premier jour les place à droite du programme, puis elles alternent. Le même écart les sépare, jusqu’à {JOUR_PHOTO_MAX} photos.
+        {hint}
       </p>
       <label className="relative flex h-12 cursor-pointer items-center gap-2 overflow-hidden rounded-lg bg-[#0c1d22] px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#ec6435]">
         <ImagePlus className="size-4 shrink-0" aria-hidden />

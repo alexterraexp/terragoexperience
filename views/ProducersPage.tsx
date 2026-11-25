@@ -8,10 +8,9 @@ import { useModal } from '../context/ModalContext';
 import {
   type Producer,
   type ProducerFull,
-  type SupabaseProducerRow,
   fullToProducer,
 } from '../lib/producerTypes';
-import { mapProducersWithOwnPhotos } from '../lib/producerGallery';
+import { listPublicProducers } from '../lib/producerGallery';
 import {
   HOME_COLORS,
   HOME_RADIUS,
@@ -225,15 +224,9 @@ const ProducersPage: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const { data, error: err } = await supabase.from('producers_full').select('*');
+        const rows = await listPublicProducers(supabase);
         if (cancelled) return;
-        if (err) {
-          setError(err.message);
-          setProducersFull([]);
-        } else {
-          const rows = (data ?? []) as SupabaseProducerRow[];
-          setProducersFull(await mapProducersWithOwnPhotos(supabase, rows));
-        }
+        setProducersFull(rows);
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : 'Erreur lors du chargement des producteurs');

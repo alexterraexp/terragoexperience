@@ -497,15 +497,92 @@ async function syncHebergements(db: SupabaseClient, seminaireId: string, offre: 
   }
 }
 
+async function rowExists(db: SupabaseClient, table: 'seminaires' | 'producers', id: string): Promise<boolean> {
+  const { data, error } = await db.from(table).select('id').eq('id', id).maybeSingle();
+  if (error) throw new Error(error.message);
+  return Boolean(data?.id);
+}
+
 async function uniqueId(db: SupabaseClient, wished: string): Promise<string> {
   const base = wished || 'offre';
   for (let i = 0; i < 20; i += 1) {
     const candidate = i === 0 ? base : `${base}-${i + 1}`;
-    const { data, error } = await db.from('seminaires').select('id').eq('id', candidate).maybeSingle();
-    if (error) throw new Error(error.message);
-    if (!data) return candidate;
+    // Le trigger d’insertion recopie cet id dans producers. Un id déjà pris casse l’enregistrement.
+    const [seminarTaken, producerTaken] = await Promise.all([
+      rowExists(db, 'seminaires', candidate),
+      rowExists(db, 'producers', candidate),
+    ]);
+    if (!seminarTaken && !producerTaken) return candidate;
   }
   return `${base}-${crypto.randomUUID().slice(0, 8)}`;
+}
+
+function personKey(value: string): string {
+  return slugifyOffre(value.replace(/^\s*avec\s+/i, ''));
+}
+
+/** Fiche créée dans le studio avant l’offre, encore sans séminaire. */
+async function openProducerFor(db: SupabaseClient, producteur: string): Promise<string> {
+  const key = personKey(producteur);
+  if (!key) return '';
+  const { data, error } = await db.from('producers').select('id, name, seminaire_id');
+  if (error) throw new Error(error.message);
+  const match = (data ?? []).find((row) => {
+    if (String(row.seminaire_id ?? '').trim()) return false;
+    const id = String(row.id ?? '');
+    return id === key || personKey(String(row.name ?? '')) === key;
+  });
+  return match ? String(match.id) : '';
+}
+
+function producerLooksEmpty(row: {
+  description?: unknown;
+  highlight?: unknown;
+  avatar?: unknown;
+  reviews?: unknown;
+  experiences?: unknown;
+}): boolean {
+  const text = (value: unknown) => (typeof value === 'string' ? value.trim() : '');
+  const reviews = Array.isArray(row.reviews) ? row.reviews : [];
+  const experiences = Array.isArray(row.experiences) ? row.experiences : [];
+  return !text(row.description)
+    && !text(row.highlight)
+    && !text(row.avatar)
+    && reviews.length === 0
+    && experiences.length === 0;
+}
+
+/**
+ * L’insertion d’une offre crée une fiche vide (même id). Si la vraie fiche existe déjà,
+ * on la rattache et on retire le doublon vide.
+ */
+async function attachOpenProducer(db: SupabaseClient, seminaireId: string, producerId: string): Promise<void> {
+  if (!producerId || producerId === seminaireId) return;
+  const linked = await db
+    .from('producers')
+    .update({ seminaire_id: seminaireId })
+    .eq('id', producerId)
+    .is('seminaire_id', null)
+    .select('id');
+  if (linked.error) throw new Error(linked.error.message);
+  if (!linked.data || linked.data.length === 0) return;
+
+  const stub = await db
+    .from('producers')
+    .select('id, description, highlight, avatar, reviews, experiences')
+    .eq('id', seminaireId)
+    .maybeSingle();
+  if (stub.error) throw new Error(stub.error.message);
+  if (!stub.data) return;
+
+  if (producerLooksEmpty(stub.data)) {
+    const deleted = await db.from('producers').delete().eq('id', seminaireId);
+    if (deleted.error) throw new Error(deleted.error.message);
+    return;
+  }
+
+  const detached = await db.from('producers').update({ seminaire_id: null }).eq('id', seminaireId);
+  if (detached.error) throw new Error(detached.error.message);
 }
 
 async function uniqueSlug(db: SupabaseClient, wished: string, currentId: string): Promise<string> {
@@ -616,6 +693,7 @@ export async function saveStudioOffre(
   };
 
   const created = !offre.id;
+  const openProducerId = created ? await openProducerFor(db, offre.producteur || offre.label) : '';
   let savedId = '';
   const previousPhotos = offre.id ? await photosOfOffer(db, offre.id) : [];
   try {
@@ -638,6 +716,7 @@ export async function saveStudioOffre(
       ...saved.hebergements.flatMap((item) => item.images),
     ]);
     let warning = schemaWarning(written.stripped);
+    if (openProducerId) await attachOpenProducer(db, savedId, openProducerId);
     try {
       await dropSeminarPhotos(db, previousPhotos.filter((url) => !kept.has(url)));
     } catch (storageError) {
@@ -650,6 +729,11 @@ export async function saveStudioOffre(
   } catch (error) {
     if (created && savedId) {
       await deleteStudioOffre(db, savedId).catch(() => undefined);
+    }
+    if (!(error instanceof StudioInputError) && error instanceof Error && /producers_pkey/.test(error.message)) {
+      throw new StudioInputError(
+        'Une fiche producteur existe déjà sous ce nom. Réessaie : l’offre se rattache à cette fiche, sans en créer une deuxième.',
+      );
     }
     throw error;
   }

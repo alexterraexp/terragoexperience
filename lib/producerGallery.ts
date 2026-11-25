@@ -18,6 +18,73 @@ function ownImages(value: unknown): string[] {
   return source.filter((item): item is string => typeof item === 'string' && item.trim() !== '');
 }
 
+function textField(value: unknown): string {
+  return typeof value === 'string' ? value : '';
+}
+
+/** Une fiche sans offre n’est pas dans la vue (jointure interne). On la remet au format de la vue. */
+function producerAsViewRow(row: Record<string, unknown>): SupabaseProducerRow {
+  return {
+    id: textField(row.id),
+    seminaire_id: textField(row.seminaire_id),
+    name: textField(row.name),
+    type: textField(row.type),
+    tags: row.tags,
+    rating: Number(row.rating) || 0,
+    review_count: Number(row.review_count) || 0,
+    capacity: textField(row.capacity),
+    avatar: textField(row.avatar),
+    highlight: textField(row.highlight),
+    price: textField(row.price),
+    description: textField(row.description),
+    hero_badge: textField(row.hero_badge),
+    certifications: row.certifications,
+    experiences: row.experiences,
+    reviews: row.reviews,
+    owner: textField(row.name),
+    location: '',
+    region: '',
+    cover: textField(row.avatar),
+    gallery: [],
+    bestseller: false,
+  };
+}
+
+/** Page Partenaires : la vue, plus les fiches qui n’ont pas encore d’offre. */
+export async function listPublicProducers(db: SupabaseClient): Promise<ProducerFull[]> {
+  const view = await db.from('producers_full').select('*');
+  if (view.error) throw new Error(view.error.message);
+  const viewRows = (view.data ?? []) as SupabaseProducerRow[];
+  const seen = new Set(viewRows.map((row) => row.id).filter(Boolean));
+
+  const table = await db.from('producers').select('*');
+  const extras = table.error
+    ? []
+    : ((table.data ?? []) as Record<string, unknown>[])
+        .filter((row) => {
+          const id = textField(row.id);
+          return Boolean(id) && !seen.has(id);
+        })
+        .map(producerAsViewRow);
+
+  return mapProducersWithOwnPhotos(db, [...viewRows, ...extras]);
+}
+
+export async function loadPublicProducer(db: SupabaseClient, id: string): Promise<ProducerFull | null> {
+  const view = await db.from('producers_full').select('*').eq('id', id).maybeSingle();
+  if (view.error) throw new Error(view.error.message);
+  if (view.data) {
+    const [producer] = await mapProducersWithOwnPhotos(db, [view.data as SupabaseProducerRow]);
+    return producer ?? null;
+  }
+
+  const table = await db.from('producers').select('*').eq('id', id).maybeSingle();
+  if (table.error) throw new Error(table.error.message);
+  if (!table.data) return null;
+  const [producer] = await mapProducersWithOwnPhotos(db, [producerAsViewRow(table.data as Record<string, unknown>)]);
+  return producer ?? null;
+}
+
 /** La page partenaire affiche la galerie du producteur dès qu’elle existe. */
 export async function mapProducersWithOwnPhotos(
   db: SupabaseClient,
