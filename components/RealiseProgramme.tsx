@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import type { RealiseJour } from '@/lib/seminairesRealises';
 
 const GAP = 12;
+const MOBILE_GAP = 6;
+const RADIUS = 15;
+const MOBILE_DENSE_RADIUS = 8;
 
 /** Répartit les photos en rangées. Chaque rangée se justifie sur la largeur, avec le même écart. */
 function photoRows(count: number): number[] {
@@ -26,10 +29,10 @@ function groupPhotos(photos: string[]): string[][] {
   return groups;
 }
 
-function layoutRow(ratios: number[], width: number): { height: number; widths: number[] } | null {
+function layoutRow(ratios: number[], width: number, gap: number): { height: number; widths: number[] } | null {
   if (width <= 0 || ratios.length === 0 || ratios.some((ratio) => ratio <= 0)) return null;
   const used = ratios;
-  const available = Math.max(0, width - GAP * (used.length - 1));
+  const available = Math.max(0, width - gap * (used.length - 1));
   let height = available / used.reduce((sum, ratio) => sum + ratio, 0);
   if (used.length === 1) height = Math.min(height, width * 0.92);
   const widths = used.map((ratio) => height * ratio);
@@ -43,7 +46,18 @@ function layoutRow(ratios: number[], width: number): { height: number; widths: n
 function DayPhotos({ photos }: { photos: string[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
+  const [narrow, setNarrow] = useState(false);
   const [ratios, setRatios] = useState<Record<string, number>>({});
+  const gap = narrow ? MOBILE_GAP : GAP;
+  const radius = narrow && photos.length > 4 ? MOBILE_DENSE_RADIUS : RADIUS;
+
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 767px)');
+    const apply = () => setNarrow(query.matches);
+    apply();
+    query.addEventListener('change', apply);
+    return () => query.removeEventListener('change', apply);
+  }, []);
 
   useEffect(() => {
     const node = ref.current;
@@ -81,21 +95,21 @@ function DayPhotos({ photos }: { photos: string[] }) {
   let offset = 0;
 
   return (
-    <div ref={ref} className="flex w-full flex-col" style={{ gap: GAP }}>
+    <div ref={ref} className="flex w-full flex-col" style={{ gap }}>
       {groups.map((row, rowIndex) => {
         const start = offset;
         offset += row.length;
-        const layout = layoutRow(row.map((src) => ratios[src] ?? 0), width);
+        const layout = layoutRow(row.map((src) => ratios[src] ?? 0), width, gap);
         return (
-          <div key={rowIndex} className="flex" style={{ gap: GAP }}>
+          <div key={rowIndex} className="flex" style={{ gap }}>
             {row.map((src, index) => {
               const photoIndex = start + index;
               const sized = layout != null;
               return (
                 <div
                   key={`${src}-${photoIndex}`}
-                  className="overflow-hidden rounded-[15px] bg-[#f4f4f4]"
-                  style={sized ? { width: layout.widths[index], height: layout.height } : { flex: '1 1 0', minHeight: 140 }}
+                  className="overflow-hidden bg-[#f4f4f4]"
+                  style={sized ? { width: layout.widths[index], height: layout.height, borderRadius: radius } : { flex: '1 1 0', minHeight: 140, borderRadius: radius }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -131,12 +145,7 @@ export default function RealiseProgramme({ jours }: { jours: RealiseJour[] }) {
             key={`${jour.label}-${index}`}
             className={jour.photos.length > 0 ? 'grid items-center gap-6 md:grid-cols-2 md:gap-12' : ''}
           >
-            {jour.photos.length > 0 && (
-              <div className={photoFirst ? '' : 'md:order-2'}>
-                <DayPhotos photos={jour.photos} />
-              </div>
-            )}
-            <div className={jour.photos.length > 0 && !photoFirst ? 'md:order-1' : ''}>
+            <div className={jour.photos.length > 0 && photoFirst ? 'md:order-2' : ''}>
               <h3 className="font-sans text-[26px] font-bold leading-[1.1] tracking-[-0.05em] text-[#0c1d22] sm:text-[32px]">
                 {jour.label}
               </h3>
@@ -157,6 +166,11 @@ export default function RealiseProgramme({ jours }: { jours: RealiseJour[] }) {
                 </ol>
               )}
             </div>
+            {jour.photos.length > 0 && (
+              <div className={photoFirst ? 'md:order-1' : ''}>
+                <DayPhotos photos={jour.photos} />
+              </div>
+            )}
           </article>
         );
       })}

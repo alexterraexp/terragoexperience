@@ -56,6 +56,7 @@ export default function StudioApp() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [space, setSpace] = useState<StudioSpace>('accueil');
+  const [producerNames, setProducerNames] = useState<string[] | null>(null);
   const [focus, setFocus] = useState<{ space: 'producteur' | 'realises' | 'articles'; id: string; nonce: number } | null>(null);
 
   const dirty = draft != null && baseline !== '' && JSON.stringify(draft) !== baseline;
@@ -84,10 +85,31 @@ export default function StudioApp() {
     };
   }, []);
 
+  const loadProducerNames = useCallback(async () => {
+    const response = await fetch('/api/studio/producteurs', { cache: 'no-store' });
+    if (!response.ok) return;
+    const data = (await response.json()) as { producteurs?: { name?: string }[] };
+    const seen = new Set<string>();
+    const names: string[] = [];
+    for (const item of data.producteurs ?? []) {
+      const name = sansAvec(String(item.name ?? ''));
+      const key = name.toLocaleLowerCase('fr');
+      if (!name || seen.has(key)) continue;
+      seen.add(key);
+      names.push(name);
+    }
+    setProducerNames(names);
+  }, []);
+
   useEffect(() => {
     if (!session?.authenticated) return;
     loadOffres().catch((error: Error) => setListError(error.message));
   }, [session?.authenticated, loadOffres]);
+
+  useEffect(() => {
+    if (!session?.authenticated || space !== 'seminaire') return;
+    loadProducerNames().catch(() => undefined);
+  }, [session?.authenticated, space, loadProducerNames]);
 
   const openOffre = (offre: StudioOffre, touched = true) => {
     if (dirty && !window.confirm('Des modifications ne sont pas enregistrées. Les abandonner ?')) return;
@@ -372,6 +394,8 @@ export default function StudioApp() {
             <OffreForm
               draft={draft}
               dirty={dirty}
+              producerNames={producerNames ?? []}
+              producerNamesReady={producerNames !== null}
               schemaReady={schemaReady}
               saving={saving}
               uploading={uploading}
@@ -447,9 +471,63 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function sansAvec(value: string): string {
+  return value.replace(/^\s*avec\s+/i, '').trim();
+}
+
+function avecNom(name: string): string {
+  const clean = sansAvec(name);
+  return clean ? `Avec ${clean}` : '';
+}
+
+function ProducteurSelect({
+  value,
+  names,
+  ready,
+  onChange,
+}: {
+  value: string;
+  names: string[];
+  ready: boolean;
+  onChange: (value: string) => void;
+}) {
+  const current = sansAvec(value);
+  const match = names.find((name) => name.localeCompare(current, 'fr', { sensitivity: 'accent' }) === 0);
+  const selected = match ?? current;
+  const extra = current && !match ? current : '';
+
+  return (
+    <div>
+      <div className="flex min-w-0 overflow-hidden rounded-lg border border-[#0c1d22]/10 bg-white focus-within:border-[#0c1d22]/30">
+        <span className="flex shrink-0 select-none items-center border-r border-[#0c1d22]/10 bg-[#f4f4f4] px-3 text-sm font-medium text-[#0c1d22]">
+          Avec
+        </span>
+        <select
+          value={selected}
+          onChange={(event) => onChange(avecNom(event.target.value))}
+          className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm font-normal text-[#0c1d22] outline-none"
+        >
+          <option value="">Choisir</option>
+          {extra && <option value={extra}>{extra}</option>}
+          {names.map((name) => (
+            <option key={name} value={name}>{name}</option>
+          ))}
+        </select>
+      </div>
+      {ready && names.length === 0 && (
+        <p className="mt-2 text-sm font-normal text-[#0c1d22]/55">
+          Aucune fiche pour l’instant. Crée le producteur d’abord, son nom apparaîtra ici.
+        </p>
+      )}
+    </div>
+  );
+}
+
 function OffreForm({
   draft,
   dirty,
+  producerNames,
+  producerNamesReady,
   schemaReady,
   saving,
   uploading,
@@ -466,6 +544,8 @@ function OffreForm({
 }: {
   draft: StudioOffre;
   dirty: boolean;
+  producerNames: string[];
+  producerNamesReady: boolean;
   schemaReady: boolean;
   saving: boolean;
   uploading: boolean;
@@ -513,7 +593,12 @@ function OffreForm({
       <Block title="Le lieu">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Producteur">
-            <input value={draft.producteur} onChange={(event) => onProducteur(event.target.value)} placeholder="Avec Paolo" className={inputClass} />
+            <ProducteurSelect
+              value={draft.producteur}
+              names={producerNames}
+              ready={producerNamesReady}
+              onChange={onProducteur}
+            />
           </Field>
           <Field label="Titre de l’offre">
             <input value={draft.label} onChange={(event) => onChange({ label: event.target.value })} placeholder="Séminaire dans les oliviers" className={inputClass} />
@@ -545,7 +630,7 @@ function OffreForm({
       </Block>
 
       <Block title="Pilules">
-        <div className={pillTrack}>
+        <div className={choiceTrack}>
           {OFFER_PILLS.map((pill) => {
             const on = draft.pills.includes(pill.id);
             return (
@@ -612,7 +697,7 @@ function OffreForm({
       </Block>
 
       <Block title="Activités sur place">
-        <div className={pillTrack}>
+        <div className={choiceTrack}>
           {OFFER_AMENITIES.filter((item) => item.id !== 'hebergement').map((item) => {
             const on = draft.inclus.includes(item.id);
             return (
@@ -898,7 +983,7 @@ function PhotoList({
   return (
     <div>
       <label
-        className="flex cursor-pointer items-center gap-3 rounded-lg bg-primary px-4 py-3 text-left text-sm text-white transition-colors duration-200 hover:bg-[#ec6435]"
+        className="relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-lg bg-primary px-4 py-3 text-left text-sm text-white transition-colors duration-200 hover:bg-[#ec6435]"
         onDragOver={(event) => event.preventDefault()}
         onDrop={(event) => {
           event.preventDefault();
@@ -917,7 +1002,7 @@ function PhotoList({
           type="file"
           accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
           multiple
-          className="sr-only"
+          className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
           onChange={(event) => {
             if (event.target.files) onUpload(event.target.files);
             event.target.value = '';
@@ -1054,6 +1139,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 const checkClass = 'size-4 accent-orange';
 const inputClass =
   'w-full rounded-lg border border-[#0c1d22]/10 bg-white px-3 py-2.5 text-sm font-normal tracking-normal text-[#0c1d22] outline-none focus:border-[#0c1d22]/30';
-const pillTrack = 'flex flex-wrap gap-1 rounded-[1.75rem] bg-[#ec6435] p-1.5';
+const choiceTrack = 'flex flex-wrap gap-1 rounded-lg bg-[#ec6435] p-1.5';
+const pillTrack = 'flex flex-wrap gap-1 rounded-full bg-[#ec6435] p-1.5';
 const chipOff = 'rounded-full px-3.5 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-white/20';
 const chipOn = 'rounded-full bg-white px-3.5 py-2 text-sm font-medium text-[#0c1d22] shadow-sm';

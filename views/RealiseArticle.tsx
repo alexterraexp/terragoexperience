@@ -41,7 +41,7 @@ export default function RealiseArticle({
         </Link>
         {item.images.length > 0 && <RealisePhotos images={item.images} label={item.titre} />}
         <div className={item.images.length > 0 ? 'pt-8 sm:pt-10' : ''}>
-          <span className="inline-flex rounded-full bg-[#ec6435] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-white">
+          <span className="inline-flex rounded-full bg-[#ec6435] px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-white sm:px-3 sm:py-1 sm:text-[11px] sm:tracking-[0.14em]">
             Séminaire réalisé
           </span>
           <h1 className="mt-4 max-w-4xl text-balance font-sans text-[clamp(2.1rem,4.6vw,3.6rem)] font-bold leading-[1.05] tracking-[-0.075em] text-[#0c1d22]">
